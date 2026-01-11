@@ -15,6 +15,8 @@ class AppPages {
       binding: AuthBinding(),
     ),
     GetPage(name: Routes.LOGIN, page: () => LoginView()),
-    GetPage(name: Routes.ROLE, page: () => RoleSelectionView()),
+    GetPage(name: Routes.DRIVER, page: () => RoleSelectionView()),
+    GetPage(name: Routes.MECHANIC, page: () => RoleSelectionView()),
+
   ];
 }

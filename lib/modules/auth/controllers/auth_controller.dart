@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
@@ -15,21 +14,25 @@ class AuthController extends GetxController {
   var isLoading = false.obs;
   var verificationId = ''.obs;
 
-  // 🔹 Check user on app start
-  @override
-  void onReady() {
-    super.onReady();
-    _checkAuth();
-  }
-
-  void _checkAuth() async {
+  // 🔹 CALLED ONLY FROM SPLASH SCREEN
+  Future<void> checkAuthStatus() async {
     User? user = _auth.currentUser;
+
     if (user == null) {
       Get.offAllNamed(Routes.LOGIN);
     } else {
-      _checkUserRole(user.uid);
+      final doc =
+      await _firestore.collection('users').doc(user.uid).get();
+
+      if (doc.exists) {
+        _navigateByRole(doc['role']);
+      } else {
+        Get.offAllNamed(Routes.ROLE);
+      }
     }
   }
+
+
 
   // 🔹 Send OTP
   void sendOtp(String phone) async {
@@ -77,7 +80,7 @@ class AuthController extends GetxController {
         .get();
 
     if (doc.exists) {
-      _checkUserRole(user.uid);
+      _navigateByRole(doc['role']);
     } else {
       Get.offAllNamed(Routes.ROLE);
     }
@@ -86,6 +89,7 @@ class AuthController extends GetxController {
   // 🔹 Save role
   void saveRole(String role) async {
     User user = _auth.currentUser!;
+
     await _firestore.collection('users').doc(user.uid).set({
       'uid': user.uid,
       'phone': user.phoneNumber,
@@ -96,13 +100,7 @@ class AuthController extends GetxController {
     _navigateByRole(role);
   }
 
-  // 🔹 Role based navigation
-  void _checkUserRole(String uid) async {
-    var doc = await _firestore.collection('users').doc(uid).get();
-    String role = doc['role'];
-    _navigateByRole(role);
-  }
-
+  // 🔹 Navigation by role
   void _navigateByRole(String role) {
     if (role == 'driver') {
       Get.offAllNamed(Routes.DRIVER);

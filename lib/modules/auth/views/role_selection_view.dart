@@ -10,18 +10,20 @@ class RoleSelectionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ElevatedButton(
-            onPressed: () => controller.saveRole('driver'),
-            child: Text("I am a Driver"),
-          ),
-          ElevatedButton(
-            onPressed: () => controller.saveRole('mechanic'),
-            child: Text("I am a Mechanic"),
-          ),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () => controller.saveRole('driver'),
+              child: Text("I am a Driver"),
+            ),
+            ElevatedButton(
+              onPressed: () => controller.saveRole('mechanic'),
+              child: Text("I am a Mechanic"),
+            ),
+          ],
+        ),
       ),
     );
   }
