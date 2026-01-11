@@ -108,4 +108,23 @@ class AuthController extends GetxController {
       Get.offAllNamed(Routes.MECHANIC);
     }
   }
+
+
+// this method is only for development phase and this method is used to switch phases in our app
+  Future<void> switchRole(String newRole) async {
+    final user = FirebaseAuth.instance.currentUser!;
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .update({'role': newRole});
+
+    // Navigate immediately
+    if (newRole == 'driver') {
+      Get.offAllNamed(Routes.DRIVER);
+    } else {
+      Get.offAllNamed(Routes.MECHANIC);
+    }
+  }
+
 }
