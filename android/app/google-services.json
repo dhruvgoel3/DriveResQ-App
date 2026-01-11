@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "704482320936",
+    "project_id": "driveresq-app",
+    "storage_bucket": "driveresq-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:704482320936:android:620c95ffbc48f34e980b1d",
+        "android_client_info": {
+          "package_name": "com.example.driveresq_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAs48xcaWt_34rhxJidYuxqijTlXfC6F8A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
