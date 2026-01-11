@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 import '../../../app/routes/app_pages.dart';
+import '../../../utils/role_change/dev_config.dart';
+import '../../../utils/role_change/dev_role_container.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -21,8 +24,7 @@ class AuthController extends GetxController {
     if (user == null) {
       Get.offAllNamed(Routes.LOGIN);
     } else {
-      final doc =
-      await _firestore.collection('users').doc(user.uid).get();
+      final doc = await _firestore.collection('users').doc(user.uid).get();
 
       if (doc.exists) {
         _navigateByRole(doc['role']);
@@ -31,8 +33,6 @@ class AuthController extends GetxController {
       }
     }
   }
-
-
 
   // 🔹 Send OTP
   void sendOtp(String phone) async {
@@ -101,23 +101,29 @@ class AuthController extends GetxController {
   }
 
   // 🔹 Navigation by role
-  void _navigateByRole(String role) {
-    if (role == 'driver') {
+
+  void _navigateByRole(String roleFromDb) {
+    final devRoleController = Get.find<DevRoleController>();
+
+    String roleToUse =
+        DevConfig.devMode && devRoleController.currentRole != null
+        ? devRoleController.currentRole!
+        : roleFromDb;
+
+    if (roleToUse == 'driver') {
       Get.offAllNamed(Routes.DRIVER);
     } else {
       Get.offAllNamed(Routes.MECHANIC);
     }
   }
 
-
-// this method is only for development phase and this method is used to switch phases in our app
+  // this method is only for development phase and this method is used to switch phases in our app
   Future<void> switchRole(String newRole) async {
     final user = FirebaseAuth.instance.currentUser!;
 
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .update({'role': newRole});
+    await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+      'role': newRole,
+    });
 
     // Navigate immediately
     if (newRole == 'driver') {
@@ -126,5 +132,4 @@ class AuthController extends GetxController {
       Get.offAllNamed(Routes.MECHANIC);
     }
   }
-
 }

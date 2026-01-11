@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../driver/controllers/create_request_controller.dart';
+import '../controllers/create_request_controller.dart';
 
 class CreateRequestView extends StatelessWidget {
   CreateRequestView({super.key});

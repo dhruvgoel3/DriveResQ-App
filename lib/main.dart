@@ -1,3 +1,4 @@
+import 'package:driveresq_app/utils/role_change/dev_role_container.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,7 +21,12 @@ class DriveResQApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'DriveResQ',
       debugShowCheckedModeBanner: false,
-      initialBinding: AuthBinding(),
+
+      // 🔥 REGISTER GLOBAL CONTROLLERS HERE
+      initialBinding: BindingsBuilder(() {
+        Get.put(DevRoleController(), permanent: true);
+      }),
+
       initialRoute: Routes.SPLASH,
       getPages: AppPages.pages,
       theme: ThemeData(
@@ -30,3 +36,4 @@ class DriveResQApp extends StatelessWidget {
     );
   }
 }
+

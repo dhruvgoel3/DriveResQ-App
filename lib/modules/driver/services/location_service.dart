@@ -2,7 +2,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 class LocationService {
-  static Future<String> getReadableLocation() async {
+  static Future<Map<String, dynamic>> getLocationData() async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -19,30 +19,33 @@ class LocationService {
       permission = await Geolocator.requestPermission();
     }
 
-    if (permission == LocationPermission.denied) {
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
       throw Exception("Location permission denied");
     }
 
-    if (permission == LocationPermission.deniedForever) {
-      throw Exception("Location permission permanently denied");
-    }
-
-    // 3️⃣ Get position
+    // 3️⃣ Get current position
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
 
-    // 4️⃣ Convert to readable location
+    // 4️⃣ Convert coordinates → readable location
     List<Placemark> placemarks =
     await placemarkFromCoordinates(position.latitude, position.longitude);
 
     Placemark place = placemarks.first;
 
-    return [
+    String readableLocation = [
       place.subLocality,
       place.locality,
       place.subAdministrativeArea,
       place.administrativeArea,
     ].where((e) => e != null && e!.isNotEmpty).join(', ');
+
+    return {
+      'locationName': readableLocation,
+      'lat': position.latitude,
+      'lng': position.longitude,
+    };
   }
 }

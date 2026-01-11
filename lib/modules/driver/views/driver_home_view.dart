@@ -1,22 +1,92 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../mechanic/views/create_request_view.dart';
+import '../../../app/routes/app_pages.dart';
+import '../../../utils/role_change/dev_config.dart';
+import '../../../utils/role_change/dev_role_container.dart';
+import '../../../utils/widgets/active_requests_card.dart';
+import 'create_request_view.dart';
+
+// ✅ CORRECT
+import '../controllers/driver_controller.dart';
 
 class DriverHomeView extends StatelessWidget {
   const DriverHomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<DriverController>();
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Driver Dashboard")),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Get.to(() => CreateRequestView());
-          },
-          child: const Text("New Request"),
-        ),
+      appBar: AppBar(
+        title: const Text("Driver Dashboard"),
+        actions: [
+          if (DevConfig.devMode)
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.bug_report),
+              onSelected: (value) {
+                final devRole = Get.find<DevRoleController>();
+
+                if (value == 'driver') {
+                  devRole.switchToDriver();
+                  Get.offAllNamed(Routes.DRIVER);
+                } else if (value == 'mechanic') {
+                  devRole.switchToMechanic();
+                  Get.offAllNamed(Routes.MECHANIC);
+                }
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'driver',
+                  child: Text('Switch to Driver'),
+                ),
+                const PopupMenuItem(
+                  value: 'mechanic',
+                  child: Text('Switch to Mechanic'),
+                ),
+              ],
+            ),
+
+          Obx(() {
+            if (!controller.hasActiveRequest.value) {
+              return const SizedBox();
+            }
+            return IconButton(
+              icon: const Icon(Icons.delete_outline),
+              onPressed: () {
+                Get.defaultDialog(
+                  title: "Cancel Request",
+                  middleText: "Are you sure you want to cancel this request?",
+                  textConfirm: "Yes",
+                  textCancel: "No",
+                  confirmTextColor: Colors.white,
+                  onConfirm: () async {
+                    Get.back();
+                    await controller.cancelActiveRequest();
+                  },
+                );
+              },
+            );
+          }),
+        ],
       ),
+      body: Obx(() {
+        if (controller.hasActiveRequest.value) {
+          final request = controller.requestData.value!;
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: ActiveRequestCard(request: request),
+          );
+        }
+
+        return Center(
+          child: ElevatedButton(
+            onPressed: () {
+              Get.to(() => CreateRequestView());
+            },
+            child: const Text("New Request"),
+          ),
+        );
+      }),
     );
   }
 }

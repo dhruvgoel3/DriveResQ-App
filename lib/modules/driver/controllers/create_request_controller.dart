@@ -18,6 +18,10 @@ class CreateRequestController extends GetxController {
   var selectedVehicle = ''.obs;
   var imageFile = Rx<File?>(null);
 
+  // 🔥 NEW: store coordinates
+  double? driverLat;
+  double? driverLng;
+
   final landmarkController = TextEditingController();
   final problemController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -28,12 +32,17 @@ class CreateRequestController extends GetxController {
     fetchLocation();
   }
 
-  // 📍 Auto fetch location
+  // 📍 Auto fetch location (NAME + LAT/LNG)
   void fetchLocation() async {
     try {
-      locationName.value = await LocationService.getReadableLocation();
+      locationName.value = "Fetching location...";
+      final locationData = await LocationService.getLocationData();
+
+      locationName.value = locationData['locationName'];
+      driverLat = locationData['lat'];
+      driverLng = locationData['lng'];
     } catch (e) {
-      locationName.value = "Location unavailable";
+      locationName.value = "Enable location to continue";
     }
   }
 
@@ -50,7 +59,9 @@ class CreateRequestController extends GetxController {
   Future<void> submitRequest() async {
     if (landmarkController.text.isEmpty ||
         selectedVehicle.value.isEmpty ||
-        problemController.text.isEmpty) {
+        problemController.text.isEmpty ||
+        driverLat == null ||
+        driverLng == null) {
       Get.snackbar("Error", "Please fill all required fields");
       return;
     }
@@ -59,6 +70,7 @@ class CreateRequestController extends GetxController {
 
     String? imageUrl;
 
+    // 📤 Upload image if exists
     if (imageFile.value != null) {
       final ref = FirebaseStorage.instance
           .ref('requests/${DateTime.now().millisecondsSinceEpoch}.jpg');
@@ -67,14 +79,23 @@ class CreateRequestController extends GetxController {
       imageUrl = await ref.getDownloadURL();
     }
 
+    // 🧠 SAVE REQUEST (WITH COORDINATES)
     await _firestore.collection('requests').add({
       'driverId': _auth.currentUser!.uid,
+
+      // 📍 LOCATION
       'locationName': locationName.value,
+      'driverLat': driverLat,
+      'driverLng': driverLng,
+
+      // 📌 DETAILS
       'landmark': landmarkController.text.trim(),
       'vehicleType': selectedVehicle.value,
       'problem': problemController.text.trim(),
       'description': descriptionController.text.trim(),
       'imageUrl': imageUrl,
+
+      // 🔄 STATUS
       'status': 'open',
       'createdAt': FieldValue.serverTimestamp(),
     });
