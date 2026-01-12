@@ -1,13 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 
 class MechanicRequestsController extends GetxController {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final _firestore = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
 
-  var nearbyRequests = <Map<String, dynamic>>[].obs;
+  // 🔄 UI STATES
   var isLoading = true.obs;
-  var errorMessage = ''.obs;
+
+  // 🔥 DATA
+  var nearbyRequests = <Map<String, dynamic>>[].obs;
+  var activeRequest = Rxn<Map<String, dynamic>>();
 
   Position? mechanicPosition;
 
@@ -16,34 +21,20 @@ class MechanicRequestsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    initFlow();
+    _init();
   }
 
-  Future<void> initFlow() async {
-    try {
-      await _getMechanicLocation();
-      _listenToRequests();
-    } catch (e) {
-      isLoading.value = false;
-      errorMessage.value = e.toString();
-    }
+  Future<void> _init() async {
+    await _getMechanicLocation();
+    _listenToActiveRequest();
+    _listenToNearbyRequests();
   }
 
-  // 📍 GET MECHANIC LOCATION (SAFE)
+  // 📍 LOCATION
   Future<void> _getMechanicLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      throw Exception("Location services are disabled");
-    }
-
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-    }
-
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      throw Exception("Location permission denied");
     }
 
     mechanicPosition = await Geolocator.getCurrentPosition(
@@ -51,8 +42,28 @@ class MechanicRequestsController extends GetxController {
     );
   }
 
-  // 🔥 LISTEN TO REQUESTS (REAL-TIME)
-  void _listenToRequests() {
+  // ✅ ACTIVE REQUEST (ACCEPTED)
+  void _listenToActiveRequest() {
+    _firestore
+        .collection('requests')
+        .where('mechanicId', isEqualTo: _auth.currentUser!.uid)
+        .where('status', isEqualTo: 'accepted')
+        .limit(1)
+        .snapshots()
+        .listen((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        activeRequest.value = {
+          ...snapshot.docs.first.data(),
+          'id': snapshot.docs.first.id,
+        };
+      } else {
+        activeRequest.value = null;
+      }
+    });
+  }
+
+  // 📡 NEARBY OPEN REQUESTS
+  void _listenToNearbyRequests() {
     _firestore
         .collection('requests')
         .where('status', isEqualTo: 'open')
@@ -65,29 +76,23 @@ class MechanicRequestsController extends GetxController {
 
         if (data['driverLat'] == null || data['driverLng'] == null) continue;
 
-        final distanceInMeters = Geolocator.distanceBetween(
+        final distance = Geolocator.distanceBetween(
           mechanicPosition!.latitude,
           mechanicPosition!.longitude,
           data['driverLat'],
           data['driverLng'],
         );
 
-        final distanceInKm = distanceInMeters / 1000;
-
-        if (distanceInKm <= RADIUS_IN_KM) {
+        if (distance / 1000 <= RADIUS_IN_KM) {
           nearbyRequests.add({
             ...data,
             'id': doc.id,
-            'distance': distanceInKm.toStringAsFixed(1),
+            'distance': (distance / 1000).toStringAsFixed(1),
           });
         }
       }
 
-      // 🔑 VERY IMPORTANT
       isLoading.value = false;
-    }, onError: (error) {
-      isLoading.value = false;
-      errorMessage.value = error.toString();
     });
   }
 }

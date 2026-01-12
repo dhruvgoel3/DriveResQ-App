@@ -82,6 +82,7 @@ class CreateRequestController extends GetxController {
     // 🧠 SAVE REQUEST (WITH COORDINATES)
     await _firestore.collection('requests').add({
       'driverId': _auth.currentUser!.uid,
+      'driverPhone': _auth.currentUser!.phoneNumber,
 
       // 📍 LOCATION
       'locationName': locationName.value,

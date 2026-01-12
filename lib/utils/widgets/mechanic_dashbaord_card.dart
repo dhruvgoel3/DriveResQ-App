@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+
+import '../../modules/mechanic/views/request_detail_view.dart';
 
 class RequestCard extends StatelessWidget {
   final Map<String, dynamic> request;
@@ -10,17 +14,14 @@ class RequestCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: ListTile(
-        title: Text(
-          request['problem'],
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        title: Text(request['problem'] ?? "Problem not specified"),
+
         subtitle: Text(
           "${request['vehicleType']} • ${request['locationName']}\n${request['distance']} km away",
         ),
         trailing: const Icon(Icons.arrow_forward_ios, size: 14),
         onTap: () {
-          // Module 5: Accept Request
+          Get.to(() => RequestDetailView(request: request));
         },
       ),
     );

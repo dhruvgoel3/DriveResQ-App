@@ -16,17 +16,16 @@ class MechanicDashboardView extends StatelessWidget {
         body: IndexedStack(
           index: controller.currentIndex.value,
           children: const [
-            MechanicRequestsView(),
-            MechanicActiveJobView(),
+            MechanicRequestsView(), // 🔥 Combined Home
             Center(child: Text("Profile (Later)")),
           ],
         ),
+
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: controller.currentIndex.value,
           onTap: controller.changeTab,
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.list), label: "Requests"),
-            BottomNavigationBarItem(icon: Icon(Icons.build), label: "Active"),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
           ],
         ),
