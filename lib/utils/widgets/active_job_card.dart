@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+
+import '../../modules/tracking/views/live_tracking_view.dart';
 
 class ActiveJobCard extends StatelessWidget {
   final Map<String, dynamic> request;
@@ -28,7 +32,6 @@ class ActiveJobCard extends StatelessWidget {
             _row("Landmark", request['landmark']),
             _row("Driver Phone", request['driverPhone'] ?? "Not available"),
 
-
             const SizedBox(height: 12),
 
             Row(
@@ -36,6 +39,8 @@ class ActiveJobCard extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {
+                      Get.to(() => LiveTrackingView(requestId: request['id']));
+
                       // Module 6: Navigate to map
                     },
                     icon: const Icon(Icons.navigation),
@@ -60,10 +65,7 @@ class ActiveJobCard extends StatelessWidget {
   Widget _row(String label, dynamic value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
-      child: Text(
-        "$label: ${value?.toString() ?? 'N/A'}",
-      ),
+      child: Text("$label: ${value?.toString() ?? 'N/A'}"),
     );
   }
-
 }
