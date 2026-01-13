@@ -1,3 +1,5 @@
+import 'package:driveresq_app/modules/driver/views/widgets/driver_empty_state.dart';
+import 'package:driveresq_app/modules/driver/views/widgets/driver_map_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../app/routes/app_pages.dart';
@@ -72,19 +74,24 @@ class DriverHomeView extends StatelessWidget {
       body: Obx(() {
         if (controller.hasActiveRequest.value) {
           final request = controller.requestData.value!;
-          return Padding(
+
+          return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
-            child: ActiveRequestCard(request: request),
+            child: Column(
+              children: [
+                // 🔹 Active Request Card
+                ActiveRequestCard(request: request),
+
+                const SizedBox(height: 12),
+              ],
+            ),
           );
         }
 
-        return Center(
-          child: ElevatedButton(
-            onPressed: () {
-              Get.to(() => CreateRequestView());
-            },
-            child: const Text("New Request"),
-          ),
+        return DriverEmptyState(
+          onNewRequest: () {
+            Get.to(() => CreateRequestView());
+          },
         );
       }),
     );

@@ -8,6 +8,7 @@ class DriverController extends GetxController {
   void changeTab(int index) {
     currentIndex.value = index;
   }
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -30,14 +31,17 @@ class DriverController extends GetxController {
         .limit(1)
         .snapshots()
         .listen((snapshot) {
-      if (snapshot.docs.isNotEmpty) {
-        hasActiveRequest.value = true;
-        requestData.value = snapshot.docs.first.data();
-      } else {
-        hasActiveRequest.value = false;
-        requestData.value = null;
-      }
-    });
+          if (snapshot.docs.isNotEmpty) {
+            hasActiveRequest.value = true;
+            requestData.value = {
+              ...snapshot.docs.first.data(),
+              'id': snapshot.docs.first.id, // 🔥 IMPORTANT
+            };
+          } else {
+            hasActiveRequest.value = false;
+            requestData.value = null;
+          }
+        });
   }
 
   Future<void> cancelActiveRequest() async {
@@ -54,9 +58,7 @@ class DriverController extends GetxController {
       await _firestore
           .collection('requests')
           .doc(snapshot.docs.first.id)
-          .update({
-        'status': 'cancelled',
-      });
+          .update({'status': 'cancelled'});
     }
   }
 }

@@ -3,6 +3,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 
 import '../../modules/tracking/views/live_tracking_view.dart';
+import '../helpers/call_helper.dart';
 
 class ActiveJobCard extends StatelessWidget {
   final Map<String, dynamic> request;
@@ -51,9 +52,11 @@ class ActiveJobCard extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.call),
                   onPressed: () {
-                    // Module 6: Call driver
+                    final phone = request['driverPhone'] ?? '';
+                    CallHelper.callNumber(phone);
                   },
                 ),
+
               ],
             ),
           ],

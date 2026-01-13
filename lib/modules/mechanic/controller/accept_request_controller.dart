@@ -29,8 +29,10 @@ class AcceptRequestController extends GetxController {
         transaction.update(requestRef, {
           'status': 'accepted',
           'mechanicId': _auth.currentUser!.uid,
+          'mechanicPhone': _auth.currentUser!.phoneNumber ?? '',
           'acceptedAt': FieldValue.serverTimestamp(),
         });
+
       });
 
       Get.back(); // close detail screen

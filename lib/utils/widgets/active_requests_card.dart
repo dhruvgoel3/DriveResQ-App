@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../../modules/tracking/views/live_tracking_view.dart';
+import '../helpers/call_helper.dart';
 
 class ActiveRequestCard extends StatelessWidget {
   final Map<String, dynamic> request;
@@ -7,15 +13,17 @@ class ActiveRequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String status = request['status'] ?? 'pending';
+
     return Card(
       elevation: 6,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // STATUS
+            // 🔰 HEADER
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -23,59 +31,180 @@ class ActiveRequestCard extends StatelessWidget {
                   "Active Request",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                Chip(
-                  label: Text(
-                    request['status'].toString().toUpperCase(),
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  backgroundColor: request['status'] == 'accepted'
-                      ? Colors.green
-                      : Colors.orange,
-                ),
+                _statusChip(status),
               ],
             ),
 
             const SizedBox(height: 12),
 
-            _infoRow(Icons.location_on, request['locationName']),
-            _infoRow(Icons.place, "Landmark: ${request['landmark']}"),
-            _infoRow(
-              Icons.directions_car,
-              "Vehicle: ${request['vehicleType']}",
+            // 🗺️ MAP VIEW (PLACEHOLDER / REAL MAP)
+            _mapPreview(status),
+
+            const SizedBox(height: 16),
+
+            // 📍 INFO SECTION
+            _infoTile(
+              icon: Icons.location_on,
+              title: request['locationName'],
+              subtitle: "Pickup Location",
             ),
-            _infoRow(Icons.warning, "Problem: ${request['problem']}"),
 
-            if (request['description'] != null &&
-                request['description'].toString().isNotEmpty)
-              _infoRow(Icons.notes, request['description']),
+            _infoTile(
+              icon: Icons.directions_car,
+              title: request['vehicleType'],
+              subtitle: "Vehicle Details",
+            ),
 
-            const SizedBox(height: 12),
+            _infoTile(
+              icon: Icons.warning_amber_rounded,
+              title: request['problem'],
+              subtitle: "Reported Issue",
+            ),
 
-            if (request['imageUrl'] != null)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  request['imageUrl'],
-                  height: 150,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
+            const SizedBox(height: 16),
+
+            // 📞 ACTIONS (ONLY AFTER ACCEPTED)
+            if (status == 'accepted') ...[
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    CallHelper.callNumber(request['mechanicPhone'] ?? '');
+                  },
+                  icon: const Icon(Icons.call),
+                  label: const Text("Call Mechanic"),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                 ),
               ),
+
+              const SizedBox(height: 10),
+
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    Get.to(() => LiveTrackingView(requestId: request['id']));
+                  },
+                  icon: const Icon(Icons.navigation),
+                  label: const Text("Navigate / Track"),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
     );
   }
 
-  Widget _infoRow(IconData icon, String text) {
+  // 🟢 STATUS CHIP
+  Widget _statusChip(String status) {
+    final bool accepted = status == 'accepted';
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: accepted
+            ? Colors.green.withOpacity(0.1)
+            : Colors.orange.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        status.toUpperCase(),
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: accepted ? Colors.green : Colors.orange,
+        ),
+      ),
+    );
+  }
+
+  // 🗺️ MAP VIEW (INSIDE CARD)
+  Widget _mapPreview(String status) {
+    if (status != 'accepted') {
+      return Container(
+        height: 160,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.grey.shade200,
+        ),
+        child: const Center(
+          child: Icon(Icons.map, size: 40, color: Colors.grey),
+        ),
+      );
+    }
+
+    return SizedBox(
+      height: 180,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: GoogleMap(
+          onMapCreated: (controller) async {
+            final position = await Geolocator.getCurrentPosition(
+              desiredAccuracy: LocationAccuracy.high,
+            );
+
+            controller.animateCamera(
+              CameraUpdate.newLatLngZoom(
+                LatLng(position.latitude, position.longitude),
+                15,
+              ),
+            );
+          },
+          initialCameraPosition: const CameraPosition(
+            target: LatLng(0, 0), // temporary
+            zoom: 1,
+          ),
+          myLocationEnabled: true,
+          myLocationButtonEnabled: false,
+          zoomControlsEnabled: false,
+        ),
+      ),
+    );
+  }
+
+  // 📌 INFO TILE
+  Widget _infoTile({
+    required IconData icon,
+    required String? title,
+    required String subtitle,
+  }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.only(bottom: 10),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 18),
-          const SizedBox(width: 8),
-          Expanded(child: Text(text)),
+          CircleAvatar(
+            radius: 18,
+            backgroundColor: Colors.blue.withOpacity(0.1),
+            child: Icon(icon, size: 18, color: Colors.blue),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title ?? "N/A",
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                Text(
+                  subtitle,
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
