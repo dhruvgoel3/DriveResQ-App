@@ -20,6 +20,7 @@ class DriverDashboardView extends StatelessWidget {
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.white,
           currentIndex: controller.currentIndex.value,
           onTap: controller.changeTab,
           items: const [

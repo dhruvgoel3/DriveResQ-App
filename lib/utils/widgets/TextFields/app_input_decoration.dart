@@ -9,20 +9,14 @@ InputDecoration AppInputDecoration({
     prefixIcon: Icon(icon),
     filled: true,
     fillColor: Colors.grey.shade100,
-    contentPadding: const EdgeInsets.symmetric(
-      horizontal: 16,
-      vertical: 14,
-    ),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
       borderSide: BorderSide.none,
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide(
-        color: Colors.deepPurple,
-        width: 1.5,
-      ),
+      borderSide: const BorderSide(color: Colors.deepPurple, width: 1.5),
     ),
   );
 }

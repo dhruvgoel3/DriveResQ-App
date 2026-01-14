@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../modules/tracking/views/live_tracking_view.dart';
@@ -16,7 +17,8 @@ class ActiveRequestCard extends StatelessWidget {
     final String status = request['status'] ?? 'pending';
 
     return Card(
-      elevation: 6,
+      color: Colors.white,
+      elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -27,20 +29,24 @@ class ActiveRequestCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   "Active Request",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+                SizedBox(height: 20),
                 _statusChip(status),
               ],
             ),
 
-            const SizedBox(height: 12),
+            SizedBox(height: 20),
 
             // 🗺️ MAP VIEW (PLACEHOLDER / REAL MAP)
             _mapPreview(status),
 
-            const SizedBox(height: 16),
+            SizedBox(height: 23),
 
             // 📍 INFO SECTION
             _infoTile(
@@ -48,12 +54,14 @@ class ActiveRequestCard extends StatelessWidget {
               title: request['locationName'],
               subtitle: "Pickup Location",
             ),
+            SizedBox(height: 10),
 
             _infoTile(
               icon: Icons.directions_car,
               title: request['vehicleType'],
               subtitle: "Vehicle Details",
             ),
+            SizedBox(height: 10),
 
             _infoTile(
               icon: Icons.warning_amber_rounded,
@@ -61,7 +69,7 @@ class ActiveRequestCard extends StatelessWidget {
               subtitle: "Reported Issue",
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 10),
 
             // 📞 ACTIONS (ONLY AFTER ACCEPTED)
             if (status == 'accepted') ...[
@@ -185,7 +193,7 @@ class ActiveRequestCard extends StatelessWidget {
       child: Row(
         children: [
           CircleAvatar(
-            radius: 18,
+            radius: 22,
             backgroundColor: Colors.blue.withOpacity(0.1),
             child: Icon(icon, size: 18, color: Colors.blue),
           ),
@@ -196,7 +204,7 @@ class ActiveRequestCard extends StatelessWidget {
               children: [
                 Text(
                   title ?? "N/A",
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
                 ),
                 Text(
                   subtitle,

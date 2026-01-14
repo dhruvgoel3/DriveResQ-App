@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../utils/widgets/TextFields/app_input_decoration.dart';
 import '../../../utils/widgets/TextFields/app_text_fields.dart';
 import '../controllers/create_request_controller.dart';
@@ -24,21 +26,31 @@ class CreateRequestView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Create Request")),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          "Create Help Request",
+          style: GoogleFonts.poppins(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+      ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(child: CircularProgressIndicator());
         }
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 📍 Location
-              const Text(
+              Text(
                 "Location",
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),
               Text(controller.locationName.value),
@@ -96,23 +108,44 @@ class CreateRequestView extends StatelessWidget {
 
               // 📷 Image
               ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+
                 onPressed: controller.pickImage,
-                icon: const Icon(Icons.camera_alt),
-                label: const Text("Add Image (Optional)"),
+                icon: Icon(Icons.camera_alt),
+                label: Text(
+                  "Add Image (Optional)",
+                  style: GoogleFonts.poppins(
+                    color: Color(0xFF6C63FF),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+                ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 210),
 
               // 🚀 Submit
               ElevatedButton(
                 onPressed: controller.submitRequest,
                 style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
+                  minimumSize: const Size(double.infinity, 52),
+                  backgroundColor: Color(0xFF6C63FF),
+                  // Primary (modern blue-violet)
+                  foregroundColor: Colors.white,
+                  elevation: 4,
+                  shadowColor: Colors.black.withOpacity(0.2),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
                 ),
-                child: const Text("Submit Request"),
+                child: const Text(
+                  "Submit Request",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.4,
+                  ),
+                ),
               ),
             ],
           ),

@@ -2,6 +2,7 @@ import 'package:driveresq_app/modules/driver/views/widgets/driver_empty_state.da
 import 'package:driveresq_app/modules/driver/views/widgets/driver_map_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../app/routes/app_pages.dart';
 import '../../../utils/role_change/dev_config.dart';
 import '../../../utils/role_change/dev_role_container.dart';
@@ -20,7 +21,15 @@ class DriverHomeView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Driver Dashboard"),
+        backgroundColor: Colors.white,
+        title: Text(
+          "DriveResQ",
+          style: GoogleFonts.poppins(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF6C63FF),
+          ),
+        ),
         actions: [
           if (DevConfig.devMode)
             PopupMenuButton<String>(
