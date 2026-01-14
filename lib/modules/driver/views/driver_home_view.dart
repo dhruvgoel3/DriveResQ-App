@@ -1,5 +1,6 @@
 import 'package:driveresq_app/modules/driver/views/widgets/driver_empty_state.dart';
 import 'package:driveresq_app/modules/driver/views/widgets/driver_map_widget.dart';
+import 'package:driveresq_app/modules/driver/views/widgets/driver_safety_tips.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -92,6 +93,8 @@ class DriverHomeView extends StatelessWidget {
                 ActiveRequestCard(request: request),
 
                 const SizedBox(height: 12),
+
+                SafetyTipsSection(),
               ],
             ),
           );

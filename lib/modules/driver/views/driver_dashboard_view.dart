@@ -1,3 +1,4 @@
+import 'package:driveresq_app/modules/driver/views/driver_profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/driver_controller.dart';
@@ -16,11 +17,15 @@ class DriverDashboardView extends StatelessWidget {
           index: controller.currentIndex.value,
           children: const [
             DriverHomeView(),
+            DriverProfileView(),
+
             Center(child: Text("Profile (Later)")),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.white,
+          selectedItemColor: Color(0xFF6C63FF),
+          unselectedItemColor: Colors.black,
           currentIndex: controller.currentIndex.value,
           onTap: controller.changeTab,
           items: const [

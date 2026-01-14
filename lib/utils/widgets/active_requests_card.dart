@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../../modules/tracking/views/live_tracking_view.dart';
 import '../helpers/call_helper.dart';
@@ -12,171 +12,207 @@ class ActiveRequestCard extends StatelessWidget {
 
   const ActiveRequestCard({super.key, required this.request});
 
+  static const Color primaryColor = Color(0xFF6C63FF);
+
   @override
   Widget build(BuildContext context) {
-    final String status = request['status'] ?? 'pending';
+    final status = request['status'];
 
-    return Card(
-      color: Colors.white,
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 🔰 HEADER
-            Row(
+    if (status != 'accepted') return const SizedBox();
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.blue.withOpacity(0.04),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 🔰 HEADER
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   "Active Request",
                   style: GoogleFonts.poppins(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 20),
-                _statusChip(status),
+                _acceptedChip(),
               ],
             ),
+          ),
 
-            SizedBox(height: 20),
+          const SizedBox(height: 14),
 
-            // 🗺️ MAP VIEW (PLACEHOLDER / REAL MAP)
-            _mapPreview(status),
+          // 🗺️ MAP
+          _mapSection(),
 
-            SizedBox(height: 23),
+          const SizedBox(height: 16),
 
-            // 📍 INFO SECTION
-            _infoTile(
-              icon: Icons.location_on,
-              title: request['locationName'],
-              subtitle: "Pickup Location",
-            ),
-            SizedBox(height: 10),
+          // 📍 LOCATION
+          _infoTile(
+            icon: Icons.location_on_outlined,
+            title: request['locationName'] ?? 'Location',
+            subtitle: "Pickup Location",
+          ),
 
-            _infoTile(
-              icon: Icons.directions_car,
-              title: request['vehicleType'],
-              subtitle: "Vehicle Details",
-            ),
-            SizedBox(height: 10),
+          _infoTile(
+            icon: Icons.directions_car,
+            title: request['vehicleType'] ?? 'Vehicle',
+            subtitle: "Vehicle Details",
+          ),
 
-            _infoTile(
-              icon: Icons.warning_amber_rounded,
-              title: request['problem'],
-              subtitle: "Reported Issue",
-            ),
+          _infoTile(
+            icon: Icons.report_problem_outlined,
+            title: request['problem'] ?? 'Issue',
+            subtitle: "Reported Issue",
+          ),
 
-            const SizedBox(height: 10),
+          const SizedBox(height: 18),
 
-            // 📞 ACTIONS (ONLY AFTER ACCEPTED)
-            if (status == 'accepted') ...[
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    CallHelper.callNumber(request['mechanicPhone'] ?? '');
-                  },
-                  icon: const Icon(Icons.call),
-                  label: const Text("Call Mechanic"),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+          // 📞 CALL BUTTON
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                CallHelper.callNumber(request['mechanicPhone'] ?? '');
+              },
+              icon: const Icon(Icons.call, size: 18),
+              label: const Text("Call Mechanic"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
                 ),
               ),
+            ),
+          ),
 
-              const SizedBox(height: 10),
+           SizedBox(height: 12),
 
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    Get.to(() => LiveTrackingView(requestId: request['id']));
-                  },
-                  icon: const Icon(Icons.navigation),
-                  label: const Text("Navigate / Track"),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+          // 🧭 NAVIGATE BUTTON
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: OutlinedButton.icon(
+              onPressed: () {
+                Get.to(
+                  () => LiveTrackingView(requestId: request['id'], role: ''),
+                );
+              },
+              icon: const Icon(Icons.navigation, size: 18),
+              label: const Text("Track Mechanic"),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: primaryColor,
+                side: const BorderSide(color: primaryColor, width: 1.5),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
                 ),
               ),
-            ],
-          ],
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  // 🟢 STATUS CHIP
-  Widget _statusChip(String status) {
-    final bool accepted = status == 'accepted';
-
+  // 🟢 ACCEPTED CHIP
+  Widget _acceptedChip() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
-        color: accepted
-            ? Colors.green.withOpacity(0.1)
-            : Colors.orange.withOpacity(0.1),
+        color: Colors.green.withOpacity(0.12),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(
-        status.toUpperCase(),
+      child: const Text(
+        "Accepted",
         style: TextStyle(
           fontSize: 12,
-          fontWeight: FontWeight.bold,
-          color: accepted ? Colors.green : Colors.orange,
+          fontWeight: FontWeight.w600,
+          color: Colors.green,
         ),
       ),
     );
   }
 
-  // 🗺️ MAP VIEW (INSIDE CARD)
-  Widget _mapPreview(String status) {
-    if (status != 'accepted') {
-      return Container(
-        height: 160,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.grey.shade200,
-        ),
-        child: const Center(
-          child: Icon(Icons.map, size: 40, color: Colors.grey),
-        ),
-      );
-    }
-
+  // 🗺️ MAP WITH OVERLAY
+  Widget _mapSection() {
     return SizedBox(
-      height: 180,
+      height: 170,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: GoogleMap(
-          onMapCreated: (controller) async {
-            final position = await Geolocator.getCurrentPosition(
-              desiredAccuracy: LocationAccuracy.high,
-            );
-
-            controller.animateCamera(
-              CameraUpdate.newLatLngZoom(
-                LatLng(position.latitude, position.longitude),
-                15,
+        borderRadius: BorderRadius.circular(10),
+        child: Stack(
+          children: [
+            GoogleMap(
+              initialCameraPosition: const CameraPosition(
+                target: LatLng(0, 0),
+                zoom: 2,
               ),
-            );
-          },
-          initialCameraPosition: const CameraPosition(
-            target: LatLng(0, 0), // temporary
-            zoom: 1,
-          ),
-          myLocationEnabled: true,
-          myLocationButtonEnabled: false,
-          zoomControlsEnabled: false,
+              onMapCreated: (controller) async {
+                final pos = await Geolocator.getCurrentPosition();
+                controller.animateCamera(
+                  CameraUpdate.newLatLngZoom(
+                    LatLng(pos.latitude, pos.longitude),
+                    15,
+                  ),
+                );
+              },
+              myLocationEnabled: true,
+              zoomControlsEnabled: false,
+              myLocationButtonEnabled: false,
+            ),
+
+            // 🚗 MECHANIC EN ROUTE LABEL
+            Positioned(
+              left: 12,
+              bottom: 12,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 8,
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: const [
+                    Icon(Icons.directions_car, size: 14, color: primaryColor),
+                    SizedBox(width: 6),
+                    Text(
+                      "MECHANIC EN ROUTE",
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -185,17 +221,21 @@ class ActiveRequestCard extends StatelessWidget {
   // 📌 INFO TILE
   Widget _infoTile({
     required IconData icon,
-    required String? title,
+    required String title,
     required String subtitle,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 22,
-            backgroundColor: Colors.blue.withOpacity(0.1),
-            child: Icon(icon, size: 18, color: Colors.blue),
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: primaryColor.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: primaryColor, size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -203,12 +243,16 @@ class ActiveRequestCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title ?? "N/A",
+                  title,
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
                 ),
+                const SizedBox(height: 2),
                 Text(
                   subtitle,
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: Colors.grey.shade600,
+                  ),
                 ),
               ],
             ),

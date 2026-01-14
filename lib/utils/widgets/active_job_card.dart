@@ -40,7 +40,7 @@ class ActiveJobCard extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      Get.to(() => LiveTrackingView(requestId: request['id']));
+                      Get.to(() => LiveTrackingView(requestId: request['id'], role: '',));
 
                       // Module 6: Navigate to map
                     },

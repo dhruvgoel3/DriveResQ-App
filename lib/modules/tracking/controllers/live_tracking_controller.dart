@@ -7,8 +7,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LiveTrackingController extends GetxController {
   final String requestId;
+  final String role; // 'driver' or 'mechanic'
 
-  LiveTrackingController(this.requestId);
+  LiveTrackingController(this.requestId, this.role);
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -20,14 +21,21 @@ class LiveTrackingController extends GetxController {
   StreamSubscription? requestSub;
   StreamSubscription? locationSub;
 
+  LatLng? driverLatLng;
+  LatLng? mechanicLatLng;
+
   @override
   void onInit() {
     super.onInit();
     _listenToRequest();
-    _startSendingMyLocation();
+
+    // 🔒 ONLY MECHANIC SENDS LIVE LOCATION
+    if (role == 'mechanic') {
+      _startSendingMyLocation();
+    }
   }
 
-  // 🔥 LISTEN TO DRIVER & MECHANIC LOCATIONS
+  // 🔥 LISTEN TO FIRESTORE (READ-ONLY FOR DRIVER)
   void _listenToRequest() {
     requestSub = _firestore
         .collection('requests')
@@ -37,18 +45,20 @@ class LiveTrackingController extends GetxController {
       final data = doc.data();
       if (data == null) return;
 
-      if (data['driverLat'] != null) {
+      if (data['driverLat'] != null && data['driverLng'] != null) {
+        driverLatLng = LatLng(data['driverLat'], data['driverLng']);
         driverMarker.value = Marker(
           markerId: const MarkerId("driver"),
-          position: LatLng(data['driverLat'], data['driverLng']),
+          position: driverLatLng!,
           infoWindow: const InfoWindow(title: "Driver"),
         );
       }
 
-      if (data['mechanicLat'] != null) {
+      if (data['mechanicLat'] != null && data['mechanicLng'] != null) {
+        mechanicLatLng = LatLng(data['mechanicLat'], data['mechanicLng']);
         mechanicMarker.value = Marker(
           markerId: const MarkerId("mechanic"),
-          position: LatLng(data['mechanicLat'], data['mechanicLng']),
+          position: mechanicLatLng!,
           infoWindow: const InfoWindow(title: "Mechanic"),
         );
       }
@@ -57,8 +67,8 @@ class LiveTrackingController extends GetxController {
     });
   }
 
-  // 📡 SEND MY LIVE LOCATION
-  void _startSendingMyLocation() async {
+  // 📡 SEND MECHANIC LOCATION ONLY
+  void _startSendingMyLocation() {
     locationSub = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.high,
@@ -72,31 +82,28 @@ class LiveTrackingController extends GetxController {
     });
   }
 
-  // 🎥 ADJUST CAMERA
+  // 🎥 CAMERA FIT
   void _updateCamera() {
-    if (mapController == null) return;
-    if (driverMarker.value == null || mechanicMarker.value == null) return;
+    if (mapController == null ||
+        driverLatLng == null ||
+        mechanicLatLng == null) return;
 
     final bounds = LatLngBounds(
       southwest: LatLng(
-        driverMarker.value!.position.latitude <
-            mechanicMarker.value!.position.latitude
-            ? driverMarker.value!.position.latitude
-            : mechanicMarker.value!.position.latitude,
-        driverMarker.value!.position.longitude <
-            mechanicMarker.value!.position.longitude
-            ? driverMarker.value!.position.longitude
-            : mechanicMarker.value!.position.longitude,
+        driverLatLng!.latitude < mechanicLatLng!.latitude
+            ? driverLatLng!.latitude
+            : mechanicLatLng!.latitude,
+        driverLatLng!.longitude < mechanicLatLng!.longitude
+            ? driverLatLng!.longitude
+            : mechanicLatLng!.longitude,
       ),
       northeast: LatLng(
-        driverMarker.value!.position.latitude >
-            mechanicMarker.value!.position.latitude
-            ? driverMarker.value!.position.latitude
-            : mechanicMarker.value!.position.latitude,
-        driverMarker.value!.position.longitude >
-            mechanicMarker.value!.position.longitude
-            ? driverMarker.value!.position.longitude
-            : mechanicMarker.value!.position.longitude,
+        driverLatLng!.latitude > mechanicLatLng!.latitude
+            ? driverLatLng!.latitude
+            : mechanicLatLng!.latitude,
+        driverLatLng!.longitude > mechanicLatLng!.longitude
+            ? driverLatLng!.longitude
+            : mechanicLatLng!.longitude,
       ),
     );
 

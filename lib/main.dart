@@ -1,3 +1,4 @@
+import 'package:driveresq_app/utils/changeLanguage/app_translator.dart';
 import 'package:driveresq_app/utils/role_change/dev_role_container.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -36,4 +37,3 @@ class DriveResQApp extends StatelessWidget {
     );
   }
 }
-
