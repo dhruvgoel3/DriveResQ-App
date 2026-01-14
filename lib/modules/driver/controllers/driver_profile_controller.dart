@@ -8,16 +8,19 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../app/routes/app_pages.dart';
-
 class DriverProfileController extends GetxController {
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
 
   var isLoading = false.obs;
+  var isEditMode = false.obs;
+
   var userData = Rxn<Map<String, dynamic>>();
 
+  // Text controllers
   final nameController = TextEditingController();
-  var imageFile = Rx<File?>(null);
+  final vehicleTypeController = TextEditingController();
+  final plateNumberController = TextEditingController();
 
   @override
   void onInit() {
@@ -26,26 +29,27 @@ class DriverProfileController extends GetxController {
   }
 
   // 🔹 Fetch profile
-  fetchProfile() async {
+  Future<void> fetchProfile() async {
     final uid = _auth.currentUser!.uid;
 
     final doc = await _firestore.collection('users').doc(uid).get();
     if (doc.exists) {
-      userData.value = doc.data();
-      nameController.text = doc['name'] ?? '';
+      final data = doc.data()!;
+      userData.value = data;
+
+      nameController.text = data['name'] ?? '';
+      vehicleTypeController.text = data['vehicleType'] ?? '';
+      plateNumberController.text = data['plateNumber'] ?? '';
     }
   }
 
-  // 📷 Pick profile image
-  void pickImage() async {
-    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      imageFile.value = File(picked.path);
-    }
+  // ✏️ Toggle edit mode
+  void toggleEditMode() {
+    isEditMode.value = !isEditMode.value;
   }
 
-  // 💾 Save profile
-  Future<void> saveProfile() async {
+  // 💾 Save basic info
+  Future<void> saveBasicInfo() async {
     if (nameController.text.trim().isEmpty) {
       Get.snackbar("Error", "Name cannot be empty");
       return;
@@ -53,32 +57,25 @@ class DriverProfileController extends GetxController {
 
     isLoading.value = true;
 
-    String? photoUrl;
-
-    if (imageFile.value != null) {
-      final ref = FirebaseStorage.instance.ref(
-        'profiles/${_auth.currentUser!.uid}.jpg',
-      );
-
-      await ref.putFile(imageFile.value!);
-      photoUrl = await ref.getDownloadURL();
-    }
-
     await _firestore.collection('users').doc(_auth.currentUser!.uid).update({
       'name': nameController.text.trim(),
-      if (photoUrl != null) 'photoUrl': photoUrl,
+      'vehicleType': vehicleTypeController.text.trim(),
+      'plateNumber': plateNumberController.text.trim(),
     });
 
     await fetchProfile();
-    isLoading.value = false;
 
-    Get.back();
+    isLoading.value = false;
+    isEditMode.value = false;
+
     Get.snackbar("Success", "Profile updated");
   }
 
-  // 🚪 Logout
+  // 🚪 Logout (SAFE)
   Future<void> logout() async {
     await _auth.signOut();
+    Get.deleteAll(force: true);
     Get.offAllNamed(Routes.LOGIN);
   }
 }
+

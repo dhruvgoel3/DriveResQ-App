@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../controllers/driver_profile_controller.dart';
 
 class DriverProfileView extends StatelessWidget {
@@ -15,16 +16,24 @@ class DriverProfileView extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: const BackButton(),
-        title: const Text(
+        title: Text(
           "Driver Profile",
-          style: TextStyle(color: Colors.black),
+          style: GoogleFonts.poppins(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         centerTitle: true,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.edit, color: Colors.black),
-            onPressed: () => _openEditProfile(controller),
-          ),
+          Obx(() {
+            return IconButton(
+              icon: Icon(
+                controller.isEditMode.value ? Icons.close : Icons.edit,
+                color: Colors.black,
+              ),
+              onPressed: controller.toggleEditMode,
+            );
+          }),
         ],
       ),
       body: Obx(() {
@@ -39,15 +48,10 @@ class DriverProfileView extends StatelessWidget {
             children: [
               _profileHeader(data),
               const SizedBox(height: 16),
-              _profileCompletion(),
-              const SizedBox(height: 16),
-              _basicInfoCard(data),
+              _basicInfoCard(controller, data),
               const SizedBox(height: 16),
               _safetyTrustCard(),
-              const SizedBox(height: 16),
-              _settingsTile(Icons.notifications, "Notifications"),
-              _settingsTile(Icons.language, "Language", trailing: "English"),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               _logoutButton(controller),
             ],
           ),
@@ -74,13 +78,13 @@ class DriverProfileView extends StatelessWidget {
                   ? const Icon(Icons.person, size: 40)
                   : null,
             ),
-            Positioned(
+            const Positioned(
               bottom: 0,
               right: 0,
               child: CircleAvatar(
                 radius: 12,
-                backgroundColor: Colors.blue,
-                child: const Icon(Icons.check, size: 14, color: Colors.white),
+                backgroundColor: Color(0xFF6C63FF),
+                child: Icon(Icons.check, size: 14, color: Colors.white),
               ),
             ),
           ],
@@ -88,72 +92,118 @@ class DriverProfileView extends StatelessWidget {
         const SizedBox(height: 12),
         Text(
           data['name'] ?? "John Doe",
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
           data['phone'] ?? "",
-          style: TextStyle(color: Colors.grey.shade600),
+          style: GoogleFonts.poppins(
+            color: Colors.grey.shade600,
+            fontSize: 13,
+          ),
         ),
         const SizedBox(height: 4),
-        const Text(
+        Text(
           "✔ VERIFIED DRIVER",
-          style: TextStyle(
+          style: GoogleFonts.poppins(
             color: Colors.green,
             fontSize: 12,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],
     );
   }
 
-  // 📊 PROFILE COMPLETION
-  Widget _profileCompletion() {
+  // 📄 BASIC INFO (EDITABLE)
+  Widget _basicInfoCard(
+      DriverProfileController controller,
+      Map<String, dynamic> data,
+      ) {
     return _card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text("Profile Completion",
-                  style: TextStyle(fontWeight: FontWeight.w600)),
-              Text("80%",
-                  style: TextStyle(
-                      color: Colors.blue, fontWeight: FontWeight.bold)),
-            ],
-          ),
-          const SizedBox(height: 8),
-          LinearProgressIndicator(
-            value: 0.8,
-            backgroundColor: Colors.grey.shade200,
-            color: Colors.blue,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            "Almost there! Complete your profile to unlock all features.",
-            style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
-          ),
-        ],
-      ),
-    );
-  }
+      child: Obx(() {
+        final isEdit = controller.isEditMode.value;
 
-  // 📄 BASIC INFO
-  Widget _basicInfoCard(Map<String, dynamic> data) {
-    return _card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text("BASIC INFORMATION",
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 12),
-          _infoRow(Icons.person, "Full Name", data['name'] ?? "Not set"),
-          _infoRow(Icons.directions_car, "Vehicle Type", "Not added"),
-          _infoRow(Icons.confirmation_number, "Plate Number", "Not added"),
-        ],
-      ),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "BASIC INFORMATION",
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            isEdit
+                ? _editField(
+              label: "Full Name",
+              controller: controller.nameController,
+            )
+                : _infoRow(
+              Icons.person,
+              "Full Name",
+              data['name'] ?? "Not set",
+            ),
+
+            isEdit
+                ? _editField(
+              label: "Vehicle Type",
+              controller: controller.vehicleTypeController,
+            )
+                : _infoRow(
+              Icons.directions_car,
+              "Vehicle Type",
+              data['vehicleType'] ?? "Not added",
+            ),
+
+            isEdit
+                ? _editField(
+              label: "Plate Number",
+              controller: controller.plateNumberController,
+            )
+                : _infoRow(
+              Icons.confirmation_number,
+              "Plate Number",
+              data['plateNumber'] ?? "Not added",
+            ),
+
+            if (isEdit) ...[
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: controller.isLoading.value
+                      ? null
+                      : controller.saveBasicInfo,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF6C63FF),
+                    foregroundColor: Colors.white,
+                    elevation: 4,
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: controller.isLoading.value
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : Text(
+                    "Save",
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        );
+      }),
     );
   }
 
@@ -162,26 +212,18 @@ class DriverProfileView extends StatelessWidget {
     return _card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text("SAFETY & TRUST",
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-          SizedBox(height: 12),
-          _statusRow("Phone Verified", true),
-          _statusRow("Location Access", true),
+        children: [
+          Text(
+            "SAFETY & TRUST",
+            style: GoogleFonts.poppins(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 12),
+          const _StatusRow("Phone Verified", true),
+          const _StatusRow("Location Access", true),
         ],
-      ),
-    );
-  }
-
-  // ⚙ SETTINGS TILE
-  Widget _settingsTile(IconData icon, String title, {String? trailing}) {
-    return _card(
-      child: ListTile(
-        leading: Icon(icon),
-        title: Text(title),
-        trailing: trailing != null
-            ? Text(trailing, style: TextStyle(color: Colors.grey.shade600))
-            : const Icon(Icons.chevron_right),
       ),
     );
   }
@@ -191,19 +233,24 @@ class DriverProfileView extends StatelessWidget {
     return OutlinedButton.icon(
       onPressed: controller.logout,
       icon: const Icon(Icons.logout, color: Colors.red),
-      label: const Text(
+      label: Text(
         "Logout",
-        style: TextStyle(color: Colors.red),
+        style: GoogleFonts.poppins(
+          color: Colors.red,
+          fontWeight: FontWeight.w500,
+        ),
       ),
       style: OutlinedButton.styleFrom(
         minimumSize: const Size(double.infinity, 50),
         side: const BorderSide(color: Colors.red),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
       ),
     );
   }
 
-  // 🔁 REUSABLE CARD
+  // 🔁 CARD
   Widget _card({required Widget child}) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -221,7 +268,28 @@ class DriverProfileView extends StatelessWidget {
     );
   }
 
-  // 🔹 INFO ROW
+  // ✏️ EDIT FIELD
+  Widget _editField({
+    required String label,
+    required TextEditingController controller,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: TextField(
+        controller: controller,
+        style: GoogleFonts.poppins(),
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: GoogleFonts.poppins(),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ℹ️ INFO ROW
   Widget _infoRow(IconData icon, String title, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -229,19 +297,28 @@ class DriverProfileView extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 18,
-            backgroundColor: Colors.blue.withOpacity(0.1),
-            child: Icon(icon, size: 18, color: Colors.blue),
+            backgroundColor: const Color(0xFF6C63FF).withOpacity(0.1),
+            child: Icon(icon, size: 18, color: const Color(0xFF6C63FF)),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: const TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w600)),
-                Text(value,
-                    style: TextStyle(color: Colors.grey.shade600)),
+                Text(
+                  title,
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  value,
+                  style: GoogleFonts.poppins(
+                    color: Colors.grey.shade600,
+                    fontSize: 13,
+                  ),
+                ),
               ],
             ),
           ),
@@ -249,18 +326,13 @@ class DriverProfileView extends StatelessWidget {
       ),
     );
   }
-
-  static void _openEditProfile(DriverProfileController controller) {
-    // You already implemented edit profile logic earlier
-    // Just reuse that bottom sheet here
-  }
 }
 
-class _statusRow extends StatelessWidget {
+class _StatusRow extends StatelessWidget {
   final String title;
   final bool verified;
 
-  const _statusRow(this.title, this.verified);
+  const _StatusRow(this.title, this.verified);
 
   @override
   Widget build(BuildContext context) {
@@ -269,7 +341,10 @@ class _statusRow extends StatelessWidget {
         verified ? Icons.check_circle : Icons.cancel,
         color: verified ? Colors.green : Colors.red,
       ),
-      title: Text(title),
+      title: Text(
+        title,
+        style: GoogleFonts.poppins(),
+      ),
     );
   }
 }
