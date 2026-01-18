@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../controllers/driver_profile_controller.dart';
+import '../../controllers/driver_profile_controller.dart';
 
 class DriverProfileView extends StatelessWidget {
   const DriverProfileView({super.key});

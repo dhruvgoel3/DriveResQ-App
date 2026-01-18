@@ -7,7 +7,7 @@ import '../controllers/live_tracking_controller.dart';
 
 class LiveTrackingView extends StatelessWidget {
   final String requestId;
-  final String role;
+  final String role; // 'mechanic' only should open this
 
   const LiveTrackingView({
     super.key,
@@ -26,8 +26,8 @@ class LiveTrackingView extends StatelessWidget {
           children: [
             GoogleMap(
               initialCameraPosition: const CameraPosition(
-                target: LatLng(0, 0),
-                zoom: 2,
+                target: LatLng(20.5937, 78.9629),
+                zoom: 5,
               ),
               markers: {
                 if (controller.driverMarker.value != null)
@@ -37,16 +37,14 @@ class LiveTrackingView extends StatelessWidget {
               },
               onMapCreated: (map) {
                 controller.mapController = map;
-                controller.forceInitialCamera();
               },
-              onCameraMoveStarted: () {
-                controller.userInteracted = true; // 🔥 STOP AUTO FOLLOW
-              },
-              myLocationEnabled: true,
-              myLocationButtonEnabled: true,
+
+              // 🔒 DRIVER IS VIEW-ONLY
+              myLocationEnabled: role == 'mechanic',
+              myLocationButtonEnabled: role == 'mechanic',
             ),
 
-            // 🚀 NAVIGATION BUTTON
+            // 🚀 NAVIGATION BUTTON (MECHANIC ONLY)
             if (role == 'mechanic')
               Positioned(
                 bottom: 20,

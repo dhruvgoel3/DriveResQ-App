@@ -1,8 +1,8 @@
-import 'package:driveresq_app/modules/driver/views/driver_profile_view.dart';
+import 'package:driveresq_app/modules/driver/views/ProfilePage/driver_profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/driver_controller.dart';
-import 'driver_home_view.dart';
+import 'HomePage/driver_home_view.dart';
 
 class DriverDashboardView extends StatelessWidget {
   const DriverDashboardView({super.key});

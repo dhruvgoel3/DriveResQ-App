@@ -81,25 +81,19 @@ class CreateRequestController extends GetxController {
 
     // 🧠 SAVE REQUEST (WITH COORDINATES)
     await _firestore.collection('requests').add({
-      'driverId': _auth.currentUser!.uid,
+      'driverId': _auth.currentUser!.uid, // 🔥 REQUIRED
       'driverPhone': _auth.currentUser!.phoneNumber,
-
-      // 📍 LOCATION
-      'locationName': locationName.value,
-      'driverLat': driverLat,
-      'driverLng': driverLng,
-
-      // 📌 DETAILS
-      'landmark': landmarkController.text.trim(),
-      'vehicleType': selectedVehicle.value,
+      'status': 'open', // 🔥 REQUIRED
       'problem': problemController.text.trim(),
+      'vehicleType': selectedVehicle.value,
+      'locationName': locationName.value,
+      'landmark': landmarkController.text.trim(),
       'description': descriptionController.text.trim(),
-      'imageUrl': imageUrl,
-
-      // 🔄 STATUS
-      'status': 'open',
+      'driverLat': driverLat, // 🔥 REQUIRED FOR TRACKING
+      'driverLng': driverLng,
       'createdAt': FieldValue.serverTimestamp(),
     });
+
 
     isLoading.value = false;
     Get.back();

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controller/mechanic_controller.dart';
-import 'mechanic_requests_view.dart';
-import 'mechanic_active_job_view.dart';
+import 'HomePage/home_view.dart';
 
 class MechanicDashboardView extends StatelessWidget {
   const MechanicDashboardView({super.key});
@@ -16,7 +15,7 @@ class MechanicDashboardView extends StatelessWidget {
         body: IndexedStack(
           index: controller.currentIndex.value,
           children: const [
-            MechanicRequestsView(), // 🔥 Combined Home
+            HomeView(), // 🔥 Combined Home
             Center(child: Text("Profile (Later)")),
           ],
         ),

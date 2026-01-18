@@ -4,8 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
-import '../../modules/tracking/views/live_tracking_view.dart';
-import '../helpers/call_helper.dart';
+import '../../../tracking/views/live_tracking_view.dart';
+import '../../../../utils/helpers/call_helper.dart';
 
 class ActiveRequestCard extends StatelessWidget {
   final Map<String, dynamic> request;
@@ -18,7 +18,8 @@ class ActiveRequestCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final status = request['status'];
 
-    if (status != 'accepted') return const SizedBox();
+
+
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
@@ -90,7 +91,7 @@ class ActiveRequestCard extends StatelessWidget {
             height: 48,
             child: ElevatedButton.icon(
               onPressed: () {
-                CallHelper.callNumber(request['mechanicPhone'] ?? '');
+                CallHelper.callNumber(request['mechanicPhone'] ?? 'driver');
               },
               icon: const Icon(Icons.call, size: 18),
               label: const Text("Call Mechanic"),

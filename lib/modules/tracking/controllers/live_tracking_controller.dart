@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -23,19 +24,18 @@ class LiveTrackingController extends GetxController {
   LatLng? driverLatLng;
   LatLng? mechanicLatLng;
 
-  bool userInteracted = false; // 🔥 VERY IMPORTANT
-
   @override
   void onInit() {
     super.onInit();
     _listenToRequest();
 
+    // 🔒 ONLY MECHANIC SENDS LIVE LOCATION
     if (role == 'mechanic') {
       _startSendingMyLocation();
     }
   }
 
-  // 🔥 LISTEN TO FIRESTORE
+  // 🔥 LISTEN TO FIRESTORE (READ-ONLY FOR DRIVER)
   void _listenToRequest() {
     requestSub = _firestore
         .collection('requests')
@@ -61,14 +61,13 @@ class LiveTrackingController extends GetxController {
           position: mechanicLatLng!,
           infoWindow: const InfoWindow(title: "Mechanic"),
         );
-
-        // 🔥 FOLLOW MECHANIC (MAIN FIX)
-        _moveCameraToMechanic();
       }
+
+      _updateCamera();
     });
   }
 
-  // 📡 SEND MECHANIC LOCATION
+  // 📡 SEND MECHANIC LOCATION ONLY
   void _startSendingMyLocation() {
     locationSub = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
@@ -83,43 +82,34 @@ class LiveTrackingController extends GetxController {
     });
   }
 
-  // 🎯 CAMERA FOLLOW MECHANIC
-  void _moveCameraToMechanic() {
+  // 🎥 CAMERA FIT
+  void _updateCamera() {
     if (mapController == null ||
-        mechanicLatLng == null ||
-        userInteracted) return;
+        driverLatLng == null ||
+        mechanicLatLng == null) return;
 
-    mapController!.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: mechanicLatLng!,
-          zoom: 16, // 🔥 STREET LEVEL
-        ),
+    final bounds = LatLngBounds(
+      southwest: LatLng(
+        driverLatLng!.latitude < mechanicLatLng!.latitude
+            ? driverLatLng!.latitude
+            : mechanicLatLng!.latitude,
+        driverLatLng!.longitude < mechanicLatLng!.longitude
+            ? driverLatLng!.longitude
+            : mechanicLatLng!.longitude,
+      ),
+      northeast: LatLng(
+        driverLatLng!.latitude > mechanicLatLng!.latitude
+            ? driverLatLng!.latitude
+            : mechanicLatLng!.latitude,
+        driverLatLng!.longitude > mechanicLatLng!.longitude
+            ? driverLatLng!.longitude
+            : mechanicLatLng!.longitude,
       ),
     );
-  }
 
-  // 🔥 FORCE CAMERA AFTER MAP LOAD
-  void forceInitialCamera() {
-    if (mechanicLatLng != null) {
-      mapController?.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: mechanicLatLng!,
-            zoom: 16,
-          ),
-        ),
-      );
-    } else if (driverLatLng != null) {
-      mapController?.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: driverLatLng!,
-            zoom: 15,
-          ),
-        ),
-      );
-    }
+    mapController!.animateCamera(
+      CameraUpdate.newLatLngBounds(bounds, 80),
+    );
   }
 
   @override
