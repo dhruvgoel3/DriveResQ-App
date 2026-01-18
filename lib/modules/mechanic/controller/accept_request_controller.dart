@@ -9,10 +9,17 @@ class AcceptRequestController extends GetxController {
   var isAccepting = false.obs;
 
   Future<void> acceptRequest(String requestId) async {
+    final mechanic = _auth.currentUser;
+
+    // 🔐 SAFETY CHECK
+    if (mechanic == null) {
+      Get.snackbar("Error", "User not authenticated");
+      return;
+    }
+
     isAccepting.value = true;
 
-    final requestRef =
-    _firestore.collection('requests').doc(requestId);
+    final requestRef = _firestore.collection('requests').doc(requestId);
 
     try {
       await _firestore.runTransaction((transaction) async {
@@ -22,21 +29,23 @@ class AcceptRequestController extends GetxController {
           throw Exception("Request not found");
         }
 
-        if (snapshot['status'] != 'open') {
+        final data = snapshot.data() as Map<String, dynamic>;
+
+        if (data['status'] != 'open') {
           throw Exception("Request already accepted");
         }
 
+        // ✅ UPDATE REQUEST WITH MECHANIC DETAILS
         transaction.update(requestRef, {
           'status': 'accepted',
-          'mechanicId': _auth.currentUser!.uid,
-          'mechanicPhone': _auth.currentUser!.phoneNumber ?? '',
+          'mechanicId': mechanic.uid,
+          'mechanicPhone': mechanic.phoneNumber ?? '',
           'acceptedAt': FieldValue.serverTimestamp(),
         });
-
       });
 
-      Get.back(); // close detail screen
-      Get.snackbar("Success", "Request accepted");
+      Get.back(); // close request details screen
+      Get.snackbar("Success", "Request accepted successfully");
 
     } catch (e) {
       Get.snackbar("Failed", e.toString());

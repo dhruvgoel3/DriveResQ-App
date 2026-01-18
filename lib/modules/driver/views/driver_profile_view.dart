@@ -68,13 +68,15 @@ class DriverProfileView extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 44,
-              backgroundImage: data['photoUrl'] != null &&
-                  data['photoUrl'].toString().isNotEmpty
+              backgroundImage:
+                  data['photoUrl'] != null &&
+                      data['photoUrl'].toString().isNotEmpty
                   ? NetworkImage(data['photoUrl'])
                   : null,
               backgroundColor: Colors.grey.shade200,
-              child: data['photoUrl'] == null ||
-                  data['photoUrl'].toString().isEmpty
+              child:
+                  data['photoUrl'] == null ||
+                      data['photoUrl'].toString().isEmpty
                   ? const Icon(Icons.person, size: 40)
                   : null,
             ),
@@ -92,18 +94,12 @@ class DriverProfileView extends StatelessWidget {
         const SizedBox(height: 12),
         Text(
           data['name'] ?? "John Doe",
-          style: GoogleFonts.poppins(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
+          style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 4),
         Text(
           data['phone'] ?? "",
-          style: GoogleFonts.poppins(
-            color: Colors.grey.shade600,
-            fontSize: 13,
-          ),
+          style: GoogleFonts.poppins(color: Colors.grey.shade600, fontSize: 13),
         ),
         const SizedBox(height: 4),
         Text(
@@ -120,9 +116,9 @@ class DriverProfileView extends StatelessWidget {
 
   // 📄 BASIC INFO (EDITABLE)
   Widget _basicInfoCard(
-      DriverProfileController controller,
-      Map<String, dynamic> data,
-      ) {
+    DriverProfileController controller,
+    Map<String, dynamic> data,
+  ) {
     return _card(
       child: Obx(() {
         final isEdit = controller.isEditMode.value;
@@ -141,36 +137,36 @@ class DriverProfileView extends StatelessWidget {
 
             isEdit
                 ? _editField(
-              label: "Full Name",
-              controller: controller.nameController,
-            )
+                    label: "Full Name",
+                    controller: controller.nameController,
+                  )
                 : _infoRow(
-              Icons.person,
-              "Full Name",
-              data['name'] ?? "Not set",
-            ),
+                    Icons.person,
+                    "Full Name",
+                    data['name'] ?? "Not set",
+                  ),
 
             isEdit
                 ? _editField(
-              label: "Vehicle Type",
-              controller: controller.vehicleTypeController,
-            )
+                    label: "Vehicle Type",
+                    controller: controller.vehicleTypeController,
+                  )
                 : _infoRow(
-              Icons.directions_car,
-              "Vehicle Type",
-              data['vehicleType'] ?? "Not added",
-            ),
+                    Icons.directions_car,
+                    "Vehicle Type",
+                    data['vehicleType'] ?? "Not added",
+                  ),
 
             isEdit
                 ? _editField(
-              label: "Plate Number",
-              controller: controller.plateNumberController,
-            )
+                    label: "Plate Number",
+                    controller: controller.plateNumberController,
+                  )
                 : _infoRow(
-              Icons.confirmation_number,
-              "Plate Number",
-              data['plateNumber'] ?? "Not added",
-            ),
+                    Icons.confirmation_number,
+                    "Plate Number",
+                    data['plateNumber'] ?? "Not added",
+                  ),
 
             if (isEdit) ...[
               const SizedBox(height: 16),
@@ -192,12 +188,12 @@ class DriverProfileView extends StatelessWidget {
                   child: controller.isLoading.value
                       ? const CircularProgressIndicator(color: Colors.white)
                       : Text(
-                    "Save",
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15,
-                    ),
-                  ),
+                          "Save",
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
+                          ),
+                        ),
                 ),
               ),
             ],
@@ -243,9 +239,7 @@ class DriverProfileView extends StatelessWidget {
       style: OutlinedButton.styleFrom(
         minimumSize: const Size(double.infinity, 50),
         side: const BorderSide(color: Colors.red),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
     );
   }
@@ -258,10 +252,7 @@ class DriverProfileView extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-          ),
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
         ],
       ),
       child: child,
@@ -281,9 +272,7 @@ class DriverProfileView extends StatelessWidget {
         decoration: InputDecoration(
           labelText: label,
           labelStyle: GoogleFonts.poppins(),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         ),
       ),
     );
@@ -341,11 +330,9 @@ class _StatusRow extends StatelessWidget {
         verified ? Icons.check_circle : Icons.cancel,
         color: verified ? Colors.green : Colors.red,
       ),
-      title: Text(
-        title,
-        style: GoogleFonts.poppins(),
-      ),
+      title: Text(title, style: GoogleFonts.poppins()),
     );
   }
 }
-/ driver profile view
+
+// driver profile view
