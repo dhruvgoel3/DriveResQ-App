@@ -1,7 +1,7 @@
 import 'package:driveresq_app/modules/driver/bindings/driver_binding.dart';
 import 'package:driveresq_app/modules/driver/views/driver_dashboard_view.dart';
 import 'package:driveresq_app/modules/mechanic/bindings/mechanic_binding.dart';
-import 'package:driveresq_app/modules/mechanic/views/mechanic_dashboard_view.dart';
+import 'package:driveresq_app/modules/mechanic/views/HomePage/mechanic_dashboard_view.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
 import '../../modules/auth/bindings/auth_bindings.dart';

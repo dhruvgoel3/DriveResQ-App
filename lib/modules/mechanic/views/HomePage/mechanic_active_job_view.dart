@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../controller/mechanic_active_job_controller.dart';
+import '../../controller/mechanic_active_job_controller.dart';
+
 
 class MechanicActiveJobView extends StatelessWidget {
   const MechanicActiveJobView({super.key});

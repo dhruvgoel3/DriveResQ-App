@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controller/mechanic_controller.dart';
-import 'HomePage/home_view.dart';
+import '../../controller/mechanic_controller.dart';
+import 'current_request_view.dart';
 
 class MechanicDashboardView extends StatelessWidget {
   const MechanicDashboardView({super.key});

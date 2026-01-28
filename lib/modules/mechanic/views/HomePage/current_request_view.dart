@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../widgets/mechanic_active_job_card.dart';
-import '../../controller/home_view_controller.dart';
+import '../../controller/current_request_controller.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -23,13 +23,41 @@ class HomeView extends StatelessWidget {
 
           Expanded(
             child: Obx(() {
+              // 🔹 CURRENT JOB TAB
               if (controller.selectedTab.value == 0) {
-                return controller.hasActiveJob.value
-                    ? MechanicActiveJobCard(job: controller.activeJob)
-                    : const Center(child: Text("No active job"));
-              } else {
-                return const Center(child: Text("All Requests List"));
+                if (controller.hasActiveJob.value &&
+                    controller.activeJob.value != null) {
+                  return MechanicActiveJobCard(
+                    job: controller.activeJob.value!,
+                  );
+                } else {
+                  return const Center(
+                    child: Text(
+                      "No active job",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  );
+                }
               }
+
+              // 🔹 ALL REQUESTS TAB
+              if (controller.openRequests.isEmpty) {
+                return const Center(
+                  child: Text(
+                    "No nearby requests",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                );
+              }
+
+              return ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: controller.openRequests.length,
+                itemBuilder: (context, index) {
+                  final request = controller.openRequests[index];
+                  return MechanicActiveJobCard(job: request);
+                },
+              );
             }),
           ),
         ],
@@ -37,6 +65,7 @@ class HomeView extends StatelessWidget {
     );
   }
 
+  // 🔹 TAB BAR
   Widget _tabBar(MechanicDashboardController controller) {
     return Obx(() {
       return Row(

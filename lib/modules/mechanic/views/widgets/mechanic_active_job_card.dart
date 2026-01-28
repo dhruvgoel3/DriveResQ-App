@@ -17,10 +17,7 @@ class MechanicActiveJobCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 20,
-          ),
+          BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 20),
         ],
       ),
       child: Column(
@@ -36,9 +33,7 @@ class MechanicActiveJobCard extends StatelessWidget {
               color: Colors.blue.shade100,
               borderRadius: BorderRadius.circular(14),
             ),
-            child: const Center(
-              child: Text("MAP PREVIEW"),
-            ),
+            child: const Center(child: Text("MAP PREVIEW")),
           ),
 
           const SizedBox(height: 12),
@@ -134,9 +129,7 @@ class MechanicActiveJobCard extends StatelessWidget {
           const SizedBox(width: 10),
           Text(
             problem,
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w600,
-            ),
+            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
           ),
         ],
       ),
