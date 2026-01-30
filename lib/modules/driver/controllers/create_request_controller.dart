@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../services/location_service.dart';
+import '../services/mechanic_location_service.dart';
 
 class CreateRequestController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -18,7 +19,7 @@ class CreateRequestController extends GetxController {
   var selectedVehicle = ''.obs;
   var imageFile = Rx<File?>(null);
 
-  // 🔥 NEW: store coordinates
+  // 🔥 Store coordinates
   double? driverLat;
   double? driverLng;
 
@@ -36,7 +37,7 @@ class CreateRequestController extends GetxController {
   void fetchLocation() async {
     try {
       locationName.value = "Fetching location...";
-      final locationData = await LocationService.getLocationData();
+      final locationData = await LocationService.getLocationData(); // ✅ FIXED
 
       locationName.value = locationData['locationName'];
       driverLat = locationData['lat'];
@@ -48,8 +49,7 @@ class CreateRequestController extends GetxController {
 
   // 📷 Pick image
   void pickImage() async {
-    final picked =
-    await ImagePicker().pickImage(source: ImageSource.camera);
+    final picked = await ImagePicker().pickImage(source: ImageSource.camera);
     if (picked != null) {
       imageFile.value = File(picked.path);
     }
@@ -72,8 +72,9 @@ class CreateRequestController extends GetxController {
 
     // 📤 Upload image if exists
     if (imageFile.value != null) {
-      final ref = FirebaseStorage.instance
-          .ref('requests/${DateTime.now().millisecondsSinceEpoch}.jpg');
+      final ref = FirebaseStorage.instance.ref(
+        'requests/${DateTime.now().millisecondsSinceEpoch}.jpg',
+      );
 
       await ref.putFile(imageFile.value!);
       imageUrl = await ref.getDownloadURL();
@@ -81,22 +82,30 @@ class CreateRequestController extends GetxController {
 
     // 🧠 SAVE REQUEST (WITH COORDINATES)
     await _firestore.collection('requests').add({
-      'driverId': _auth.currentUser!.uid, // 🔥 REQUIRED
+      'driverId': _auth.currentUser!.uid,
       'driverPhone': _auth.currentUser!.phoneNumber,
-      'status': 'open', // 🔥 REQUIRED
+      'status': 'open',
       'problem': problemController.text.trim(),
       'vehicleType': selectedVehicle.value,
       'locationName': locationName.value,
       'landmark': landmarkController.text.trim(),
       'description': descriptionController.text.trim(),
-      'driverLat': driverLat, // 🔥 REQUIRED FOR TRACKING
+      'driverLat': driverLat,
       'driverLng': driverLng,
       'createdAt': FieldValue.serverTimestamp(),
+      'imageUrl': imageUrl, // ✅ ADDED - Store image URL
     });
-
 
     isLoading.value = false;
     Get.back();
     Get.snackbar("Success", "Request created successfully");
+  }
+
+  @override
+  void onClose() {
+    landmarkController.dispose();
+    problemController.dispose();
+    descriptionController.dispose();
+    super.onClose();
   }
 }

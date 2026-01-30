@@ -4,6 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../driver/services/mechanic_location_service.dart';
+
+
 class MechanicController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -39,6 +42,7 @@ class MechanicController extends GetxController {
   void onClose() {
     _requestsSubscription?.cancel();
     _activeJobSubscription?.cancel();
+    MechanicLocationService.stopTracking(); // Stop location tracking
     super.onClose();
   }
 
@@ -99,9 +103,15 @@ class MechanicController extends GetxController {
           ...snapshot.docs.first.data(),
           'id': snapshot.docs.first.id,
         };
+
+        // 🚀 START LOCATION TRACKING when job is active
+        MechanicLocationService.startTracking();
       } else {
         hasActiveJob.value = false;
         activeJob.value = null;
+
+        // 🛑 STOP LOCATION TRACKING when no active job
+        MechanicLocationService.stopTracking();
       }
     });
   }
@@ -169,6 +179,8 @@ class MechanicController extends GetxController {
 
       Get.snackbar("Success", "Request accepted!");
       changeInnerTab(0); // Switch to "Current Job" tab
+
+      // Location tracking will auto-start via _listenToActiveJob
     } catch (e) {
       Get.snackbar("Error", "Failed to accept request: $e");
     }
@@ -187,6 +199,8 @@ class MechanicController extends GetxController {
       });
 
       Get.snackbar("Success", "Job cancelled");
+
+      // Location tracking will auto-stop via _listenToActiveJob
     } catch (e) {
       Get.snackbar("Error", "Failed to cancel job: $e");
     }
@@ -203,6 +217,8 @@ class MechanicController extends GetxController {
       });
 
       Get.snackbar("Success", "Job completed!");
+
+      // Location tracking will auto-stop via _listenToActiveJob
     } catch (e) {
       Get.snackbar("Error", "Failed to complete job: $e");
     }
