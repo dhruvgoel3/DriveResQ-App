@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:get/get.dart';
+import '../../controller/mechanic_controller.dart';
 
 class MechanicActiveJobCard extends StatelessWidget {
   final Map<String, dynamic> job;
-  final bool isActive; // true for accepted jobs, false for open requests
+  final bool isActive;
   final VoidCallback? onAccept;
   final VoidCallback? onCancel;
 
@@ -53,17 +54,17 @@ class MechanicActiveJobCard extends StatelessWidget {
           const SizedBox(height: 8),
 
           // 🏠 Landmark
-          if (job['landmark'] != null && job['landmark'].isNotEmpty)
+          if (job['landmark'] != null && job['landmark'].toString().isNotEmpty)
             _infoRow(Icons.place, "Landmark", job['landmark']),
 
-          if (job['landmark'] != null && job['landmark'].isNotEmpty)
+          if (job['landmark'] != null && job['landmark'].toString().isNotEmpty)
             const SizedBox(height: 8),
 
           // 📝 Description
-          if (job['description'] != null && job['description'].isNotEmpty)
+          if (job['description'] != null && job['description'].toString().isNotEmpty)
             _descriptionCard(job['description']),
 
-          if (job['description'] != null && job['description'].isNotEmpty)
+          if (job['description'] != null && job['description'].toString().isNotEmpty)
             const SizedBox(height: 12),
 
           // ⚠️ Problem
@@ -376,8 +377,7 @@ class MechanicActiveJobCard extends StatelessWidget {
       confirmTextColor: Colors.white,
       onConfirm: () {
         Get.back();
-        // This will be handled by the controller
-        Get.find<dynamic>().completeJob();
+        Get.find<MechanicController>().completeJob();
       },
     );
   }

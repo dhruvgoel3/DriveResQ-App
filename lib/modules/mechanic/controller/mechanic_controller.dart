@@ -158,15 +158,17 @@ class MechanicController extends GetxController {
   Future<void> acceptRequest(String requestId) async {
     try {
       final uid = _auth.currentUser!.uid;
+      final mechanicPhone = _auth.currentUser!.phoneNumber;
 
       await _firestore.collection('requests').doc(requestId).update({
         'status': 'accepted',
         'mechanicId': uid,
+        'mechanicPhone': mechanicPhone,
         'acceptedAt': FieldValue.serverTimestamp(),
       });
 
       Get.snackbar("Success", "Request accepted!");
-      changeTab(0); // Switch to "Current Job" tab
+      changeInnerTab(0); // Switch to "Current Job" tab
     } catch (e) {
       Get.snackbar("Error", "Failed to accept request: $e");
     }
@@ -180,6 +182,7 @@ class MechanicController extends GetxController {
       await _firestore.collection('requests').doc(activeJob.value!['id']).update({
         'status': 'open',
         'mechanicId': FieldValue.delete(),
+        'mechanicPhone': FieldValue.delete(),
         'acceptedAt': FieldValue.delete(),
       });
 
