@@ -1,5 +1,4 @@
 import 'package:driveresq_app/modules/driver/views/widgets/driver_empty_state.dart';
-import 'package:driveresq_app/modules/driver/views/widgets/driver_map_widget.dart';
 import 'package:driveresq_app/modules/driver/views/widgets/driver_safety_tips.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

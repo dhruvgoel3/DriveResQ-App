@@ -32,10 +32,7 @@ class MechanicEmptyState extends StatelessWidget {
             const Text(
               "No active requests nearby",
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
 
             const SizedBox(height: 10),
@@ -55,10 +52,7 @@ class MechanicEmptyState extends StatelessWidget {
 
             // 🟢 ONLINE STATUS CHIP
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 6,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
               decoration: BoxDecoration(
                 color: Colors.green.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(20),
@@ -66,11 +60,7 @@ class MechanicEmptyState extends StatelessWidget {
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.circle,
-                    size: 8,
-                    color: Colors.green,
-                  ),
+                  Icon(Icons.circle, size: 8, color: Colors.green),
                   SizedBox(width: 6),
                   Text(
                     "ONLINE",

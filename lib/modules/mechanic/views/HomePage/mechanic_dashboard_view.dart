@@ -15,7 +15,7 @@ class MechanicDashboardView extends StatelessWidget {
         body: IndexedStack(
           index: controller.currentIndex.value,
           children: const [
-            HomeView(), // 🔥 Combined Home
+            CurrentRequestView(), // 🔥 Combined Home
             Center(child: Text("Profile (Later)")),
           ],
         ),
