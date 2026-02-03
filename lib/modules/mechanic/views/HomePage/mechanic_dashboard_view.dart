@@ -1,3 +1,4 @@
+import 'package:driveresq_app/modules/mechanic/views/ProfilePage/mechanic_profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controller/mechanic_controller.dart';
@@ -15,7 +16,8 @@ class MechanicDashboardView extends StatelessWidget {
         body: IndexedStack(
           index: controller.currentIndex.value,
           children: const [
-            CurrentRequestView(), // 🔥 Combined Home
+            CurrentRequestView(),
+            MechanicProfileView(),// 🔥 Combined Home
             Center(child: Text("Profile (Later)")),
           ],
         ),
