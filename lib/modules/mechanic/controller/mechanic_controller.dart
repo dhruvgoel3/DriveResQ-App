@@ -1,11 +1,12 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../driver/services/mechanic_location_service.dart';
-
 
 class MechanicController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -14,7 +15,7 @@ class MechanicController extends GetxController {
   // Bottom navigation management
   var currentIndex = 0.obs;
 
-  // Tab management (for Current Job / All Requests tabs)
+  // Tab management (0 = All Requests, 1 = Accepted Requests)
   var selectedTab = 0.obs;
 
   // Location tracking
@@ -48,6 +49,12 @@ class MechanicController extends GetxController {
 
   // 📍 Initialize mechanic location and listeners
   Future<void> _initializeMechanic() async {
+    // Check if user is authenticated
+    if (_auth.currentUser == null) {
+      Get.snackbar("Error", "User not authenticated. Please login again.");
+      return;
+    }
+
     await _getMechanicLocation();
     _listenToActiveJob();
     _listenToNearbyRequests();
@@ -71,6 +78,14 @@ class MechanicController extends GetxController {
         }
       }
 
+      if (permission == LocationPermission.deniedForever) {
+        Get.snackbar(
+          "Error",
+          "Location permission denied permanently. Please enable in settings.",
+        );
+        return;
+      }
+
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
@@ -82,12 +97,14 @@ class MechanicController extends GetxController {
       print("✅ Mechanic Location: ${mechanicLat.value}, ${mechanicLng.value}");
     } catch (e) {
       print("❌ Location Error: $e");
-      Get.snackbar("Error", "Could not fetch location");
+      Get.snackbar("Error", "Could not fetch location: $e");
     }
   }
 
   // 🎧 Listen to mechanic's active job
   void _listenToActiveJob() {
+    if (_auth.currentUser == null) return;
+
     final uid = _auth.currentUser!.uid;
 
     _activeJobSubscription = _firestore
@@ -106,21 +123,29 @@ class MechanicController extends GetxController {
 
         // 🚀 START LOCATION TRACKING when job is active
         MechanicLocationService.startTracking();
+
+        print("✅ Active job found: ${activeJob.value!['id']}");
       } else {
         hasActiveJob.value = false;
         activeJob.value = null;
 
         // 🛑 STOP LOCATION TRACKING when no active job
         MechanicLocationService.stopTracking();
+
+        print("ℹ️ No active job");
       }
+    }, onError: (error) {
+      print("❌ Error listening to active job: $error");
+      Get.snackbar("Error", "Failed to load active job");
     });
   }
 
-  // 🎧 Listen to nearby open requests (Real-time)
+  // 🎧 Listen to nearby OPEN requests only (Real-time)
   void _listenToNearbyRequests() {
+    // FIX: Only show 'open' requests (not accepted ones)
     _requestsSubscription = _firestore
         .collection('requests')
-        .where('status', isEqualTo: 'open')
+        .where('status', isEqualTo: 'open')  // ✅ FIXED: Only open requests
         .snapshots()
         .listen((snapshot) {
       if (!isLocationLoaded.value) {
@@ -135,41 +160,106 @@ class MechanicController extends GetxController {
         final driverLat = data['driverLat'];
         final driverLng = data['driverLng'];
 
-        if (driverLat == null || driverLng == null) continue;
+        // Validate location data
+        if (driverLat == null || driverLng == null) {
+          print("⚠️ Request ${doc.id} has missing location data");
+          continue;
+        }
 
-        // Calculate distance
-        double distance = Geolocator.distanceBetween(
-          mechanicLat.value,
-          mechanicLng.value,
-          driverLat,
-          driverLng,
-        ) / 1000; // Convert to km
+        try {
+          // Calculate distance
+          double distance = Geolocator.distanceBetween(
+            mechanicLat.value,
+            mechanicLng.value,
+            driverLat,
+            driverLng,
+          ) / 1000; // Convert to km
 
-        // Only show requests within 20 km
-        if (distance <= 20) {
-          nearbyList.add({
-            ...data,
-            'id': doc.id,
-            'distance': distance.toStringAsFixed(1),
-          });
+          // Only show requests within 20 km
+          if (distance <= 20) {
+            nearbyList.add({
+              ...data,
+              'id': doc.id,
+              'distance': distance.toStringAsFixed(1),
+            });
+          }
+        } catch (e) {
+          print("❌ Error calculating distance for request ${doc.id}: $e");
+          continue;
         }
       }
 
       // Sort by distance (closest first)
-      nearbyList.sort((a, b) =>
-          double.parse(a['distance']).compareTo(double.parse(b['distance']))
-      );
+      nearbyList.sort((a, b) {
+        try {
+          return double.parse(a['distance']).compareTo(double.parse(b['distance']));
+        } catch (e) {
+          return 0;
+        }
+      });
 
       openRequests.value = nearbyList;
+      print("✅ Found ${nearbyList.length} nearby open requests");
+    }, onError: (error) {
+      print("❌ Error listening to requests: $error");
+      Get.snackbar("Error", "Failed to load requests");
     });
   }
 
-  // ✅ Accept a request
+  // ✅ Accept a request with validation
   Future<void> acceptRequest(String requestId) async {
     try {
+      // Validation 1: Check if user is authenticated
+      if (_auth.currentUser == null) {
+        Get.snackbar("Error", "User not authenticated");
+        return;
+      }
+
+      // Validation 2: Check if mechanic already has an active job
+      if (hasActiveJob.value) {
+        Get.snackbar(
+          "Already Busy",
+          "You already have an active request. Complete or cancel it first.",
+          duration: const Duration(seconds: 3),
+        );
+        return;
+      }
+
       final uid = _auth.currentUser!.uid;
       final mechanicPhone = _auth.currentUser!.phoneNumber;
 
+      if (mechanicPhone == null) {
+        Get.snackbar("Error", "Phone number not available");
+        return;
+      }
+
+      // Validation 3: Check if request still exists and is open (Race condition prevention)
+      final requestDoc = await _firestore.collection('requests').doc(requestId).get();
+
+      if (!requestDoc.exists) {
+        Get.snackbar("Error", "Request no longer exists");
+        return;
+      }
+
+      final requestData = requestDoc.data();
+      if (requestData == null || requestData['status'] != 'open') {
+        Get.snackbar(
+          "Request Unavailable",
+          "This request has already been accepted by another mechanic",
+          duration: const Duration(seconds: 3),
+        );
+        return;
+      }
+
+      // Validation 4: Validate driver information
+      if (requestData['driverLat'] == null ||
+          requestData['driverLng'] == null ||
+          requestData['driverPhone'] == null) {
+        Get.snackbar("Error", "Request has incomplete information");
+        return;
+      }
+
+      // ✅ All validations passed - Accept the request
       await _firestore.collection('requests').doc(requestId).update({
         'status': 'accepted',
         'mechanicId': uid,
@@ -177,18 +267,38 @@ class MechanicController extends GetxController {
         'acceptedAt': FieldValue.serverTimestamp(),
       });
 
-      Get.snackbar("Success", "Request accepted!");
-      changeInnerTab(0); // Switch to "Current Job" tab
+      Get.snackbar(
+        "Success",
+        "Request accepted successfully!",
+        backgroundColor: const Color(0xFF4CAF50).withOpacity(0.9),
+        colorText: Colors.white,
+      );
+
+      changeInnerTab(1); // Switch to "Accepted Requests" tab
 
       // Location tracking will auto-start via _listenToActiveJob
+      print("✅ Request $requestId accepted successfully");
+
     } catch (e) {
-      Get.snackbar("Error", "Failed to accept request: $e");
+      print("❌ Error accepting request: $e");
+
+      // More specific error messages
+      if (e.toString().contains('permission')) {
+        Get.snackbar("Error", "You don't have permission to accept requests");
+      } else if (e.toString().contains('network')) {
+        Get.snackbar("Error", "Network error. Please check your connection");
+      } else {
+        Get.snackbar("Error", "Failed to accept request. Please try again");
+      }
     }
   }
 
-  // ❌ Cancel active job
+  // ❌ Cancel active job with confirmation
   Future<void> cancelActiveJob() async {
-    if (activeJob.value == null) return;
+    if (activeJob.value == null) {
+      Get.snackbar("Error", "No active job to cancel");
+      return;
+    }
 
     try {
       await _firestore.collection('requests').doc(activeJob.value!['id']).update({
@@ -198,33 +308,55 @@ class MechanicController extends GetxController {
         'acceptedAt': FieldValue.delete(),
       });
 
-      Get.snackbar("Success", "Job cancelled");
+      Get.snackbar(
+        "Success",
+        "Job cancelled successfully",
+        backgroundColor: const Color(0xFFFF9800).withOpacity(0.9),
+        colorText: Colors.white,
+      );
+
+      print("✅ Job cancelled: ${activeJob.value!['id']}");
 
       // Location tracking will auto-stop via _listenToActiveJob
     } catch (e) {
+      print("❌ Error cancelling job: $e");
       Get.snackbar("Error", "Failed to cancel job: $e");
     }
   }
 
-  // ✅ Complete job
+  // ✅ Complete job with validation
   Future<void> completeJob() async {
-    if (activeJob.value == null) return;
+    if (activeJob.value == null) {
+      Get.snackbar("Error", "No active job to complete");
+      return;
+    }
 
     try {
-      await _firestore.collection('requests').doc(activeJob.value!['id']).update({
+      final jobId = activeJob.value!['id'];
+
+      await _firestore.collection('requests').doc(jobId).update({
         'status': 'completed',
         'completedAt': FieldValue.serverTimestamp(),
       });
 
-      Get.snackbar("Success", "Job completed!");
+      Get.snackbar(
+        "Success",
+        "Job completed successfully! Great work!",
+        backgroundColor: const Color(0xFF4CAF50).withOpacity(0.9),
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+      );
+
+      print("✅ Job completed: $jobId");
 
       // Location tracking will auto-stop via _listenToActiveJob
     } catch (e) {
+      print("❌ Error completing job: $e");
       Get.snackbar("Error", "Failed to complete job: $e");
     }
   }
 
-  // Tab switching (Current Job / All Requests)
+  // Tab switching with animation (All Requests / Accepted Requests)
   void changeInnerTab(int index) {
     selectedTab.value = index;
   }
@@ -237,5 +369,11 @@ class MechanicController extends GetxController {
   // Refresh location manually
   Future<void> refreshLocation() async {
     await _getMechanicLocation();
+    Get.snackbar("Success", "Location refreshed");
+  }
+
+  // 🆕 Check mechanic's availability
+  bool isAvailable() {
+    return !hasActiveJob.value && isLocationLoaded.value;
   }
 }
