@@ -4,8 +4,8 @@ description: "A new Flutter project."
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-# The following defines the version and build number for your application.
-# A version number is three numbers separated by dots, like 1.2.43
+  # The following defines the version and build number for your application.
+  # A version number is three numbers separated by dots, like 1.2.43
 # followed by an optional build number separated by a +.
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
@@ -45,17 +45,21 @@ dependencies:
   firebase_storage: ^13.0.5
   google_maps_flutter: ^2.14.0
   url_launcher: ^6.3.2
+  pinput: ^6.0.1
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^6.0.0
+
+flutter_icons:
+    android: true
+    ios: true
+    image_path: "assets/icon/DriveResQ.png"
+    adaptive_icon_background: "#6C63FF"
+    adaptive_icon_foreground: "assets/icon/DriveResQ.png"
+    remove_alpha_ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
