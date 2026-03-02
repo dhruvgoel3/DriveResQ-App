@@ -5,13 +5,14 @@ import 'package:get/get.dart';
 
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
+import 'firebase_options.dart';
 import 'modules/auth/controllers/auth_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   print("🔥 main() started");
 
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   print("🔥 Firebase initialized");
 
   Get.put(AuthController(), permanent: true);

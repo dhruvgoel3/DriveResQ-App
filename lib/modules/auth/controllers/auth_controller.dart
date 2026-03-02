@@ -175,17 +175,49 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
 
+      debugPrint(
+        "🔐 Verifying OTP: ${otpController.text.trim()} with verificationId: $verificationId",
+      );
+
       final credential = PhoneAuthProvider.credential(
         verificationId: verificationId!,
         smsCode: otpController.text.trim(),
       );
 
       await _signInWithCredential(credential);
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
       isLoading.value = false;
+      debugPrint(
+        "❌ OTP verification FirebaseAuthException: ${e.code} - ${e.message}",
+      );
+      String errorMsg;
+      switch (e.code) {
+        case 'invalid-verification-code':
+          errorMsg =
+              'The OTP you entered is incorrect. Please check and try again.';
+          break;
+        case 'session-expired':
+          errorMsg = 'The OTP has expired. Please request a new one.';
+          break;
+        case 'invalid-verification-id':
+          errorMsg =
+              'Verification session expired. Please go back and resend OTP.';
+          break;
+        default:
+          errorMsg = e.message ?? 'Verification failed. Please try again.';
+      }
       Get.snackbar(
         "Error",
-        "Invalid OTP. Please try again.",
+        errorMsg,
+        backgroundColor: Colors.red.withOpacity(0.1),
+        colorText: Colors.red,
+      );
+    } catch (e) {
+      isLoading.value = false;
+      debugPrint("❌ OTP verification error: $e");
+      Get.snackbar(
+        "Error",
+        "Verification failed: $e",
         backgroundColor: Colors.red.withOpacity(0.1),
         colorText: Colors.red,
       );
