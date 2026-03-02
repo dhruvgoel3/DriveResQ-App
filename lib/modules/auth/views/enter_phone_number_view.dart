@@ -55,43 +55,47 @@ class PhoneNumberView extends StatelessWidget {
               const SizedBox(height: 50),
 
               // Role badge
-              Obx(() => Container(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: controller.selectedRole.value == 'driver'
-                      ? Colors.blue.withOpacity(0.1)
-                      : Colors.orange.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      controller.selectedRole.value == 'driver'
-                          ? Icons.directions_car
-                          : Icons.build,
-                      size: 16,
-                      color: controller.selectedRole.value == 'driver'
-                          ? Colors.blue
-                          : Colors.orange,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      controller.selectedRole.value == 'driver'
-                          ? 'Driver'
-                          : 'Mechanic',
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+              Obx(
+                () => Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: controller.selectedRole.value == 'driver'
+                        ? Colors.blue.withOpacity(0.1)
+                        : Colors.orange.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        controller.selectedRole.value == 'driver'
+                            ? Icons.directions_car
+                            : Icons.build,
+                        size: 16,
                         color: controller.selectedRole.value == 'driver'
                             ? Colors.blue
                             : Colors.orange,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 6),
+                      Text(
+                        controller.selectedRole.value == 'driver'
+                            ? 'Driver'
+                            : 'Mechanic',
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: controller.selectedRole.value == 'driver'
+                              ? Colors.blue
+                              : Colors.orange,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              )),
+              ),
 
               const SizedBox(height: 30),
 
@@ -130,13 +134,13 @@ class PhoneNumberView extends StatelessWidget {
                       child: TextField(
                         controller: controller.phoneController,
                         keyboardType: TextInputType.phone,
-                        maxLength: 10,
+                        maxLength: 15,
                         style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                         ),
                         inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
+                          FilteringTextInputFormatter.allow(RegExp(r'[\d+]')),
                         ],
                         decoration: InputDecoration(
                           hintText: "Phone Number",
@@ -155,39 +159,42 @@ class PhoneNumberView extends StatelessWidget {
               const Spacer(),
 
               // Send OTP button
-              Obx(() => SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed:
-                  controller.isLoading.value ? null : controller.sendOTP,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6C63FF),
-                    foregroundColor: Colors.white,
-                    disabledBackgroundColor: Colors.grey.shade300,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+              Obx(
+                () => SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: controller.isLoading.value
+                        ? null
+                        : controller.sendOTP,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF6C63FF),
+                      foregroundColor: Colors.white,
+                      disabledBackgroundColor: Colors.grey.shade300,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
-                  ),
-                  child: controller.isLoading.value
-                      ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
-                    ),
-                  )
-                      : Text(
-                    "Send OTP",
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    child: controller.isLoading.value
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : Text(
+                            "Send OTP",
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                   ),
                 ),
-              )),
+              ),
 
               const SizedBox(height: 20),
             ],

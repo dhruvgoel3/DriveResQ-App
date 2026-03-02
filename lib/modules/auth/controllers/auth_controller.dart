@@ -36,9 +36,32 @@ class AuthController extends GetxController {
     selectedRole.value = role;
   }
 
+  /// Sanitize the raw phone input: strip country code prefix, spaces, dashes,
+  /// and leading zeros so we always end up with the bare 10-digit number.
+  String _sanitizePhone(String raw) {
+    // Remove spaces, dashes, parentheses
+    String cleaned = raw.replaceAll(RegExp(r'[\s\-\(\)]'), '');
+
+    // Strip leading '+91' or '91' country-code prefix if user typed it
+    if (cleaned.startsWith('+91')) {
+      cleaned = cleaned.substring(3);
+    } else if (cleaned.startsWith('91') && cleaned.length > 10) {
+      cleaned = cleaned.substring(2);
+    }
+
+    // Strip leading zero (some people type 0XXXXXXXXXX)
+    if (cleaned.startsWith('0') && cleaned.length == 11) {
+      cleaned = cleaned.substring(1);
+    }
+
+    return cleaned;
+  }
+
   // Send OTP
   Future<void> sendOTP() async {
-    if (phoneController.text.trim().length != 10) {
+    final sanitized = _sanitizePhone(phoneController.text);
+
+    if (sanitized.length != 10 || !RegExp(r'^\d{10}$').hasMatch(sanitized)) {
       Get.snackbar(
         "Error",
         "Please enter a valid 10-digit phone number",
@@ -61,19 +84,38 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
 
-      final phone = '+91${phoneController.text.trim()}';
+      final phone = '+91$sanitized';
+      debugPrint("📞 Sending OTP to: $phone");
 
       await _auth.verifyPhoneNumber(
         phoneNumber: phone,
         timeout: const Duration(seconds: 60),
         verificationCompleted: (PhoneAuthCredential credential) async {
+          debugPrint("✅ Auto-verification completed");
           await _signInWithCredential(credential);
         },
         verificationFailed: (FirebaseAuthException e) {
           isLoading.value = false;
+          debugPrint("❌ Verification failed: ${e.code} - ${e.message}");
+          String errorMsg;
+          switch (e.code) {
+            case 'invalid-phone-number':
+              errorMsg =
+                  'The phone number format is invalid. Please enter a valid 10-digit Indian number.';
+              break;
+            case 'too-many-requests':
+              errorMsg =
+                  'Too many requests. Please wait a moment and try again.';
+              break;
+            case 'quota-exceeded':
+              errorMsg = 'SMS quota exceeded. Please try again later.';
+              break;
+            default:
+              errorMsg = e.message ?? "Verification failed. Please try again.";
+          }
           Get.snackbar(
             "Error",
-            e.message ?? "Verification failed",
+            errorMsg,
             backgroundColor: Colors.red.withOpacity(0.1),
             colorText: Colors.red,
           );
@@ -81,6 +123,7 @@ class AuthController extends GetxController {
         codeSent: (String verId, int? resendToken) {
           isLoading.value = false;
           verificationId = verId;
+          debugPrint("📨 OTP code sent, verificationId: $verId");
 
           Get.snackbar(
             "Success",
@@ -97,9 +140,10 @@ class AuthController extends GetxController {
       );
     } catch (e) {
       isLoading.value = false;
+      debugPrint("❌ Exception in sendOTP: $e");
       Get.snackbar(
         "Error",
-        "Failed to send OTP: $e",
+        "Failed to send OTP. Please check your internet connection and try again.",
         backgroundColor: Colors.red.withOpacity(0.1),
         colorText: Colors.red,
       );
@@ -155,7 +199,10 @@ class AuthController extends GetxController {
       final user = userCredential.user;
 
       if (user != null) {
-        final userDoc = await _firestore.collection('users').doc(user.uid).get();
+        final userDoc = await _firestore
+            .collection('users')
+            .doc(user.uid)
+            .get();
 
         if (!userDoc.exists) {
           await _createUserProfile(user);
