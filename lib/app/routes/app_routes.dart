@@ -1,20 +1,25 @@
 import 'package:driveresq_app/modules/driver/bindings/driver_binding.dart';
 import 'package:driveresq_app/modules/driver/views/driver_dashboard_view.dart';
 import 'package:driveresq_app/modules/mechanic/bindings/mechanic_binding.dart';
+import 'package:driveresq_app/modules/mechanic/controllers/onboarding_controller.dart';
 import 'package:driveresq_app/modules/mechanic/views/HomePage/mechanic_dashboard_view.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/src/bindings_interface.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
-import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:driveresq_app/modules/mechanic/views/onboarding/step1_personal_details.dart';
+import 'package:driveresq_app/modules/mechanic/views/verification_pending_view.dart';
+import 'package:get/get.dart';
 
-import '../../modules/auth/bindings/auth_bindings.dart';
-import '../../modules/auth/controllers/auth_controller.dart';
+import '../../admin/controllers/admin_auth_controller.dart';
+import '../../admin/controllers/admin_dashboard_controller.dart';
+import '../../admin/controllers/verification_controller.dart';
+import '../../admin/views/admin_dashboard_view.dart';
+import '../../admin/views/admin_login_view.dart';
+import '../../admin/views/approved_mechanics_view.dart';
+import '../../admin/views/pending_verifications_view.dart';
+import '../../admin/views/rejected_applications_view.dart';
+import '../../admin/views/review_application_view.dart';
 import '../../modules/auth/views/enter_phone_number_view.dart';
 import '../../modules/auth/views/otp_verification_view.dart';
 import '../../modules/auth/views/role_selection_view.dart';
 import '../../modules/auth/views/splash_view.dart';
-import '../../modules/driver/controllers/driver_controller.dart';
-import '../../modules/mechanic/controller/mechanic_controller.dart';
 import 'app_pages.dart';
 
 class AppPages {
@@ -24,8 +29,113 @@ class AppPages {
     GetPage(name: Routes.LOGIN, page: () => PhoneNumberView()),
     GetPage(name: Routes.OTP, page: () => OTPVerificationView()),
 
-    GetPage(name: Routes.DRIVER, page: () => DriverDashboardView() ,binding: DriverBinding()),
+    GetPage(
+      name: Routes.DRIVER,
+      page: () => DriverDashboardView(),
+      binding: DriverBinding(),
+    ),
 
-    GetPage(name: Routes.MECHANIC, page: () => MechanicDashboardView(),binding: MechanicBinding()),
+    GetPage(
+      name: Routes.MECHANIC,
+      page: () => MechanicDashboardView(),
+      binding: MechanicBinding(),
+    ),
+
+    GetPage(
+      name: Routes.MECHANIC_ONBOARDING,
+      page: () => const Step1PersonalDetails(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut<MechanicOnboardingController>(
+          () => MechanicOnboardingController(),
+        );
+      }),
+    ),
+
+    GetPage(
+      name: Routes.MECHANIC_VERIFICATION,
+      page: () => const VerificationPendingView(),
+    ),
+
+    // ── Admin Routes ──
+    GetPage(
+      name: Routes.ADMIN_LOGIN,
+      page: () => const AdminLoginView(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut<AdminAuthController>(() => AdminAuthController());
+      }),
+    ),
+
+    GetPage(
+      name: Routes.ADMIN_DASHBOARD,
+      page: () => const AdminDashboardView(),
+      binding: BindingsBuilder(() {
+        if (!Get.isRegistered<AdminAuthController>()) {
+          Get.put(AdminAuthController());
+        }
+        Get.lazyPut<AdminDashboardController>(() => AdminDashboardController());
+        Get.lazyPut<VerificationController>(() => VerificationController());
+      }),
+    ),
+
+    GetPage(
+      name: Routes.ADMIN_PENDING,
+      page: () => const PendingVerificationsView(),
+      binding: BindingsBuilder(() {
+        if (!Get.isRegistered<AdminAuthController>()) {
+          Get.put(AdminAuthController());
+        }
+        if (!Get.isRegistered<AdminDashboardController>()) {
+          Get.lazyPut<AdminDashboardController>(
+            () => AdminDashboardController(),
+          );
+        }
+        Get.lazyPut<VerificationController>(() => VerificationController());
+      }),
+    ),
+
+    GetPage(
+      name: Routes.ADMIN_APPROVED,
+      page: () => const ApprovedMechanicsView(),
+      binding: BindingsBuilder(() {
+        if (!Get.isRegistered<AdminAuthController>()) {
+          Get.put(AdminAuthController());
+        }
+        if (!Get.isRegistered<AdminDashboardController>()) {
+          Get.lazyPut<AdminDashboardController>(
+            () => AdminDashboardController(),
+          );
+        }
+        Get.lazyPut<VerificationController>(() => VerificationController());
+      }),
+    ),
+
+    GetPage(
+      name: Routes.ADMIN_REJECTED,
+      page: () => const RejectedApplicationsView(),
+      binding: BindingsBuilder(() {
+        if (!Get.isRegistered<AdminAuthController>()) {
+          Get.put(AdminAuthController());
+        }
+        if (!Get.isRegistered<AdminDashboardController>()) {
+          Get.lazyPut<AdminDashboardController>(
+            () => AdminDashboardController(),
+          );
+        }
+        Get.lazyPut<VerificationController>(() => VerificationController());
+      }),
+    ),
+
+    GetPage(
+      name: Routes.ADMIN_REVIEW,
+      page: () => const ReviewApplicationView(),
+      binding: BindingsBuilder(() {
+        if (!Get.isRegistered<AdminAuthController>()) {
+          Get.put(AdminAuthController());
+        }
+        if (!Get.isRegistered<VerificationController>()) {
+          Get.lazyPut<VerificationController>(() => VerificationController());
+        }
+      }),
+    ),
   ];
 }

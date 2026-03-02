@@ -272,12 +272,26 @@ class AuthController extends GetxController {
   Future<void> _navigateBasedOnRole(String uid) async {
     try {
       final userDoc = await _firestore.collection('users').doc(uid).get();
-      final role = userDoc.data()?['role'];
+      final data = userDoc.data();
+      final role = data?['role'];
 
       if (role == 'driver') {
         Get.offAllNamed(Routes.DRIVER);
       } else if (role == 'mechanic') {
-        Get.offAllNamed(Routes.MECHANIC);
+        // Check mechanic onboarding status
+        final onboardingCompleted = data?['onboardingCompleted'] == true;
+        final verificationStatus = data?['verificationStatus'] ?? '';
+
+        if (!onboardingCompleted) {
+          Get.offAllNamed(Routes.MECHANIC_ONBOARDING);
+        } else if (verificationStatus == 'pending' ||
+            verificationStatus == 'rejected') {
+          Get.offAllNamed(Routes.MECHANIC_VERIFICATION);
+        } else if (verificationStatus == 'approved') {
+          Get.offAllNamed(Routes.MECHANIC);
+        } else {
+          Get.offAllNamed(Routes.MECHANIC_ONBOARDING);
+        }
       } else {
         Get.offAllNamed(Routes.ROLE);
       }

@@ -157,13 +157,15 @@ class _SplashViewState extends State<SplashView>
       vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
-    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 0.5,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     _controller.forward();
 
@@ -197,12 +199,25 @@ class _SplashViewState extends State<SplashView>
         if (!mounted) return;
 
         if (userDoc.exists) {
-          final role = userDoc.data()?['role'];
+          final data = userDoc.data();
+          final role = data?['role'];
 
           if (role == 'driver') {
             _navigateTo('/driver');
           } else if (role == 'mechanic') {
-            _navigateTo('/mechanic');
+            final onboardingCompleted = data?['onboardingCompleted'] == true;
+            final verificationStatus = data?['verificationStatus'] ?? '';
+
+            if (!onboardingCompleted) {
+              _navigateTo('/mechanic-onboarding');
+            } else if (verificationStatus == 'pending' ||
+                verificationStatus == 'rejected') {
+              _navigateTo('/mechanic-verification');
+            } else if (verificationStatus == 'approved') {
+              _navigateTo('/mechanic');
+            } else {
+              _navigateTo('/mechanic-onboarding');
+            }
           } else {
             _navigateTo('/role');
           }

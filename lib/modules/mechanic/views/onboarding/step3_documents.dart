@@ -1,0 +1,338 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../controllers/onboarding_controller.dart';
+import 'step4_bank_details.dart';
+
+class Step3Documents extends StatelessWidget {
+  const Step3Documents({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Get.find<MechanicOnboardingController>();
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: _buildAppBar(c),
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildProgressBar(c),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildHeader(),
+                    const SizedBox(height: 28),
+                    _buildDocCard(
+                      label: 'Aadhaar Card - Front *',
+                      file: c.aadhaarFront,
+                      onTap: () => c.pickImage(c.aadhaarFront),
+                      icon: Icons.credit_card,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildDocCard(
+                      label: 'Aadhaar Card - Back *',
+                      file: c.aadhaarBack,
+                      onTap: () => c.pickImage(c.aadhaarBack),
+                      icon: Icons.credit_card,
+                    ),
+                    const SizedBox(height: 20),
+                    _buildAadhaarNumber(c),
+                    const SizedBox(height: 20),
+                    _buildDocCard(
+                      label: 'PAN Card (Optional)',
+                      file: c.panCard,
+                      onTap: () => c.pickImage(c.panCard),
+                      icon: Icons.badge,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildDocCard(
+                      label: 'Trade License / Work Permit (Optional)',
+                      file: c.tradeLicense,
+                      onTap: () => c.pickImage(c.tradeLicense),
+                      icon: Icons.description,
+                    ),
+                    const SizedBox(height: 40),
+                  ],
+                ),
+              ),
+            ),
+            _buildContinueButton(c),
+          ],
+        ),
+      ),
+    );
+  }
+
+  AppBar _buildAppBar(MechanicOnboardingController c) {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      leading: IconButton(
+        icon: const Icon(
+          Icons.arrow_back_ios_new,
+          color: Colors.black87,
+          size: 20,
+        ),
+        onPressed: () {
+          c.currentStep.value = 2;
+          Get.back();
+        },
+      ),
+      title: Text(
+        'Mechanic Registration',
+        style: GoogleFonts.poppins(
+          color: Colors.black87,
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      centerTitle: true,
+    );
+  }
+
+  Widget _buildProgressBar(MechanicOnboardingController c) {
+    return Obx(
+      () => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Step ${c.currentStep.value} of 6',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFFFF9800),
+                  ),
+                ),
+                Text(
+                  'Documents',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: Colors.grey.shade500,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: LinearProgressIndicator(
+                value: c.currentStep.value / 6,
+                minHeight: 6,
+                backgroundColor: Colors.grey.shade200,
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  Color(0xFFFF9800),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Document Upload',
+          style: GoogleFonts.poppins(
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          'Upload your documents for verification',
+          style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey.shade500),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDocCard({
+    required String label,
+    required Rxn<File> file,
+    required VoidCallback onTap,
+    required IconData icon,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.poppins(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey.shade700,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Obx(() {
+          final hasFile = file.value != null;
+          return GestureDetector(
+            onTap: onTap,
+            child: Container(
+              height: hasFile ? 180 : 100,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: hasFile ? null : Colors.grey.shade50,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: hasFile
+                      ? const Color(0xFF4CAF50)
+                      : Colors.grey.shade200,
+                  width: 1.5,
+                ),
+                image: hasFile
+                    ? DecorationImage(
+                        image: FileImage(file.value!),
+                        fit: BoxFit.cover,
+                      )
+                    : null,
+              ),
+              child: hasFile
+                  ? Align(
+                      alignment: Alignment.topRight,
+                      child: Container(
+                        margin: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(6),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF4CAF50),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.check,
+                          size: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(icon, size: 32, color: Colors.grey.shade400),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Tap to upload',
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            color: Colors.grey.shade400,
+                          ),
+                        ),
+                      ],
+                    ),
+            ),
+          );
+        }),
+      ],
+    );
+  }
+
+  Widget _buildAadhaarNumber(MechanicOnboardingController c) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Aadhaar Number *',
+          style: GoogleFonts.poppins(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey.shade700,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.grey.shade50,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: Colors.grey.shade200, width: 1.5),
+          ),
+          child: TextField(
+            controller: c.aadhaarNumberController,
+            keyboardType: TextInputType.number,
+            maxLength: 12,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            style: GoogleFonts.poppins(fontSize: 15, letterSpacing: 2),
+            decoration: InputDecoration(
+              hintText: 'XXXX XXXX XXXX',
+              hintStyle: GoogleFonts.poppins(
+                color: Colors.grey.shade400,
+                letterSpacing: 2,
+              ),
+              prefixIcon: const Icon(
+                Icons.fingerprint,
+                color: Color(0xFFFF9800),
+                size: 22,
+              ),
+              border: InputBorder.none,
+              counterText: '',
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 16,
+                horizontal: 16,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            Icon(Icons.lock, size: 14, color: Colors.grey.shade400),
+            const SizedBox(width: 4),
+            Text(
+              'Your Aadhaar number will be securely stored',
+              style: GoogleFonts.poppins(
+                fontSize: 11,
+                color: Colors.grey.shade400,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildContinueButton(MechanicOnboardingController c) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      child: SizedBox(
+        width: double.infinity,
+        height: 56,
+        child: ElevatedButton(
+          onPressed: () {
+            c.nextStep();
+            if (c.currentStep.value == 4) {
+              Get.to(() => const Step4BankDetails());
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFFF9800),
+            foregroundColor: Colors.white,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+          child: Text(
+            'Continue',
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
