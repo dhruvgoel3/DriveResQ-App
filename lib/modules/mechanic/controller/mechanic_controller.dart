@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../driver/services/mechanic_location_service.dart';
+import '../../chat/services/chat_service.dart';
 
 class MechanicController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -113,31 +114,34 @@ class MechanicController extends GetxController {
         .where('status', isEqualTo: 'accepted')
         .limit(1)
         .snapshots()
-        .listen((snapshot) {
-      if (snapshot.docs.isNotEmpty) {
-        hasActiveJob.value = true;
-        activeJob.value = {
-          ...snapshot.docs.first.data(),
-          'id': snapshot.docs.first.id,
-        };
+        .listen(
+          (snapshot) {
+            if (snapshot.docs.isNotEmpty) {
+              hasActiveJob.value = true;
+              activeJob.value = {
+                ...snapshot.docs.first.data(),
+                'id': snapshot.docs.first.id,
+              };
 
-        // 🚀 START LOCATION TRACKING when job is active
-        MechanicLocationService.startTracking();
+              // 🚀 START LOCATION TRACKING when job is active
+              MechanicLocationService.startTracking();
 
-        print("✅ Active job found: ${activeJob.value!['id']}");
-      } else {
-        hasActiveJob.value = false;
-        activeJob.value = null;
+              print("✅ Active job found: ${activeJob.value!['id']}");
+            } else {
+              hasActiveJob.value = false;
+              activeJob.value = null;
 
-        // 🛑 STOP LOCATION TRACKING when no active job
-        MechanicLocationService.stopTracking();
+              // 🛑 STOP LOCATION TRACKING when no active job
+              MechanicLocationService.stopTracking();
 
-        print("ℹ️ No active job");
-      }
-    }, onError: (error) {
-      print("❌ Error listening to active job: $error");
-      Get.snackbar("Error", "Failed to load active job");
-    });
+              print("ℹ️ No active job");
+            }
+          },
+          onError: (error) {
+            print("❌ Error listening to active job: $error");
+            Get.snackbar("Error", "Failed to load active job");
+          },
+        );
   }
 
   // 🎧 Listen to nearby OPEN requests only (Real-time)
@@ -145,65 +149,72 @@ class MechanicController extends GetxController {
     // FIX: Only show 'open' requests (not accepted ones)
     _requestsSubscription = _firestore
         .collection('requests')
-        .where('status', isEqualTo: 'open')  // ✅ FIXED: Only open requests
+        .where('status', isEqualTo: 'open') // ✅ FIXED: Only open requests
         .snapshots()
-        .listen((snapshot) {
-      if (!isLocationLoaded.value) {
-        openRequests.clear();
-        return;
-      }
+        .listen(
+          (snapshot) {
+            if (!isLocationLoaded.value) {
+              openRequests.clear();
+              return;
+            }
 
-      List<Map<String, dynamic>> nearbyList = [];
+            List<Map<String, dynamic>> nearbyList = [];
 
-      for (var doc in snapshot.docs) {
-        final data = doc.data();
-        final driverLat = data['driverLat'];
-        final driverLng = data['driverLng'];
+            for (var doc in snapshot.docs) {
+              final data = doc.data();
+              final driverLat = data['driverLat'];
+              final driverLng = data['driverLng'];
 
-        // Validate location data
-        if (driverLat == null || driverLng == null) {
-          print("⚠️ Request ${doc.id} has missing location data");
-          continue;
-        }
+              // Validate location data
+              if (driverLat == null || driverLng == null) {
+                print("⚠️ Request ${doc.id} has missing location data");
+                continue;
+              }
 
-        try {
-          // Calculate distance
-          double distance = Geolocator.distanceBetween(
-            mechanicLat.value,
-            mechanicLng.value,
-            driverLat,
-            driverLng,
-          ) / 1000; // Convert to km
+              try {
+                // Calculate distance
+                double distance =
+                    Geolocator.distanceBetween(
+                      mechanicLat.value,
+                      mechanicLng.value,
+                      driverLat,
+                      driverLng,
+                    ) /
+                    1000; // Convert to km
 
-          // Only show requests within 20 km
-          if (distance <= 20) {
-            nearbyList.add({
-              ...data,
-              'id': doc.id,
-              'distance': distance.toStringAsFixed(1),
+                // Only show requests within 20 km
+                if (distance <= 20) {
+                  nearbyList.add({
+                    ...data,
+                    'id': doc.id,
+                    'distance': distance.toStringAsFixed(1),
+                  });
+                }
+              } catch (e) {
+                print("❌ Error calculating distance for request ${doc.id}: $e");
+                continue;
+              }
+            }
+
+            // Sort by distance (closest first)
+            nearbyList.sort((a, b) {
+              try {
+                return double.parse(
+                  a['distance'],
+                ).compareTo(double.parse(b['distance']));
+              } catch (e) {
+                return 0;
+              }
             });
-          }
-        } catch (e) {
-          print("❌ Error calculating distance for request ${doc.id}: $e");
-          continue;
-        }
-      }
 
-      // Sort by distance (closest first)
-      nearbyList.sort((a, b) {
-        try {
-          return double.parse(a['distance']).compareTo(double.parse(b['distance']));
-        } catch (e) {
-          return 0;
-        }
-      });
-
-      openRequests.value = nearbyList;
-      print("✅ Found ${nearbyList.length} nearby open requests");
-    }, onError: (error) {
-      print("❌ Error listening to requests: $error");
-      Get.snackbar("Error", "Failed to load requests");
-    });
+            openRequests.value = nearbyList;
+            print("✅ Found ${nearbyList.length} nearby open requests");
+          },
+          onError: (error) {
+            print("❌ Error listening to requests: $error");
+            Get.snackbar("Error", "Failed to load requests");
+          },
+        );
   }
 
   // ✅ Accept a request with validation
@@ -234,7 +245,10 @@ class MechanicController extends GetxController {
       }
 
       // Validation 3: Check if request still exists and is open (Race condition prevention)
-      final requestDoc = await _firestore.collection('requests').doc(requestId).get();
+      final requestDoc = await _firestore
+          .collection('requests')
+          .doc(requestId)
+          .get();
 
       if (!requestDoc.exists) {
         Get.snackbar("Error", "Request no longer exists");
@@ -267,9 +281,27 @@ class MechanicController extends GetxController {
         'acceptedAt': FieldValue.serverTimestamp(),
       });
 
+      // 💬 Create chat for this request
+      try {
+        final mechanicDoc = await _firestore.collection('users').doc(uid).get();
+        final mechanicData = mechanicDoc.data() ?? {};
+        await ChatService.createChat(
+          requestId: requestId,
+          driverId: requestData['driverId'] ?? '',
+          mechanicId: uid,
+          driverName: requestData['driverName'] ?? 'Driver',
+          mechanicName:
+              mechanicData['fullName'] ?? mechanicData['name'] ?? 'Mechanic',
+          driverPhoto: requestData['driverPhoto'] ?? '',
+          mechanicPhoto: mechanicData['profilePhotoUrl'] ?? '',
+        );
+      } catch (chatError) {
+        debugPrint('⚠️ Chat creation error (non-blocking): $chatError');
+      }
+
       Get.snackbar(
         "Success",
-        "Request accepted successfully!",
+        "Request accepted! You can now chat with the driver.",
         backgroundColor: const Color(0xFF4CAF50).withOpacity(0.9),
         colorText: Colors.white,
       );
@@ -278,7 +310,6 @@ class MechanicController extends GetxController {
 
       // Location tracking will auto-start via _listenToActiveJob
       print("✅ Request $requestId accepted successfully");
-
     } catch (e) {
       print("❌ Error accepting request: $e");
 
@@ -301,12 +332,15 @@ class MechanicController extends GetxController {
     }
 
     try {
-      await _firestore.collection('requests').doc(activeJob.value!['id']).update({
-        'status': 'open',
-        'mechanicId': FieldValue.delete(),
-        'mechanicPhone': FieldValue.delete(),
-        'acceptedAt': FieldValue.delete(),
-      });
+      await _firestore
+          .collection('requests')
+          .doc(activeJob.value!['id'])
+          .update({
+            'status': 'open',
+            'mechanicId': FieldValue.delete(),
+            'mechanicPhone': FieldValue.delete(),
+            'acceptedAt': FieldValue.delete(),
+          });
 
       Get.snackbar(
         "Success",

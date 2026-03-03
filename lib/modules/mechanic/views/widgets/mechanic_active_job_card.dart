@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:get/get.dart';
+import '../../../chat/controllers/chat_controller.dart';
+import '../../../chat/views/chat_screen.dart';
 
 class MechanicActiveJobCard extends StatelessWidget {
   final Map<String, dynamic> job;
@@ -414,6 +416,15 @@ class MechanicActiveJobCard extends StatelessWidget {
             const SizedBox(width: 10),
             Expanded(
               child: _actionButton(
+                icon: Icons.chat_bubble,
+                label: "Chat",
+                color: const Color(0xFF6C63FF),
+                onPressed: _openChat,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _actionButton(
                 icon: Icons.navigation,
                 label: "Navigate",
                 color: Colors.blue,
@@ -568,6 +579,30 @@ class MechanicActiveJobCard extends StatelessWidget {
           arguments: {'job': job, 'jobId': job['id']},
         );
       },
+    );
+  }
+
+  // 💬 Open Chat with Driver
+  void _openChat() {
+    final chatId = job['id'] ?? '';
+    if (chatId.isEmpty) {
+      Get.snackbar('Error', 'Chat not available');
+      return;
+    }
+
+    Get.delete<ChatController>(force: true);
+    Get.put(
+      ChatController(
+        chatId: chatId,
+        otherUserName: job['driverName'] ?? 'Driver',
+        otherUserPhoto: job['driverPhoto'] ?? '',
+        myRole: 'mechanic',
+      ),
+    );
+    Get.to(
+      () => const ChatScreen(),
+      transition: Transition.rightToLeft,
+      duration: const Duration(milliseconds: 250),
     );
   }
 }

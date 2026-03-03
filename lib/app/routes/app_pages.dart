@@ -18,4 +18,7 @@ abstract class Routes {
 
   // Job completion
   static const JOB_COMPLETION = '/job-completion';
+
+  // Chat
+  static const CHAT = '/chat';
 }

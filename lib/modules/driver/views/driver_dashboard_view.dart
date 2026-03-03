@@ -2,6 +2,7 @@ import 'package:driveresq_app/modules/driver/views/ProfilePage/driver_profile_vi
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/driver_controller.dart';
+import '../../chat/views/chat_list_view.dart';
 import 'HomePage/driver_home_view.dart';
 
 class DriverDashboardView extends StatelessWidget {
@@ -17,20 +18,32 @@ class DriverDashboardView extends StatelessWidget {
           index: controller.currentIndex.value,
           children: const [
             DriverHomeView(),
+            ChatListView(),
             DriverProfileView(),
-
-            Center(child: Text("Profile (Later)")),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
-          selectedItemColor: Color(0xFF6C63FF),
-          unselectedItemColor: Colors.black,
+          selectedItemColor: const Color(0xFF6C63FF),
+          unselectedItemColor: Colors.grey.shade400,
+          selectedFontSize: 12,
+          unselectedFontSize: 12,
           currentIndex: controller.currentIndex.value,
           onTap: controller.changeTab,
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_rounded),
+              label: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.chat_bubble_rounded),
+              label: "Chats",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_rounded),
+              label: "Profile",
+            ),
           ],
         ),
       );

@@ -2,6 +2,7 @@ import 'package:driveresq_app/modules/mechanic/views/ProfilePage/mechanic_profil
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controller/mechanic_controller.dart';
+import '../../../chat/views/chat_list_view.dart';
 import 'current_request_view.dart';
 
 class MechanicDashboardView extends StatelessWidget {
@@ -17,17 +18,33 @@ class MechanicDashboardView extends StatelessWidget {
           index: controller.currentIndex.value,
           children: const [
             CurrentRequestView(),
-            MechanicProfileView(),// 🔥 Combined Home
-            Center(child: Text("Profile (Later)")),
+            ChatListView(),
+            MechanicProfileView(),
           ],
         ),
 
         bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.white,
+          selectedItemColor: const Color(0xFF6C63FF),
+          unselectedItemColor: Colors.grey.shade400,
+          selectedFontSize: 12,
+          unselectedFontSize: 12,
           currentIndex: controller.currentIndex.value,
           onTap: controller.changeTab,
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_rounded),
+              label: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.chat_bubble_rounded),
+              label: "Chats",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_rounded),
+              label: "Profile",
+            ),
           ],
         ),
       );
