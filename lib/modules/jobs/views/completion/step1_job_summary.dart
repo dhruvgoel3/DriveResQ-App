@@ -183,7 +183,7 @@ class JobSummaryView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  'ID: ${c.jobId.value.substring(0, 8).toUpperCase()}',
+                  'ID: ${c.jobId.value.length >= 8 ? c.jobId.value.substring(0, 8).toUpperCase() : c.jobId.value.toUpperCase()}',
                   style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: 11,

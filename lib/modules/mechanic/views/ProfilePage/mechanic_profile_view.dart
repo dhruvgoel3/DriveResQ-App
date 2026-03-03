@@ -6,554 +6,649 @@ import '../../controller/mechanic_profile_controller.dart';
 class MechanicProfileView extends StatelessWidget {
   const MechanicProfileView({super.key});
 
+  static const _accent = Color(0xFF6C63FF);
+
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(MechanicProfileController());
+    final c = Get.put(MechanicProfileController());
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Get.back(),
-        ),
-        title: Text(
-          "My Profile",
-          style: GoogleFonts.poppins(
-            color: Colors.black,
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          Obx(() {
-            return IconButton(
-              icon: Icon(
-                controller.isEditMode.value ? Icons.close : Icons.edit,
-                color: controller.isEditMode.value
-                    ? Colors.red
-                    : const Color(0xFF6C63FF),
-              ),
-              onPressed: controller.toggleEditMode,
-            );
-          }),
-        ],
-      ),
+      backgroundColor: const Color(0xFFF5F6FA),
       body: Obx(() {
-        final data = controller.userData.value;
+        final data = c.userData.value;
         if (data == null) {
-          return const Center(
-            child: CircularProgressIndicator(
-              color: Color(0xFF6C63FF),
-            ),
-          );
+          return const Center(child: CircularProgressIndicator(color: _accent));
         }
 
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              _profileHeader(data, controller),
-              const SizedBox(height: 20),
-              _statisticsRow(controller),
-              const SizedBox(height: 20),
-              _basicInfoCard(controller, data),
-              const SizedBox(height: 16),
-              _professionalInfoCard(controller, data),
-              const SizedBox(height: 16),
-              _safetyTrustCard(),
-              const SizedBox(height: 24),
-              _logoutButton(controller),
-              const SizedBox(height: 16),
-            ],
-          ),
+        return CustomScrollView(
+          slivers: [
+            // Gradient AppBar with profile
+            _sliverHeader(c, data),
+
+            // Content
+            SliverPadding(
+              padding: const EdgeInsets.all(16),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  _statsRow(c),
+                  const SizedBox(height: 16),
+                  _personalInfoCard(c, data),
+                  const SizedBox(height: 14),
+                  _shopInfoCard(c, data),
+                  const SizedBox(height: 14),
+                  _specializationsCard(c),
+                  const SizedBox(height: 14),
+                  _availabilityCard(c, data),
+                  const SizedBox(height: 14),
+                  _pricingCard(c, data),
+                  const SizedBox(height: 14),
+                  _verificationCard(c, data),
+                  const SizedBox(height: 20),
+                  _logoutButton(c),
+                  const SizedBox(height: 24),
+                ]),
+              ),
+            ),
+          ],
         );
       }),
     );
   }
 
-  // 🔝 PROFILE HEADER
-  Widget _profileHeader(
-      Map<String, dynamic> data, MechanicProfileController controller) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+  // ─────────────────────── SLIVER HEADER ───────────────────────
+  Widget _sliverHeader(MechanicProfileController c, Map<String, dynamic> data) {
+    return SliverAppBar(
+      expandedHeight: 260,
+      pinned: true,
+      backgroundColor: _accent,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: Colors.white),
+        onPressed: () => Get.back(),
       ),
-      child: Column(
-        children: [
-          Stack(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.orange,
-                    width: 3,
-                  ),
-                ),
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: data['photoUrl'] != null &&
-                      data['photoUrl'].toString().isNotEmpty
-                      ? NetworkImage(data['photoUrl'])
-                      : null,
-                  backgroundColor: Colors.orange.withOpacity(0.1),
-                  child: data['photoUrl'] == null ||
-                      data['photoUrl'].toString().isEmpty
-                      ? const Icon(
-                    Icons.build,
-                    size: 50,
-                    color: Colors.orange,
-                  )
-                      : null,
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const CircleAvatar(
-                    radius: 14,
-                    backgroundColor: Colors.orange,
-                    child: Icon(Icons.verified, size: 16, color: Colors.white),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            data['name'] ?? "Mechanic Name",
-            style: GoogleFonts.poppins(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
+      actions: [
+        Obx(
+          () => IconButton(
+            icon: Icon(
+              c.isEditMode.value ? Icons.close : Icons.edit_outlined,
+              color: Colors.white,
             ),
-          ),
-          const SizedBox(height: 6),
-          if (data['shopName'] != null && data['shopName'].isNotEmpty)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.store, size: 16, color: Colors.grey),
-                const SizedBox(width: 4),
-                Text(
-                  data['shopName'],
-                  style: GoogleFonts.poppins(
-                    color: Colors.grey.shade600,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          const SizedBox(height: 6),
-          Text(
-            data['phone'] ?? "",
-            style: GoogleFonts.poppins(
-              color: Colors.grey.shade600,
-              fontSize: 14,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.orange.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.build_circle, size: 16, color: Colors.orange),
-                const SizedBox(width: 6),
-                Text(
-                  "VERIFIED MECHANIC",
-                  style: GoogleFonts.poppins(
-                    color: Colors.orange,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // 📊 STATISTICS ROW
-  Widget _statisticsRow(MechanicProfileController controller) {
-    return Obx(() => Row(
-      children: [
-        Expanded(
-          child: _statCard(
-            icon: Icons.check_circle,
-            label: "Completed",
-            value: controller.totalJobsCompleted.value.toString(),
-            color: Colors.green,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _statCard(
-            icon: Icons.pending_actions,
-            label: "Active",
-            value: controller.activeJobs.value.toString(),
-            color: Colors.blue,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _statCard(
-            icon: Icons.star,
-            label: "Rating",
-            value: controller.rating.value.toStringAsFixed(1),
-            color: Colors.amber,
+            onPressed: c.toggleEditMode,
           ),
         ),
       ],
-    ));
+      flexibleSpace: FlexibleSpaceBar(
+        background: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF6C63FF), Color(0xFF5A52E8), Color(0xFF4840D4)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 40),
+                // Avatar
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.4),
+                      width: 3,
+                    ),
+                  ),
+                  child: CircleAvatar(
+                    radius: 46,
+                    backgroundImage: _profileImage(data),
+                    backgroundColor: Colors.white.withOpacity(0.15),
+                    child: _profileImage(data) == null
+                        ? const Icon(
+                            Icons.person,
+                            size: 46,
+                            color: Colors.white70,
+                          )
+                        : null,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  c.displayName,
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                if (data['shopName'] != null &&
+                    data['shopName'].toString().isNotEmpty)
+                  Text(
+                    data['shopName'],
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      color: Colors.white70,
+                    ),
+                  ),
+                const SizedBox(height: 8),
+                // Verification Badge
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: c.verificationColor.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: c.verificationColor.withOpacity(0.5),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        c.verificationColor == const Color(0xFF4CAF50)
+                            ? Icons.verified
+                            : Icons.pending,
+                        size: 14,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        c.verificationBadge,
+                        style: GoogleFonts.poppins(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
-  Widget _statCard({
-    required IconData icon,
-    required String label,
-    required String value,
-    required Color color,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
+  ImageProvider? _profileImage(Map<String, dynamic> data) {
+    final url = data['profilePhotoUrl'] ?? data['photoUrl'];
+    if (url != null && url.toString().isNotEmpty) {
+      return NetworkImage(url);
+    }
+    return null;
+  }
+
+  // ─────────────────────── STATS ROW ───────────────────────
+  Widget _statsRow(MechanicProfileController c) {
+    return Obx(
+      () => Row(
         children: [
-          Icon(icon, color: color, size: 28),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: GoogleFonts.poppins(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
+          _statTile(
+            Icons.check_circle,
+            'Jobs',
+            c.totalJobsCompleted.value.toString(),
+            Colors.green,
           ),
-          Text(
-            label,
-            style: GoogleFonts.poppins(
-              fontSize: 11,
-              color: Colors.grey.shade600,
-            ),
+          const SizedBox(width: 10),
+          _statTile(
+            Icons.star_rounded,
+            'Rating',
+            c.rating.value > 0 ? c.rating.value.toStringAsFixed(1) : '—',
+            Colors.amber,
+          ),
+          const SizedBox(width: 10),
+          _statTile(
+            Icons.account_balance_wallet,
+            'Earned',
+            '₹${c.totalEarnings.value.toStringAsFixed(0)}',
+            _accent,
+          ),
+          const SizedBox(width: 10),
+          _statTile(
+            Icons.bolt,
+            'Active',
+            c.activeJobs.value.toString(),
+            Colors.blue,
           ),
         ],
       ),
     );
   }
 
-  // 📄 BASIC INFO
-  Widget _basicInfoCard(
-      MechanicProfileController controller, Map<String, dynamic> data) {
-    return _card(
-      title: "BASIC INFORMATION",
-      child: Obx(() {
-        final isEdit = controller.isEditMode.value;
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _statTile(IconData icon, String label, String value, Color color) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 6),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8),
+          ],
+        ),
+        child: Column(
           children: [
-            const SizedBox(height: 12),
-
-            isEdit
-                ? _editField(
-              label: "Full Name",
-              controller: controller.nameController,
-              icon: Icons.person,
-            )
-                : _infoRow(
-              Icons.person,
-              "Full Name",
-              data['name'] ?? "Not set",
+            Icon(icon, color: color, size: 22),
+            const SizedBox(height: 6),
+            Text(
+              value,
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
             ),
-
-            const SizedBox(height: 12),
-
-            isEdit
-                ? _editField(
-              label: "Shop/Garage Name",
-              controller: controller.shopNameController,
-              icon: Icons.store,
-            )
-                : _infoRow(
-              Icons.store,
-              "Shop/Garage Name",
-              data['shopName'] ?? "Not added",
+            Text(
+              label,
+              style: GoogleFonts.poppins(
+                fontSize: 10,
+                color: Colors.grey.shade500,
+              ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
 
-            if (isEdit) ...[
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: controller.isLoading.value
-                      ? null
-                      : controller.saveProfileInfo,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6C63FF),
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    minimumSize: const Size(double.infinity, 52),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
+  // ─────────────────────── PERSONAL INFO ───────────────────────
+  Widget _personalInfoCard(
+    MechanicProfileController c,
+    Map<String, dynamic> data,
+  ) {
+    return Obx(() {
+      final isEdit = c.isEditMode.value;
+      return _card(
+        icon: Icons.person_outline,
+        title: 'Personal Information',
+        child: Column(
+          children: [
+            isEdit
+                ? _editField('Full Name', c.nameController, Icons.badge)
+                : _infoRow(Icons.badge, 'Full Name', c.displayName),
+            const Divider(height: 20),
+            _infoRow(Icons.phone, 'Phone', data['phone'] ?? '—'),
+            const Divider(height: 20),
+            isEdit
+                ? _editField('Email', c.emailController, Icons.email)
+                : _infoRow(
+                    Icons.email_outlined,
+                    'Email',
+                    data['email'] ?? 'Not added',
                   ),
-                  child: controller.isLoading.value
-                      ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
-                    ),
+            const Divider(height: 20),
+            _infoRow(
+              Icons.cake_outlined,
+              'Date of Birth',
+              _formatDob(data['dob']),
+            ),
+            const Divider(height: 20),
+            _infoRow(Icons.person, 'Gender', data['gender'] ?? '—'),
+            if (isEdit) ...[const SizedBox(height: 16), _saveButton(c)],
+          ],
+        ),
+      );
+    });
+  }
+
+  // ─────────────────────── SHOP INFO ───────────────────────
+  Widget _shopInfoCard(MechanicProfileController c, Map<String, dynamic> data) {
+    return Obx(() {
+      final isEdit = c.isEditMode.value;
+      return _card(
+        icon: Icons.store_outlined,
+        title: 'Shop / Garage',
+        child: Column(
+          children: [
+            isEdit
+                ? _editField(
+                    'Shop Name',
+                    c.shopNameController,
+                    Icons.storefront,
                   )
-                      : Text(
-                    "Save Changes",
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
+                : _infoRow(
+                    Icons.storefront,
+                    'Shop Name',
+                    data['shopName'] ?? '—',
+                  ),
+            const Divider(height: 20),
+            isEdit
+                ? _editField(
+                    'Address',
+                    c.shopAddressController,
+                    Icons.location_on,
+                  )
+                : _infoRow(
+                    Icons.location_on_outlined,
+                    'Address',
+                    data['shopAddress'] ?? 'Not added',
+                  ),
+            const Divider(height: 20),
+            isEdit
+                ? _editField(
+                    'Experience (years)',
+                    c.experienceController,
+                    Icons.work_history,
+                  )
+                : _infoRow(
+                    Icons.work_history_outlined,
+                    'Experience',
+                    '${data['experience'] ?? '—'} years',
+                  ),
+            if (data['shopPhotoUrl'] != null &&
+                data['shopPhotoUrl'].toString().isNotEmpty) ...[
+              const Divider(height: 20),
+              Row(
+                children: [
+                  _iconBox(Icons.photo_camera_outlined),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Shop Photo', style: _labelStyle),
+                        const SizedBox(height: 6),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.network(
+                            data['shopPhotoUrl'],
+                            height: 100,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
+                ],
               ),
             ],
           ],
-        );
-      }),
-    );
+        ),
+      );
+    });
   }
 
-  // 🔧 PROFESSIONAL INFO
-  Widget _professionalInfoCard(
-      MechanicProfileController controller, Map<String, dynamic> data) {
+  // ─────────────────────── SPECIALIZATIONS & SERVICES ───────────────────────
+  Widget _specializationsCard(MechanicProfileController c) {
     return _card(
-      title: "PROFESSIONAL DETAILS",
-      child: Obx(() {
-        final isEdit = controller.isEditMode.value;
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 12),
-
-            isEdit
-                ? _editField(
-              label: "Experience (years)",
-              controller: controller.experienceController,
-              icon: Icons.work,
-            )
-                : _infoRow(
-              Icons.work,
-              "Experience",
-              data['experience'] != null &&
-                  data['experience'].toString().isNotEmpty
-                  ? "${data['experience']} years"
-                  : "Not specified",
-            ),
-
-            const SizedBox(height: 12),
-
-            isEdit
-                ? _editField(
-              label: "Specialty",
-              controller: controller.specialtyController,
-              icon: Icons.build_circle,
-            )
-                : _infoRow(
-              Icons.build_circle,
-              "Specialty",
-              data['specialty'] ?? "General Repairs",
+      icon: Icons.build_circle_outlined,
+      title: 'Expertise & Services',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (c.specializations.isNotEmpty) ...[
+            Text('Specializations', style: _labelStyle),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: c.specializations
+                  .map((s) => _chip(s, _accent))
+                  .toList(),
             ),
           ],
-        );
-      }),
+          if (c.servicesOffered.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Text('Services Offered', style: _labelStyle),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: c.servicesOffered
+                  .map((s) => _chip(s, const Color(0xFF4CAF50)))
+                  .toList(),
+            ),
+          ],
+          if (c.specializations.isEmpty && c.servicesOffered.isEmpty)
+            _infoRow(Icons.info_outline, 'Info', 'Not specified yet'),
+        ],
+      ),
     );
   }
 
-  // 🛡 SAFETY & TRUST
-  Widget _safetyTrustCard() {
+  // ─────────────────────── AVAILABILITY ───────────────────────
+  Widget _availabilityCard(
+    MechanicProfileController c,
+    Map<String, dynamic> data,
+  ) {
     return _card(
-      title: "SAFETY & TRUST",
+      icon: Icons.schedule_outlined,
+      title: 'Availability',
       child: Column(
         children: [
-          const SizedBox(height: 12),
-          _statusRow("Phone Verified", true, Icons.phone_android),
-          const Divider(height: 24),
-          _statusRow("Location Access", true, Icons.location_on),
-          const Divider(height: 24),
-          _statusRow("Background Check", true, Icons.verified_user),
+          _infoRow(Icons.access_time, 'Working Hours', c.workingHoursFormatted),
+          const Divider(height: 20),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _iconBox(Icons.calendar_month_outlined),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Available Days', style: _labelStyle),
+                    const SizedBox(height: 6),
+                    c.availableDays.isNotEmpty
+                        ? Wrap(
+                            spacing: 6,
+                            runSpacing: 4,
+                            children: c.availableDays
+                                .map(
+                                  (d) => Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: _accent.withOpacity(0.08),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      d,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: _accent,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          )
+                        : Text(
+                            'Not set',
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const Divider(height: 20),
+          _infoRow(
+            Icons.radar,
+            'Service Radius',
+            '${data['serviceRadius'] ?? '—'} km',
+          ),
         ],
       ),
     );
   }
 
-  // 🚪 LOGOUT BUTTON
-  Widget _logoutButton(MechanicProfileController controller) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.red.withOpacity(0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+  // ─────────────────────── PRICING ───────────────────────
+  Widget _pricingCard(MechanicProfileController c, Map<String, dynamic> data) {
+    return Obx(() {
+      final isEdit = c.isEditMode.value;
+      return _card(
+        icon: Icons.currency_rupee,
+        title: 'Pricing',
+        child: Column(
+          children: [
+            isEdit
+                ? _editField(
+                    'Base Charge (₹)',
+                    c.baseChargeController,
+                    Icons.receipt_long,
+                  )
+                : _infoRow(
+                    Icons.receipt_long_outlined,
+                    'Base Charge',
+                    '₹${data['baseCharge'] ?? '—'}',
+                  ),
+            const Divider(height: 20),
+            isEdit
+                ? _editField('Per Km (₹)', c.perKmChargeController, Icons.route)
+                : _infoRow(
+                    Icons.route,
+                    'Per Km Charge',
+                    '₹${data['perKmCharge'] ?? '—'}',
+                  ),
+            const Divider(height: 20),
+            _infoRow(
+              Icons.bolt,
+              'Emergency Surcharge',
+              '₹${data['emergencySurcharge'] ?? '—'}',
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  // ─────────────────────── VERIFICATION & DOCUMENTS ───────────────────────
+  Widget _verificationCard(
+    MechanicProfileController c,
+    Map<String, dynamic> data,
+  ) {
+    return _card(
+      icon: Icons.verified_user_outlined,
+      title: 'Verification & Trust',
+      child: Column(
+        children: [
+          _statusRow('Phone Verified', true, Icons.phone_android),
+          const Divider(height: 20),
+          _statusRow(
+            'Aadhaar Submitted',
+            data['aadhaarNumber'] != null &&
+                data['aadhaarNumber'].toString().isNotEmpty,
+            Icons.credit_card,
           ),
+          if (data['aadhaarNumber'] != null &&
+              data['aadhaarNumber'].toString().isNotEmpty) ...[
+            Padding(
+              padding: const EdgeInsets.only(left: 52, top: 4),
+              child: Text(
+                data['aadhaarNumber'],
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  color: Colors.grey.shade500,
+                ),
+              ),
+            ),
+          ],
+          const Divider(height: 20),
+          _statusRow(
+            'PAN Card',
+            data['panCardUrl'] != null &&
+                data['panCardUrl'].toString().isNotEmpty,
+            Icons.account_balance,
+          ),
+          const Divider(height: 20),
+          _statusRow(
+            'Trade License',
+            data['tradeLicenseUrl'] != null &&
+                data['tradeLicenseUrl'].toString().isNotEmpty,
+            Icons.workspace_premium,
+          ),
+          const Divider(height: 20),
+          _statusRow(
+            'Bank Account Linked',
+            data['bankAccountNumber'] != null &&
+                data['bankAccountNumber'].toString().isNotEmpty,
+            Icons.account_balance_wallet,
+          ),
+          if (data['upiId'] != null && data['upiId'].toString().isNotEmpty) ...[
+            const Divider(height: 20),
+            _infoRow(Icons.qr_code, 'UPI ID', data['upiId']),
+          ],
         ],
-      ),
-      child: ElevatedButton.icon(
-        onPressed: controller.logout,
-        icon: const Icon(Icons.logout, color: Colors.white),
-        label: Text(
-          "Logout",
-          style: GoogleFonts.poppins(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-          ),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.red,
-          foregroundColor: Colors.white,
-          minimumSize: const Size(double.infinity, 52),
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
-        ),
       ),
     );
   }
 
-  // 🔁 CARD WRAPPER
-  Widget _card({required String title, required Widget child}) {
+  // ─────────────────── REUSABLE WIDGETS ───────────────────
+
+  Widget _card({
+    required IconData icon,
+    required String title,
+    required Widget child,
+  }) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: GoogleFonts.poppins(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey.shade600,
-              letterSpacing: 0.5,
-            ),
+          Row(
+            children: [
+              Icon(icon, size: 20, color: _accent),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                ),
+              ),
+            ],
           ),
+          const SizedBox(height: 14),
           child,
         ],
       ),
     );
   }
 
-  // ✏️ EDIT FIELD
-  Widget _editField({
-    required String label,
-    required TextEditingController controller,
-    required IconData icon,
-  }) {
-    return TextField(
-      controller: controller,
-      style: GoogleFonts.poppins(fontSize: 14),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: GoogleFonts.poppins(fontSize: 14),
-        prefixIcon: Icon(icon, size: 20, color: Colors.orange),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.orange, width: 2),
-        ),
-        filled: true,
-        fillColor: Colors.grey.shade50,
-        contentPadding:
-        const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      ),
-    );
-  }
-
-  // ℹ️ INFO ROW
-  Widget _infoRow(IconData icon, String title, String value) {
+  Widget _infoRow(IconData icon, String label, String value) {
     return Row(
       children: [
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: Colors.orange.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Icon(icon, size: 20, color: Colors.orange),
-        ),
+        _iconBox(icon),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: GoogleFonts.poppins(
-                  fontSize: 12,
-                  color: Colors.grey.shade600,
-                ),
-              ),
+              Text(label, style: _labelStyle),
               const SizedBox(height: 2),
               Text(
                 value,
                 style: GoogleFonts.poppins(
                   fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
                 ),
               ),
             ],
@@ -563,52 +658,169 @@ class MechanicProfileView extends StatelessWidget {
     );
   }
 
-  // ✅ STATUS ROW
+  Widget _iconBox(IconData icon) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: _accent.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Icon(icon, size: 18, color: _accent),
+    );
+  }
+
+  Widget _editField(
+    String label,
+    TextEditingController controller,
+    IconData icon,
+  ) {
+    return TextField(
+      controller: controller,
+      style: GoogleFonts.poppins(fontSize: 14),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: GoogleFonts.poppins(fontSize: 13),
+        prefixIcon: Icon(icon, size: 20, color: _accent),
+        filled: true,
+        fillColor: Colors.grey.shade50,
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 14,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade200),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade200),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: _accent, width: 2),
+        ),
+      ),
+    );
+  }
+
+  Widget _chip(String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withOpacity(0.25)),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.poppins(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: color,
+        ),
+      ),
+    );
+  }
+
   Widget _statusRow(String title, bool verified, IconData icon) {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: verified
-                ? Colors.green.withOpacity(0.1)
-                : Colors.red.withOpacity(0.1),
+            color: (verified ? Colors.green : Colors.grey).withOpacity(0.1),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(
-            verified ? Icons.check_circle : Icons.cancel,
-            color: verified ? Colors.green : Colors.red,
-            size: 24,
+            verified ? Icons.check_circle : Icons.radio_button_unchecked,
+            color: verified ? Colors.green : Colors.grey.shade400,
+            size: 20,
           ),
         ),
         const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              Text(
-                verified ? "Active" : "Inactive",
-                style: GoogleFonts.poppins(
-                  fontSize: 12,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-            ],
+        Text(
+          title,
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: verified ? Colors.black87 : Colors.grey.shade500,
           ),
         ),
-        Icon(
-          icon,
-          color: Colors.grey.shade400,
-          size: 20,
-        ),
+        const Spacer(),
+        Icon(icon, size: 18, color: Colors.grey.shade300),
       ],
     );
   }
+
+  Widget _saveButton(MechanicProfileController c) {
+    return Obx(
+      () => SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: c.isLoading.value ? null : c.saveProfileInfo,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: _accent,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: c.isLoading.value
+              ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+              : Text(
+                  'Save Changes',
+                  style: GoogleFonts.poppins(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+        ),
+      ),
+    );
+  }
+
+  Widget _logoutButton(MechanicProfileController c) {
+    return ElevatedButton.icon(
+      onPressed: c.logout,
+      icon: const Icon(Icons.logout, color: Colors.white, size: 20),
+      label: Text(
+        'Logout',
+        style: GoogleFonts.poppins(
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
+          fontSize: 15,
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.red.shade400,
+        foregroundColor: Colors.white,
+        minimumSize: const Size(double.infinity, 52),
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      ),
+    );
+  }
+
+  String _formatDob(dynamic dob) {
+    if (dob == null || dob.toString().isEmpty) return 'Not set';
+    try {
+      final d = DateTime.parse(dob.toString());
+      return '${d.day}/${d.month}/${d.year}';
+    } catch (_) {
+      return dob.toString();
+    }
+  }
+
+  TextStyle get _labelStyle =>
+      GoogleFonts.poppins(fontSize: 11, color: Colors.grey.shade500);
 }

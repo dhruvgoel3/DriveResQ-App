@@ -80,9 +80,9 @@ class JobCompletionController extends GetxController {
     super.onClose();
   }
 
-  void initJob(Map<String, dynamic> job, String id) {
+  void initJob(Map<String, dynamic> job, dynamic id) {
     jobData.value = job;
-    jobId.value = id;
+    jobId.value = (id ?? job['id'] ?? '').toString();
     baseCharge.value = 200; // Default base charge
 
     // Calculate travel cost from distance

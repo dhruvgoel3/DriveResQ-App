@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:get/get.dart';
-import '../../controller/mechanic_controller.dart';
 
 class MechanicActiveJobCard extends StatelessWidget {
   final Map<String, dynamic> job;
@@ -68,7 +67,9 @@ class MechanicActiveJobCard extends StatelessWidget {
                 const SizedBox(height: 16),
 
                 // Action Buttons
-                isActive ? _buildActiveJobButtons() : _buildOpenRequestButtons(),
+                isActive
+                    ? _buildActiveJobButtons()
+                    : _buildOpenRequestButtons(),
               ],
             ),
           ),
@@ -218,7 +219,8 @@ class MechanicActiveJobCard extends StatelessWidget {
               ),
             ],
           ),
-          if (job['landmark'] != null && job['landmark'].toString().isNotEmpty) ...[
+          if (job['landmark'] != null &&
+              job['landmark'].toString().isNotEmpty) ...[
             const SizedBox(height: 10),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -256,7 +258,8 @@ class MechanicActiveJobCard extends StatelessWidget {
           "Vehicle Type",
           job['vehicleType'] ?? 'Not specified',
         ),
-        if (job['description'] != null && job['description'].toString().isNotEmpty) ...[
+        if (job['description'] != null &&
+            job['description'].toString().isNotEmpty) ...[
           const SizedBox(height: 10),
           _buildDescriptionCard(),
         ],
@@ -357,7 +360,11 @@ class MechanicActiveJobCard extends StatelessWidget {
               color: Colors.red.shade200,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.warning_rounded, color: Colors.red, size: 24),
+            child: const Icon(
+              Icons.warning_rounded,
+              color: Colors.red,
+              size: 24,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -471,10 +478,7 @@ class MechanicActiveJobCard extends StatelessWidget {
         icon: const Icon(Icons.check_circle_outline, size: 22),
         label: Text(
           "Accept Request",
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
-            fontSize: 15,
-          ),
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 15),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: primary,
@@ -505,9 +509,7 @@ class MechanicActiveJobCard extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(vertical: 14),
         elevation: 2,
       ),
@@ -549,18 +551,22 @@ class MechanicActiveJobCard extends StatelessWidget {
     }
   }
 
-  // ✅ Complete Job
+  // ✅ Navigate to Job Completion Flow
   void _completeJob() {
     Get.defaultDialog(
       title: "Complete Job",
-      middleText: "Mark this job as completed?",
-      textConfirm: "Yes",
-      textCancel: "No",
+      middleText:
+          "Ready to complete? You'll fill in a summary, collect payment, and rate the customer.",
+      textConfirm: "Yes, Proceed",
+      textCancel: "Not Yet",
       confirmTextColor: Colors.white,
       buttonColor: Colors.green,
       onConfirm: () {
         Get.back();
-        Get.find<MechanicController>().completeJob();
+        Get.toNamed(
+          '/job-completion',
+          arguments: {'job': job, 'jobId': job['id']},
+        );
       },
     );
   }

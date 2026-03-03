@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -113,7 +112,9 @@ class InvoiceGenerator {
                         pw.SizedBox(height: 6),
                         _detailRow(
                           'Job ID',
-                          c.jobId.value.substring(0, 12).toUpperCase(),
+                          c.jobId.value.length >= 12
+                              ? c.jobId.value.substring(0, 12).toUpperCase()
+                              : c.jobId.value.toUpperCase(),
                         ),
                         _detailRow('Vehicle', job['vehicleType'] ?? '-'),
                         _detailRow('Problem', job['problem'] ?? '-'),

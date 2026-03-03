@@ -13,16 +13,20 @@ class MechanicProfileController extends GetxController {
 
   var userData = Rxn<Map<String, dynamic>>();
 
-  // Text controllers
+  // Editable text controllers
   final nameController = TextEditingController();
   final shopNameController = TextEditingController();
+  final shopAddressController = TextEditingController();
   final experienceController = TextEditingController();
-  final specialtyController = TextEditingController();
+  final emailController = TextEditingController();
+  final baseChargeController = TextEditingController();
+  final perKmChargeController = TextEditingController();
 
   // Statistics
   var totalJobsCompleted = 0.obs;
   var activeJobs = 0.obs;
   var rating = 0.0.obs;
+  var totalEarnings = 0.0.obs;
 
   @override
   void onInit() {
@@ -35,12 +39,14 @@ class MechanicProfileController extends GetxController {
   void onClose() {
     nameController.dispose();
     shopNameController.dispose();
+    shopAddressController.dispose();
     experienceController.dispose();
-    specialtyController.dispose();
+    emailController.dispose();
+    baseChargeController.dispose();
+    perKmChargeController.dispose();
     super.onClose();
   }
 
-  // 🔹 Fetch profile
   Future<void> fetchProfile() async {
     try {
       final uid = _auth.currentUser?.uid;
@@ -57,21 +63,23 @@ class MechanicProfileController extends GetxController {
           'phone': _auth.currentUser?.phoneNumber ?? '',
         };
 
-        nameController.text = data['name'] ?? '';
+        // Set editable fields
+        nameController.text = data['fullName'] ?? data['name'] ?? '';
         shopNameController.text = data['shopName'] ?? '';
-        experienceController.text = data['experience'] ?? '';
-        specialtyController.text = data['specialty'] ?? '';
+        shopAddressController.text = data['shopAddress'] ?? '';
+        experienceController.text = (data['experience'] ?? '').toString();
+        emailController.text = data['email'] ?? '';
+        baseChargeController.text = (data['baseCharge'] ?? '').toString();
+        perKmChargeController.text = (data['perKmCharge'] ?? '').toString();
       } else {
-        // Create basic profile if doesn't exist
         await _createBasicProfile(uid);
       }
     } catch (e) {
-      print("❌ Error fetching profile: $e");
+      debugPrint("❌ Error fetching profile: $e");
       Get.snackbar("Error", "Failed to load profile");
     }
   }
 
-  // 📝 Create basic profile
   Future<void> _createBasicProfile(String uid) async {
     final basicData = {
       'uid': uid,
@@ -79,60 +87,74 @@ class MechanicProfileController extends GetxController {
       'role': 'mechanic',
       'createdAt': FieldValue.serverTimestamp(),
     };
-
     await _firestore.collection('users').doc(uid).set(basicData);
     userData.value = basicData;
   }
 
-  // 📊 Fetch statistics
   Future<void> fetchStatistics() async {
     try {
       final uid = _auth.currentUser?.uid;
       if (uid == null) return;
 
-      // Get completed jobs count
       final completedSnapshot = await _firestore
           .collection('requests')
           .where('mechanicId', isEqualTo: uid)
           .where('status', isEqualTo: 'completed')
           .get();
-
       totalJobsCompleted.value = completedSnapshot.docs.length;
 
-      // Get active jobs count
       final activeSnapshot = await _firestore
           .collection('requests')
           .where('mechanicId', isEqualTo: uid)
           .where('status', isEqualTo: 'accepted')
           .get();
-
       activeJobs.value = activeSnapshot.docs.length;
 
-      // Calculate rating (example - you can customize this)
-      if (totalJobsCompleted.value > 0) {
-        rating.value = 4.5; // Placeholder - implement your rating system
+      // Fetch earnings from completedJobs
+      final earningsSnapshot = await _firestore
+          .collection('completedJobs')
+          .where('mechanicId', isEqualTo: uid)
+          .get();
+      double total = 0;
+      for (var doc in earningsSnapshot.docs) {
+        total += (doc.data()['totalAmount'] as num?)?.toDouble() ?? 0;
+      }
+      totalEarnings.value = total;
+
+      // Fetch average rating from completedJobs
+      if (earningsSnapshot.docs.isNotEmpty) {
+        double ratingSum = 0;
+        int ratingCount = 0;
+        for (var doc in earningsSnapshot.docs) {
+          final r = (doc.data()['driverRating'] as num?)?.toDouble() ?? 0;
+          if (r > 0) {
+            ratingSum += r;
+            ratingCount++;
+          }
+        }
+        rating.value = ratingCount > 0 ? ratingSum / ratingCount : 0;
       }
     } catch (e) {
-      print("❌ Error fetching statistics: $e");
+      debugPrint("❌ Error fetching statistics: $e");
     }
   }
 
-  // ✏️ Toggle edit mode
   void toggleEditMode() {
     if (isEditMode.value) {
-      // Canceling edit - reset fields
       final data = userData.value;
       if (data != null) {
-        nameController.text = data['name'] ?? '';
+        nameController.text = data['fullName'] ?? data['name'] ?? '';
         shopNameController.text = data['shopName'] ?? '';
-        experienceController.text = data['experience'] ?? '';
-        specialtyController.text = data['specialty'] ?? '';
+        shopAddressController.text = data['shopAddress'] ?? '';
+        experienceController.text = (data['experience'] ?? '').toString();
+        emailController.text = data['email'] ?? '';
+        baseChargeController.text = (data['baseCharge'] ?? '').toString();
+        perKmChargeController.text = (data['perKmCharge'] ?? '').toString();
       }
     }
     isEditMode.value = !isEditMode.value;
   }
 
-  // 💾 Save profile info
   Future<void> saveProfileInfo() async {
     if (nameController.text.trim().isEmpty) {
       Get.snackbar(
@@ -146,18 +168,20 @@ class MechanicProfileController extends GetxController {
 
     try {
       isLoading.value = true;
-
       final uid = _auth.currentUser!.uid;
+
       await _firestore.collection('users').doc(uid).update({
-        'name': nameController.text.trim(),
+        'fullName': nameController.text.trim(),
         'shopName': shopNameController.text.trim(),
-        'experience': experienceController.text.trim(),
-        'specialty': specialtyController.text.trim(),
+        'shopAddress': shopAddressController.text.trim(),
+        'experience': int.tryParse(experienceController.text.trim()) ?? 0,
+        'email': emailController.text.trim(),
+        'baseCharge': double.tryParse(baseChargeController.text.trim()) ?? 0,
+        'perKmCharge': double.tryParse(perKmChargeController.text.trim()) ?? 0,
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
       await fetchProfile();
-
       isLoading.value = false;
       isEditMode.value = false;
 
@@ -169,7 +193,7 @@ class MechanicProfileController extends GetxController {
       );
     } catch (e) {
       isLoading.value = false;
-      print("❌ Error saving profile: $e");
+      debugPrint("❌ Error saving profile: $e");
       Get.snackbar(
         "Error",
         "Failed to update profile",
@@ -179,31 +203,86 @@ class MechanicProfileController extends GetxController {
     }
   }
 
-  // 🚪 Logout
+  // Helper getters
+  String get displayName {
+    final d = userData.value;
+    return d?['fullName'] ?? d?['name'] ?? 'Mechanic';
+  }
+
+  String get verificationBadge {
+    final status = userData.value?['verificationStatus'] ?? 'pending';
+    switch (status) {
+      case 'approved':
+        return 'VERIFIED MECHANIC';
+      case 'pending':
+        return 'VERIFICATION PENDING';
+      case 'rejected':
+        return 'VERIFICATION REJECTED';
+      default:
+        return 'UNVERIFIED';
+    }
+  }
+
+  Color get verificationColor {
+    final status = userData.value?['verificationStatus'] ?? 'pending';
+    switch (status) {
+      case 'approved':
+        return const Color(0xFF4CAF50);
+      case 'pending':
+        return Colors.orange;
+      case 'rejected':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  List<String> get specializations {
+    final list = userData.value?['specializations'];
+    if (list is List) return list.cast<String>();
+    return [];
+  }
+
+  List<String> get servicesOffered {
+    final list = userData.value?['servicesOffered'];
+    if (list is List) return list.cast<String>();
+    return [];
+  }
+
+  List<String> get availableDays {
+    final list = userData.value?['availableDays'];
+    if (list is List) return list.cast<String>();
+    return [];
+  }
+
+  String get workingHoursFormatted {
+    final hours = userData.value?['workingHours'];
+    if (hours is Map) {
+      return '${hours['start'] ?? '—'} to ${hours['end'] ?? '—'}';
+    }
+    return 'Not set';
+  }
+
   Future<void> logout() async {
     try {
-      // Show confirmation dialog
       final confirmed = await showDialog<bool>(
         context: Get.context!,
         builder: (context) => AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          title: Row(
+          title: const Row(
             children: [
               Icon(Icons.logout, color: Colors.red),
               SizedBox(width: 8),
               Text("Logout"),
             ],
           ),
-          content: Text("Are you sure you want to logout?"),
+          content: const Text("Are you sure you want to logout?"),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: Text(
-                "Cancel",
-                style: TextStyle(color: Colors.grey),
-              ),
+              child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
             ElevatedButton(
               onPressed: () => Navigator.pop(context, true),
@@ -211,7 +290,7 @@ class MechanicProfileController extends GetxController {
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
               ),
-              child: Text("Logout"),
+              child: const Text("Logout"),
             ),
           ],
         ),
@@ -219,20 +298,19 @@ class MechanicProfileController extends GetxController {
 
       if (confirmed != true) return;
 
-      // Show loading
       showDialog(
         context: Get.context!,
         barrierDismissible: false,
-        builder: (context) => WillPopScope(
-          onWillPop: () async => false,
+        builder: (context) => PopScope(
+          canPop: false,
           child: Center(
             child: Container(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Column(
+              child: const Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CircularProgressIndicator(color: Color(0xFF6C63FF)),
@@ -245,19 +323,12 @@ class MechanicProfileController extends GetxController {
         ),
       );
 
-      await Future.delayed(Duration(milliseconds: 500));
-
-      // Sign out
+      await Future.delayed(const Duration(milliseconds: 500));
       await _auth.signOut();
-
-      // Close loading
       Navigator.pop(Get.context!);
-
-      // Clear everything
       Get.deleteAll(force: true);
       Get.reset();
 
-      // Show success
       Get.snackbar(
         "Success",
         "Logged out successfully",
@@ -265,16 +336,13 @@ class MechanicProfileController extends GetxController {
         colorText: Colors.green,
       );
 
-      await Future.delayed(Duration(milliseconds: 500));
-
-      // Close app (user can reopen and see login)
+      await Future.delayed(const Duration(milliseconds: 500));
       SystemNavigator.pop();
     } catch (e) {
       if (Navigator.canPop(Get.context!)) {
         Navigator.pop(Get.context!);
       }
-
-      print("❌ Logout error: $e");
+      debugPrint("❌ Logout error: $e");
       Get.snackbar(
         "Error",
         "Logout failed. Please try again.",
