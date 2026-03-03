@@ -35,42 +35,42 @@ class AdminDashboardController extends GetxController {
     try {
       isLoading.value = true;
 
-      // Total mechanics
+      // Total mechanics (simple single-field query)
       final allMechanics = await _firestore
           .collection('users')
           .where('role', isEqualTo: 'mechanic')
-          .where('onboardingCompleted', isEqualTo: true)
           .get();
-      totalMechanics.value = allMechanics.docs.length;
+      totalMechanics.value = allMechanics.docs
+          .where((d) => d.data()['onboardingCompleted'] == true)
+          .length;
 
-      // Today's date range
+      // Today's actions — fetch all recent and filter client-side
       final now = DateTime.now();
       final todayStart = DateTime(now.year, now.month, now.day);
-      final todayEnd = todayStart.add(const Duration(days: 1));
 
-      // Approved today
-      final approvedDocs = await _firestore
-          .collection('adminActions')
-          .where('action', isEqualTo: 'approved')
-          .where(
-            'timestamp',
-            isGreaterThanOrEqualTo: Timestamp.fromDate(todayStart),
-          )
-          .where('timestamp', isLessThan: Timestamp.fromDate(todayEnd))
-          .get();
-      approvedToday.value = approvedDocs.docs.length;
+      try {
+        final allActions = await _firestore
+            .collection('adminActions')
+            .orderBy('timestamp', descending: true)
+            .limit(50)
+            .get();
 
-      // Rejected today
-      final rejectedDocs = await _firestore
-          .collection('adminActions')
-          .where('action', isEqualTo: 'rejected')
-          .where(
-            'timestamp',
-            isGreaterThanOrEqualTo: Timestamp.fromDate(todayStart),
-          )
-          .where('timestamp', isLessThan: Timestamp.fromDate(todayEnd))
-          .get();
-      rejectedToday.value = rejectedDocs.docs.length;
+        int approved = 0;
+        int rejected = 0;
+        for (var doc in allActions.docs) {
+          final ts = doc.data()['timestamp'] as Timestamp?;
+          if (ts != null && ts.toDate().isAfter(todayStart)) {
+            if (doc.data()['action'] == 'approved') approved++;
+            if (doc.data()['action'] == 'rejected') rejected++;
+          }
+        }
+        approvedToday.value = approved;
+        rejectedToday.value = rejected;
+      } catch (_) {
+        // adminActions collection may not exist yet
+        approvedToday.value = 0;
+        rejectedToday.value = 0;
+      }
 
       isLoading.value = false;
     } catch (e) {

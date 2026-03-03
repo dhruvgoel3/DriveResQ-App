@@ -1,5 +1,7 @@
 import 'package:driveresq_app/modules/driver/bindings/driver_binding.dart';
 import 'package:driveresq_app/modules/driver/views/driver_dashboard_view.dart';
+import 'package:driveresq_app/modules/jobs/controllers/job_completion_controller.dart';
+import 'package:driveresq_app/modules/jobs/views/job_completion_page.dart';
 import 'package:driveresq_app/modules/mechanic/bindings/mechanic_binding.dart';
 import 'package:driveresq_app/modules/mechanic/controllers/onboarding_controller.dart';
 import 'package:driveresq_app/modules/mechanic/views/HomePage/mechanic_dashboard_view.dart';
@@ -135,6 +137,15 @@ class AppPages {
         if (!Get.isRegistered<VerificationController>()) {
           Get.lazyPut<VerificationController>(() => VerificationController());
         }
+      }),
+    ),
+
+    // Job Completion
+    GetPage(
+      name: Routes.JOB_COMPLETION,
+      page: () => const JobCompletionPage(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut<JobCompletionController>(() => JobCompletionController());
       }),
     ),
   ];

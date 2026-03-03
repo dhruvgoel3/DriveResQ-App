@@ -15,4 +15,7 @@ abstract class Routes {
   static const ADMIN_APPROVED = '/admin/approved';
   static const ADMIN_REJECTED = '/admin/rejected';
   static const ADMIN_REVIEW = '/admin/review';
+
+  // Job completion
+  static const JOB_COMPLETION = '/job-completion';
 }

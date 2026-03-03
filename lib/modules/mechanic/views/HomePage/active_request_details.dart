@@ -33,7 +33,8 @@ class ActiveRequestDetailsPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: Obx(() {
-        if (!controller.hasActiveJob.value || controller.activeJob.value == null) {
+        if (!controller.hasActiveJob.value ||
+            controller.activeJob.value == null) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -262,7 +263,11 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                     color: primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.location_on, color: primary, size: 24),
+                  child: const Icon(
+                    Icons.location_on,
+                    color: primary,
+                    size: 24,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -291,7 +296,8 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                 ),
               ],
             ),
-            if (job['landmark'] != null && job['landmark'].toString().isNotEmpty) ...[
+            if (job['landmark'] != null &&
+                job['landmark'].toString().isNotEmpty) ...[
               const SizedBox(height: 12),
               Container(
                 padding: const EdgeInsets.all(12),
@@ -379,7 +385,11 @@ class ActiveRequestDetailsPage extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.notes_rounded, color: Colors.blue.shade700, size: 20),
+                Icon(
+                  Icons.notes_rounded,
+                  color: Colors.blue.shade700,
+                  size: 20,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   "Additional Information",
@@ -429,7 +439,11 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                     color: Colors.red.shade200,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(Icons.warning_rounded, color: Colors.red, size: 24),
+                  child: const Icon(
+                    Icons.warning_rounded,
+                    color: Colors.red,
+                    size: 24,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Text(
@@ -460,10 +474,10 @@ class ActiveRequestDetailsPage extends StatelessWidget {
   }
 
   Widget _buildActionButtons(
-      BuildContext context,
-      Map<String, dynamic> job,
-      MechanicController controller,
-      ) {
+    BuildContext context,
+    Map<String, dynamic> job,
+    MechanicController controller,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -557,9 +571,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         padding: const EdgeInsets.symmetric(vertical: 16),
         elevation: 2,
       ),
@@ -618,19 +630,27 @@ class ActiveRequestDetailsPage extends StatelessWidget {
     );
   }
 
-  // ✅ Show Complete Dialog
+  // ✅ Navigate to Job Completion Flow
   void _showCompleteDialog(MechanicController controller) {
+    if (controller.activeJob.value == null) return;
+
     Get.defaultDialog(
       title: "Complete Job",
-      middleText: "Mark this job as completed?",
-      textConfirm: "Yes, Complete",
-      textCancel: "No",
+      middleText:
+          "Ready to complete this job? You'll fill in a summary, collect payment, and rate the customer.",
+      textConfirm: "Yes, Proceed",
+      textCancel: "Not Yet",
       confirmTextColor: Colors.white,
       buttonColor: Colors.green,
       onConfirm: () {
         Get.back(); // Close dialog
-        controller.completeJob();
-        Get.back(); // Go back to main page
+        Get.toNamed(
+          '/job-completion',
+          arguments: {
+            'job': controller.activeJob.value!,
+            'jobId': controller.activeJob.value!['id'],
+          },
+        );
       },
     );
   }
