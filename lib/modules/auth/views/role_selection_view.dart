@@ -13,112 +13,124 @@ class RoleSelectionView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            children: [
-              const SizedBox(height: 40),
-
-              // Header
-              Text(
-                "Welcome to",
-                style: GoogleFonts.poppins(
-                  fontSize: 24,
-                  color: Colors.grey.shade600,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - 48,
                 ),
-              ),
-              Text(
-                "DriveResQ",
-                style: GoogleFonts.poppins(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF6C63FF),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                "Your roadside assistance partner",
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  color: Colors.grey.shade500,
-                ),
-              ),
+                child: IntrinsicHeight(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 40),
 
-              const SizedBox(height: 60),
+                      // Header
+                      Text(
+                        "Welcome to",
+                        style: GoogleFonts.poppins(
+                          fontSize: 24,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                      Text(
+                        "DriveResQ",
+                        style: GoogleFonts.poppins(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF6C63FF),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "Your roadside assistance partner",
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: Colors.grey.shade500,
+                        ),
+                      ),
 
-              // Choose role text
-              Text(
-                "I am a...",
-                style: GoogleFonts.poppins(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+                      const SizedBox(height: 48),
 
-              const SizedBox(height: 30),
+                      // Choose role text
+                      Text(
+                        "I am a...",
+                        style: GoogleFonts.poppins(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
 
-              // Role cards
-              Expanded(
-                child: Column(
-                  children: [
-                    Obx(() => _roleCard(
-                      controller: controller,
-                      role: 'driver',
-                      title: 'Driver',
-                      subtitle: 'Need roadside assistance',
-                      icon: Icons.directions_car,
-                      color: Colors.blue,
-                      isSelected: controller.selectedRole.value == 'driver',
-                    )),
-                    const SizedBox(height: 20),
-                    Obx(() => _roleCard(
-                      controller: controller,
-                      role: 'mechanic',
-                      title: 'Mechanic',
-                      subtitle: 'Provide roadside assistance',
-                      icon: Icons.build,
-                      color: Colors.orange,
-                      isSelected: controller.selectedRole.value == 'mechanic',
-                    )),
-                  ],
-                ),
-              ),
+                      const SizedBox(height: 24),
 
-              const SizedBox(height: 20),
+                      // Role cards
+                      Obx(
+                        () => _roleCard(
+                          controller: controller,
+                          role: 'driver',
+                          title: 'Driver',
+                          subtitle: 'Need roadside assistance',
+                          icon: Icons.directions_car,
+                          color: Colors.blue,
+                          isSelected: controller.selectedRole.value == 'driver',
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Obx(
+                        () => _roleCard(
+                          controller: controller,
+                          role: 'mechanic',
+                          title: 'Mechanic',
+                          subtitle: 'Provide roadside assistance',
+                          icon: Icons.build,
+                          color: Colors.orange,
+                          isSelected:
+                              controller.selectedRole.value == 'mechanic',
+                        ),
+                      ),
 
-              // Continue button
-              Obx(() => SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: controller.selectedRole.value.isEmpty
-                      ? null
-                      : () {
-                    // Navigate to phone number screen
-                    Get.toNamed('/login'); // or '/phone' depending on your route name
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6C63FF),
-                    foregroundColor: Colors.white,
-                    disabledBackgroundColor: Colors.grey.shade300,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+                      const Spacer(),
+                      const SizedBox(height: 20),
+
+                      // Continue button
+                      Obx(
+                        () => SizedBox(
+                          width: double.infinity,
+                          height: 56,
+                          child: ElevatedButton(
+                            onPressed: controller.selectedRole.value.isEmpty
+                                ? null
+                                : () {
+                                    Get.toNamed('/login');
+                                  },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF6C63FF),
+                              foregroundColor: Colors.white,
+                              disabledBackgroundColor: Colors.grey.shade300,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            child: Text(
+                              "Continue",
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+                    ],
                   ),
-                  child: Text(
-                    "Continue",
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
                 ),
-              )),
-
-              const SizedBox(height: 20),
-            ],
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -148,12 +160,12 @@ class RoleSelectionView extends StatelessWidget {
           ),
           boxShadow: isSelected
               ? [
-            BoxShadow(
-              color: color.withOpacity(0.3),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
-            ),
-          ]
+                  BoxShadow(
+                    color: color.withOpacity(0.3),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
+                  ),
+                ]
               : [],
         ),
         child: Row(
@@ -164,11 +176,7 @@ class RoleSelectionView extends StatelessWidget {
                 color: color.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Icon(
-                icon,
-                size: 40,
-                color: color,
-              ),
+              child: Icon(icon, size: 40, color: color),
             ),
             const SizedBox(width: 20),
             Expanded(
@@ -197,15 +205,8 @@ class RoleSelectionView extends StatelessWidget {
             if (isSelected)
               Container(
                 padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: color,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.check,
-                  color: Colors.white,
-                  size: 20,
-                ),
+                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+                child: const Icon(Icons.check, color: Colors.white, size: 20),
               ),
           ],
         ),

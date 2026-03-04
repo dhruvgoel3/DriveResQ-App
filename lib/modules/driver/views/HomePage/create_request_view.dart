@@ -122,7 +122,7 @@ class CreateRequestView extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 210),
+              const SizedBox(height: 32),
 
               // 🚀 Submit
               ElevatedButton(

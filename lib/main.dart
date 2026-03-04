@@ -7,6 +7,7 @@ import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 import 'firebase_options.dart';
 import 'modules/auth/controllers/auth_controller.dart';
+import 'theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +32,11 @@ class DriveResQApp extends StatelessWidget {
       title: 'DriveResQ',
       debugShowCheckedModeBanner: false,
 
+      // 🎨 Design System
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      themeMode: ThemeMode.system,
+
       // 🔥 REGISTER GLOBAL CONTROLLERS HERE
       initialBinding: BindingsBuilder(() {
         Get.put(DevRoleController(), permanent: true);
@@ -38,10 +44,6 @@ class DriveResQApp extends StatelessWidget {
 
       initialRoute: Routes.SPLASH,
       getPages: AppPages.pages,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.white,
-      ),
     );
   }
 }

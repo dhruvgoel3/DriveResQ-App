@@ -157,12 +157,79 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
               ],
             ),
           ),
-          Text(
-            'Submitted: ${c.formatDate(m['onboardingSubmittedAt'])}',
-            style: GoogleFonts.poppins(
-              fontSize: 12,
-              color: Colors.grey.shade400,
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                'Submitted: ${c.formatDate(m['onboardingSubmittedAt'])}',
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  color: Colors.grey.shade400,
+                ),
+              ),
+              const SizedBox(height: 12),
+              // Always-visible Approve / Reject buttons
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () => _showApproveDialog(
+                      c,
+                      m['uid'] ?? '',
+                      m['fullName'] ?? 'Unknown',
+                    ),
+                    icon: const Icon(Icons.check_circle, size: 18),
+                    label: Text(
+                      'Approve',
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF4CAF50),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton.icon(
+                    onPressed: () => _showRejectDialog(
+                      c,
+                      m['uid'] ?? '',
+                      m['fullName'] ?? 'Unknown',
+                    ),
+                    icon: const Icon(Icons.cancel, size: 18),
+                    label: Text(
+                      'Reject',
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFF44336),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ],
       ),
