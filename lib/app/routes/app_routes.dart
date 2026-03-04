@@ -27,33 +27,63 @@ import '../../modules/auth/views/onboarding_view.dart';
 import 'app_pages.dart';
 
 class AppPages {
+  static const _dur = Duration(milliseconds: 300);
+
   static final pages = [
     GetPage(name: Routes.SPLASH, page: () => SplashView()),
-    GetPage(name: Routes.ONBOARDING, page: () => const OnboardingView()),
-    GetPage(name: Routes.ROLE, page: () => RoleSelectionView()),
-    GetPage(name: Routes.LOGIN, page: () => PhoneNumberView()),
-    GetPage(name: Routes.OTP, page: () => OTPVerificationView()),
+    GetPage(
+      name: Routes.ONBOARDING,
+      page: () => const OnboardingView(),
+      transition: Transition.fadeIn,
+      transitionDuration: _dur,
+    ),
+    GetPage(
+      name: Routes.ROLE,
+      page: () => RoleSelectionView(),
+      transition: Transition.fadeIn,
+      transitionDuration: _dur,
+    ),
+    GetPage(
+      name: Routes.LOGIN,
+      page: () => PhoneNumberView(),
+      transition: Transition.rightToLeft,
+      transitionDuration: _dur,
+    ),
+    GetPage(
+      name: Routes.OTP,
+      page: () => OTPVerificationView(),
+      transition: Transition.rightToLeft,
+      transitionDuration: _dur,
+    ),
 
     GetPage(
       name: Routes.DRIVER,
       page: () => DriverDashboardView(),
       binding: DriverBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: _dur,
     ),
 
     GetPage(
       name: Routes.DRIVER_ONBOARDING,
       page: () => const DriverOnboardingView(),
+      transition: Transition.rightToLeft,
+      transitionDuration: _dur,
     ),
 
     GetPage(
       name: Routes.MECHANIC,
       page: () => MechanicDashboardView(),
       binding: MechanicBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: _dur,
     ),
 
     GetPage(
       name: Routes.MECHANIC_ONBOARDING,
       page: () => const Step1PersonalDetails(),
+      transition: Transition.rightToLeft,
+      transitionDuration: _dur,
       binding: BindingsBuilder(() {
         Get.lazyPut<MechanicOnboardingController>(
           () => MechanicOnboardingController(),
@@ -64,6 +94,8 @@ class AppPages {
     GetPage(
       name: Routes.MECHANIC_VERIFICATION,
       page: () => const VerificationPendingView(),
+      transition: Transition.fadeIn,
+      transitionDuration: _dur,
     ),
 
     // ── Admin Routes ──

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import '../../../../shared/widgets/empty_state_widget.dart';
 
+/// Beautiful empty state for driver home — shown when no active request.
 class DriverEmptyState extends StatelessWidget {
   final VoidCallback onNewRequest;
 
@@ -8,73 +9,18 @@ class DriverEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 140),
-              child: Column(
-                children: [
-                  // 🖼️ Illustration placeholder
-                  Container(
-                    height: 220,
-                    width: 220,
-                    decoration: BoxDecoration(
-                      color: Colors.amber.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.directions_car_filled,
-                        size: 80,
-                        color: Colors.amber,
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 28),
-
-                  Text(
-                    "Everything looks good!",
-                    style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  SizedBox(height: 8),
-
-                  Text(
-                    "Your vehicle status is clear.\nNeed help? Tap the button below to request assistance.",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: Colors.grey.shade600,
-                      height: 1.4,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-
-        // ➕ Floating action button
-        Positioned(
-          bottom: 30,
-          right: 30,
-          child: FloatingActionButton(
-            shape: CircleBorder(), // ✅ correct
-            backgroundColor: Color(0xFF6C63FF), //
-            onPressed: onNewRequest,
-            child: const Icon(
-              Icons.add,
-              color: Colors.white, // better contrast
-            ),
-          ),
-        ),
+    return EmptyStateWidget(
+      icon: Icons.directions_car,
+      iconColor: const Color(0xFF6C63FF),
+      title: 'No Active Requests',
+      message:
+          'Need roadside assistance?\nCreate a request and get help from nearby mechanics!',
+      buttonText: 'Create Request',
+      onButtonPressed: onNewRequest,
+      tips: const [
+        'Average response time: ~5 minutes',
+        'Verified mechanics near you 24/7',
+        'Track your mechanic in real time',
       ],
     );
   }

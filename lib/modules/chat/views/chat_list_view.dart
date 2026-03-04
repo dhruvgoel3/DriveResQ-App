@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controllers/chat_controller.dart';
 import 'chat_screen.dart';
+import '../../../shared/widgets/empty_state_widget.dart';
+import '../../../shared/widgets/shimmer_loader.dart';
 
 class ChatListView extends StatelessWidget {
   const ChatListView({super.key});
@@ -70,40 +72,24 @@ class ChatListView extends StatelessWidget {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(color: _accent),
+            return const ShimmerLoader(
+              itemCount: 5,
+              cardType: ShimmerCardType.chat,
             );
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.chat_bubble_outline,
-                    size: 80,
-                    color: Colors.grey.shade300,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No chats yet',
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade400,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Chats will appear when a request is accepted',
-                    style: GoogleFonts.poppins(
-                      fontSize: 13,
-                      color: Colors.grey.shade400,
-                    ),
-                  ),
-                ],
-              ),
+            return const EmptyStateWidget(
+              icon: Icons.chat_bubble_outline,
+              iconColor: Color(0xFF6C63FF),
+              title: 'No Messages Yet',
+              message:
+                  'Chats will appear here when a mechanic accepts your request.',
+              tips: [
+                'Chat with your mechanic in real time',
+                'Share photos and negotiate prices',
+                'All your conversations in one place',
+              ],
             );
           }
 
