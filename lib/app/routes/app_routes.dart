@@ -1,5 +1,6 @@
 import 'package:driveresq_app/modules/driver/bindings/driver_binding.dart';
 import 'package:driveresq_app/modules/driver/views/driver_dashboard_view.dart';
+import 'package:driveresq_app/modules/driver/views/onboarding/driver_onboarding_view.dart';
 import 'package:driveresq_app/modules/jobs/controllers/job_completion_controller.dart';
 import 'package:driveresq_app/modules/jobs/views/job_completion_page.dart';
 import 'package:driveresq_app/modules/mechanic/bindings/mechanic_binding.dart';
@@ -22,11 +23,13 @@ import '../../modules/auth/views/enter_phone_number_view.dart';
 import '../../modules/auth/views/otp_verification_view.dart';
 import '../../modules/auth/views/role_selection_view.dart';
 import '../../modules/auth/views/splash_view.dart';
+import '../../modules/auth/views/onboarding_view.dart';
 import 'app_pages.dart';
 
 class AppPages {
   static final pages = [
     GetPage(name: Routes.SPLASH, page: () => SplashView()),
+    GetPage(name: Routes.ONBOARDING, page: () => const OnboardingView()),
     GetPage(name: Routes.ROLE, page: () => RoleSelectionView()),
     GetPage(name: Routes.LOGIN, page: () => PhoneNumberView()),
     GetPage(name: Routes.OTP, page: () => OTPVerificationView()),
@@ -35,6 +38,11 @@ class AppPages {
       name: Routes.DRIVER,
       page: () => DriverDashboardView(),
       binding: DriverBinding(),
+    ),
+
+    GetPage(
+      name: Routes.DRIVER_ONBOARDING,
+      page: () => const DriverOnboardingView(),
     ),
 
     GetPage(

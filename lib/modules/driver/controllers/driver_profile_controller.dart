@@ -13,31 +13,37 @@ class DriverProfileController extends GetxController {
 
   var userData = Rxn<Map<String, dynamic>>();
 
-  // Text controllers
+  // Stats
+  var totalRequests = 0.obs;
+  var completedRequests = 0.obs;
+  var totalSpent = 0.0.obs;
+
+  // Editable fields
   final nameController = TextEditingController();
-  final vehicleTypeController = TextEditingController();
-  final plateNumberController = TextEditingController();
+  final emailController = TextEditingController();
+  final addressController = TextEditingController();
 
   @override
   void onInit() {
     super.onInit();
     fetchProfile();
+    fetchStats();
   }
 
   @override
   void onClose() {
     nameController.dispose();
-    vehicleTypeController.dispose();
-    plateNumberController.dispose();
+    emailController.dispose();
+    addressController.dispose();
     super.onClose();
   }
 
-  // 🔹 Fetch profile
+  // ─── Fetch profile ───
   Future<void> fetchProfile() async {
     try {
       final uid = _auth.currentUser?.uid;
       if (uid == null) {
-        Get.snackbar("Error", "User not logged in");
+        Get.snackbar('Error', 'User not logged in');
         return;
       }
 
@@ -49,52 +55,65 @@ class DriverProfileController extends GetxController {
           'phone': _auth.currentUser?.phoneNumber ?? '',
         };
 
-        nameController.text = data['name'] ?? '';
-        vehicleTypeController.text = data['vehicleType'] ?? '';
-        plateNumberController.text = data['plateNumber'] ?? '';
-      } else {
-        // Create basic profile if doesn't exist
-        await _createBasicProfile(uid);
+        nameController.text = data['fullName'] ?? data['name'] ?? '';
+        emailController.text = data['email'] ?? '';
+        addressController.text = data['address'] ?? '';
       }
     } catch (e) {
-      print("❌ Error fetching profile: $e");
-      Get.snackbar("Error", "Failed to load profile");
+      debugPrint('❌ Error fetching profile: $e');
     }
   }
 
-  // 📝 Create basic profile
-  Future<void> _createBasicProfile(String uid) async {
-    final basicData = {
-      'uid': uid,
-      'phone': _auth.currentUser?.phoneNumber ?? '',
-      'role': 'driver',
-      'createdAt': FieldValue.serverTimestamp(),
-    };
+  // ─── Fetch statistics ───
+  Future<void> fetchStats() async {
+    try {
+      final uid = _auth.currentUser?.uid;
+      if (uid == null) return;
 
-    await _firestore.collection('users').doc(uid).set(basicData);
-    userData.value = basicData;
+      final allReqs = await _firestore
+          .collection('requests')
+          .where('driverId', isEqualTo: uid)
+          .get();
+
+      totalRequests.value = allReqs.docs.length;
+
+      int completed = 0;
+      double spent = 0;
+
+      for (var doc in allReqs.docs) {
+        final data = doc.data();
+        if (data['status'] == 'completed') {
+          completed++;
+          spent += (data['totalAmount'] as num?)?.toDouble() ?? 0;
+        }
+      }
+
+      completedRequests.value = completed;
+      totalSpent.value = spent;
+    } catch (e) {
+      debugPrint('❌ Stats error: $e');
+    }
   }
 
-  // ✏️ Toggle edit mode
+  // ─── Toggle edit mode ───
   void toggleEditMode() {
     if (isEditMode.value) {
-      // Canceling edit - reset fields
       final data = userData.value;
       if (data != null) {
-        nameController.text = data['name'] ?? '';
-        vehicleTypeController.text = data['vehicleType'] ?? '';
-        plateNumberController.text = data['plateNumber'] ?? '';
+        nameController.text = data['fullName'] ?? data['name'] ?? '';
+        emailController.text = data['email'] ?? '';
+        addressController.text = data['address'] ?? '';
       }
     }
     isEditMode.value = !isEditMode.value;
   }
 
-  // 💾 Save basic info
+  // ─── Save profile ───
   Future<void> saveBasicInfo() async {
     if (nameController.text.trim().isEmpty) {
       Get.snackbar(
-        "Error",
-        "Name cannot be empty",
+        'Error',
+        'Name cannot be empty',
         backgroundColor: Colors.red.withOpacity(0.1),
         colorText: Colors.red,
       );
@@ -103,62 +122,81 @@ class DriverProfileController extends GetxController {
 
     try {
       isLoading.value = true;
-
       final uid = _auth.currentUser!.uid;
+
       await _firestore.collection('users').doc(uid).update({
-        'name': nameController.text.trim(),
-        'vehicleType': vehicleTypeController.text.trim(),
-        'plateNumber': plateNumberController.text.trim(),
+        'fullName': nameController.text.trim(),
+        'email': emailController.text.trim(),
+        'address': addressController.text.trim(),
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
       await fetchProfile();
-
       isLoading.value = false;
       isEditMode.value = false;
 
       Get.snackbar(
-        "Success",
-        "Profile updated successfully",
+        'Success',
+        'Profile updated',
         backgroundColor: Colors.green.withOpacity(0.1),
         colorText: Colors.green,
       );
     } catch (e) {
       isLoading.value = false;
-      print("❌ Error saving profile: $e");
-      Get.snackbar(
-        "Error",
-        "Failed to update profile",
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+      debugPrint('❌ Save error: $e');
+      Get.snackbar('Error', 'Failed to update profile');
     }
   }
 
-  // 🚪 BULLETPROOF LOGOUT - WORKS 100%
+  // Getters
+  String get displayName =>
+      userData.value?['fullName'] ?? userData.value?['name'] ?? 'Driver';
+
+  String get phone => userData.value?['phone'] ?? '';
+
+  String get email => userData.value?['email'] ?? '';
+
+  String get address => userData.value?['address'] ?? '';
+
+  String get gender => userData.value?['gender'] ?? '';
+
+  String get dob {
+    final d = userData.value?['dob'] ?? '';
+    if (d.isEmpty) return '';
+    try {
+      final dt = DateTime.parse(d);
+      return '${dt.day}/${dt.month}/${dt.year}';
+    } catch (_) {
+      return d;
+    }
+  }
+
+  String get govtIdType => userData.value?['govtIdType'] ?? '';
+
+  String get govtIdNumber => userData.value?['govtIdNumber'] ?? '';
+
+  bool get isOnboarded => userData.value?['driverOnboardingCompleted'] == true;
+
+  // ─── Logout ───
   Future<void> logout() async {
     try {
-      // Show confirmation dialog
       final confirmed = await Get.dialog<bool>(
         AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          title: Row(
+          title: const Row(
             children: [
               Icon(Icons.logout, color: Colors.red),
               SizedBox(width: 8),
-              Text("Logout"),
+              Text('Logout'),
             ],
           ),
-          content: Text("Are you sure you want to logout?"),
+          content: const Text('Are you sure you want to logout?'),
           actions: [
             TextButton(
               onPressed: () => Get.back(result: false),
-              child: Text(
-                "Cancel",
-                style: TextStyle(color: Colors.grey),
-              ),
+              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
             ),
             ElevatedButton(
               onPressed: () => Get.back(result: true),
@@ -169,41 +207,32 @@ class DriverProfileController extends GetxController {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: Text("Yes, Logout"),
+              child: const Text('Yes, Logout'),
             ),
           ],
         ),
         barrierDismissible: false,
       );
 
-      // User cancelled
       if (confirmed != true) return;
 
-      // Show loading
+      // Loading
       Get.dialog(
-        WillPopScope(
-          onWillPop: () async => false,
+        PopScope(
+          canPop: false,
           child: Center(
             child: Container(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Column(
+              child: const Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator(
-                    color: Color(0xFF6C63FF),
-                  ),
+                  CircularProgressIndicator(color: Color(0xFF6C63FF)),
                   SizedBox(height: 16),
-                  Text(
-                    "Logging out...",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  Text('Logging out...', style: TextStyle(fontSize: 16)),
                 ],
               ),
             ),
@@ -212,53 +241,25 @@ class DriverProfileController extends GetxController {
         barrierDismissible: false,
       );
 
-      // Wait a moment
-      await Future.delayed(Duration(milliseconds: 500));
-
-      // Sign out from Firebase
+      await Future.delayed(const Duration(milliseconds: 500));
       await _auth.signOut();
-
-      // Close loading
       Get.back();
-
-      // Clear all GetX data
       Get.deleteAll(force: true);
       Get.reset();
 
-      // Show success
       Get.snackbar(
-        "Success",
-        "Logged out successfully",
+        'Success',
+        'Logged out successfully',
         backgroundColor: Colors.green.withOpacity(0.1),
         colorText: Colors.green,
-        icon: Icon(Icons.check_circle, color: Colors.green),
-        duration: Duration(seconds: 2),
       );
 
-      // Wait for snackbar to show
-      await Future.delayed(Duration(milliseconds: 500));
-
-      // RESTART THE APP - Most reliable method
-      SystemNavigator.pop(); // Close app (user can reopen)
-
-      // Alternative: Try to navigate back to first route
-      // Get.until((route) => route.isFirst);
-
+      await Future.delayed(const Duration(milliseconds: 500));
+      SystemNavigator.pop();
     } catch (e) {
-      // Close loading if open
-      if (Get.isDialogOpen ?? false) {
-        Get.back();
-      }
-
-      print("❌ Logout error: $e");
-
-      Get.snackbar(
-        "Error",
-        "Logout failed. Please try again.",
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-        icon: Icon(Icons.error, color: Colors.red),
-      );
+      if (Get.isDialogOpen ?? false) Get.back();
+      debugPrint('❌ Logout error: $e');
+      Get.snackbar('Error', 'Logout failed. Please try again.');
     }
   }
 }

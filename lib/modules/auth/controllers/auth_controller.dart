@@ -276,7 +276,12 @@ class AuthController extends GetxController {
       final role = data?['role'];
 
       if (role == 'driver') {
-        Get.offAllNamed(Routes.DRIVER);
+        final driverOnboardingDone = data?['driverOnboardingCompleted'] == true;
+        if (!driverOnboardingDone) {
+          Get.offAllNamed(Routes.DRIVER_ONBOARDING);
+        } else {
+          Get.offAllNamed(Routes.DRIVER);
+        }
       } else if (role == 'mechanic') {
         // Check mechanic onboarding status
         final onboardingCompleted = data?['onboardingCompleted'] == true;

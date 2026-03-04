@@ -1,9 +1,11 @@
 abstract class Routes {
   static const SPLASH = '/';
+  static const ONBOARDING = '/onboarding';
   static const ROLE = '/role';
   static const LOGIN = '/login';
   static const OTP = "/otp";
   static const DRIVER = '/driver';
+  static const DRIVER_ONBOARDING = '/driver-onboarding';
   static const MECHANIC = '/mechanic';
   static const MECHANIC_ONBOARDING = '/mechanic-onboarding';
   static const MECHANIC_VERIFICATION = '/mechanic-verification';

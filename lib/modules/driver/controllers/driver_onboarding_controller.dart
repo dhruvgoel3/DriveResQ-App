@@ -1,0 +1,178 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+
+class DriverOnboardingController extends GetxController {
+  final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+  final _picker = ImagePicker();
+
+  // Step management
+  var currentStep = 0.obs;
+  var isLoading = false.obs;
+
+  // Step 1: Personal Details
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final addressController = TextEditingController();
+  var gender = ''.obs;
+  var dob = Rxn<DateTime>();
+
+  // Step 2: Govt ID
+  var selectedIdType = 'Aadhaar Card'.obs;
+  final idNumberController = TextEditingController();
+  var idFrontPath = ''.obs;
+  var idBackPath = ''.obs;
+
+  final idTypes = ['Aadhaar Card', 'PAN Card', 'Driving License', 'Voter ID'];
+
+  @override
+  void onClose() {
+    nameController.dispose();
+    emailController.dispose();
+    addressController.dispose();
+    idNumberController.dispose();
+    super.onClose();
+  }
+
+  void nextStep() {
+    final error = _validateCurrentStep();
+    if (error != null) {
+      Get.snackbar(
+        'Required',
+        error,
+        backgroundColor: Colors.orange.withOpacity(0.1),
+        colorText: Colors.orange.shade800,
+      );
+      return;
+    }
+    if (currentStep.value < 1) {
+      currentStep.value++;
+    } else {
+      submitOnboarding();
+    }
+  }
+
+  void previousStep() {
+    if (currentStep.value > 0) currentStep.value--;
+  }
+
+  String? _validateCurrentStep() {
+    switch (currentStep.value) {
+      case 0:
+        if (nameController.text.trim().isEmpty) return 'Please enter your name';
+        if (addressController.text.trim().isEmpty)
+          return 'Please enter your address';
+        if (gender.value.isEmpty) return 'Please select gender';
+        return null;
+      case 1:
+        if (idNumberController.text.trim().isEmpty)
+          return 'Please enter ID number';
+        if (idFrontPath.value.isEmpty) return 'Please upload front of your ID';
+        return null;
+      default:
+        return null;
+    }
+  }
+
+  Future<void> pickIdPhoto({required bool isFront}) async {
+    final source = await Get.bottomSheet<ImageSource>(
+      Container(
+        padding: const EdgeInsets.all(20),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt, color: Color(0xFF6C63FF)),
+              title: const Text('Camera'),
+              onTap: () => Get.back(result: ImageSource.camera),
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.photo_library,
+                color: Color(0xFF6C63FF),
+              ),
+              title: const Text('Gallery'),
+              onTap: () => Get.back(result: ImageSource.gallery),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (source == null) return;
+    final picked = await _picker.pickImage(source: source, imageQuality: 70);
+    if (picked == null) return;
+
+    if (isFront) {
+      idFrontPath.value = picked.path;
+    } else {
+      idBackPath.value = picked.path;
+    }
+  }
+
+  Future<void> pickDob(BuildContext context) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime(2000, 1, 1),
+      firstDate: DateTime(1950),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) dob.value = picked;
+  }
+
+  Future<void> submitOnboarding() async {
+    final error = _validateCurrentStep();
+    if (error != null) {
+      Get.snackbar('Required', error);
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+      final uid = _auth.currentUser!.uid;
+
+      // Mask ID number (show only last 4)
+      final rawId = idNumberController.text.trim();
+      final maskedId = rawId.length > 4
+          ? '${'X' * (rawId.length - 4)}${rawId.substring(rawId.length - 4)}'
+          : rawId;
+
+      await _firestore.collection('users').doc(uid).update({
+        'fullName': nameController.text.trim(),
+        'email': emailController.text.trim(),
+        'address': addressController.text.trim(),
+        'gender': gender.value,
+        'dob': dob.value?.toIso8601String() ?? '',
+        'govtIdType': selectedIdType.value,
+        'govtIdNumber': maskedId,
+        'driverOnboardingCompleted': true,
+        'onboardingCompletedAt': FieldValue.serverTimestamp(),
+      });
+
+      isLoading.value = false;
+      Get.offAllNamed('/driver');
+      Get.snackbar(
+        'Welcome!',
+        'Profile setup complete 🎉',
+        backgroundColor: Colors.green.withOpacity(0.1),
+        colorText: Colors.green,
+      );
+    } catch (e) {
+      isLoading.value = false;
+      debugPrint('❌ Driver onboarding error: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to submit. Please try again.',
+        backgroundColor: Colors.red.withOpacity(0.1),
+        colorText: Colors.red,
+      );
+    }
+  }
+}
