@@ -113,11 +113,11 @@ class PhoneNumberView extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade50,
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: Colors.grey.shade200,
-                            width: 2,
+                            color: Colors.grey.shade300,
+                            width: 1,
                           ),
                         ),
                         child: Row(

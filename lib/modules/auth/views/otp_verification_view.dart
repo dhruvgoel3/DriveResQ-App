@@ -97,7 +97,7 @@ class OTPVerificationView extends StatelessWidget {
                               color: Colors.black,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade50,
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(color: Colors.grey.shade300),
                             ),
