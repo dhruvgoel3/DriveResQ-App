@@ -154,7 +154,7 @@ class RatingView extends StatelessWidget {
             decoration: InputDecoration(
               hintText: 'Write a review (optional)',
               hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400),
-              filled: true,
+              filled: false,
               fillColor: Colors.grey.shade50,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),

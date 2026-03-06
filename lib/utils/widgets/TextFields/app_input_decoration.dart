@@ -7,7 +7,7 @@ InputDecoration AppInputDecoration({
   return InputDecoration(
     labelText: label,
     prefixIcon: Icon(icon),
-    filled: true,
+    filled: false,
     fillColor: Colors.white,
     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     border: OutlineInputBorder(

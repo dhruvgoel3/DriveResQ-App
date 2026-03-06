@@ -485,7 +485,7 @@ class JobSummaryView extends StatelessWidget {
           fontSize: 14,
           fontWeight: FontWeight.w600,
         ),
-        filled: true,
+        filled: false,
         fillColor: Colors.grey.shade50,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

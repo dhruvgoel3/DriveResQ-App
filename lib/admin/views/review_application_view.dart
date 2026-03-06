@@ -577,7 +577,7 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
               decoration: InputDecoration(
                 hintText: 'Add internal notes about this application...',
                 hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400),
-                filled: true,
+                filled: false,
                 fillColor: Colors.grey.shade50,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),

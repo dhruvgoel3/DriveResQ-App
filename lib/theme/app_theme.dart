@@ -248,7 +248,7 @@ class AppTheme {
 
       // Input
       inputDecorationTheme: InputDecorationTheme(
-        filled: true,
+        filled: false,
         fillColor: AppColors.darkSurfaceVariant,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,

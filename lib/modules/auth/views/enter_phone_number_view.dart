@@ -151,6 +151,7 @@ class PhoneNumberView extends StatelessWidget {
                                 style: GoogleFonts.poppins(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
+                                  color: Colors.black,
                                 ),
                                 inputFormatters: [
                                   FilteringTextInputFormatter.allow(
@@ -168,6 +169,7 @@ class PhoneNumberView extends StatelessWidget {
                                   counterText: "",
                                   contentPadding: EdgeInsets.zero,
                                   isCollapsed: true,
+                                  filled: false,
                                 ),
                               ),
                             ),

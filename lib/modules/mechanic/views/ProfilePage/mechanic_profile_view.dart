@@ -681,7 +681,7 @@ class MechanicProfileView extends StatelessWidget {
         labelText: label,
         labelStyle: GoogleFonts.poppins(fontSize: 13),
         prefixIcon: Icon(icon, size: 20, color: _accent),
-        filled: true,
+        filled: false,
         fillColor: Colors.grey.shade50,
         isDense: true,
         contentPadding: const EdgeInsets.symmetric(
