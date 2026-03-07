@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 
 import '../../driver/services/mechanic_location_service.dart';
 import '../../chat/services/chat_service.dart';
+import '../../../services/notification_sender.dart';
 
 class MechanicController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -285,6 +286,16 @@ class MechanicController extends GetxController {
       try {
         final mechanicDoc = await _firestore.collection('users').doc(uid).get();
         final mechanicData = mechanicDoc.data() ?? {};
+        // Notify Driver about Acceptance
+        await NotificationSender.notifyDriverRequestAccepted(
+          requestId: requestId,
+          driverId: requestData['driverId'] ?? '',
+          mechanicId: uid,
+          mechanicName:
+              mechanicData['fullName'] ?? mechanicData['name'] ?? 'Mechanic',
+          mechanicPhone: mechanicPhone,
+        );
+
         await ChatService.createChat(
           requestId: requestId,
           driverId: requestData['driverId'] ?? '',
@@ -342,6 +353,15 @@ class MechanicController extends GetxController {
             'acceptedAt': FieldValue.delete(),
           });
 
+      // Notify Driver about cancellation
+      if (activeJob.value!['driverId'] != null) {
+        await NotificationSender.notifyRequestCancelled(
+          requestId: activeJob.value!['id'],
+          recipientId: activeJob.value!['driverId'],
+          reason: 'Mechanic cancelled the request',
+        );
+      }
+
       Get.snackbar(
         "Success",
         "Job cancelled successfully",
@@ -372,6 +392,25 @@ class MechanicController extends GetxController {
         'status': 'completed',
         'completedAt': FieldValue.serverTimestamp(),
       });
+
+      // 🔔 Notify driver job is completed
+      if (activeJob.value!['driverId'] != null) {
+        final mechanicDoc = await _firestore
+            .collection('users')
+            .doc(_auth.currentUser!.uid)
+            .get();
+        final mechName =
+            mechanicDoc.data()?['fullName'] ??
+            mechanicDoc.data()?['name'] ??
+            'Mechanic';
+
+        await NotificationSender.notifyDriverJobCompleted(
+          requestId: jobId,
+          driverId: activeJob.value!['driverId'],
+          mechanicName: mechName,
+          totalAmount: 0.0, // Assuming payment happens before or in parallel
+        );
+      }
 
       Get.snackbar(
         "Success",

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
+import '../../../services/notification_sender.dart';
 import '../models/message_model.dart';
 
 class ChatService {
@@ -82,6 +83,13 @@ class ChatService {
       'lastMessageBy': _uid,
       unreadField: FieldValue.increment(1),
     });
+
+    // 🔔 Notify recipient
+    await _sendNotification(
+      chatId: chatId,
+      senderRole: senderRole,
+      content: content,
+    );
   }
 
   // ─── Send system message ───
@@ -155,6 +163,13 @@ class ChatService {
       'lastMessageBy': _uid,
       unreadField: FieldValue.increment(1),
     });
+
+    // 🔔 Notify recipient
+    await _sendNotification(
+      chatId: chatId,
+      senderRole: senderRole,
+      content: '📷 Photo',
+    );
   }
 
   static Future<void> _uploadFileNative(Reference ref, String path) async {
@@ -220,6 +235,13 @@ class ChatService {
       'lastMessageBy': _uid,
       'driverUnreadCount': FieldValue.increment(1),
     });
+
+    // 🔔 Notify recipient
+    await _sendNotification(
+      chatId: chatId,
+      senderRole: 'mechanic',
+      content: '💰 Sent an estimate: ₹${estimatedCost.toStringAsFixed(0)}',
+    );
   }
 
   // ─── Respond to price quote ───
@@ -314,6 +336,37 @@ class ChatService {
         .collection('chats')
         .where('participants', arrayContains: _uid)
         .snapshots();
+  }
+
+  // ─── Helper for Notifications ───
+  static Future<void> _sendNotification({
+    required String chatId,
+    required String senderRole,
+    required String content,
+  }) async {
+    try {
+      final doc = await _firestore.collection('chats').doc(chatId).get();
+      if (doc.exists) {
+        final chatData = doc.data()!;
+        final recipientId = senderRole == 'driver'
+            ? chatData['mechanicId']
+            : chatData['driverId'];
+        final senderName = senderRole == 'driver'
+            ? (chatData['driverName'] ?? 'Driver')
+            : (chatData['mechanicName'] ?? 'Mechanic');
+
+        if (recipientId != null && recipientId.toString().isNotEmpty) {
+          await NotificationSender.notifyChatMessage(
+            chatId: chatId,
+            recipientId: recipientId,
+            senderName: senderName,
+            message: content,
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('Error sending chat notification: $e');
+    }
   }
 }
 

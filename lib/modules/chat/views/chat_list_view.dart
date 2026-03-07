@@ -96,12 +96,19 @@ class ChatListView extends StatelessWidget {
           // Sort client-side by lastMessageTime (avoids Firestore composite index)
           final chats = snapshot.data!.docs.toList();
           chats.sort((a, b) {
-            final aTime = (a.data() as Map<String, dynamic>)['lastMessageTime'];
-            final bTime = (b.data() as Map<String, dynamic>)['lastMessageTime'];
+            final aData = a.data() as Map<String, dynamic>;
+            final bData = b.data() as Map<String, dynamic>;
+            final aTime = aData['lastMessageTime'];
+            final bTime = bData['lastMessageTime'];
+
             if (aTime == null && bTime == null) return 0;
             if (aTime == null) return 1;
             if (bTime == null) return -1;
-            return (bTime as Timestamp).compareTo(aTime as Timestamp);
+
+            if (aTime is Timestamp && bTime is Timestamp) {
+              return bTime.compareTo(aTime);
+            }
+            return 0; // Fallback for invalid formats
           });
 
           return ListView.separated(

@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../services/location_service.dart';
-import '../services/mechanic_location_service.dart';
+import '../../../services/notification_sender.dart';
 
 class CreateRequestController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -81,7 +81,7 @@ class CreateRequestController extends GetxController {
     }
 
     // 🧠 SAVE REQUEST (WITH COORDINATES)
-    await _firestore.collection('requests').add({
+    final requestRef = await _firestore.collection('requests').add({
       'driverId': _auth.currentUser!.uid,
       'driverPhone': _auth.currentUser!.phoneNumber,
       'status': 'open',
@@ -95,6 +95,16 @@ class CreateRequestController extends GetxController {
       'createdAt': FieldValue.serverTimestamp(),
       'imageUrl': imageUrl, // ✅ ADDED - Store image URL
     });
+
+    // 🔔 Send notification to nearby mechanics
+    await NotificationSender.notifyNearbyMechanics(
+      requestId: requestRef.id,
+      driverId: _auth.currentUser!.uid,
+      driverLat: driverLat!,
+      driverLng: driverLng!,
+      problem: problemController.text.trim(),
+      location: locationName.value,
+    );
 
     isLoading.value = false;
     Get.back();

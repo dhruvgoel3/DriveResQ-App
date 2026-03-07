@@ -3,14 +3,14 @@ import 'package:driveresq_app/modules/driver/views/widgets/driver_safety_tips.da
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../../../../app/routes/app_pages.dart';
 import '../../../../utils/role_change/dev_config.dart';
 import '../../../../utils/role_change/dev_role_container.dart';
-import '../widgets/active_requests_card.dart';
-import 'create_request_view.dart';
-
 // ✅ CORRECT
 import '../../controllers/driver_controller.dart';
+import '../widgets/active_requests_card.dart';
+import 'create_request_view.dart';
 
 class DriverHomeView extends StatelessWidget {
   const DriverHomeView({super.key});
@@ -20,6 +20,7 @@ class DriverHomeView extends StatelessWidget {
     final controller = Get.find<DriverController>();
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(

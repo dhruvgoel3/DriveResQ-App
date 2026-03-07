@@ -214,7 +214,7 @@ class ChatScreen extends StatelessWidget {
               ),
               child: TextField(
                 controller: c.textController,
-                style: GoogleFonts.poppins(fontSize: 14),
+                style: GoogleFonts.poppins(fontSize: 14, color: Colors.black87),
                 maxLines: 4,
                 minLines: 1,
                 textCapitalization: TextCapitalization.sentences,

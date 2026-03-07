@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../services/notification_sender.dart';
 
 class JobCompletionController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -296,6 +297,19 @@ class JobCompletionController extends GetxController {
         'totalEarnings': FieldValue.increment(totalAmount.value),
         'totalJobsCompleted': FieldValue.increment(1),
       });
+
+      // 🔔 Send Push Notification to Driver
+      final mechanicDoc = await _firestore.collection('users').doc(uid).get();
+      final mechanicName = mechanicDoc.data()?['name'] ?? 'Your Mechanic';
+
+      if ((job['driverId'] ?? '').toString().isNotEmpty) {
+        await NotificationSender.notifyDriverJobCompleted(
+          requestId: jobId.value,
+          driverId: job['driverId'] ?? '',
+          mechanicName: mechanicName,
+          totalAmount: totalAmount.value,
+        );
+      }
 
       isLoading.value = false;
       currentStep.value = 3; // Go to success screen

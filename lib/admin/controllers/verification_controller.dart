@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../../services/notification_sender.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -139,6 +140,13 @@ class VerificationController extends GetxController {
         'timestamp': FieldValue.serverTimestamp(),
       });
 
+      // 🔔 Notification
+      await NotificationSender.notifyVerificationStatus(
+        mechanicId: uid,
+        status: 'approved',
+        reason: welcomeMessage ?? 'You are good to go!',
+      );
+
       isLoading.value = false;
 
       Get.snackbar(
@@ -198,6 +206,13 @@ class VerificationController extends GetxController {
         'allowResubmission': allowResubmission,
         'timestamp': FieldValue.serverTimestamp(),
       });
+
+      // 🔔 Notification
+      await NotificationSender.notifyVerificationStatus(
+        mechanicId: uid,
+        status: 'rejected',
+        reason: reason,
+      );
 
       isLoading.value = false;
 
