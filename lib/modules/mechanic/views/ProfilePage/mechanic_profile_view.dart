@@ -2,22 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controller/mechanic_profile_controller.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class MechanicProfileView extends StatelessWidget {
-  const MechanicProfileView({super.key});
 
   static const _accent = Color(0xFF6C63FF);
+
+  const MechanicProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final c = Get.put(MechanicProfileController());
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+      backgroundColor: Color(0xFFF5F6FA),
       body: Obx(() {
         final data = c.userData.value;
         if (data == null) {
-          return const Center(child: CircularProgressIndicator(color: _accent));
+          return Center(child: CircularProgressIndicator(color: _accent));
         }
 
         return CustomScrollView(
@@ -27,25 +29,25 @@ class MechanicProfileView extends StatelessWidget {
 
             // Content
             SliverPadding(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.w),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   _statsRow(c),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _personalInfoCard(c, data),
-                  const SizedBox(height: 14),
+                  SizedBox(height: 14.h),
                   _shopInfoCard(c, data),
-                  const SizedBox(height: 14),
+                  SizedBox(height: 14.h),
                   _specializationsCard(c),
-                  const SizedBox(height: 14),
+                  SizedBox(height: 14.h),
                   _availabilityCard(c, data),
-                  const SizedBox(height: 14),
+                  SizedBox(height: 14.h),
                   _pricingCard(c, data),
-                  const SizedBox(height: 14),
+                  SizedBox(height: 14.h),
                   _verificationCard(c, data),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   _logoutButton(c),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                 ]),
               ),
             ),
@@ -62,7 +64,7 @@ class MechanicProfileView extends StatelessWidget {
       pinned: true,
       backgroundColor: _accent,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.white),
+        icon: Icon(Icons.arrow_back, color: Colors.white),
         onPressed: () => Get.back(),
       ),
       actions: [
@@ -78,7 +80,7 @@ class MechanicProfileView extends StatelessWidget {
       ],
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [Color(0xFF6C63FF), Color(0xFF5A52E8), Color(0xFF4840D4)],
               begin: Alignment.topLeft,
@@ -89,59 +91,59 @@ class MechanicProfileView extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 40),
+                SizedBox(height: 40.h),
                 // Avatar
                 Container(
-                  padding: const EdgeInsets.all(4),
+                  padding: EdgeInsets.all(4.w),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: Colors.white.withOpacity(0.4),
-                      width: 3,
+                      width: 3.w,
                     ),
                   ),
                   child: CircleAvatar(
-                    radius: 46,
+                    radius: 46.r,
                     backgroundImage: _profileImage(data),
                     backgroundColor: Colors.white.withOpacity(0.15),
                     child: _profileImage(data) == null
-                        ? const Icon(
+                        ? Icon(
                             Icons.person,
-                            size: 46,
+                            size: 46.w,
                             color: Colors.white70,
                           )
                         : null,
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 Text(
                   c.displayName,
                   style: GoogleFonts.poppins(
-                    fontSize: 22,
+                    fontSize: 22.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: 2),
                 if (data['shopName'] != null &&
                     data['shopName'].toString().isNotEmpty)
                   Text(
                     data['shopName'],
                     style: GoogleFonts.poppins(
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       color: Colors.white70,
                     ),
                   ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 // Verification Badge
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 4,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
+                    vertical: 4.h,
                   ),
                   decoration: BoxDecoration(
                     color: c.verificationColor.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(20.r),
                     border: Border.all(
                       color: c.verificationColor.withOpacity(0.5),
                     ),
@@ -150,17 +152,17 @@ class MechanicProfileView extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        c.verificationColor == const Color(0xFF4CAF50)
+                        c.verificationColor == Color(0xFF4CAF50)
                             ? Icons.verified
                             : Icons.pending,
-                        size: 14,
+                        size: 14.w,
                         color: Colors.white,
                       ),
-                      const SizedBox(width: 4),
+                      SizedBox(width: 4.w),
                       Text(
                         c.verificationBadge,
                         style: GoogleFonts.poppins(
-                          fontSize: 10,
+                          fontSize: 10.sp,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
                           letterSpacing: 0.5,
@@ -196,21 +198,21 @@ class MechanicProfileView extends StatelessWidget {
             c.totalJobsCompleted.value.toString(),
             Colors.green,
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10.w),
           _statTile(
             Icons.star_rounded,
             'Rating',
             c.rating.value > 0 ? c.rating.value.toStringAsFixed(1) : '—',
             Colors.amber,
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10.w),
           _statTile(
             Icons.account_balance_wallet,
             'Earned',
             '₹${c.totalEarnings.value.toStringAsFixed(0)}',
             _accent,
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10.w),
           _statTile(
             Icons.bolt,
             'Active',
@@ -225,22 +227,22 @@ class MechanicProfileView extends StatelessWidget {
   Widget _statTile(IconData icon, String label, String value, Color color) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 6),
+        padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 6.w),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(14.r),
           boxShadow: [
             BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8),
           ],
         ),
         child: Column(
           children: [
-            Icon(icon, color: color, size: 22),
-            const SizedBox(height: 6),
+            Icon(icon, color: color, size: 22.w),
+            SizedBox(height: 6.h),
             Text(
               value,
               style: GoogleFonts.poppins(
-                fontSize: 16,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.bold,
                 color: color,
               ),
@@ -248,7 +250,7 @@ class MechanicProfileView extends StatelessWidget {
             Text(
               label,
               style: GoogleFonts.poppins(
-                fontSize: 10,
+                fontSize: 10.sp,
                 color: Colors.grey.shade500,
               ),
             ),
@@ -273,9 +275,9 @@ class MechanicProfileView extends StatelessWidget {
             isEdit
                 ? _editField('Full Name', c.nameController, Icons.badge)
                 : _infoRow(Icons.badge, 'Full Name', c.displayName),
-            const Divider(height: 20),
+            Divider(height: 20.h),
             _infoRow(Icons.phone, 'Phone', data['phone'] ?? '—'),
-            const Divider(height: 20),
+            Divider(height: 20.h),
             isEdit
                 ? _editField('Email', c.emailController, Icons.email)
                 : _infoRow(
@@ -283,15 +285,15 @@ class MechanicProfileView extends StatelessWidget {
                     'Email',
                     data['email'] ?? 'Not added',
                   ),
-            const Divider(height: 20),
+            Divider(height: 20.h),
             _infoRow(
               Icons.cake_outlined,
               'Date of Birth',
               _formatDob(data['dob']),
             ),
-            const Divider(height: 20),
+            Divider(height: 20.h),
             _infoRow(Icons.person, 'Gender', data['gender'] ?? '—'),
-            if (isEdit) ...[const SizedBox(height: 16), _saveButton(c)],
+            if (isEdit) ...[SizedBox(height: 16.h), _saveButton(c)],
           ],
         ),
       );
@@ -318,7 +320,7 @@ class MechanicProfileView extends StatelessWidget {
                     'Shop Name',
                     data['shopName'] ?? '—',
                   ),
-            const Divider(height: 20),
+            Divider(height: 20.h),
             isEdit
                 ? _editField(
                     'Address',
@@ -330,7 +332,7 @@ class MechanicProfileView extends StatelessWidget {
                     'Address',
                     data['shopAddress'] ?? 'Not added',
                   ),
-            const Divider(height: 20),
+            Divider(height: 20.h),
             isEdit
                 ? _editField(
                     'Experience (years)',
@@ -344,22 +346,22 @@ class MechanicProfileView extends StatelessWidget {
                   ),
             if (data['shopPhotoUrl'] != null &&
                 data['shopPhotoUrl'].toString().isNotEmpty) ...[
-              const Divider(height: 20),
+              Divider(height: 20.h),
               Row(
                 children: [
                   _iconBox(Icons.photo_camera_outlined),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12.w),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Shop Photo', style: _labelStyle),
-                        const SizedBox(height: 6),
+                        SizedBox(height: 6.h),
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                           child: Image.network(
                             data['shopPhotoUrl'],
-                            height: 100,
+                            height: 100.h,
                             width: double.infinity,
                             fit: BoxFit.cover,
                           ),
@@ -386,7 +388,7 @@ class MechanicProfileView extends StatelessWidget {
         children: [
           if (c.specializations.isNotEmpty) ...[
             Text('Specializations', style: _labelStyle),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Wrap(
               spacing: 6,
               runSpacing: 6,
@@ -396,14 +398,14 @@ class MechanicProfileView extends StatelessWidget {
             ),
           ],
           if (c.servicesOffered.isNotEmpty) ...[
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Text('Services Offered', style: _labelStyle),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Wrap(
               spacing: 6,
               runSpacing: 6,
               children: c.servicesOffered
-                  .map((s) => _chip(s, const Color(0xFF4CAF50)))
+                  .map((s) => _chip(s, Color(0xFF4CAF50)))
                   .toList(),
             ),
           ],
@@ -425,18 +427,18 @@ class MechanicProfileView extends StatelessWidget {
       child: Column(
         children: [
           _infoRow(Icons.access_time, 'Working Hours', c.workingHoursFormatted),
-          const Divider(height: 20),
+          Divider(height: 20.h),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _iconBox(Icons.calendar_month_outlined),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Available Days', style: _labelStyle),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6.h),
                     c.availableDays.isNotEmpty
                         ? Wrap(
                             spacing: 6,
@@ -444,18 +446,18 @@ class MechanicProfileView extends StatelessWidget {
                             children: c.availableDays
                                 .map(
                                   (d) => Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 4,
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 10.w,
+                                      vertical: 4.h,
                                     ),
                                     decoration: BoxDecoration(
                                       color: _accent.withOpacity(0.08),
-                                      borderRadius: BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(8.r),
                                     ),
                                     child: Text(
                                       d,
                                       style: GoogleFonts.poppins(
-                                        fontSize: 12,
+                                        fontSize: 12.sp,
                                         fontWeight: FontWeight.w500,
                                         color: _accent,
                                       ),
@@ -467,7 +469,7 @@ class MechanicProfileView extends StatelessWidget {
                         : Text(
                             'Not set',
                             style: GoogleFonts.poppins(
-                              fontSize: 14,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -476,7 +478,7 @@ class MechanicProfileView extends StatelessWidget {
               ),
             ],
           ),
-          const Divider(height: 20),
+          Divider(height: 20.h),
           _infoRow(
             Icons.radar,
             'Service Radius',
@@ -507,7 +509,7 @@ class MechanicProfileView extends StatelessWidget {
                     'Base Charge',
                     '₹${data['baseCharge'] ?? '—'}',
                   ),
-            const Divider(height: 20),
+            Divider(height: 20.h),
             isEdit
                 ? _editField('Per Km (₹)', c.perKmChargeController, Icons.route)
                 : _infoRow(
@@ -515,7 +517,7 @@ class MechanicProfileView extends StatelessWidget {
                     'Per Km Charge',
                     '₹${data['perKmCharge'] ?? '—'}',
                   ),
-            const Divider(height: 20),
+            Divider(height: 20.h),
             _infoRow(
               Icons.bolt,
               'Emergency Surcharge',
@@ -538,7 +540,7 @@ class MechanicProfileView extends StatelessWidget {
       child: Column(
         children: [
           _statusRow('Phone Verified', true, Icons.phone_android),
-          const Divider(height: 20),
+          Divider(height: 20.h),
           _statusRow(
             'Aadhaar Submitted',
             data['aadhaarNumber'] != null &&
@@ -548,31 +550,31 @@ class MechanicProfileView extends StatelessWidget {
           if (data['aadhaarNumber'] != null &&
               data['aadhaarNumber'].toString().isNotEmpty) ...[
             Padding(
-              padding: const EdgeInsets.only(left: 52, top: 4),
+              padding: EdgeInsets.only(left: 52.w, top: 4.h),
               child: Text(
                 data['aadhaarNumber'],
                 style: GoogleFonts.poppins(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   color: Colors.grey.shade500,
                 ),
               ),
             ),
           ],
-          const Divider(height: 20),
+          Divider(height: 20.h),
           _statusRow(
             'PAN Card',
             data['panCardUrl'] != null &&
                 data['panCardUrl'].toString().isNotEmpty,
             Icons.account_balance,
           ),
-          const Divider(height: 20),
+          Divider(height: 20.h),
           _statusRow(
             'Trade License',
             data['tradeLicenseUrl'] != null &&
                 data['tradeLicenseUrl'].toString().isNotEmpty,
             Icons.workspace_premium,
           ),
-          const Divider(height: 20),
+          Divider(height: 20.h),
           _statusRow(
             'Bank Account Linked',
             data['bankAccountNumber'] != null &&
@@ -580,7 +582,7 @@ class MechanicProfileView extends StatelessWidget {
             Icons.account_balance_wallet,
           ),
           if (data['upiId'] != null && data['upiId'].toString().isNotEmpty) ...[
-            const Divider(height: 20),
+            Divider(height: 20.h),
             _infoRow(Icons.qr_code, 'UPI ID', data['upiId']),
           ],
         ],
@@ -596,15 +598,15 @@ class MechanicProfileView extends StatelessWidget {
     required Widget child,
   }) {
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: EdgeInsets.all(18.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
             blurRadius: 8,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -613,19 +615,19 @@ class MechanicProfileView extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, size: 20, color: _accent),
-              const SizedBox(width: 8),
+              Icon(icon, size: 20.w, color: _accent),
+              SizedBox(width: 8.w),
               Text(
                 title,
                 style: GoogleFonts.poppins(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.black87,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14.h),
           child,
         ],
       ),
@@ -636,17 +638,17 @@ class MechanicProfileView extends StatelessWidget {
     return Row(
       children: [
         _iconBox(icon),
-        const SizedBox(width: 12),
+        SizedBox(width: 12.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(label, style: _labelStyle),
-              const SizedBox(height: 2),
+              SizedBox(height: 2),
               Text(
                 value,
                 style: GoogleFonts.poppins(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                   color: Colors.black87,
                 ),
@@ -660,12 +662,12 @@ class MechanicProfileView extends StatelessWidget {
 
   Widget _iconBox(IconData icon) {
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: EdgeInsets.all(8.w),
       decoration: BoxDecoration(
         color: _accent.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10.r),
       ),
-      child: Icon(icon, size: 18, color: _accent),
+      child: Icon(icon, size: 18.w, color: _accent),
     );
   }
 
@@ -676,29 +678,29 @@ class MechanicProfileView extends StatelessWidget {
   ) {
     return TextField(
       controller: controller,
-      style: GoogleFonts.poppins(fontSize: 14),
+      style: GoogleFonts.poppins(fontSize: 14.sp),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.poppins(fontSize: 13),
-        prefixIcon: Icon(icon, size: 20, color: _accent),
+        labelStyle: GoogleFonts.poppins(fontSize: 13.sp),
+        prefixIcon: Icon(icon, size: 20.w, color: _accent),
         filled: false,
         fillColor: Colors.grey.shade50,
         isDense: true,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 14,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 14.w,
+          vertical: 14.h,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(color: Colors.grey.shade200),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(color: Colors.grey.shade200),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: _accent, width: 2),
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(color: _accent, width: 2),
         ),
       ),
     );
@@ -706,16 +708,16 @@ class MechanicProfileView extends StatelessWidget {
 
   Widget _chip(String label, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
       decoration: BoxDecoration(
         color: color.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
         border: Border.all(color: color.withOpacity(0.25)),
       ),
       child: Text(
         label,
         style: GoogleFonts.poppins(
-          fontSize: 12,
+          fontSize: 12.sp,
           fontWeight: FontWeight.w500,
           color: color,
         ),
@@ -727,28 +729,28 @@ class MechanicProfileView extends StatelessWidget {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(8),
+          padding: EdgeInsets.all(8.w),
           decoration: BoxDecoration(
             color: (verified ? Colors.green : Colors.grey).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
           ),
           child: Icon(
             verified ? Icons.check_circle : Icons.radio_button_unchecked,
             color: verified ? Colors.green : Colors.grey.shade400,
-            size: 20,
+            size: 20.w,
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12.w),
         Text(
           title,
           style: GoogleFonts.poppins(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w500,
             color: verified ? Colors.black87 : Colors.grey.shade500,
           ),
         ),
-        const Spacer(),
-        Icon(icon, size: 18, color: Colors.grey.shade300),
+        Spacer(),
+        Icon(icon, size: 18.w, color: Colors.grey.shade300),
       ],
     );
   }
@@ -763,15 +765,15 @@ class MechanicProfileView extends StatelessWidget {
             backgroundColor: _accent,
             foregroundColor: Colors.white,
             elevation: 0,
-            padding: const EdgeInsets.symmetric(vertical: 14),
+            padding: EdgeInsets.symmetric(vertical: 14.h),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
           ),
           child: c.isLoading.value
-              ? const SizedBox(
-                  height: 20,
-                  width: 20,
+              ? SizedBox(
+                  height: 20.h,
+                  width: 20.w,
                   child: CircularProgressIndicator(
                     color: Colors.white,
                     strokeWidth: 2,
@@ -780,7 +782,7 @@ class MechanicProfileView extends StatelessWidget {
               : Text(
                   'Save Changes',
                   style: GoogleFonts.poppins(
-                    fontSize: 15,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -792,21 +794,21 @@ class MechanicProfileView extends StatelessWidget {
   Widget _logoutButton(MechanicProfileController c) {
     return ElevatedButton.icon(
       onPressed: c.logout,
-      icon: const Icon(Icons.logout, color: Colors.white, size: 20),
+      icon: Icon(Icons.logout, color: Colors.white, size: 20.w),
       label: Text(
         'Logout',
         style: GoogleFonts.poppins(
           color: Colors.white,
           fontWeight: FontWeight.w600,
-          fontSize: 15,
+          fontSize: 15.sp,
         ),
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.red.shade400,
         foregroundColor: Colors.white,
-        minimumSize: const Size(double.infinity, 52),
+        minimumSize: Size(double.infinity, 52),
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
       ),
     );
   }
@@ -822,5 +824,5 @@ class MechanicProfileView extends StatelessWidget {
   }
 
   TextStyle get _labelStyle =>
-      GoogleFonts.poppins(fontSize: 11, color: Colors.grey.shade500);
+      GoogleFonts.poppins(fontSize: 11.sp, color: Colors.grey.shade500);
 }

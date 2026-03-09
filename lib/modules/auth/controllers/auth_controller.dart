@@ -18,11 +18,6 @@ class AuthController extends GetxController {
   final phoneController = TextEditingController();
   final otpController = TextEditingController();
 
-  @override
-  void onInit() {
-    super.onInit();
-    // DON'T check auth state here - let splash handle it
-  }
 
   @override
   void onClose() {
@@ -89,7 +84,7 @@ class AuthController extends GetxController {
 
       await _auth.verifyPhoneNumber(
         phoneNumber: phone,
-        timeout: const Duration(seconds: 60),
+        timeout: Duration(seconds: 60),
         verificationCompleted: (PhoneAuthCredential credential) async {
           debugPrint("✅ Auto-verification completed");
           await _signInWithCredential(credential);
@@ -253,7 +248,7 @@ class AuthController extends GetxController {
       }
     } catch (e) {
       isLoading.value = false;
-      throw e;
+      rethrow;
     }
   }
 

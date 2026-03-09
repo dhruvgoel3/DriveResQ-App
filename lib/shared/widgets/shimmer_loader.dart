@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 /// Shimmer loading skeleton that shows placeholder cards while data loads.
 /// Use instead of CircularProgressIndicator for better UX.
@@ -7,7 +8,8 @@ class ShimmerLoader extends StatelessWidget {
   final int itemCount;
   final ShimmerCardType cardType;
 
-  const ShimmerLoader({
+
+  ShimmerLoader({
     super.key,
     this.itemCount = 3,
     this.cardType = ShimmerCardType.standard,
@@ -20,8 +22,8 @@ class ShimmerLoader extends StatelessWidget {
       highlightColor: Colors.grey.shade50,
       child: ListView.builder(
         shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(16),
+        physics: NeverScrollableScrollPhysics(),
+        padding: EdgeInsets.all(16.w),
         itemCount: itemCount,
         itemBuilder: (_, i) {
           switch (cardType) {
@@ -41,11 +43,11 @@ class ShimmerLoader extends StatelessWidget {
 
   Widget _standardCard() {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 16.h),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,22 +55,22 @@ class ShimmerLoader extends StatelessWidget {
           Row(
             children: [
               _box(48, 48, isCircle: true),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _box(120, 14),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     _box(80, 10),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _box(double.infinity, 12),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           _box(200, 12),
         ],
       ),
@@ -77,11 +79,11 @@ class ShimmerLoader extends StatelessWidget {
 
   Widget _requestCard() {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 16.h),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,23 +92,23 @@ class ShimmerLoader extends StatelessWidget {
           Row(
             children: [
               _box(40, 40, isCircle: true),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(child: _box(140, 16)),
-              _box(60, 24, radius: 12),
+              _box(60, 24, radius: 12.r),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _box(double.infinity, 1), // divider
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           // Info rows
           _box(double.infinity, 14),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           _box(200, 14),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           _box(160, 14),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           // Button
-          _box(double.infinity, 48, radius: 14),
+          _box(double.infinity, 48, radius: 14.r),
         ],
       ),
     );
@@ -114,11 +116,11 @@ class ShimmerLoader extends StatelessWidget {
 
   Widget _chatCard() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       child: Row(
         children: [
           _box(52, 52, isCircle: true),
-          const SizedBox(width: 14),
+          SizedBox(width: 14.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,7 +131,7 @@ class ShimmerLoader extends StatelessWidget {
                     _box(40, 10),
                   ],
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 _box(180, 12),
               ],
             ),
@@ -141,24 +143,24 @@ class ShimmerLoader extends StatelessWidget {
 
   Widget _profileCard() {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.only(bottom: 16.h),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
       ),
       child: Column(
         children: [
           _box(80, 80, isCircle: true),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _box(150, 18),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           _box(100, 12),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
           _box(double.infinity, 14),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           _box(double.infinity, 14),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           _box(double.infinity, 14),
         ],
       ),

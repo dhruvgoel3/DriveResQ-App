@@ -3,9 +3,11 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/onboarding_controller.dart';
 import 'step2_professional_details.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class Step1PersonalDetails extends StatelessWidget {
   const Step1PersonalDetails({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -20,22 +22,22 @@ class Step1PersonalDetails extends StatelessWidget {
             _buildProgressBar(c),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(24.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildHeader(),
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32.h),
                     _buildProfilePhoto(c),
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28.h),
                     _buildFullName(c),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     _buildDobPicker(c, context),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     _buildGenderPicker(c),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     _buildEmail(c),
-                    const SizedBox(height: 40),
+                    SizedBox(height: 40.h),
                   ],
                 ),
               ),
@@ -52,10 +54,10 @@ class Step1PersonalDetails extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(
+        icon: Icon(
           Icons.arrow_back_ios_new,
           color: Colors.black87,
-          size: 20,
+          size: 20.w,
         ),
         onPressed: () => Get.back(),
       ),
@@ -63,7 +65,7 @@ class Step1PersonalDetails extends StatelessWidget {
         'Mechanic Registration',
         style: GoogleFonts.poppins(
           color: Colors.black87,
-          fontSize: 18,
+          fontSize: 18.sp,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -74,7 +76,7 @@ class Step1PersonalDetails extends StatelessWidget {
   Widget _buildProgressBar(MechanicOnboardingController c) {
     return Obx(() {
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
         child: Column(
           children: [
             Row(
@@ -83,28 +85,28 @@ class Step1PersonalDetails extends StatelessWidget {
                 Text(
                   'Step ${c.currentStep.value} of 6',
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFFFF9800),
+                    color: Color(0xFFFF9800),
                   ),
                 ),
                 Text(
                   'Personal Details',
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     color: Colors.grey.shade500,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             ClipRRect(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8.r),
               child: LinearProgressIndicator(
                 value: c.currentStep.value / 6,
-                minHeight: 6,
+                minHeight: 6.h,
                 backgroundColor: Colors.grey.shade200,
-                valueColor: const AlwaysStoppedAnimation<Color>(
+                valueColor: AlwaysStoppedAnimation<Color>(
                   Color(0xFFFF9800),
                 ),
               ),
@@ -122,15 +124,15 @@ class Step1PersonalDetails extends StatelessWidget {
         Text(
           'Personal Details',
           style: GoogleFonts.poppins(
-            fontSize: 26,
+            fontSize: 26.sp,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6.h),
         Text(
           'Tell us about yourself to set up your profile',
-          style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey.shade500),
+          style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.grey.shade500),
         ),
       ],
     );
@@ -144,14 +146,14 @@ class Step1PersonalDetails extends StatelessWidget {
           child: Stack(
             children: [
               Container(
-                width: 120,
-                height: 120,
+                width: 120.w,
+                height: 120.h,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xFFFF9800).withOpacity(0.1),
+                  color: Color(0xFFFF9800).withOpacity(0.1),
                   border: Border.all(
-                    color: const Color(0xFFFF9800).withOpacity(0.3),
-                    width: 3,
+                    color: Color(0xFFFF9800).withOpacity(0.3),
+                    width: 3.w,
                   ),
                   image: c.profilePhoto.value != null
                       ? DecorationImage(
@@ -161,9 +163,9 @@ class Step1PersonalDetails extends StatelessWidget {
                       : null,
                 ),
                 child: c.profilePhoto.value == null
-                    ? const Icon(
+                    ? Icon(
                         Icons.person,
-                        size: 50,
+                        size: 50.w,
                         color: Color(0xFFFF9800),
                       )
                     : null,
@@ -172,14 +174,14 @@ class Step1PersonalDetails extends StatelessWidget {
                 bottom: 0,
                 right: 0,
                 child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: const BoxDecoration(
+                  padding: EdgeInsets.all(8.w),
+                  decoration: BoxDecoration(
                     color: Color(0xFFFF9800),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.camera_alt,
-                    size: 18,
+                    size: 18.w,
                     color: Colors.white,
                   ),
                 ),
@@ -206,27 +208,27 @@ class Step1PersonalDetails extends StatelessWidget {
       return GestureDetector(
         onTap: () => c.pickDob(context),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
           decoration: BoxDecoration(
             color: Colors.grey.shade50,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(14.r),
             border: Border.all(color: Colors.grey.shade200, width: 1.5),
           ),
           child: Row(
             children: [
               Icon(
                 Icons.calendar_today,
-                color: const Color(0xFFFF9800),
-                size: 22,
+                color: Color(0xFFFF9800),
+                size: 22.w,
               ),
-              const SizedBox(width: 14),
+              SizedBox(width: 14.w),
               Expanded(
                 child: Text(
                   hasDate
                       ? '${c.dob.value!.day}/${c.dob.value!.month}/${c.dob.value!.year}'
                       : 'Date of Birth *',
                   style: GoogleFonts.poppins(
-                    fontSize: 15,
+                    fontSize: 15.sp,
                     color: hasDate ? Colors.black87 : Colors.grey.shade400,
                   ),
                 ),
@@ -242,16 +244,16 @@ class Step1PersonalDetails extends StatelessWidget {
   Widget _buildGenderPicker(MechanicOnboardingController c) {
     return Obx(() {
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
         decoration: BoxDecoration(
           color: Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(14.r),
           border: Border.all(color: Colors.grey.shade200, width: 1.5),
         ),
         child: Row(
           children: [
-            const Icon(Icons.wc, color: Color(0xFFFF9800), size: 22),
-            const SizedBox(width: 14),
+            Icon(Icons.wc, color: Color(0xFFFF9800), size: 22.w),
+            SizedBox(width: 14.w),
             Expanded(
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
@@ -260,12 +262,12 @@ class Step1PersonalDetails extends StatelessWidget {
                     'Gender *',
                     style: GoogleFonts.poppins(
                       color: Colors.grey.shade400,
-                      fontSize: 15,
+                      fontSize: 15.sp,
                     ),
                   ),
                   style: GoogleFonts.poppins(
                     color: Colors.black87,
-                    fontSize: 15,
+                    fontSize: 15.sp,
                   ),
                   items: ['Male', 'Female', 'Other']
                       .map((g) => DropdownMenuItem(value: g, child: Text(g)))
@@ -293,29 +295,29 @@ class Step1PersonalDetails extends StatelessWidget {
 
   Widget _buildContinueButton(MechanicOnboardingController c) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(24.w),
       child: SizedBox(
         width: double.infinity,
-        height: 56,
+        height: 56.h,
         child: ElevatedButton(
           onPressed: () {
             c.nextStep();
             if (c.currentStep.value == 2) {
-              Get.to(() => const Step2ProfessionalDetails());
+              Get.to(() => Step2ProfessionalDetails());
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFFF9800),
+            backgroundColor: Color(0xFFFF9800),
             foregroundColor: Colors.white,
             elevation: 0,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
             ),
           ),
           child: Text(
             'Continue',
             style: GoogleFonts.poppins(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -337,30 +339,30 @@ class Step1PersonalDetails extends StatelessWidget {
         Text(
           label,
           style: GoogleFonts.poppins(
-            fontSize: 13,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w600,
             color: Colors.grey.shade700,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Container(
           decoration: BoxDecoration(
             color: Colors.grey.shade50,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(14.r),
             border: Border.all(color: Colors.grey.shade200, width: 1.5),
           ),
           child: TextField(
             controller: controller,
             keyboardType: type,
-            style: GoogleFonts.poppins(fontSize: 15),
+            style: GoogleFonts.poppins(fontSize: 15.sp),
             decoration: InputDecoration(
               hintText: hint,
               hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400),
-              prefixIcon: Icon(icon, color: const Color(0xFFFF9800), size: 22),
+              prefixIcon: Icon(icon, color: Color(0xFFFF9800), size: 22.w),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 16,
-                horizontal: 16,
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 16.h,
+                horizontal: 16.w,
               ),
             ),
           ),

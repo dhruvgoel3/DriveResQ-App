@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 /// Reusable empty state widget with animated illustration, title,
 /// message, optional CTA button, and optional tips list.
@@ -13,7 +14,7 @@ class EmptyStateWidget extends StatefulWidget {
   final List<String>? tips;
   final Color? buttonColor;
 
-  const EmptyStateWidget({
+  EmptyStateWidget({
     super.key,
     required this.icon,
     this.iconColor = const Color(0xFF6C63FF),
@@ -41,7 +42,7 @@ class _EmptyStateWidgetState extends State<EmptyStateWidget>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: Duration(milliseconds: 800),
     );
     _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
     _scale = Tween<double>(
@@ -49,7 +50,7 @@ class _EmptyStateWidgetState extends State<EmptyStateWidget>
       end: 1.0,
     ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.elasticOut));
     _slide = Tween<Offset>(
-      begin: const Offset(0, 0.15),
+      begin: Offset(0, 0.15),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
     _ctrl.forward();
@@ -63,7 +64,7 @@ class _EmptyStateWidgetState extends State<EmptyStateWidget>
 
   @override
   Widget build(BuildContext context) {
-    final btnColor = widget.buttonColor ?? const Color(0xFF6C63FF);
+    final btnColor = widget.buttonColor ?? Color(0xFF6C63FF);
 
     return Center(
       child: SlideTransition(
@@ -71,7 +72,7 @@ class _EmptyStateWidgetState extends State<EmptyStateWidget>
         child: FadeTransition(
           opacity: _fade,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
+            padding: EdgeInsets.symmetric(horizontal: 32.w),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -79,35 +80,39 @@ class _EmptyStateWidgetState extends State<EmptyStateWidget>
                 ScaleTransition(
                   scale: _scale,
                   child: Container(
-                    width: 140,
-                    height: 140,
+                    width: 140.w,
+                    height: 140.h,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: widget.iconColor.withValues(alpha: 0.08),
                     ),
-                    child: Icon(widget.icon, size: 64, color: widget.iconColor),
+                    child: Icon(
+                      widget.icon,
+                      size: 64.w,
+                      color: widget.iconColor,
+                    ),
                   ),
                 ),
-                const SizedBox(height: 28),
+                SizedBox(height: 28.h),
 
                 // Title
                 Text(
                   widget.title,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
-                    fontSize: 20,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.h),
 
                 // Message
                 Text(
                   widget.message,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     color: Colors.grey.shade500,
                     height: 1.5,
                   ),
@@ -115,12 +120,12 @@ class _EmptyStateWidgetState extends State<EmptyStateWidget>
 
                 // Tips
                 if (widget.tips != null && widget.tips!.isNotEmpty) ...[
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   Container(
-                    padding: const EdgeInsets.all(14),
+                    padding: EdgeInsets.all(14.w),
                     decoration: BoxDecoration(
                       color: Colors.grey.shade50,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(14.r),
                       border: Border.all(color: Colors.grey.shade200),
                     ),
                     child: Column(
@@ -128,21 +133,21 @@ class _EmptyStateWidgetState extends State<EmptyStateWidget>
                       children: widget.tips!
                           .map(
                             (tip) => Padding(
-                              padding: const EdgeInsets.only(bottom: 6),
+                              padding: EdgeInsets.only(bottom: 6.h),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Icon(
                                     Icons.lightbulb_outline,
-                                    size: 16,
+                                    size: 16.w,
                                     color: Colors.amber.shade600,
                                   ),
-                                  const SizedBox(width: 8),
+                                  SizedBox(width: 8.w),
                                   Expanded(
                                     child: Text(
                                       tip,
                                       style: GoogleFonts.poppins(
-                                        fontSize: 12,
+                                        fontSize: 12.sp,
                                         color: Colors.grey.shade600,
                                       ),
                                     ),
@@ -159,25 +164,25 @@ class _EmptyStateWidgetState extends State<EmptyStateWidget>
                 // Button
                 if (widget.buttonText != null &&
                     widget.onButtonPressed != null) ...[
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: widget.onButtonPressed,
-                      icon: const Icon(Icons.add, size: 20),
+                      icon: Icon(Icons.add, size: 20.w),
                       label: Text(
                         widget.buttonText!,
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
-                          fontSize: 15,
+                          fontSize: 15.sp,
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: btnColor,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(14.r),
                         ),
                         elevation: 0,
                       ),

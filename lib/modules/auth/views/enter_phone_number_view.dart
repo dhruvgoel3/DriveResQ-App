@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controllers/auth_controller.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class PhoneNumberView extends StatelessWidget {
   const PhoneNumberView({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class PhoneNumberView extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Get.back(),
         ),
       ),
@@ -27,54 +29,54 @@ class PhoneNumberView extends StatelessWidget {
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.symmetric(horizontal: 24.w),
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: IntrinsicHeight(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.h),
 
                       // Header
                       Text(
                         "Enter your",
                         style: GoogleFonts.poppins(
-                          fontSize: 28,
+                          fontSize: 28.sp,
                           color: Colors.grey.shade600,
                         ),
                       ),
                       Text(
                         "Phone Number",
                         style: GoogleFonts.poppins(
-                          fontSize: 32,
+                          fontSize: 32.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.h),
                       Text(
                         "We'll send you a verification code",
                         style: GoogleFonts.poppins(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           color: Colors.grey.shade500,
                         ),
                       ),
 
-                      const SizedBox(height: 40),
+                      SizedBox(height: 40.h),
 
                       // Role badge
                       Obx(
                         () => Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 8.h,
                           ),
                           decoration: BoxDecoration(
                             color: controller.selectedRole.value == 'driver'
                                 ? Colors.blue.withValues(alpha: 0.1)
                                 : Colors.orange.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(20.r),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -83,18 +85,18 @@ class PhoneNumberView extends StatelessWidget {
                                 controller.selectedRole.value == 'driver'
                                     ? Icons.directions_car
                                     : Icons.build,
-                                size: 16,
+                                size: 16.w,
                                 color: controller.selectedRole.value == 'driver'
                                     ? Colors.blue
                                     : Colors.orange,
                               ),
-                              const SizedBox(width: 6),
+                              SizedBox(width: 6.w),
                               Text(
                                 controller.selectedRole.value == 'driver'
                                     ? 'Driver'
                                     : 'Mechanic',
                                 style: GoogleFonts.poppins(
-                                  fontSize: 12,
+                                  fontSize: 12.sp,
                                   fontWeight: FontWeight.w600,
                                   color:
                                       controller.selectedRole.value == 'driver'
@@ -107,14 +109,14 @@ class PhoneNumberView extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24.h),
 
                       // Phone input
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(16.r),
                           border: Border.all(
                             color: Colors.grey.shade300,
                             width: 1,
@@ -123,33 +125,33 @@ class PhoneNumberView extends StatelessWidget {
                         child: Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 12.w,
+                                vertical: 8.h,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(
+                                color: Color(
                                   0xFF6C63FF,
                                 ).withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(8.r),
                               ),
                               child: Text(
                                 "+91",
                                 style: GoogleFonts.poppins(
-                                  fontSize: 16,
+                                  fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
-                                  color: const Color(0xFF6C63FF),
+                                  color: Color(0xFF6C63FF),
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            SizedBox(width: 12.w),
                             Expanded(
                               child: TextField(
                                 controller: controller.phoneController,
                                 keyboardType: TextInputType.phone,
                                 maxLength: 15,
                                 style: GoogleFonts.poppins(
-                                  fontSize: 18,
+                                  fontSize: 18.sp,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black,
                                 ),
@@ -178,30 +180,30 @@ class PhoneNumberView extends StatelessWidget {
                       ),
 
                       // Flexible space instead of Spacer
-                      const Spacer(),
+                      Spacer(),
 
                       // Send OTP button
                       Obx(
                         () => SizedBox(
                           width: double.infinity,
-                          height: 56,
+                          height: 56.h,
                           child: ElevatedButton(
                             onPressed: controller.isLoading.value
                                 ? null
                                 : controller.sendOTP,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF6C63FF),
+                              backgroundColor: Color(0xFF6C63FF),
                               foregroundColor: Colors.white,
                               disabledBackgroundColor: Colors.grey.shade300,
                               elevation: 0,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(16.r),
                               ),
                             ),
                             child: controller.isLoading.value
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
+                                ? SizedBox(
+                                    height: 20.h,
+                                    width: 20.w,
                                     child: CircularProgressIndicator(
                                       color: Colors.white,
                                       strokeWidth: 2,
@@ -210,7 +212,7 @@ class PhoneNumberView extends StatelessWidget {
                                 : Text(
                                     "Send OTP",
                                     style: GoogleFonts.poppins(
-                                      fontSize: 16,
+                                      fontSize: 16.sp,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),

@@ -826,7 +826,7 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
                   ),
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
-                    value: selectedReason,
+                    initialValue: selectedReason,
                     items: VerificationController.rejectionReasons.map((r) {
                       return DropdownMenuItem(
                         value: r,

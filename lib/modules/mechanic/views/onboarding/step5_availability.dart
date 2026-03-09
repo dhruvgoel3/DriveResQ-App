@@ -4,9 +4,11 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/onboarding_controller.dart';
 import 'step6_terms.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class Step5Availability extends StatelessWidget {
   const Step5Availability({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -21,20 +23,20 @@ class Step5Availability extends StatelessWidget {
             _buildProgressBar(c),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(24.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildHeader(),
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28.h),
                     _buildWorkingHours(c, context),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24.h),
                     _buildAvailableDays(c),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24.h),
                     _buildServiceRadius(c),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24.h),
                     _buildPricingSection(c),
-                    const SizedBox(height: 40),
+                    SizedBox(height: 40.h),
                   ],
                 ),
               ),
@@ -51,10 +53,10 @@ class Step5Availability extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(
+        icon: Icon(
           Icons.arrow_back_ios_new,
           color: Colors.black87,
-          size: 20,
+          size: 20.w,
         ),
         onPressed: () {
           c.currentStep.value = 4;
@@ -65,7 +67,7 @@ class Step5Availability extends StatelessWidget {
         'Mechanic Registration',
         style: GoogleFonts.poppins(
           color: Colors.black87,
-          fontSize: 18,
+          fontSize: 18.sp,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -76,7 +78,7 @@ class Step5Availability extends StatelessWidget {
   Widget _buildProgressBar(MechanicOnboardingController c) {
     return Obx(
       () => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
         child: Column(
           children: [
             Row(
@@ -85,28 +87,28 @@ class Step5Availability extends StatelessWidget {
                 Text(
                   'Step ${c.currentStep.value} of 6',
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFFFF9800),
+                    color: Color(0xFFFF9800),
                   ),
                 ),
                 Text(
                   'Availability & Pricing',
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     color: Colors.grey.shade500,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             ClipRRect(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8.r),
               child: LinearProgressIndicator(
                 value: c.currentStep.value / 6,
-                minHeight: 6,
+                minHeight: 6.h,
                 backgroundColor: Colors.grey.shade200,
-                valueColor: const AlwaysStoppedAnimation<Color>(
+                valueColor: AlwaysStoppedAnimation<Color>(
                   Color(0xFFFF9800),
                 ),
               ),
@@ -124,15 +126,15 @@ class Step5Availability extends StatelessWidget {
         Text(
           'Availability & Pricing',
           style: GoogleFonts.poppins(
-            fontSize: 26,
+            fontSize: 26.sp,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6.h),
         Text(
           'Set your working hours and service charges',
-          style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey.shade500),
+          style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.grey.shade500),
         ),
       ],
     );
@@ -148,12 +150,12 @@ class Step5Availability extends StatelessWidget {
         Text(
           'Working Hours',
           style: GoogleFonts.poppins(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w600,
             color: Colors.grey.shade700,
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         Row(
           children: [
             Expanded(
@@ -165,9 +167,9 @@ class Step5Availability extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 16),
-            const Icon(Icons.arrow_forward, color: Color(0xFFFF9800)),
-            const SizedBox(width: 16),
+            SizedBox(width: 16.w),
+            Icon(Icons.arrow_forward, color: Color(0xFFFF9800)),
+            SizedBox(width: 16.w),
             Expanded(
               child: Obx(
                 () => _timeCard(
@@ -191,10 +193,10 @@ class Step5Availability extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+        padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 14.w),
         decoration: BoxDecoration(
           color: Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(14.r),
           border: Border.all(color: Colors.grey.shade200, width: 1.5),
         ),
         child: Column(
@@ -202,17 +204,17 @@ class Step5Availability extends StatelessWidget {
             Text(
               label,
               style: GoogleFonts.poppins(
-                fontSize: 11,
+                fontSize: 11.sp,
                 color: Colors.grey.shade500,
               ),
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: 6.h),
             Text(
               '${time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod}:${time.minute.toString().padLeft(2, '0')} ${time.period == DayPeriod.am ? 'AM' : 'PM'}',
               style: GoogleFonts.poppins(
-                fontSize: 18,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFFFF9800),
+                color: Color(0xFFFF9800),
               ),
             ),
           ],
@@ -228,12 +230,12 @@ class Step5Availability extends StatelessWidget {
         Text(
           'Available Days *',
           style: GoogleFonts.poppins(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w600,
             color: Colors.grey.shade700,
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         Obx(
           () => Wrap(
             spacing: 8,
@@ -243,19 +245,19 @@ class Step5Availability extends StatelessWidget {
               return GestureDetector(
                 onTap: () => c.toggleDay(day),
                 child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
+                  duration: Duration(milliseconds: 200),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 10.h,
                   ),
                   decoration: BoxDecoration(
                     color: selected
-                        ? const Color(0xFFFF9800)
+                        ? Color(0xFFFF9800)
                         : Colors.grey.shade50,
-                    borderRadius: BorderRadius.circular(25),
+                    borderRadius: BorderRadius.circular(25.r),
                     border: Border.all(
                       color: selected
-                          ? const Color(0xFFFF9800)
+                          ? Color(0xFFFF9800)
                           : Colors.grey.shade300,
                       width: 1.5,
                     ),
@@ -263,7 +265,7 @@ class Step5Availability extends StatelessWidget {
                   child: Text(
                     day.substring(0, 3),
                     style: GoogleFonts.poppins(
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
                       color: selected ? Colors.white : Colors.grey.shade600,
                     ),
@@ -284,18 +286,18 @@ class Step5Availability extends StatelessWidget {
         Text(
           'Service Radius',
           style: GoogleFonts.poppins(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w600,
             color: Colors.grey.shade700,
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         Obx(
           () => Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
               color: Colors.grey.shade50,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(14.r),
               border: Border.all(color: Colors.grey.shade200, width: 1.5),
             ),
             child: Column(
@@ -306,29 +308,29 @@ class Step5Availability extends StatelessWidget {
                     Text(
                       '5 km',
                       style: GoogleFonts.poppins(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         color: Colors.grey.shade400,
                       ),
                     ),
                     Text(
                       '${c.serviceRadius.value.round()} km',
                       style: GoogleFonts.poppins(
-                        fontSize: 20,
+                        fontSize: 20.sp,
                         fontWeight: FontWeight.bold,
-                        color: const Color(0xFFFF9800),
+                        color: Color(0xFFFF9800),
                       ),
                     ),
                     Text(
                       '50 km',
                       style: GoogleFonts.poppins(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         color: Colors.grey.shade400,
                       ),
                     ),
                   ],
                 ),
                 SliderTheme(
-                  data: const SliderThemeData(
+                  data: SliderThemeData(
                     activeTrackColor: Color(0xFFFF9800),
                     inactiveTrackColor: Color(0xFFFFE0B2),
                     thumbColor: Color(0xFFFF9800),
@@ -357,16 +359,16 @@ class Step5Availability extends StatelessWidget {
         Text(
           'Pricing',
           style: GoogleFonts.poppins(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w600,
             color: Colors.grey.shade700,
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         _priceField(c.baseChargeController, 'Base Service Charge *', '₹ 200'),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
         _priceField(c.perKmChargeController, 'Per KM Charge *', '₹ 15'),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
         _priceField(
           c.emergencySurchargeController,
           'Emergency Surcharge %',
@@ -387,16 +389,16 @@ class Step5Availability extends StatelessWidget {
         Text(
           label,
           style: GoogleFonts.poppins(
-            fontSize: 13,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w500,
             color: Colors.grey.shade600,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Container(
           decoration: BoxDecoration(
             color: Colors.grey.shade50,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(14.r),
             border: Border.all(color: Colors.grey.shade200, width: 1.5),
           ),
           child: TextField(
@@ -405,19 +407,19 @@ class Step5Availability extends StatelessWidget {
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
             ],
-            style: GoogleFonts.poppins(fontSize: 15),
+            style: GoogleFonts.poppins(fontSize: 15.sp),
             decoration: InputDecoration(
               hintText: hint,
               hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400),
               prefixIcon: Icon(
                 label.contains('%') ? Icons.percent : Icons.currency_rupee,
-                color: const Color(0xFFFF9800),
-                size: 20,
+                color: Color(0xFFFF9800),
+                size: 20.w,
               ),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 16,
-                horizontal: 16,
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 16.h,
+                horizontal: 16.w,
               ),
             ),
           ),
@@ -428,29 +430,29 @@ class Step5Availability extends StatelessWidget {
 
   Widget _buildContinueButton(MechanicOnboardingController c) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(24.w),
       child: SizedBox(
         width: double.infinity,
-        height: 56,
+        height: 56.h,
         child: ElevatedButton(
           onPressed: () {
             c.nextStep();
             if (c.currentStep.value == 6) {
-              Get.to(() => const Step6Terms());
+              Get.to(() => Step6Terms());
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFFF9800),
+            backgroundColor: Color(0xFFFF9800),
             foregroundColor: Colors.white,
             elevation: 0,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
             ),
           ),
           child: Text(
             'Continue',
             style: GoogleFonts.poppins(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),

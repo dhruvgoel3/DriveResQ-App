@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class MechanicProfileController extends GetxController {
   final _auth = FirebaseAuth.instance;
@@ -227,7 +228,7 @@ class MechanicProfileController extends GetxController {
     final status = userData.value?['verificationStatus'] ?? 'pending';
     switch (status) {
       case 'approved':
-        return const Color(0xFF4CAF50);
+        return Color(0xFF4CAF50);
       case 'pending':
         return Colors.orange;
       case 'rejected':
@@ -269,20 +270,20 @@ class MechanicProfileController extends GetxController {
         context: Get.context!,
         builder: (context) => AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
           ),
-          title: const Row(
+          title: Row(
             children: [
               Icon(Icons.logout, color: Colors.red),
-              SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Text("Logout"),
             ],
           ),
-          content: const Text("Are you sure you want to logout?"),
+          content: Text("Are you sure you want to logout?"),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+              child: Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
             ElevatedButton(
               onPressed: () => Navigator.pop(context, true),
@@ -290,7 +291,7 @@ class MechanicProfileController extends GetxController {
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
               ),
-              child: const Text("Logout"),
+              child: Text("Logout"),
             ),
           ],
         ),
@@ -305,16 +306,16 @@ class MechanicProfileController extends GetxController {
           canPop: false,
           child: Center(
             child: Container(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(20.w),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
               ),
-              child: const Column(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CircularProgressIndicator(color: Color(0xFF6C63FF)),
-                  SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Text("Logging out..."),
                 ],
               ),
@@ -323,7 +324,7 @@ class MechanicProfileController extends GetxController {
         ),
       );
 
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(Duration(milliseconds: 500));
       await _auth.signOut();
       Navigator.pop(Get.context!);
       Get.deleteAll(force: true);
@@ -336,7 +337,7 @@ class MechanicProfileController extends GetxController {
         colorText: Colors.green,
       );
 
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(Duration(milliseconds: 500));
       SystemNavigator.pop();
     } catch (e) {
       if (Navigator.canPop(Get.context!)) {

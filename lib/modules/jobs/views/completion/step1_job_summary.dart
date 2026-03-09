@@ -3,26 +3,28 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/job_completion_controller.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class JobSummaryView extends StatelessWidget {
   const JobSummaryView({super.key});
+
 
   @override
   Widget build(BuildContext context) {
     final c = Get.find<JobCompletionController>();
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Job Info Card
           _jobInfoCard(c),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
 
           // Services Performed
           _sectionTitle('Services Performed', Icons.build_circle),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           Obx(
             () => Wrap(
               spacing: 8,
@@ -34,13 +36,13 @@ class JobSummaryView extends StatelessWidget {
                   label: Text(
                     s,
                     style: GoogleFonts.poppins(
-                      fontSize: 12,
+                      fontSize: 12.sp,
                       fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                       color: selected ? Colors.white : Colors.grey.shade700,
                     ),
                   ),
                   onSelected: (_) => c.toggleService(s),
-                  selectedColor: const Color(0xFF4CAF50),
+                  selectedColor: Color(0xFF4CAF50),
                   backgroundColor: Colors.grey.shade100,
                   checkmarkColor: Colors.white,
                   side: BorderSide.none,
@@ -49,28 +51,28 @@ class JobSummaryView extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // Parts Replaced
           _sectionTitle('Parts Replaced (Optional)', Icons.settings),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           Obx(
             () => Column(
               children: [
                 ...List.generate(c.partsReplaced.length, (i) => _partRow(c, i)),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 OutlinedButton.icon(
                   onPressed: () => c.addPart(),
-                  icon: const Icon(Icons.add, size: 18),
+                  icon: Icon(Icons.add, size: 18.w),
                   label: Text(
                     'Add Part',
-                    style: GoogleFonts.poppins(fontSize: 13),
+                    style: GoogleFonts.poppins(fontSize: 13.sp),
                   ),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF4CAF50),
-                    side: const BorderSide(color: Color(0xFF4CAF50)),
+                    foregroundColor: Color(0xFF4CAF50),
+                    side: BorderSide(color: Color(0xFF4CAF50)),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                   ),
                 ),
@@ -78,72 +80,72 @@ class JobSummaryView extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // Labor Charges
           _sectionTitle('Labor Charges', Icons.engineering),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           _currencyField(
             c.laborChargesController,
             'Enter labor charges',
             onChanged: (v) => c.updateLaborCharges(v),
           ),
 
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // Notes
           _sectionTitle('Additional Notes', Icons.notes),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           TextField(
             controller: c.notesController,
             maxLines: 3,
-            style: GoogleFonts.poppins(fontSize: 14),
+            style: GoogleFonts.poppins(fontSize: 14.sp),
             decoration: _inputDecor('Describe the work done...'),
           ),
 
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // Photos
           _sectionTitle('Before Photos', Icons.camera_alt),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           _photoGrid(c, true),
 
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _sectionTitle('After Photos', Icons.camera_alt_outlined),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           _photoGrid(c, false),
 
-          const SizedBox(height: 28),
+          SizedBox(height: 28.h),
 
           // Cost Breakdown
           _costBreakdown(c),
 
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // Next Button
           SizedBox(
             width: double.infinity,
-            height: 54,
+            height: 54.h,
             child: ElevatedButton(
               onPressed: () => c.nextStep(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4CAF50),
+                backgroundColor: Color(0xFF4CAF50),
                 foregroundColor: Colors.white,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(14.r),
                 ),
               ),
               child: Text(
                 'Continue to Payment',
                 style: GoogleFonts.poppins(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
         ],
       ),
     );
@@ -152,12 +154,12 @@ class JobSummaryView extends StatelessWidget {
   Widget _jobInfoCard(JobCompletionController c) {
     final job = c.jobData.value ?? {};
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [Colors.green.shade400, Colors.green.shade600],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,31 +171,31 @@ class JobSummaryView extends StatelessWidget {
                 'Job Summary',
                 style: GoogleFonts.poppins(
                   color: Colors.white,
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 10.w,
+                  vertical: 4.h,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Text(
                   'ID: ${c.jobId.value.length >= 8 ? c.jobId.value.substring(0, 8).toUpperCase() : c.jobId.value.toUpperCase()}',
                   style: GoogleFonts.poppins(
                     color: Colors.white,
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           _infoRow(Icons.directions_car, 'Vehicle', job['vehicleType'] ?? '—'),
           _infoRow(Icons.warning_rounded, 'Problem', job['problem'] ?? '—'),
           _infoRow(Icons.location_on, 'Location', job['locationName'] ?? '—'),
@@ -205,21 +207,21 @@ class JobSummaryView extends StatelessWidget {
 
   Widget _infoRow(IconData icon, String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: EdgeInsets.only(bottom: 6.h),
       child: Row(
         children: [
-          Icon(icon, size: 16, color: Colors.white70),
-          const SizedBox(width: 8),
+          Icon(icon, size: 16.w, color: Colors.white70),
+          SizedBox(width: 8.w),
           Text(
             '$label: ',
-            style: GoogleFonts.poppins(color: Colors.white70, fontSize: 12),
+            style: GoogleFonts.poppins(color: Colors.white70, fontSize: 12.sp),
           ),
           Expanded(
             child: Text(
               value,
               style: GoogleFonts.poppins(
                 color: Colors.white,
-                fontSize: 12,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w500,
               ),
               overflow: TextOverflow.ellipsis,
@@ -232,11 +234,11 @@ class JobSummaryView extends StatelessWidget {
 
   Widget _partRow(JobCompletionController c, int i) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(12),
+      margin: EdgeInsets.only(bottom: 10.h),
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: Column(
@@ -246,16 +248,16 @@ class JobSummaryView extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: TextField(
-                  style: GoogleFonts.poppins(fontSize: 13),
+                  style: GoogleFonts.poppins(fontSize: 13.sp),
                   decoration: _inputDecor('Part name'),
                   onChanged: (v) => c.updatePart(i, 'name', v),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               SizedBox(
-                width: 50,
+                width: 50.w,
                 child: TextField(
-                  style: GoogleFonts.poppins(fontSize: 13),
+                  style: GoogleFonts.poppins(fontSize: 13.sp),
                   decoration: _inputDecor('Qty'),
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -263,11 +265,11 @@ class JobSummaryView extends StatelessWidget {
                       c.updatePart(i, 'quantity', int.tryParse(v) ?? 1),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               SizedBox(
-                width: 80,
+                width: 80.w,
                 child: TextField(
-                  style: GoogleFonts.poppins(fontSize: 13),
+                  style: GoogleFonts.poppins(fontSize: 13.sp),
                   decoration: _inputDecor('₹ Cost'),
                   keyboardType: TextInputType.number,
                   onChanged: (v) =>
@@ -275,10 +277,10 @@ class JobSummaryView extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: const Icon(
+                icon: Icon(
                   Icons.remove_circle,
                   color: Colors.red,
-                  size: 22,
+                  size: 22.w,
                 ),
                 onPressed: () => c.removePart(i),
               ),
@@ -290,7 +292,7 @@ class JobSummaryView extends StatelessWidget {
               () => Text(
                 'Total: ₹${(c.partsReplaced[i]['total'] as double? ?? 0).toStringAsFixed(0)}',
                 style: GoogleFonts.poppins(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.green.shade700,
                 ),
@@ -314,11 +316,11 @@ class JobSummaryView extends StatelessWidget {
             (i) => Stack(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                   child: Image.file(
                     photos[i],
-                    width: 80,
-                    height: 80,
+                    width: 80.w,
+                    height: 80.h,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -328,15 +330,15 @@ class JobSummaryView extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () => c.removePhoto(isBefore, i),
                     child: Container(
-                      padding: const EdgeInsets.all(2),
-                      decoration: const BoxDecoration(
+                      padding: EdgeInsets.all(2),
+                      decoration: BoxDecoration(
                         color: Colors.red,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.close,
                         color: Colors.white,
-                        size: 14,
+                        size: 14.w,
                       ),
                     ),
                   ),
@@ -347,11 +349,11 @@ class JobSummaryView extends StatelessWidget {
           GestureDetector(
             onTap: () => c.pickPhotos(isBefore),
             child: Container(
-              width: 80,
-              height: 80,
+              width: 80.w,
+              height: 80.h,
               decoration: BoxDecoration(
                 color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
                 border: Border.all(
                   color: Colors.grey.shade300,
                   style: BorderStyle.solid,
@@ -360,7 +362,7 @@ class JobSummaryView extends StatelessWidget {
               child: Icon(
                 Icons.add_a_photo,
                 color: Colors.grey.shade400,
-                size: 28,
+                size: 28.w,
               ),
             ),
           ),
@@ -372,10 +374,10 @@ class JobSummaryView extends StatelessWidget {
   Widget _costBreakdown(JobCompletionController c) {
     return Obx(
       () => Container(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.w),
         decoration: BoxDecoration(
           color: Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           border: Border.all(color: Colors.grey.shade200),
         ),
         child: Column(
@@ -384,27 +386,27 @@ class JobSummaryView extends StatelessWidget {
             Text(
               'Cost Breakdown',
               style: GoogleFonts.poppins(
-                fontSize: 16,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
               ),
             ),
-            const SizedBox(height: 14),
+            SizedBox(height: 14.h),
             _costRow('Base Service Charge', c.baseCharge.value),
             _costRow('Labor Charges', c.laborCharges.value),
             _costRow('Parts Cost', c.partsTotal.value),
             _costRow('Travel Cost', c.travelCost.value),
-            Divider(color: Colors.grey.shade300, height: 24),
+            Divider(color: Colors.grey.shade300, height: 24.h),
             _costRow('Subtotal', c.subtotal.value),
             _costRow('GST (18%)', c.gstAmount.value),
-            Divider(color: Colors.grey.shade300, height: 24),
+            Divider(color: Colors.grey.shade300, height: 24.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Total Amount',
                   style: GoogleFonts.poppins(
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
@@ -412,9 +414,9 @@ class JobSummaryView extends StatelessWidget {
                 Text(
                   '₹${c.totalAmount.value.toStringAsFixed(0)}',
                   style: GoogleFonts.poppins(
-                    fontSize: 22,
+                    fontSize: 22.sp,
                     fontWeight: FontWeight.bold,
-                    color: const Color(0xFF4CAF50),
+                    color: Color(0xFF4CAF50),
                   ),
                 ),
               ],
@@ -427,21 +429,21 @@ class JobSummaryView extends StatelessWidget {
 
   Widget _costRow(String label, double amount) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.only(bottom: 8.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             label,
             style: GoogleFonts.poppins(
-              fontSize: 13,
+              fontSize: 13.sp,
               color: Colors.grey.shade600,
             ),
           ),
           Text(
             '₹${amount.toStringAsFixed(0)}',
             style: GoogleFonts.poppins(
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -453,12 +455,12 @@ class JobSummaryView extends StatelessWidget {
   Widget _sectionTitle(String title, IconData icon) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: const Color(0xFF4CAF50)),
-        const SizedBox(width: 8),
+        Icon(icon, size: 20.w, color: Color(0xFF4CAF50)),
+        SizedBox(width: 8.w),
         Text(
           title,
           style: GoogleFonts.poppins(
-            fontSize: 15,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black87,
           ),
@@ -475,29 +477,29 @@ class JobSummaryView extends StatelessWidget {
     return TextField(
       controller: controller,
       keyboardType: TextInputType.number,
-      style: GoogleFonts.poppins(fontSize: 14),
+      style: GoogleFonts.poppins(fontSize: 14.sp),
       onChanged: onChanged,
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400),
         prefixText: '₹ ',
         prefixStyle: GoogleFonts.poppins(
-          fontSize: 14,
+          fontSize: 14.sp,
           fontWeight: FontWeight.w600,
         ),
         filled: false,
         fillColor: Colors.grey.shade50,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(color: Colors.grey.shade200),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(color: Colors.grey.shade200),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF4CAF50), width: 2),
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(color: Color(0xFF4CAF50), width: 2),
         ),
       ),
     );
@@ -506,15 +508,15 @@ class JobSummaryView extends StatelessWidget {
   InputDecoration _inputDecor(String hint) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400, fontSize: 12),
+      hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400, fontSize: 12.sp),
       isDense: true,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
         borderSide: BorderSide(color: Colors.grey.shade200),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
         borderSide: BorderSide(color: Colors.grey.shade200),
       ),
     );

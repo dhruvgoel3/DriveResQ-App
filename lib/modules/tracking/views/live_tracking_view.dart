@@ -6,11 +6,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class LiveTrackingView extends StatefulWidget {
   final String requestId;
 
-  const LiveTrackingView({super.key, required this.requestId});
+  LiveTrackingView({super.key, required this.requestId});
 
   @override
   State<LiveTrackingView> createState() => _LiveTrackingViewState();
@@ -74,7 +75,6 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
       });
 
       _updateDriverMarker();
-
     } catch (e) {
       print("❌ Error getting driver location: $e");
       Get.snackbar("Error", "Could not get your location");
@@ -88,26 +88,26 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
         .doc(widget.requestId)
         .snapshots()
         .listen((snapshot) {
-      if (!snapshot.exists) return;
+          if (!snapshot.exists) return;
 
-      final data = snapshot.data()!;
-      final mechanicId = data['mechanicId'];
-      status = data['status'] ?? 'accepted';
-      mechanicPhone = data['mechanicPhone'] ?? '';
+          final data = snapshot.data()!;
+          final mechanicId = data['mechanicId'];
+          status = data['status'] ?? 'accepted';
+          mechanicPhone = data['mechanicPhone'] ?? '';
 
-      if (status == 'completed' || status == 'cancelled') {
-        Get.back();
-        Get.snackbar(
-          "Request ${status.capitalize}",
-          "This request has been $status",
-        );
-        return;
-      }
+          if (status == 'completed' || status == 'cancelled') {
+            Get.back();
+            Get.snackbar(
+              "Request ${status.capitalize}",
+              "This request has been $status",
+            );
+            return;
+          }
 
-      if (mechanicId != null) {
-        _listenToMechanicLocation(mechanicId);
-      }
-    });
+          if (mechanicId != null) {
+            _listenToMechanicLocation(mechanicId);
+          }
+        });
   }
 
   // 🎧 Listen to mechanic's real-time location
@@ -119,27 +119,27 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
         .doc(mechanicId)
         .snapshots()
         .listen((snapshot) {
-      if (!snapshot.exists) {
-        print("⚠️ Mechanic location not available");
-        return;
-      }
+          if (!snapshot.exists) {
+            print("⚠️ Mechanic location not available");
+            return;
+          }
 
-      final data = snapshot.data()!;
-      final lat = data['latitude'];
-      final lng = data['longitude'];
+          final data = snapshot.data()!;
+          final lat = data['latitude'];
+          final lng = data['longitude'];
 
-      if (lat != null && lng != null) {
-        setState(() {
-          mechanicLat = lat;
-          mechanicLng = lng;
+          if (lat != null && lng != null) {
+            setState(() {
+              mechanicLat = lat;
+              mechanicLng = lng;
+            });
+
+            _updateMechanicMarker();
+            _updateRoute();
+            _calculateDistanceAndETA();
+            _moveCameraToShowBoth();
+          }
         });
-
-        _updateMechanicMarker();
-        _updateRoute();
-        _calculateDistanceAndETA();
-        _moveCameraToShowBoth();
-      }
-    });
   }
 
   // 📍 Update driver marker
@@ -150,10 +150,10 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
       _markers.removeWhere((m) => m.markerId.value == 'driver');
       _markers.add(
         Marker(
-          markerId: const MarkerId('driver'),
+          markerId: MarkerId('driver'),
           position: LatLng(driverLat!, driverLng!),
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-          infoWindow: const InfoWindow(title: 'Your Location'),
+          infoWindow: InfoWindow(title: 'Your Location'),
         ),
       );
     });
@@ -167,10 +167,12 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
       _markers.removeWhere((m) => m.markerId.value == 'mechanic');
       _markers.add(
         Marker(
-          markerId: const MarkerId('mechanic'),
+          markerId: MarkerId('mechanic'),
           position: LatLng(mechanicLat!, mechanicLng!),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-          infoWindow: const InfoWindow(title: 'Mechanic Location'),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueGreen,
+          ),
+          infoWindow: InfoWindow(title: 'Mechanic Location'),
         ),
       );
     });
@@ -178,20 +180,24 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
 
   // 🛣️ Update route line
   void _updateRoute() {
-    if (driverLat == null || driverLng == null ||
-        mechanicLat == null || mechanicLng == null) return;
+    if (driverLat == null ||
+        driverLng == null ||
+        mechanicLat == null ||
+        mechanicLng == null) {
+      return;
+    }
 
     setState(() {
       _polylines.clear();
       _polylines.add(
         Polyline(
-          polylineId: const PolylineId('route'),
+          polylineId: PolylineId('route'),
           points: [
             LatLng(mechanicLat!, mechanicLng!),
             LatLng(driverLat!, driverLng!),
           ],
-          color: const Color(0xFF6C63FF),
-          width: 4,
+          color: Color(0xFF6C63FF),
+          width: 4.w.toInt(),
         ),
       );
     });
@@ -199,8 +205,12 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
 
   // 📏 Calculate distance and ETA
   void _calculateDistanceAndETA() {
-    if (driverLat == null || driverLng == null ||
-        mechanicLat == null || mechanicLng == null) return;
+    if (driverLat == null ||
+        driverLng == null ||
+        mechanicLat == null ||
+        mechanicLng == null) {
+      return;
+    }
 
     double distanceInMeters = Geolocator.distanceBetween(
       mechanicLat!,
@@ -220,17 +230,19 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
           ? "${distanceInMeters.toStringAsFixed(0)} m"
           : "${distanceInKm.toStringAsFixed(1)} km";
 
-      eta = timeInMinutes < 1
-          ? "< 1 min"
-          : "$timeInMinutes min";
+      eta = timeInMinutes < 1 ? "< 1 min" : "$timeInMinutes min";
     });
   }
 
   // 📷 Move camera to show both markers
   void _moveCameraToShowBoth() {
     if (_mapController == null ||
-        driverLat == null || driverLng == null ||
-        mechanicLat == null || mechanicLng == null) return;
+        driverLat == null ||
+        driverLng == null ||
+        mechanicLat == null ||
+        mechanicLng == null) {
+      return;
+    }
 
     double minLat = driverLat! < mechanicLat! ? driverLat! : mechanicLat!;
     double maxLat = driverLat! > mechanicLat! ? driverLat! : mechanicLat!;
@@ -255,77 +267,74 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Get.back(),
         ),
         title: Text(
           "Track Mechanic",
           style: GoogleFonts.poppins(
-            fontSize: 20,
+            fontSize: 20.sp,
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
         ),
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator())
           : Stack(
-        children: [
-          // 🗺️ Google Map
-          GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: LatLng(driverLat ?? 0, driverLng ?? 0),
-              zoom: 14,
-            ),
-            markers: _markers,
-            polylines: _polylines,
-            onMapCreated: (controller) {
-              _mapController = controller;
-              if (mechanicLat != null && mechanicLng != null) {
-                _moveCameraToShowBoth();
-              }
-            },
-            myLocationEnabled: true,
-            myLocationButtonEnabled: false,
-            zoomControlsEnabled: false,
-          ),
+              children: [
+                // 🗺️ Google Map
+                GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(driverLat ?? 0, driverLng ?? 0),
+                    zoom: 14,
+                  ),
+                  markers: _markers,
+                  polylines: _polylines,
+                  onMapCreated: (controller) {
+                    _mapController = controller;
+                    if (mechanicLat != null && mechanicLng != null) {
+                      _moveCameraToShowBoth();
+                    }
+                  },
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: false,
+                  zoomControlsEnabled: false,
+                ),
 
-          // 📊 Info Card at bottom
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: _buildInfoCard(),
-          ),
+                // 📊 Info Card at bottom
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: _buildInfoCard(),
+                ),
 
-          // 🎯 Center on location button
-          Positioned(
-            right: 16,
-            bottom: 200,
-            child: FloatingActionButton(
-              mini: true,
-              backgroundColor: Colors.white,
-              onPressed: _moveCameraToShowBoth,
-              child: const Icon(
-                Icons.my_location,
-                color: Color(0xFF6C63FF),
-              ),
+                // 🎯 Center on location button
+                Positioned(
+                  right: 16.w,
+                  bottom: 200.h,
+                  child: FloatingActionButton(
+                    mini: true,
+                    backgroundColor: Colors.white,
+                    onPressed: _moveCameraToShowBoth,
+                    child: Icon(Icons.my_location, color: Color(0xFF6C63FF)),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
   // 📊 Info card
   Widget _buildInfoCard() {
     return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
+      padding: EdgeInsets.all(20.w),
+      decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
+          topLeft: Radius.circular(24.r),
+          topRight: Radius.circular(24.r),
         ),
         boxShadow: [
           BoxShadow(
@@ -340,27 +349,27 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
         children: [
           // Status indicator
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
             decoration: BoxDecoration(
               color: Colors.green.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(20.r),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
+                  width: 8.w,
+                  height: 8.h,
+                  decoration: BoxDecoration(
                     color: Colors.green,
                     shape: BoxShape.circle,
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
                 Text(
                   "Mechanic En Route",
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.green.shade700,
                   ),
@@ -369,23 +378,19 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
             ),
           ),
 
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
 
           // Distance and ETA
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildStatItem(Icons.location_on, distance, "Distance"),
-              Container(
-                width: 1,
-                height: 40,
-                color: Colors.grey.shade300,
-              ),
+              Container(width: 1, height: 40.h, color: Colors.grey.shade300),
               _buildStatItem(Icons.access_time, eta, "ETA"),
             ],
           ),
 
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
 
           // Action buttons
           Row(
@@ -393,30 +398,30 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: _callMechanic,
-                  icon: const Icon(Icons.call),
-                  label: const Text("Call"),
+                  icon: Icon(Icons.call),
+                  label: Text("Call"),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF6C63FF),
-                    side: const BorderSide(color: Color(0xFF6C63FF)),
+                    foregroundColor: Color(0xFF6C63FF),
+                    side: BorderSide(color: Color(0xFF6C63FF)),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(14.r),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: ElevatedButton.icon(
                   onPressed: _openNavigation,
-                  icon: const Icon(Icons.navigation),
-                  label: const Text("Navigate"),
+                  icon: Icon(Icons.navigation),
+                  label: Text("Navigate"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6C63FF),
+                    backgroundColor: Color(0xFF6C63FF),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(14.r),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
                   ),
                 ),
               ),
@@ -430,12 +435,12 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
   Widget _buildStatItem(IconData icon, String value, String label) {
     return Column(
       children: [
-        Icon(icon, color: const Color(0xFF6C63FF)),
-        const SizedBox(height: 8),
+        Icon(icon, color: Color(0xFF6C63FF)),
+        SizedBox(height: 8.h),
         Text(
           value,
           style: GoogleFonts.poppins(
-            fontSize: 20,
+            fontSize: 20.sp,
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
@@ -443,7 +448,7 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
         Text(
           label,
           style: GoogleFonts.poppins(
-            fontSize: 12,
+            fontSize: 12.sp,
             color: Colors.grey.shade600,
           ),
         ),

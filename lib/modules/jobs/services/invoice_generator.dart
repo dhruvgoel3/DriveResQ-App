@@ -31,7 +31,7 @@ class InvoiceGenerator {
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
-        margin: const pw.EdgeInsets.all(40),
+        margin: pw.EdgeInsets.all(40),
         build: (context) {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -168,18 +168,18 @@ class InvoiceGenerator {
                 children: c.selectedServices
                     .map(
                       (s) => pw.Container(
-                        padding: const pw.EdgeInsets.symmetric(
+                        padding: pw.EdgeInsets.symmetric(
                           horizontal: 8,
                           vertical: 3,
                         ),
-                        margin: const pw.EdgeInsets.only(bottom: 4),
+                        margin: pw.EdgeInsets.only(bottom: 4),
                         decoration: pw.BoxDecoration(
                           color: PdfColor.fromHex('#FFF3E0'),
                           borderRadius: pw.BorderRadius.circular(4),
                         ),
                         child: pw.Text(
                           s,
-                          style: const pw.TextStyle(fontSize: 9),
+                          style: pw.TextStyle(fontSize: 9),
                         ),
                       ),
                     )
@@ -289,7 +289,7 @@ class InvoiceGenerator {
 
   static pw.Widget _detailRow(String label, String value) {
     return pw.Padding(
-      padding: const pw.EdgeInsets.only(bottom: 3),
+      padding: pw.EdgeInsets.only(bottom: 3),
       child: pw.Row(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -313,11 +313,11 @@ class InvoiceGenerator {
 
   static pw.Widget _summaryRow(String label, double amount) {
     return pw.Padding(
-      padding: const pw.EdgeInsets.symmetric(vertical: 3),
+      padding: pw.EdgeInsets.symmetric(vertical: 3),
       child: pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: [
-          pw.Text(label, style: const pw.TextStyle(fontSize: 10)),
+          pw.Text(label, style: pw.TextStyle(fontSize: 10)),
           pw.Text(
             '₹${amount.toStringAsFixed(0)}',
             style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold),
@@ -329,7 +329,7 @@ class InvoiceGenerator {
 
   static pw.Widget _tableHeader(String text) {
     return pw.Padding(
-      padding: const pw.EdgeInsets.all(6),
+      padding: pw.EdgeInsets.all(6),
       child: pw.Text(
         text,
         style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold),
@@ -339,8 +339,8 @@ class InvoiceGenerator {
 
   static pw.Widget _tableCell(String text) {
     return pw.Padding(
-      padding: const pw.EdgeInsets.all(6),
-      child: pw.Text(text, style: const pw.TextStyle(fontSize: 9)),
+      padding: pw.EdgeInsets.all(6),
+      child: pw.Text(text, style: pw.TextStyle(fontSize: 9)),
     );
   }
 

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class SafetyTipsSection extends StatelessWidget {
   const SafetyTipsSection({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -15,12 +17,12 @@ class SafetyTipsSection extends StatelessWidget {
           Text(
             "Safety Tips",
             style: GoogleFonts.poppins(
-              fontSize: 18,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
 
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
 
           // 🧱 Cards Row
           Row(
@@ -31,7 +33,7 @@ class SafetyTipsSection extends StatelessWidget {
                 title: "Stay in Vehicle",
                 subtitle: "Keep your doors locked until help arrives.",
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               _SafetyTipCard(
                 icon: Icons.lightbulb_outline,
                 iconColor: Colors.blue,
@@ -63,15 +65,15 @@ class _SafetyTipCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: EdgeInsets.all(14.w),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.06),
               blurRadius: 12,
-              offset: const Offset(0, 6),
+              offset: Offset(0, 6),
             ),
           ],
         ),
@@ -80,33 +82,33 @@ class _SafetyTipCard extends StatelessWidget {
           children: [
             // 🔔 Icon
             Container(
-              width: 36,
-              height: 36,
+              width: 36.w,
+              height: 36.h,
               decoration: BoxDecoration(
                 color: iconColor.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
               ),
-              child: Icon(icon, color: iconColor, size: 20),
+              child: Icon(icon, color: iconColor, size: 20.w),
             ),
 
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
 
             // 📝 Title
             Text(
               title,
               style: GoogleFonts.poppins(
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
 
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
 
             // 📄 Subtitle
             Text(
               subtitle,
               style: GoogleFonts.poppins(
-                fontSize: 12,
+                fontSize: 12.sp,
                 color: Colors.grey.shade600,
               ),
             ),

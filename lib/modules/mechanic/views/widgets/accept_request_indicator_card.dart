@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import '../HomePage/active_request_details.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class AcceptedRequestIndicatorCard extends StatefulWidget {
-  const AcceptedRequestIndicatorCard({
+
+  AcceptedRequestIndicatorCard({
     super.key,
   });
 
@@ -22,7 +24,7 @@ class _AcceptedRequestIndicatorCardState extends State<AcceptedRequestIndicatorC
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+      duration: Duration(milliseconds: 1500),
       vsync: this,
     )..repeat(reverse: true);
 
@@ -32,7 +34,7 @@ class _AcceptedRequestIndicatorCardState extends State<AcceptedRequestIndicatorC
 
     _slideAnimation = Tween<Offset>(
       begin: Offset.zero,
-      end: const Offset(0.05, 0),
+      end: Offset(0.05, 0),
     ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
   }
 
@@ -48,15 +50,15 @@ class _AcceptedRequestIndicatorCardState extends State<AcceptedRequestIndicatorC
       onTap: () {
         // Navigate to Active Request Details Page
         Get.to(
-              () => const ActiveRequestDetailsPage(),
+              () => ActiveRequestDetailsPage(),
           transition: Transition.rightToLeft,
-          duration: const Duration(milliseconds: 300),
+          duration: Duration(milliseconds: 300),
         );
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
+        margin: EdgeInsets.only(bottom: 8.h),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             colors: [
               Color(0xFF6C63FF),
               Color(0xFF5A52E8),
@@ -64,12 +66,12 @@ class _AcceptedRequestIndicatorCardState extends State<AcceptedRequestIndicatorC
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(18.r),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF6C63FF).withOpacity(0.3),
+              color: Color(0xFF6C63FF).withOpacity(0.3),
               blurRadius: 12,
-              offset: const Offset(0, 4),
+              offset: Offset(0, 4),
             ),
           ],
         ),
@@ -87,27 +89,27 @@ class _AcceptedRequestIndicatorCardState extends State<AcceptedRequestIndicatorC
 
             // Main content
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.w),
               child: Row(
                 children: [
                   // Pulsing icon
                   ScaleTransition(
                     scale: _pulseAnimation,
                     child: Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: EdgeInsets.all(12.w),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(14.r),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.assignment_turned_in_rounded,
                         color: Colors.white,
-                        size: 28,
+                        size: 28.w,
                       ),
                     ),
                   ),
 
-                  const SizedBox(width: 16),
+                  SizedBox(width: 16.w),
 
                   // Text content
                   Expanded(
@@ -117,18 +119,18 @@ class _AcceptedRequestIndicatorCardState extends State<AcceptedRequestIndicatorC
                         Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 3,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8.w,
+                                vertical: 3.h,
                               ),
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.25),
-                                borderRadius: BorderRadius.circular(6),
+                                borderRadius: BorderRadius.circular(6.r),
                               ),
                               child: Text(
                                 "ACTIVE",
                                 style: GoogleFonts.poppins(
-                                  fontSize: 10,
+                                  fontSize: 10.sp,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                   letterSpacing: 0.5,
@@ -137,21 +139,21 @@ class _AcceptedRequestIndicatorCardState extends State<AcceptedRequestIndicatorC
                             ),
                           ],
                         ),
-                        const SizedBox(height: 6),
+                        SizedBox(height: 6.h),
                         Text(
                           "You have an ongoing request",
                           style: GoogleFonts.poppins(
-                            fontSize: 15,
+                            fontSize: 15.sp,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                             height: 1.2,
                           ),
                         ),
-                        const SizedBox(height: 3),
+                        SizedBox(height: 3.h),
                         Text(
                           "Tap to view details & navigate",
                           style: GoogleFonts.poppins(
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             color: Colors.white.withOpacity(0.85),
                             fontWeight: FontWeight.w500,
                           ),
@@ -164,15 +166,15 @@ class _AcceptedRequestIndicatorCardState extends State<AcceptedRequestIndicatorC
                   SlideTransition(
                     position: _slideAnimation,
                     child: Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: EdgeInsets.all(8.w),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(10.r),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.arrow_forward_rounded,
                         color: Colors.white,
-                        size: 22,
+                        size: 22.w,
                       ),
                     ),
                   ),

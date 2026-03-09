@@ -4,19 +4,21 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class NotificationsView extends StatelessWidget {
   const NotificationsView({super.key});
+
 
   @override
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) {
-      return const Scaffold(body: Center(child: Text("Not logged in")));
+      return Scaffold(body: Center(child: Text("Not logged in")));
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+      backgroundColor: Color(0xFFF5F6FA),
       appBar: AppBar(
         title: Text(
           'Notifications',
@@ -28,10 +30,10 @@ class NotificationsView extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.black87),
+        iconTheme: IconThemeData(color: Colors.black87),
         actions: [
           IconButton(
-            icon: const Icon(Icons.done_all, color: Color(0xFF6C63FF)),
+            icon: Icon(Icons.done_all, color: Color(0xFF6C63FF)),
             tooltip: 'Mark all as read',
             onPressed: () {
               // Usually handled internally or with a batch update
@@ -61,11 +63,11 @@ class NotificationsView extends StatelessWidget {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
             // Fallback if index is not ready
-            return const Center(
+            return Center(
               child: Text(
                 "Could not load notifications at this time (Index building).",
               ),
@@ -80,14 +82,14 @@ class NotificationsView extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.notifications_none,
-                    size: 80,
+                    size: 80.w,
                     color: Colors.grey.shade300,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Text(
                     "No Notifications",
                     style: GoogleFonts.poppins(
-                      fontSize: 18,
+                      fontSize: 18.sp,
                       color: Colors.grey.shade600,
                     ),
                   ),
@@ -97,7 +99,7 @@ class NotificationsView extends StatelessWidget {
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: EdgeInsets.symmetric(vertical: 8.h),
             itemCount: docs.length,
             itemBuilder: (context, index) {
               final data = docs[index].data() as Map<String, dynamic>;
@@ -117,9 +119,9 @@ class NotificationsView extends StatelessWidget {
                 direction: DismissDirection.endToStart,
                 background: Container(
                   alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 20),
+                  padding: EdgeInsets.only(right: 20.w),
                   color: Colors.red,
-                  child: const Icon(Icons.delete, color: Colors.white),
+                  child: Icon(Icons.delete, color: Colors.white),
                 ),
                 onDismissed: (direction) {
                   docs[index].reference.delete();
@@ -134,22 +136,22 @@ class NotificationsView extends StatelessWidget {
                     }
                   },
                   child: Container(
-                    padding: const EdgeInsets.all(16),
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 6,
+                    padding: EdgeInsets.all(16.w),
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 6.h,
                     ),
                     decoration: BoxDecoration(
                       color: isRead
                           ? Colors.white
                           : Colors.blue.shade50.withAlpha(128),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                       boxShadow: [
                         if (!isRead)
                           BoxShadow(
                             color: Colors.blue.shade100,
                             blurRadius: 4,
-                            offset: const Offset(0, 2),
+                            offset: Offset(0, 2),
                           ),
                       ],
                     ),
@@ -158,13 +160,13 @@ class NotificationsView extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           backgroundColor: _getIconColor(type).withAlpha(38),
-                          radius: 24,
+                          radius: 24.r,
                           child: Icon(
                             _getIcon(type),
                             color: _getIconColor(type),
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        SizedBox(width: 16.w),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,7 +182,7 @@ class NotificationsView extends StatelessWidget {
                                         fontWeight: isRead
                                             ? FontWeight.w500
                                             : FontWeight.w700,
-                                        fontSize: 14,
+                                        fontSize: 14.sp,
                                         color: Colors.black87,
                                       ),
                                       maxLines: 1,
@@ -189,30 +191,30 @@ class NotificationsView extends StatelessWidget {
                                   ),
                                   if (!isRead)
                                     Container(
-                                      width: 8,
-                                      height: 8,
-                                      decoration: const BoxDecoration(
+                                      width: 8.w,
+                                      height: 8.h,
+                                      decoration: BoxDecoration(
                                         color: Colors.blue,
                                         shape: BoxShape.circle,
                                       ),
                                     ),
                                 ],
                               ),
-                              const SizedBox(height: 4),
+                              SizedBox(height: 4.h),
                               Text(
                                 body,
                                 style: GoogleFonts.poppins(
-                                  fontSize: 13,
+                                  fontSize: 13.sp,
                                   color: Colors.grey.shade600,
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(height: 8),
+                              SizedBox(height: 8.h),
                               Text(
                                 timeString,
                                 style: GoogleFonts.poppins(
-                                  fontSize: 11,
+                                  fontSize: 11.sp,
                                   color: Colors.grey.shade400,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -264,19 +266,19 @@ class NotificationsView extends StatelessWidget {
   Color _getIconColor(String type) {
     switch (type) {
       case 'new_request':
-        return const Color(0xFFFF9800);
+        return Color(0xFFFF9800);
       case 'request_accepted':
-        return const Color(0xFF4CAF50);
+        return Color(0xFF4CAF50);
       case 'mechanic_nearby':
         return Colors.blue;
       case 'job_completed':
-        return const Color(0xFF4CAF50);
+        return Color(0xFF4CAF50);
       case 'payment_received':
         return Colors.green;
       case 'request_cancelled':
         return Colors.red;
       case 'chat_message':
-        return const Color(0xFF6C63FF);
+        return Color(0xFF6C63FF);
       case 'rating_received':
         return Colors.amber;
       case 'verification_approved':

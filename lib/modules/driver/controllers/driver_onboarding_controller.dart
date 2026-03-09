@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class DriverOnboardingController extends GetxController {
   final _auth = FirebaseAuth.instance;
@@ -63,13 +64,15 @@ class DriverOnboardingController extends GetxController {
     switch (currentStep.value) {
       case 0:
         if (nameController.text.trim().isEmpty) return 'Please enter your name';
-        if (addressController.text.trim().isEmpty)
+        if (addressController.text.trim().isEmpty) {
           return 'Please enter your address';
+        }
         if (gender.value.isEmpty) return 'Please select gender';
         return null;
       case 1:
-        if (idNumberController.text.trim().isEmpty)
+        if (idNumberController.text.trim().isEmpty) {
           return 'Please enter ID number';
+        }
         if (idFrontPath.value.isEmpty) return 'Please upload front of your ID';
         return null;
       default:
@@ -80,25 +83,25 @@ class DriverOnboardingController extends GetxController {
   Future<void> pickIdPhoto({required bool isFront}) async {
     final source = await Get.bottomSheet<ImageSource>(
       Container(
-        padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
+        padding: EdgeInsets.all(20.w),
+        decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Icons.camera_alt, color: Color(0xFF6C63FF)),
-              title: const Text('Camera'),
+              leading: Icon(Icons.camera_alt, color: Color(0xFF6C63FF)),
+              title: Text('Camera'),
               onTap: () => Get.back(result: ImageSource.camera),
             ),
             ListTile(
-              leading: const Icon(
+              leading: Icon(
                 Icons.photo_library,
                 color: Color(0xFF6C63FF),
               ),
-              title: const Text('Gallery'),
+              title: Text('Gallery'),
               onTap: () => Get.back(result: ImageSource.gallery),
             ),
           ],

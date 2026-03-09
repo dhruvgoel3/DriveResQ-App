@@ -8,6 +8,7 @@ import 'HomePage/driver_home_view.dart';
 class DriverDashboardView extends StatelessWidget {
   const DriverDashboardView({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<DriverController>();
@@ -16,7 +17,7 @@ class DriverDashboardView extends StatelessWidget {
       return Scaffold(
         body: IndexedStack(
           index: controller.currentIndex.value,
-          children: const [
+          children: [
             DriverHomeView(),
             ChatListView(),
             DriverProfileView(),
@@ -25,13 +26,13 @@ class DriverDashboardView extends StatelessWidget {
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
-          selectedItemColor: const Color(0xFF6C63FF),
+          selectedItemColor: Color(0xFF6C63FF),
           unselectedItemColor: Colors.grey.shade400,
           selectedFontSize: 12,
           unselectedFontSize: 12,
           currentIndex: controller.currentIndex.value,
           onTap: controller.changeTab,
-          items: const [
+          items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home_rounded),
               label: "Home",

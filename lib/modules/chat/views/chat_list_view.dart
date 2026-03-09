@@ -7,11 +7,13 @@ import '../controllers/chat_controller.dart';
 import 'chat_screen.dart';
 import '../../../shared/widgets/empty_state_widget.dart';
 import '../../../shared/widgets/shimmer_loader.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class ChatListView extends StatelessWidget {
-  const ChatListView({super.key});
 
   static const _accent = Color(0xFF6C63FF);
+
+  const ChatListView({super.key});
 
   String get _uid => FirebaseAuth.instance.currentUser?.uid ?? '';
 
@@ -26,7 +28,7 @@ class ChatListView extends StatelessWidget {
         title: Text(
           'Messages',
           style: GoogleFonts.poppins(
-            fontSize: 22,
+            fontSize: 22.sp,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
           ),
@@ -46,23 +48,23 @@ class ChatListView extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.error_outline,
-                    size: 64,
+                    size: 64.w,
                     color: Colors.red.shade300,
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   Text(
                     'Error loading chats',
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       color: Colors.red.shade400,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Text(
                     '${snapshot.error}',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
-                      fontSize: 11,
+                      fontSize: 11.sp,
                       color: Colors.grey.shade400,
                     ),
                   ),
@@ -72,14 +74,14 @@ class ChatListView extends StatelessWidget {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const ShimmerLoader(
+            return ShimmerLoader(
               itemCount: 5,
               cardType: ShimmerCardType.chat,
             );
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const EmptyStateWidget(
+            return EmptyStateWidget(
               icon: Icons.chat_bubble_outline,
               iconColor: Color(0xFF6C63FF),
               title: 'No Messages Yet',
@@ -112,7 +114,7 @@ class ChatListView extends StatelessWidget {
           });
 
           return ListView.separated(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: EdgeInsets.symmetric(vertical: 8.h),
             itemCount: chats.length,
             separatorBuilder: (_, __) =>
                 Divider(height: 1, indent: 76, color: Colors.grey.shade200),
@@ -158,20 +160,20 @@ class ChatListView extends StatelessWidget {
             ),
           );
           Get.to(
-            () => const ChatScreen(),
+            () => ChatScreen(),
             transition: Transition.rightToLeft,
-            duration: const Duration(milliseconds: 250),
+            duration: Duration(milliseconds: 250),
           );
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           child: Row(
             children: [
               // Avatar
               Stack(
                 children: [
                   CircleAvatar(
-                    radius: 26,
+                    radius: 26.r,
                     backgroundImage: otherPhoto.isNotEmpty
                         ? NetworkImage(otherPhoto)
                         : null,
@@ -180,7 +182,7 @@ class ChatListView extends StatelessWidget {
                         ? Icon(
                             isDriver ? Icons.build : Icons.directions_car,
                             color: _accent,
-                            size: 22,
+                            size: 22.w,
                           )
                         : null,
                   ),
@@ -189,8 +191,8 @@ class ChatListView extends StatelessWidget {
                       right: 0,
                       bottom: 0,
                       child: Container(
-                        width: 14,
-                        height: 14,
+                        width: 14.w,
+                        height: 14.h,
                         decoration: BoxDecoration(
                           color: Colors.green,
                           shape: BoxShape.circle,
@@ -200,7 +202,7 @@ class ChatListView extends StatelessWidget {
                     ),
                 ],
               ),
-              const SizedBox(width: 14),
+              SizedBox(width: 14.w),
 
               // Name + last message
               Expanded(
@@ -213,7 +215,7 @@ class ChatListView extends StatelessWidget {
                           child: Text(
                             otherName,
                             style: GoogleFonts.poppins(
-                              fontSize: 15,
+                              fontSize: 15.sp,
                               fontWeight: unreadCount > 0
                                   ? FontWeight.w700
                                   : FontWeight.w500,
@@ -223,7 +225,7 @@ class ChatListView extends StatelessWidget {
                         Text(
                           _formatTime(lastTime),
                           style: GoogleFonts.poppins(
-                            fontSize: 11,
+                            fontSize: 11.sp,
                             color: unreadCount > 0
                                 ? _accent
                                 : Colors.grey.shade400,
@@ -231,7 +233,7 @@ class ChatListView extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 3),
+                    SizedBox(height: 3.h),
                     Row(
                       children: [
                         Expanded(
@@ -240,7 +242,7 @@ class ChatListView extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.poppins(
-                              fontSize: 13,
+                              fontSize: 13.sp,
                               color: unreadCount > 0
                                   ? Colors.black87
                                   : Colors.grey.shade500,
@@ -252,18 +254,18 @@ class ChatListView extends StatelessWidget {
                         ),
                         if (unreadCount > 0)
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 7,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 7.w,
                               vertical: 2,
                             ),
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               color: _accent,
                               shape: BoxShape.circle,
                             ),
                             child: Text(
                               '$unreadCount',
                               style: GoogleFonts.poppins(
-                                fontSize: 11,
+                                fontSize: 11.sp,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
                               ),

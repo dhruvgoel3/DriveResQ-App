@@ -3,9 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class VerificationPendingView extends StatelessWidget {
   const VerificationPendingView({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,7 @@ class VerificationPendingView extends StatelessWidget {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   Get.offAllNamed('/mechanic');
                 });
-                return const Center(
+                return Center(
                   child: CircularProgressIndicator(color: Color(0xFFFF9800)),
                 );
               }
@@ -48,85 +50,85 @@ class VerificationPendingView extends StatelessWidget {
 
   Widget _buildPendingView() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
+      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 48.h),
       child: Column(
         children: [
           // Animated clock illustration
           Container(
-            width: 140,
-            height: 140,
+            width: 140.w,
+            height: 140.h,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFFFF9800).withOpacity(0.1),
+              color: Color(0xFFFF9800).withOpacity(0.1),
             ),
             child: Stack(
               alignment: Alignment.center,
               children: [
                 Container(
-                  width: 100,
-                  height: 100,
+                  width: 100.w,
+                  height: 100.h,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color(0xFFFF9800).withOpacity(0.15),
+                    color: Color(0xFFFF9800).withOpacity(0.15),
                   ),
                 ),
-                const Icon(
+                Icon(
                   Icons.hourglass_top_rounded,
-                  size: 56,
+                  size: 56.w,
                   color: Color(0xFFFF9800),
                 ),
               ],
             ),
           ),
 
-          const SizedBox(height: 32),
+          SizedBox(height: 32.h),
 
           Text(
             'Verification In Progress',
             style: GoogleFonts.poppins(
-              fontSize: 24,
+              fontSize: 24.sp,
               fontWeight: FontWeight.bold,
               color: Colors.black87,
             ),
           ),
 
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
 
           Text(
             'Your application has been submitted successfully. Our team is reviewing your documents and will verify your account within 24-48 hours.',
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
-              fontSize: 14,
+              fontSize: 14.sp,
               height: 1.6,
               color: Colors.grey.shade500,
             ),
           ),
 
-          const SizedBox(height: 28),
+          SizedBox(height: 28.h),
 
           // Status steps
           _statusStep('Application Submitted', true),
           _statusStep('Document Verification', false, subtitle: 'In Progress'),
           _statusStep('Account Activation', false),
 
-          const SizedBox(height: 28),
+          SizedBox(height: 28.h),
 
           // Info card
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
               color: Colors.blue.shade50,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
             ),
             child: Row(
               children: [
-                Icon(Icons.info_outline, color: Colors.blue.shade700, size: 22),
-                const SizedBox(width: 12),
+                Icon(Icons.info_outline, color: Colors.blue.shade700, size: 22.w),
+                SizedBox(width: 12.w),
                 Expanded(
                   child: Text(
                     "You'll receive a notification once your verification is complete.",
                     style: GoogleFonts.poppins(
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       color: Colors.blue.shade700,
                     ),
                   ),
@@ -135,7 +137,7 @@ class VerificationPendingView extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
 
           // Logout button
           TextButton.icon(
@@ -144,7 +146,7 @@ class VerificationPendingView extends StatelessWidget {
               Get.deleteAll(force: true);
               Get.offAllNamed('/role');
             },
-            icon: const Icon(Icons.logout, color: Colors.grey, size: 20),
+            icon: Icon(Icons.logout, color: Colors.grey, size: 20.w),
             label: Text(
               'Sign Out',
               style: GoogleFonts.poppins(
@@ -160,47 +162,47 @@ class VerificationPendingView extends StatelessWidget {
 
   Widget _statusStep(String title, bool completed, {String? subtitle}) {
     return Padding(
-      padding: const EdgeInsets.only(left: 8, bottom: 4),
+      padding: EdgeInsets.only(left: 8.w, bottom: 4.h),
       child: Row(
         children: [
           Column(
             children: [
               Container(
-                width: 28,
-                height: 28,
+                width: 28.w,
+                height: 28.h,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: completed
-                      ? const Color(0xFF4CAF50)
+                      ? Color(0xFF4CAF50)
                       : Colors.grey.shade200,
                   border: Border.all(
                     color: completed
-                        ? const Color(0xFF4CAF50)
+                        ? Color(0xFF4CAF50)
                         : Colors.grey.shade300,
                     width: 2,
                   ),
                 ),
                 child: completed
-                    ? const Icon(Icons.check, size: 16, color: Colors.white)
+                    ? Icon(Icons.check, size: 16.w, color: Colors.white)
                     : null,
               ),
               Container(
                 width: 2,
-                height: 24,
+                height: 24.h,
                 color: completed
-                    ? const Color(0xFF4CAF50)
+                    ? Color(0xFF4CAF50)
                     : Colors.grey.shade200,
               ),
             ],
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16.w),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
                 style: GoogleFonts.poppins(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: completed ? Colors.black87 : Colors.grey.shade500,
                 ),
@@ -209,8 +211,8 @@ class VerificationPendingView extends StatelessWidget {
                 Text(
                   subtitle,
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    color: const Color(0xFFFF9800),
+                    fontSize: 12.sp,
+                    color: Color(0xFFFF9800),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -223,54 +225,54 @@ class VerificationPendingView extends StatelessWidget {
 
   Widget _buildRejectedView(String reason) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
+      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 48.h),
       child: Column(
         children: [
           Container(
-            width: 140,
-            height: 140,
+            width: 140.w,
+            height: 140.h,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.red.shade50,
             ),
             child: Icon(
               Icons.error_outline,
-              size: 64,
+              size: 64.w,
               color: Colors.red.shade400,
             ),
           ),
 
-          const SizedBox(height: 32),
+          SizedBox(height: 32.h),
 
           Text(
             'Verification Rejected',
             style: GoogleFonts.poppins(
-              fontSize: 24,
+              fontSize: 24.sp,
               fontWeight: FontWeight.bold,
               color: Colors.red.shade600,
             ),
           ),
 
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           Text(
             'Unfortunately, your application could not be verified. Please review the reason below and resubmit.',
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
-              fontSize: 14,
+              fontSize: 14.sp,
               height: 1.6,
               color: Colors.grey.shade500,
             ),
           ),
 
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(20.w),
             decoration: BoxDecoration(
               color: Colors.red.shade50,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
               border: Border.all(color: Colors.red.shade200),
             ),
             child: Column(
@@ -279,16 +281,16 @@ class VerificationPendingView extends StatelessWidget {
                 Text(
                   'Reason for Rejection',
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.red.shade700,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 Text(
                   reason,
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     color: Colors.red.shade600,
                     height: 1.5,
                   ),
@@ -297,11 +299,11 @@ class VerificationPendingView extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 32),
+          SizedBox(height: 32.h),
 
           SizedBox(
             width: double.infinity,
-            height: 56,
+            height: 56.h,
             child: ElevatedButton(
               onPressed: () {
                 // Reset onboarding and navigate back
@@ -315,24 +317,24 @@ class VerificationPendingView extends StatelessWidget {
                 Get.offAllNamed('/mechanic-onboarding');
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF9800),
+                backgroundColor: Color(0xFFFF9800),
                 foregroundColor: Colors.white,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(16.r),
                 ),
               ),
               child: Text(
                 'Resubmit Application',
                 style: GoogleFonts.poppins(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
           ),
 
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           TextButton.icon(
             onPressed: () async {
@@ -340,7 +342,7 @@ class VerificationPendingView extends StatelessWidget {
               Get.deleteAll(force: true);
               Get.offAllNamed('/role');
             },
-            icon: const Icon(Icons.logout, color: Colors.grey, size: 20),
+            icon: Icon(Icons.logout, color: Colors.grey, size: 20.w),
             label: Text(
               'Sign Out',
               style: GoogleFonts.poppins(

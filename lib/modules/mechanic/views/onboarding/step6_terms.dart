@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/onboarding_controller.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class Step6Terms extends StatelessWidget {
   const Step6Terms({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -19,16 +21,16 @@ class Step6Terms extends StatelessWidget {
             _buildProgressBar(c),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(24.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildHeader(),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24.h),
                     _buildTermsContent(),
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28.h),
                     _buildCheckboxes(c),
-                    const SizedBox(height: 40),
+                    SizedBox(height: 40.h),
                   ],
                 ),
               ),
@@ -45,10 +47,10 @@ class Step6Terms extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(
+        icon: Icon(
           Icons.arrow_back_ios_new,
           color: Colors.black87,
-          size: 20,
+          size: 20.w,
         ),
         onPressed: () {
           c.currentStep.value = 5;
@@ -59,7 +61,7 @@ class Step6Terms extends StatelessWidget {
         'Mechanic Registration',
         style: GoogleFonts.poppins(
           color: Colors.black87,
-          fontSize: 18,
+          fontSize: 18.sp,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -70,7 +72,7 @@ class Step6Terms extends StatelessWidget {
   Widget _buildProgressBar(MechanicOnboardingController c) {
     return Obx(
       () => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
         child: Column(
           children: [
             Row(
@@ -79,28 +81,28 @@ class Step6Terms extends StatelessWidget {
                 Text(
                   'Step ${c.currentStep.value} of 6',
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFFFF9800),
+                    color: Color(0xFFFF9800),
                   ),
                 ),
                 Text(
                   'Terms & Agreement',
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     color: Colors.grey.shade500,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             ClipRRect(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8.r),
               child: LinearProgressIndicator(
                 value: c.currentStep.value / 6,
-                minHeight: 6,
+                minHeight: 6.h,
                 backgroundColor: Colors.grey.shade200,
-                valueColor: const AlwaysStoppedAnimation<Color>(
+                valueColor: AlwaysStoppedAnimation<Color>(
                   Color(0xFFFF9800),
                 ),
               ),
@@ -118,15 +120,15 @@ class Step6Terms extends StatelessWidget {
         Text(
           'Terms & Agreement',
           style: GoogleFonts.poppins(
-            fontSize: 26,
+            fontSize: 26.sp,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6.h),
         Text(
           'Please read and accept our policies',
-          style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey.shade500),
+          style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.grey.shade500),
         ),
       ],
     );
@@ -134,11 +136,11 @@ class Step6Terms extends StatelessWidget {
 
   Widget _buildTermsContent() {
     return Container(
-      height: 280,
-      padding: const EdgeInsets.all(20),
+      height: 280.h,
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: SingleChildScrollView(
@@ -182,7 +184,7 @@ Your personal and financial data is protected under our privacy policy. We colle
 8. MODIFICATION OF TERMS
 DriveResQ reserves the right to modify these terms at any time. Continued use of the platform constitutes acceptance of modified terms.''',
           style: GoogleFonts.poppins(
-            fontSize: 13,
+            fontSize: 13.sp,
             height: 1.8,
             color: Colors.grey.shade700,
           ),
@@ -201,7 +203,7 @@ DriveResQ reserves the right to modify these terms at any time. Continued use of
             text: 'I agree to the Terms and Conditions',
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         Obx(
           () => _checkTile(
             value: c.agreeVerification.value,
@@ -209,7 +211,7 @@ DriveResQ reserves the right to modify these terms at any time. Continued use of
             text: 'I consent to background verification',
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         Obx(
           () => _checkTile(
             value: c.agreePrivacy.value,
@@ -229,15 +231,15 @@ DriveResQ reserves the right to modify these terms at any time. Continued use of
     return GestureDetector(
       onTap: () => onChanged(!value),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
         decoration: BoxDecoration(
           color: value
-              ? const Color(0xFFFF9800).withOpacity(0.06)
+              ? Color(0xFFFF9800).withOpacity(0.06)
               : Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
             color: value
-                ? const Color(0xFFFF9800).withOpacity(0.4)
+                ? Color(0xFFFF9800).withOpacity(0.4)
                 : Colors.grey.shade200,
             width: 1.5,
           ),
@@ -245,27 +247,27 @@ DriveResQ reserves the right to modify these terms at any time. Continued use of
         child: Row(
           children: [
             AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 24,
-              height: 24,
+              duration: Duration(milliseconds: 200),
+              width: 24.w,
+              height: 24.h,
               decoration: BoxDecoration(
-                color: value ? const Color(0xFFFF9800) : Colors.transparent,
-                borderRadius: BorderRadius.circular(6),
+                color: value ? Color(0xFFFF9800) : Colors.transparent,
+                borderRadius: BorderRadius.circular(6.r),
                 border: Border.all(
-                  color: value ? const Color(0xFFFF9800) : Colors.grey.shade400,
+                  color: value ? Color(0xFFFF9800) : Colors.grey.shade400,
                   width: 2,
                 ),
               ),
               child: value
-                  ? const Icon(Icons.check, size: 16, color: Colors.white)
+                  ? Icon(Icons.check, size: 16.w, color: Colors.white)
                   : null,
             ),
-            const SizedBox(width: 14),
+            SizedBox(width: 14.w),
             Expanded(
               child: Text(
                 text,
                 style: GoogleFonts.poppins(
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w500,
                   color: Colors.grey.shade700,
                 ),
@@ -284,41 +286,41 @@ DriveResQ reserves the right to modify these terms at any time. Continued use of
           c.agreeVerification.value &&
           c.agreePrivacy.value;
       return Container(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(24.w),
         child: SizedBox(
           width: double.infinity,
-          height: 56,
+          height: 56.h,
           child: ElevatedButton(
             onPressed: allChecked && !c.isLoading.value
                 ? () => c.submitOnboarding()
                 : null,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFF9800),
+              backgroundColor: Color(0xFFFF9800),
               foregroundColor: Colors.white,
               disabledBackgroundColor: Colors.grey.shade300,
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(16.r),
               ),
             ),
             child: c.isLoading.value
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(
-                        height: 20,
-                        width: 20,
+                      SizedBox(
+                        height: 20.h,
+                        width: 20.w,
                         child: CircularProgressIndicator(
                           color: Colors.white,
                           strokeWidth: 2,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12.w),
                       Obx(
                         () => Text(
                           'Uploading ${(c.uploadProgress.value * 100).toInt()}%',
                           style: GoogleFonts.poppins(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -328,7 +330,7 @@ DriveResQ reserves the right to modify these terms at any time. Continued use of
                 : Text(
                     'Submit Application',
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

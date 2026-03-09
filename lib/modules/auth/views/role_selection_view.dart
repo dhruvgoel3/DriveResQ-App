@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controllers/auth_controller.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class RoleSelectionView extends StatelessWidget {
   const RoleSelectionView({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class RoleSelectionView extends StatelessWidget {
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.all(24.w),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   minHeight: constraints.maxHeight - 48,
@@ -24,45 +26,45 @@ class RoleSelectionView extends StatelessWidget {
                 child: IntrinsicHeight(
                   child: Column(
                     children: [
-                      const SizedBox(height: 40),
+                      SizedBox(height: 40.h),
 
                       // Header
                       Text(
                         "Welcome to",
                         style: GoogleFonts.poppins(
-                          fontSize: 24,
+                          fontSize: 24.sp,
                           color: Colors.grey.shade600,
                         ),
                       ),
                       Text(
                         "DriveResQ",
                         style: GoogleFonts.poppins(
-                          fontSize: 40,
+                          fontSize: 40.sp,
                           fontWeight: FontWeight.bold,
-                          color: const Color(0xFF6C63FF),
+                          color: Color(0xFF6C63FF),
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.h),
                       Text(
                         "Your roadside assistance partner",
                         style: GoogleFonts.poppins(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           color: Colors.grey.shade500,
                         ),
                       ),
 
-                      const SizedBox(height: 48),
+                      SizedBox(height: 48.h),
 
                       // Choose role text
                       Text(
                         "I am a...",
                         style: GoogleFonts.poppins(
-                          fontSize: 20,
+                          fontSize: 20.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
 
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24.h),
 
                       // Role cards
                       Obx(
@@ -76,7 +78,7 @@ class RoleSelectionView extends StatelessWidget {
                           isSelected: controller.selectedRole.value == 'driver',
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.h),
                       Obx(
                         () => _roleCard(
                           controller: controller,
@@ -90,14 +92,14 @@ class RoleSelectionView extends StatelessWidget {
                         ),
                       ),
 
-                      const Spacer(),
-                      const SizedBox(height: 20),
+                      Spacer(),
+                      SizedBox(height: 20.h),
 
                       // Continue button
                       Obx(
                         () => SizedBox(
                           width: double.infinity,
-                          height: 56,
+                          height: 56.h,
                           child: ElevatedButton(
                             onPressed: controller.selectedRole.value.isEmpty
                                 ? null
@@ -105,18 +107,18 @@ class RoleSelectionView extends StatelessWidget {
                                     Get.toNamed('/login');
                                   },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF6C63FF),
+                              backgroundColor: Color(0xFF6C63FF),
                               foregroundColor: Colors.white,
                               disabledBackgroundColor: Colors.grey.shade300,
                               elevation: 0,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(16.r),
                               ),
                             ),
                             child: Text(
                               "Continue",
                               style: GoogleFonts.poppins(
-                                fontSize: 16,
+                                fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -124,7 +126,7 @@ class RoleSelectionView extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.h),
                     ],
                   ),
                 ),
@@ -148,12 +150,12 @@ class RoleSelectionView extends StatelessWidget {
     return GestureDetector(
       onTap: () => controller.selectRole(role),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
+        duration: Duration(milliseconds: 300),
         curve: Curves.easeInOut,
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(24.w),
         decoration: BoxDecoration(
           color: isSelected ? color.withOpacity(0.1) : Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
             color: isSelected ? color : Colors.grey.shade200,
             width: isSelected ? 3 : 2,
@@ -163,7 +165,7 @@ class RoleSelectionView extends StatelessWidget {
                   BoxShadow(
                     color: color.withOpacity(0.3),
                     blurRadius: 20,
-                    offset: const Offset(0, 8),
+                    offset: Offset(0, 8),
                   ),
                 ]
               : [],
@@ -171,14 +173,14 @@ class RoleSelectionView extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
                 color: color.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(16.r),
               ),
-              child: Icon(icon, size: 40, color: color),
+              child: Icon(icon, size: 40.w, color: color),
             ),
-            const SizedBox(width: 20),
+            SizedBox(width: 20.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -186,16 +188,16 @@ class RoleSelectionView extends StatelessWidget {
                   Text(
                     title,
                     style: GoogleFonts.poppins(
-                      fontSize: 22,
+                      fontSize: 22.sp,
                       fontWeight: FontWeight.bold,
                       color: isSelected ? color : Colors.black,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Text(
                     subtitle,
                     style: GoogleFonts.poppins(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       color: Colors.grey.shade600,
                     ),
                   ),
@@ -204,9 +206,9 @@ class RoleSelectionView extends StatelessWidget {
             ),
             if (isSelected)
               Container(
-                padding: const EdgeInsets.all(4),
+                padding: EdgeInsets.all(4.w),
                 decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-                child: const Icon(Icons.check, color: Colors.white, size: 20),
+                child: Icon(Icons.check, color: Colors.white, size: 20.w),
               ),
           ],
         ),

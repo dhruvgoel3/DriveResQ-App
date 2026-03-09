@@ -2,25 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/driver_onboarding_controller.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class DriverOnboardingView extends StatelessWidget {
-  const DriverOnboardingView({super.key});
 
   static const _accent = Color(0xFF6C63FF);
+
+  const DriverOnboardingView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final c = Get.put(DriverOnboardingController());
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+      backgroundColor: Color(0xFFF5F6FA),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
           'Setup Your Profile',
           style: GoogleFonts.poppins(
-            fontSize: 20,
+            fontSize: 20.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
@@ -29,10 +31,10 @@ class DriverOnboardingView extends StatelessWidget {
         leading: Obx(
           () => c.currentStep.value > 0
               ? IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.black),
+                  icon: Icon(Icons.arrow_back, color: Colors.black),
                   onPressed: c.previousStep,
                 )
-              : const SizedBox.shrink(),
+              : SizedBox.shrink(),
         ),
       ),
       body: Obx(() {
@@ -44,7 +46,7 @@ class DriverOnboardingView extends StatelessWidget {
             // Step content
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(20.w),
                 child: c.currentStep.value == 0
                     ? _step1PersonalDetails(c, context)
                     : _step2GovtId(c),
@@ -62,7 +64,7 @@ class DriverOnboardingView extends StatelessWidget {
   Widget _progressBar(DriverOnboardingController c) {
     return Container(
       color: Colors.white,
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+      padding: EdgeInsets.fromLTRB(20, 0, 20, 16),
       child: Column(
         children: [
           Row(
@@ -70,30 +72,30 @@ class DriverOnboardingView extends StatelessWidget {
               Text(
                 'Step ${c.currentStep.value + 1} of 2',
                 style: GoogleFonts.poppins(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   color: Colors.grey.shade500,
                 ),
               ),
-              const Spacer(),
+              Spacer(),
               Text(
                 c.currentStep.value == 0
                     ? 'Personal Details'
                     : 'ID Verification',
                 style: GoogleFonts.poppins(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
                   color: _accent,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           LinearProgressIndicator(
             value: (c.currentStep.value + 1) / 2,
             backgroundColor: Colors.grey.shade200,
             color: _accent,
-            minHeight: 4,
-            borderRadius: BorderRadius.circular(4),
+            minHeight: 4.h,
+            borderRadius: BorderRadius.circular(4.r),
           ),
         ],
       ),
@@ -109,12 +111,12 @@ class DriverOnboardingView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _sectionTitle('👋 Tell us about yourself'),
-        const SizedBox(height: 6),
+        SizedBox(height: 6.h),
         Text(
           'This helps us personalize your experience',
-          style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500),
+          style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: 24.h),
 
         _inputField(
           'Full Name *',
@@ -122,7 +124,7 @@ class DriverOnboardingView extends StatelessWidget {
           Icons.person,
           hint: 'Enter your full name',
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
 
         _inputField(
           'Email (optional)',
@@ -131,7 +133,7 @@ class DriverOnboardingView extends StatelessWidget {
           hint: 'yourname@email.com',
           keyboard: TextInputType.emailAddress,
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
 
         _inputField(
           'Address *',
@@ -140,18 +142,18 @@ class DriverOnboardingView extends StatelessWidget {
           hint: 'Your home/contact address',
           maxLines: 2,
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
 
         // Gender
         Text(
           'Gender *',
           style: GoogleFonts.poppins(
-            fontSize: 13,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w500,
             color: Colors.grey.shade700,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Obx(
           () => Wrap(
             spacing: 10,
@@ -161,7 +163,7 @@ class DriverOnboardingView extends StatelessWidget {
                 label: Text(
                   g,
                   style: GoogleFonts.poppins(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     color: selected ? Colors.white : Colors.black87,
                   ),
                 ),
@@ -173,39 +175,39 @@ class DriverOnboardingView extends StatelessWidget {
             }).toList(),
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
 
         // DOB
         Text(
           'Date of Birth (optional)',
           style: GoogleFonts.poppins(
-            fontSize: 13,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w500,
             color: Colors.grey.shade700,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Obx(
           () => InkWell(
             onTap: () => c.pickDob(context),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12.r),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
               decoration: BoxDecoration(
                 color: Colors.grey.shade50,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(color: Colors.grey.shade200),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.cake, size: 20, color: _accent),
-                  const SizedBox(width: 12),
+                  Icon(Icons.cake, size: 20.w, color: _accent),
+                  SizedBox(width: 12.w),
                   Text(
                     c.dob.value != null
                         ? '${c.dob.value!.day}/${c.dob.value!.month}/${c.dob.value!.year}'
                         : 'Select date of birth',
                     style: GoogleFonts.poppins(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       color: c.dob.value != null
                           ? Colors.black87
                           : Colors.grey.shade400,
@@ -226,36 +228,36 @@ class DriverOnboardingView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _sectionTitle('🪪 Identity Verification'),
-        const SizedBox(height: 6),
+        SizedBox(height: 6.h),
         Text(
           'Upload any one government ID to verify your identity',
-          style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500),
+          style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: 24.h),
 
         // ID Type selector
         Text(
           'ID Type *',
           style: GoogleFonts.poppins(
-            fontSize: 13,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w500,
             color: Colors.grey.shade700,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Obx(
           () => Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
+            padding: EdgeInsets.symmetric(horizontal: 14.w),
             decoration: BoxDecoration(
               color: Colors.grey.shade50,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               border: Border.all(color: Colors.grey.shade200),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
                 value: c.selectedIdType.value,
                 isExpanded: true,
-                style: GoogleFonts.poppins(fontSize: 14, color: Colors.black87),
+                style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black87),
                 items: c.idTypes
                     .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                     .toList(),
@@ -265,7 +267,7 @@ class DriverOnboardingView extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
 
         _inputField(
           'ID Number *',
@@ -273,18 +275,18 @@ class DriverOnboardingView extends StatelessWidget {
           Icons.credit_card,
           hint: 'Enter your ID number',
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: 20.h),
 
         // Front photo
         Text(
           'ID Front Photo *',
           style: GoogleFonts.poppins(
-            fontSize: 13,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w500,
             color: Colors.grey.shade700,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Obx(
           () => _photoUploader(
             path: c.idFrontPath.value,
@@ -292,18 +294,18 @@ class DriverOnboardingView extends StatelessWidget {
             onTap: () => c.pickIdPhoto(isFront: true),
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
 
         // Back photo (optional)
         Text(
           'ID Back Photo (optional)',
           style: GoogleFonts.poppins(
-            fontSize: 13,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w500,
             color: Colors.grey.shade700,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Obx(
           () => _photoUploader(
             path: c.idBackPath.value,
@@ -319,10 +321,10 @@ class DriverOnboardingView extends StatelessWidget {
   Widget _bottomButton(DriverOnboardingController c) {
     return Container(
       padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
+        left: 20.w,
+        right: 20.w,
         bottom: MediaQuery.of(Get.context!).padding.bottom + 16,
-        top: 12,
+        top: 12.h,
       ),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -330,7 +332,7 @@ class DriverOnboardingView extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 8,
-            offset: const Offset(0, -2),
+            offset: Offset(0, -2),
           ),
         ],
       ),
@@ -342,16 +344,16 @@ class DriverOnboardingView extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: _accent,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: EdgeInsets.symmetric(vertical: 16.h),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
               ),
               elevation: 0,
             ),
             child: c.isLoading.value
-                ? const SizedBox(
-                    height: 22,
-                    width: 22,
+                ? SizedBox(
+                    height: 22.h,
+                    width: 22.w,
                     child: CircularProgressIndicator(
                       color: Colors.white,
                       strokeWidth: 2,
@@ -360,7 +362,7 @@ class DriverOnboardingView extends StatelessWidget {
                 : Text(
                     c.currentStep.value == 1 ? 'Complete Setup' : 'Continue',
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -375,7 +377,7 @@ class DriverOnboardingView extends StatelessWidget {
     return Text(
       text,
       style: GoogleFonts.poppins(
-        fontSize: 20,
+        fontSize: 20.sp,
         fontWeight: FontWeight.bold,
         color: Colors.black87,
       ),
@@ -394,34 +396,34 @@ class DriverOnboardingView extends StatelessWidget {
       controller: controller,
       keyboardType: keyboard,
       maxLines: maxLines,
-      style: GoogleFonts.poppins(fontSize: 14),
+      style: GoogleFonts.poppins(fontSize: 14.sp),
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        labelStyle: GoogleFonts.poppins(fontSize: 13),
+        labelStyle: GoogleFonts.poppins(fontSize: 13.sp),
         hintStyle: GoogleFonts.poppins(
-          fontSize: 13,
+          fontSize: 13.sp,
           color: Colors.grey.shade400,
         ),
-        prefixIcon: Icon(icon, size: 20, color: _accent),
+        prefixIcon: Icon(icon, size: 20.w, color: _accent),
         filled: false,
         fillColor: Colors.grey.shade50,
         isDense: true,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 14,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 14.w,
+          vertical: 14.h,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(color: Colors.grey.shade200),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(color: Colors.grey.shade200),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: _accent, width: 2),
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(color: _accent, width: 2),
         ),
       ),
     );
@@ -435,13 +437,13 @@ class DriverOnboardingView extends StatelessWidget {
     final hasPhoto = path.isNotEmpty;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(14.r),
       child: Container(
-        height: 120,
+        height: 120.h,
         width: double.infinity,
         decoration: BoxDecoration(
           color: hasPhoto ? _accent.withOpacity(0.05) : Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(14.r),
           border: Border.all(
             color: hasPhoto ? _accent.withOpacity(0.3) : Colors.grey.shade200,
             width: 1.5,
@@ -452,25 +454,25 @@ class DriverOnboardingView extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.check_circle,
                       color: Color(0xFF4CAF50),
-                      size: 22,
+                      size: 22.w,
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     Text(
                       'Photo selected',
                       style: GoogleFonts.poppins(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
                         color: _accent,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     Text(
                       '(tap to change)',
                       style: GoogleFonts.poppins(
-                        fontSize: 11,
+                        fontSize: 11.sp,
                         color: Colors.grey,
                       ),
                     ),
@@ -482,14 +484,14 @@ class DriverOnboardingView extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.add_a_photo,
-                    size: 32,
+                    size: 32.w,
                     color: Colors.grey.shade400,
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   Text(
                     label,
                     style: GoogleFonts.poppins(
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       color: Colors.grey.shade400,
                     ),
                   ),

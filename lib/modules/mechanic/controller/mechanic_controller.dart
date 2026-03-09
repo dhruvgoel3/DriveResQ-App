@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -232,7 +231,7 @@ class MechanicController extends GetxController {
         Get.snackbar(
           "Already Busy",
           "You already have an active request. Complete or cancel it first.",
-          duration: const Duration(seconds: 3),
+          duration: Duration(seconds: 3),
         );
         return;
       }
@@ -261,7 +260,7 @@ class MechanicController extends GetxController {
         Get.snackbar(
           "Request Unavailable",
           "This request has already been accepted by another mechanic",
-          duration: const Duration(seconds: 3),
+          duration: Duration(seconds: 3),
         );
         return;
       }
@@ -313,7 +312,7 @@ class MechanicController extends GetxController {
       Get.snackbar(
         "Success",
         "Request accepted! You can now chat with the driver.",
-        backgroundColor: const Color(0xFF4CAF50).withOpacity(0.9),
+        backgroundColor: Color(0xFF4CAF50).withOpacity(0.9),
         colorText: Colors.white,
       );
 
@@ -365,7 +364,7 @@ class MechanicController extends GetxController {
       Get.snackbar(
         "Success",
         "Job cancelled successfully",
-        backgroundColor: const Color(0xFFFF9800).withOpacity(0.9),
+        backgroundColor: Color(0xFFFF9800).withOpacity(0.9),
         colorText: Colors.white,
       );
 
@@ -415,9 +414,9 @@ class MechanicController extends GetxController {
       Get.snackbar(
         "Success",
         "Job completed successfully! Great work!",
-        backgroundColor: const Color(0xFF4CAF50).withOpacity(0.9),
+        backgroundColor: Color(0xFF4CAF50).withOpacity(0.9),
         colorText: Colors.white,
-        duration: const Duration(seconds: 3),
+        duration: Duration(seconds: 3),
       );
 
       print("✅ Job completed: $jobId");

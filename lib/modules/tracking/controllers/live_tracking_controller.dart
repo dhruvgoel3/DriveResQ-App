@@ -48,18 +48,18 @@ class LiveTrackingController extends GetxController {
       if (data['driverLat'] != null && data['driverLng'] != null) {
         driverLatLng = LatLng(data['driverLat'], data['driverLng']);
         driverMarker.value = Marker(
-          markerId: const MarkerId("driver"),
+          markerId: MarkerId("driver"),
           position: driverLatLng!,
-          infoWindow: const InfoWindow(title: "Driver"),
+          infoWindow: InfoWindow(title: "Driver"),
         );
       }
 
       if (data['mechanicLat'] != null && data['mechanicLng'] != null) {
         mechanicLatLng = LatLng(data['mechanicLat'], data['mechanicLng']);
         mechanicMarker.value = Marker(
-          markerId: const MarkerId("mechanic"),
+          markerId: MarkerId("mechanic"),
           position: mechanicLatLng!,
-          infoWindow: const InfoWindow(title: "Mechanic"),
+          infoWindow: InfoWindow(title: "Mechanic"),
         );
       }
 
@@ -70,7 +70,7 @@ class LiveTrackingController extends GetxController {
   // 📡 SEND MECHANIC LOCATION ONLY
   void _startSendingMyLocation() {
     locationSub = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
+      locationSettings: LocationSettings(
         accuracy: LocationAccuracy.high,
         distanceFilter: 10,
       ),
@@ -86,7 +86,9 @@ class LiveTrackingController extends GetxController {
   void _updateCamera() {
     if (mapController == null ||
         driverLatLng == null ||
-        mechanicLatLng == null) return;
+        mechanicLatLng == null) {
+      return;
+    }
 
     final bounds = LatLngBounds(
       southwest: LatLng(

@@ -8,6 +8,7 @@ import 'current_request_view.dart';
 class MechanicDashboardView extends StatelessWidget {
   const MechanicDashboardView({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<MechanicController>();
@@ -16,7 +17,7 @@ class MechanicDashboardView extends StatelessWidget {
       return Scaffold(
         body: IndexedStack(
           index: controller.currentIndex.value,
-          children: const [
+          children: [
             CurrentRequestView(),
             ChatListView(),
             MechanicProfileView(),
@@ -26,13 +27,13 @@ class MechanicDashboardView extends StatelessWidget {
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
-          selectedItemColor: const Color(0xFF6C63FF),
+          selectedItemColor: Color(0xFF6C63FF),
           unselectedItemColor: Colors.grey.shade400,
           selectedFontSize: 12,
           unselectedFontSize: 12,
           currentIndex: controller.currentIndex.value,
           onTap: controller.changeTab,
-          items: const [
+          items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home_rounded),
               label: "Home",

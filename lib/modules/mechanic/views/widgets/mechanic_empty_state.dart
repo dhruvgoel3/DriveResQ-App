@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../shared/widgets/empty_state_widget.dart';
+import 'package:driveresq_app/shared/widgets/empty_state_widget.dart';
 
 /// Beautiful empty state for mechanic home — shown when no nearby requests.
 class MechanicEmptyState extends StatelessWidget {
@@ -7,7 +7,7 @@ class MechanicEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const EmptyStateWidget(
+    return EmptyStateWidget(
       icon: Icons.build_circle,
       iconColor: Color(0xFFFF9800),
       title: 'No Nearby Requests',

@@ -2,28 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/job_completion_controller.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class PaymentView extends StatelessWidget {
   const PaymentView({super.key});
+
 
   @override
   Widget build(BuildContext context) {
     final c = Get.find<JobCompletionController>();
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Total amount card
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(24.w),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [Colors.green.shade500, Colors.green.shade700],
               ),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
             ),
             child: Column(
               children: [
@@ -31,42 +33,42 @@ class PaymentView extends StatelessWidget {
                   'Total Amount',
                   style: GoogleFonts.poppins(
                     color: Colors.white70,
-                    fontSize: 14,
+                    fontSize: 14.sp,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Obx(
                   () => Text(
                     '₹${c.totalAmount.value.toStringAsFixed(0)}',
                     style: GoogleFonts.poppins(
                       color: Colors.white,
-                      fontSize: 36,
+                      fontSize: 36.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   'Including 18% GST',
                   style: GoogleFonts.poppins(
                     color: Colors.white60,
-                    fontSize: 12,
+                    fontSize: 12.sp,
                   ),
                 ),
               ],
             ),
           ),
 
-          const SizedBox(height: 28),
+          SizedBox(height: 28.h),
 
           Text(
             'Payment Method',
             style: GoogleFonts.poppins(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           // Payment methods
           Obx(
@@ -79,7 +81,7 @@ class PaymentView extends StatelessWidget {
                   Colors.green,
                   'Collect cash from driver',
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.h),
                 _paymentOption(
                   c,
                   'UPI',
@@ -87,7 +89,7 @@ class PaymentView extends StatelessWidget {
                   Colors.purple,
                   'GPay, PhonePe, Paytm',
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.h),
                 _paymentOption(
                   c,
                   'Card',
@@ -100,7 +102,7 @@ class PaymentView extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // Payment-specific content
           Obx(() {
@@ -109,10 +111,10 @@ class PaymentView extends StatelessWidget {
             } else if (c.paymentMethod.value == 'UPI') {
               return _upiSection(c);
             }
-            return const SizedBox.shrink();
+            return SizedBox.shrink();
           }),
 
-          const SizedBox(height: 28),
+          SizedBox(height: 28.h),
 
           // Buttons
           Row(
@@ -123,9 +125,9 @@ class PaymentView extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.grey.shade700,
                     side: BorderSide(color: Colors.grey.shade300),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(14.r),
                     ),
                   ),
                   child: Text(
@@ -134,24 +136,24 @@ class PaymentView extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 flex: 2,
                 child: ElevatedButton(
                   onPressed: () => c.nextStep(),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4CAF50),
+                    backgroundColor: Color(0xFF4CAF50),
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(14.r),
                     ),
                   ),
                   child: Text(
                     'Continue to Rating',
                     style: GoogleFonts.poppins(
-                      fontSize: 15,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -159,7 +161,7 @@ class PaymentView extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
         ],
       ),
     );
@@ -178,15 +180,15 @@ class PaymentView extends StatelessWidget {
     return GestureDetector(
       onTap: disabled ? null : () => c.paymentMethod.value = method,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(16),
+        duration: Duration(milliseconds: 200),
+        padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
           color: disabled
               ? Colors.grey.shade100
               : selected
               ? color.withOpacity(0.08)
               : Colors.white,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(14.r),
           border: Border.all(
             color: selected ? color : Colors.grey.shade200,
             width: selected ? 2 : 1,
@@ -195,19 +197,19 @@ class PaymentView extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 44,
-              height: 44,
+              width: 44.w,
+              height: 44.h,
               decoration: BoxDecoration(
                 color: (disabled ? Colors.grey : color).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
               ),
               child: Icon(
                 icon,
                 color: disabled ? Colors.grey : color,
-                size: 24,
+                size: 24.w,
               ),
             ),
-            const SizedBox(width: 14),
+            SizedBox(width: 14.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,7 +217,7 @@ class PaymentView extends StatelessWidget {
                   Text(
                     method,
                     style: GoogleFonts.poppins(
-                      fontSize: 15,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
                       color: disabled ? Colors.grey : Colors.black87,
                     ),
@@ -223,7 +225,7 @@ class PaymentView extends StatelessWidget {
                   Text(
                     subtitle,
                     style: GoogleFonts.poppins(
-                      fontSize: 12,
+                      fontSize: 12.sp,
                       color: disabled
                           ? Colors.grey.shade400
                           : Colors.grey.shade500,
@@ -234,8 +236,8 @@ class PaymentView extends StatelessWidget {
             ),
             if (!disabled)
               Container(
-                width: 22,
-                height: 22,
+                width: 22.w,
+                height: 22.h,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
@@ -245,20 +247,20 @@ class PaymentView extends StatelessWidget {
                   color: selected ? color : Colors.transparent,
                 ),
                 child: selected
-                    ? const Icon(Icons.check, color: Colors.white, size: 14)
+                    ? Icon(Icons.check, color: Colors.white, size: 14.w)
                     : null,
               ),
             if (disabled)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2),
                 decoration: BoxDecoration(
                   color: Colors.grey.shade200,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(4.r),
                 ),
                 child: Text(
                   'Soon',
                   style: GoogleFonts.poppins(
-                    fontSize: 10,
+                    fontSize: 10.sp,
                     color: Colors.grey.shade500,
                     fontWeight: FontWeight.w600,
                   ),
@@ -272,36 +274,36 @@ class PaymentView extends StatelessWidget {
 
   Widget _cashSection(JobCompletionController c) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
         color: Colors.green.shade50,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(color: Colors.green.shade200),
       ),
       child: Column(
         children: [
-          Icon(Icons.payments, size: 48, color: Colors.green.shade400),
-          const SizedBox(height: 12),
+          Icon(Icons.payments, size: 48.w, color: Colors.green.shade400),
+          SizedBox(height: 12.h),
           Text(
             'Collect Cash Payment',
             style: GoogleFonts.poppins(
-              fontSize: 15,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w600,
               color: Colors.green.shade700,
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Obx(
             () => Text(
               'Amount: ₹${c.totalAmount.value.toStringAsFixed(0)}',
               style: GoogleFonts.poppins(
-                fontSize: 20,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
                 color: Colors.green.shade800,
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Obx(
             () => CheckboxListTile(
               value: c.paymentCollected.value,
@@ -309,11 +311,11 @@ class PaymentView extends StatelessWidget {
               title: Text(
                 'Payment collected in cash',
                 style: GoogleFonts.poppins(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              activeColor: const Color(0xFF4CAF50),
+              activeColor: Color(0xFF4CAF50),
               controlAffinity: ListTileControlAffinity.leading,
               contentPadding: EdgeInsets.zero,
             ),
@@ -325,38 +327,38 @@ class PaymentView extends StatelessWidget {
 
   Widget _upiSection(JobCompletionController c) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
         color: Colors.purple.shade50,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(color: Colors.purple.shade200),
       ),
       child: Column(
         children: [
-          Icon(Icons.qr_code_2, size: 48, color: Colors.purple.shade400),
-          const SizedBox(height: 12),
+          Icon(Icons.qr_code_2, size: 48.w, color: Colors.purple.shade400),
+          SizedBox(height: 12.h),
           Text(
             'UPI Payment',
             style: GoogleFonts.poppins(
-              fontSize: 15,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w600,
               color: Colors.purple.shade700,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           TextField(
             controller: c.transactionIdController,
-            style: GoogleFonts.poppins(fontSize: 14),
+            style: GoogleFonts.poppins(fontSize: 14.sp),
             decoration: InputDecoration(
               labelText: 'Transaction ID / UTR Number',
-              labelStyle: GoogleFonts.poppins(fontSize: 13),
+              labelStyle: GoogleFonts.poppins(fontSize: 13.sp),
               filled: true,
               fillColor: Colors.white,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
                 borderSide: BorderSide(color: Colors.purple.shade200),
               ),
             ),

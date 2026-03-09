@@ -3,29 +3,31 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../controller/mechanic_controller.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class ActiveRequestDetailsPage extends StatelessWidget {
-  const ActiveRequestDetailsPage({super.key});
 
   static const primary = Color(0xFF6C63FF);
+
+  const ActiveRequestDetailsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<MechanicController>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
+      backgroundColor: Color(0xFFF6F7FB),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: Icon(Icons.arrow_back, color: Colors.black87),
           onPressed: () => Get.back(),
         ),
         title: Text(
           "Active Request",
           style: GoogleFonts.poppins(
-            fontSize: 18,
+            fontSize: 18.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black87,
           ),
@@ -41,14 +43,14 @@ class ActiveRequestDetailsPage extends StatelessWidget {
               children: [
                 Icon(
                   Icons.assignment_outlined,
-                  size: 80,
+                  size: 80.w,
                   color: Colors.grey.shade300,
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 Text(
                   "No Active Request",
                   style: GoogleFonts.poppins(
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.grey,
                   ),
@@ -66,44 +68,44 @@ class ActiveRequestDetailsPage extends StatelessWidget {
               // Status Header
               _buildStatusHeader(),
 
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
 
               // Main Content Card
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16),
+                margin: EdgeInsets.symmetric(horizontal: 16.w),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(24.r),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.08),
                       blurRadius: 20,
-                      offset: const Offset(0, 4),
+                      offset: Offset(0, 4),
                     ),
                   ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
 
                     // Distance Badge
                     if (job['distance'] != null) _buildDistanceBadge(job),
 
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
 
                     // Location Section
                     _buildLocationSection(job),
 
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
 
                     // Divider
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: Divider(color: Colors.grey.shade200, thickness: 1),
                     ),
 
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
 
                     // Vehicle Type
                     _buildDetailRow(
@@ -113,29 +115,29 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                       color: Colors.blue,
                     ),
 
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
 
                     // Description (if available)
                     if (job['description'] != null &&
                         job['description'].toString().isNotEmpty) ...[
                       _buildDescriptionSection(job['description']),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                     ],
 
                     // Problem Section
                     _buildProblemSection(job),
 
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
 
               // Action Buttons
               _buildActionButtons(context, job, controller),
 
-              const SizedBox(height: 30),
+              SizedBox(height: 30.h),
             ],
           ),
         );
@@ -146,7 +148,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
   Widget _buildStatusHeader() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: EdgeInsets.symmetric(vertical: 16.h),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [Colors.green.shade400, Colors.green.shade600],
@@ -155,38 +157,38 @@ class ActiveRequestDetailsPage extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.build_circle,
               color: Colors.white,
-              size: 32,
+              size: 32.w,
             ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Text(
             "MISSION IN PROGRESS",
             style: GoogleFonts.poppins(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.bold,
               color: Colors.white,
               letterSpacing: 1,
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.25),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
             child: Text(
               "ACTIVE",
               style: GoogleFonts.poppins(
-                fontSize: 11,
+                fontSize: 11.sp,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
                 letterSpacing: 0.5,
@@ -201,38 +203,38 @@ class ActiveRequestDetailsPage extends StatelessWidget {
   Widget _buildDistanceBadge(Map<String, dynamic> job) {
     return Center(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [Colors.blue.shade500, Colors.blue.shade700],
           ),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
               color: Colors.blue.withOpacity(0.3),
               blurRadius: 10,
-              offset: const Offset(0, 4),
+              offset: Offset(0, 4),
             ),
           ],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.near_me, color: Colors.white, size: 24),
-            const SizedBox(width: 10),
+            Icon(Icons.near_me, color: Colors.white, size: 24.w),
+            SizedBox(width: 10.w),
             Text(
               "${job['distance']} km",
               style: GoogleFonts.poppins(
-                fontSize: 20,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
-            const SizedBox(width: 6),
+            SizedBox(width: 6.w),
             Text(
               "away",
               style: GoogleFonts.poppins(
-                fontSize: 14,
+                fontSize: 14.sp,
                 color: Colors.white.withOpacity(0.9),
               ),
             ),
@@ -244,12 +246,12 @@ class ActiveRequestDetailsPage extends StatelessWidget {
 
   Widget _buildLocationSection(Map<String, dynamic> job) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
           color: Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           border: Border.all(color: Colors.grey.shade200, width: 1.5),
         ),
         child: Column(
@@ -258,18 +260,18 @@ class ActiveRequestDetailsPage extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: EdgeInsets.all(10.w),
                   decoration: BoxDecoration(
                     color: primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.location_on,
                     color: primary,
-                    size: 24,
+                    size: 24.w,
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,16 +279,16 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                       Text(
                         "Driver Location",
                         style: GoogleFonts.poppins(
-                          fontSize: 12,
+                          fontSize: 12.sp,
                           color: Colors.grey.shade600,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Text(
                         job['locationName'] ?? 'Location not available',
                         style: GoogleFonts.poppins(
-                          fontSize: 15,
+                          fontSize: 15.sp,
                           fontWeight: FontWeight.w600,
                           color: Colors.black87,
                         ),
@@ -298,22 +300,22 @@ class ActiveRequestDetailsPage extends StatelessWidget {
             ),
             if (job['landmark'] != null &&
                 job['landmark'].toString().isNotEmpty) ...[
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.place, size: 18, color: Colors.grey.shade600),
-                    const SizedBox(width: 8),
+                    Icon(Icons.place, size: 18.w, color: Colors.grey.shade600),
+                    SizedBox(width: 8.w),
                     Expanded(
                       child: Text(
                         job['landmark'],
                         style: GoogleFonts.poppins(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           color: Colors.grey.shade700,
                         ),
                       ),
@@ -335,21 +337,21 @@ class ActiveRequestDetailsPage extends StatelessWidget {
     required Color color,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: EdgeInsets.all(14.w),
         decoration: BoxDecoration(
           color: Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
         ),
         child: Row(
           children: [
-            Icon(icon, size: 22, color: color),
-            const SizedBox(width: 12),
+            Icon(icon, size: 22.w, color: color),
+            SizedBox(width: 12.w),
             Text(
               "$label: ",
               style: GoogleFonts.poppins(
-                fontSize: 13,
+                fontSize: 13.sp,
                 color: Colors.grey.shade600,
                 fontWeight: FontWeight.w500,
               ),
@@ -358,7 +360,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
               child: Text(
                 value,
                 style: GoogleFonts.poppins(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.black87,
                 ),
@@ -372,12 +374,12 @@ class ActiveRequestDetailsPage extends StatelessWidget {
 
   Widget _buildDescriptionSection(String description) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: EdgeInsets.all(14.w),
         decoration: BoxDecoration(
           color: Colors.blue.shade50,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           border: Border.all(color: Colors.blue.shade100),
         ),
         child: Column(
@@ -388,24 +390,24 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                 Icon(
                   Icons.notes_rounded,
                   color: Colors.blue.shade700,
-                  size: 20,
+                  size: 20.w,
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
                 Text(
                   "Additional Information",
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     color: Colors.blue.shade700,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               description,
               style: GoogleFonts.poppins(
-                fontSize: 13,
+                fontSize: 13.sp,
                 color: Colors.black87,
                 height: 1.4,
               ),
@@ -418,14 +420,14 @@ class ActiveRequestDetailsPage extends StatelessWidget {
 
   Widget _buildProblemSection(Map<String, dynamic> job) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [Colors.red.shade50, Colors.red.shade100],
           ),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           border: Border.all(color: Colors.red.shade200, width: 2),
         ),
         child: Column(
@@ -434,22 +436,22 @@ class ActiveRequestDetailsPage extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: EdgeInsets.all(8.w),
                   decoration: BoxDecoration(
                     color: Colors.red.shade200,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.warning_rounded,
                     color: Colors.red,
-                    size: 24,
+                    size: 24.w,
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 Text(
                   "PROBLEM REPORTED",
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.red.shade700,
                     letterSpacing: 0.5,
@@ -457,11 +459,11 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             Text(
               job['problem'] ?? 'No problem specified',
               style: GoogleFonts.poppins(
-                fontSize: 15,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w600,
                 color: Colors.black87,
                 height: 1.4,
@@ -479,7 +481,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
     MechanicController controller,
   ) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Column(
         children: [
           // Primary Actions
@@ -493,7 +495,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                   onPressed: () => _callDriver(job),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: _actionButton(
                   icon: Icons.navigation_rounded,
@@ -505,7 +507,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
 
           // Secondary Actions
           Row(
@@ -513,26 +515,26 @@ class ActiveRequestDetailsPage extends StatelessWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => _showCancelDialog(controller),
-                  icon: const Icon(Icons.cancel_outlined, size: 20),
+                  icon: Icon(Icons.cancel_outlined, size: 20.w),
                   label: Text(
                     "Cancel Job",
                     style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
                   ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.red,
-                    side: const BorderSide(color: Colors.red, width: 2),
+                    side: BorderSide(color: Colors.red, width: 2),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(14.r),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: ElevatedButton.icon(
                   onPressed: () => _showCompleteDialog(controller),
-                  icon: const Icon(Icons.check_circle, size: 20),
+                  icon: Icon(Icons.check_circle, size: 20.w),
                   label: Text(
                     "Complete",
                     style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
@@ -541,9 +543,9 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                     backgroundColor: Colors.green,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(14.r),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
                     elevation: 2,
                   ),
                 ),
@@ -563,7 +565,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
   }) {
     return ElevatedButton.icon(
       onPressed: onPressed,
-      icon: Icon(icon, size: 20),
+      icon: Icon(icon, size: 20.w),
       label: Text(
         label,
         style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
@@ -571,8 +573,8 @@ class ActiveRequestDetailsPage extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+        padding: EdgeInsets.symmetric(vertical: 16.h),
         elevation: 2,
       ),
     );

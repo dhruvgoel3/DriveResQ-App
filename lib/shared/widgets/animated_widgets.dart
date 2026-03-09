@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 /// Animated button with scale-down on press + haptic feedback.
 /// Wraps any child with a bounce micro-interaction.
@@ -8,7 +9,7 @@ class BounceButton extends StatefulWidget {
   final VoidCallback onPressed;
   final Widget child;
 
-  const BounceButton({super.key, required this.onPressed, required this.child});
+  BounceButton({super.key, required this.onPressed, required this.child});
 
   /// Convenience factory for a styled primary CTA button.
   factory BounceButton.primary({
@@ -23,15 +24,15 @@ class BounceButton extends StatefulWidget {
       onPressed: onPressed,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: EdgeInsets.symmetric(vertical: 16.h),
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(14.r),
           boxShadow: [
             BoxShadow(
               color: color.withValues(alpha: 0.3),
               blurRadius: 12,
-              offset: const Offset(0, 4),
+              offset: Offset(0, 4),
             ),
           ],
         ),
@@ -39,14 +40,14 @@ class BounceButton extends StatefulWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (icon != null) ...[
-              Icon(icon, color: Colors.white, size: 20),
-              const SizedBox(width: 8),
+              Icon(icon, color: Colors.white, size: 20.w),
+              SizedBox(width: 8.w),
             ],
             Text(
               text,
               style: GoogleFonts.poppins(
                 color: Colors.white,
-                fontSize: 16,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -70,7 +71,7 @@ class _BounceButtonState extends State<BounceButton>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 120),
+      duration: Duration(milliseconds: 120),
     );
     _scale = Tween<double>(
       begin: 1.0,
@@ -105,7 +106,7 @@ class StaggeredListItem extends StatefulWidget {
   final Widget child;
   final int delayMs;
 
-  const StaggeredListItem({
+  StaggeredListItem({
     super.key,
     required this.index,
     required this.child,
@@ -127,11 +128,11 @@ class _StaggeredListItemState extends State<StaggeredListItem>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: Duration(milliseconds: 500),
     );
     _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
     _slide = Tween<Offset>(
-      begin: const Offset(0, 0.15),
+      begin: Offset(0, 0.15),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
 

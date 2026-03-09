@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class QuickRepliesBar extends StatelessWidget {
   final List<String> replies;
   final void Function(String) onTap;
 
-  const QuickRepliesBar({
+
+  QuickRepliesBar({
     super.key,
     required this.replies,
     required this.onTap,
@@ -14,7 +16,7 @@ class QuickRepliesBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+      padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 8.w),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(top: BorderSide(color: Colors.grey.shade200)),
@@ -25,21 +27,21 @@ class QuickRepliesBar extends StatelessWidget {
           children: replies
               .map(
                 (r) => Padding(
-                  padding: const EdgeInsets.only(right: 6),
+                  padding: EdgeInsets.only(right: 6.w),
                   child: ActionChip(
                     label: Text(
                       r,
                       style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        color: const Color(0xFF6C63FF),
+                        fontSize: 12.sp,
+                        color: Color(0xFF6C63FF),
                       ),
                     ),
-                    backgroundColor: const Color(0xFF6C63FF).withOpacity(0.08),
+                    backgroundColor: Color(0xFF6C63FF).withOpacity(0.08),
                     side: BorderSide(
-                      color: const Color(0xFF6C63FF).withOpacity(0.2),
+                      color: Color(0xFF6C63FF).withOpacity(0.2),
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(20.r),
                     ),
                     onPressed: () => onTap(r),
                   ),

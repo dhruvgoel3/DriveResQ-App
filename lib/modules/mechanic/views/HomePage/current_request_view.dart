@@ -5,9 +5,11 @@ import '../widgets/accept_request_indicator_card.dart';
 import '../widgets/mechanic_active_job_card.dart';
 import '../widgets/mechanic_empty_state.dart';
 import '../../controller/mechanic_controller.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class CurrentRequestView extends StatefulWidget {
   const CurrentRequestView({super.key});
+
 
   @override
   State<CurrentRequestView> createState() => _CurrentRequestViewState();
@@ -28,7 +30,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
           _pageController.page?.round() != index) {
         _pageController.animateToPage(
           index,
-          duration: const Duration(milliseconds: 300),
+          duration: Duration(milliseconds: 300),
           curve: Curves.easeInOut,
         );
       }
@@ -46,27 +48,27 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
     final controller = Get.find<MechanicController>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
+      backgroundColor: Color(0xFFF6F7FB),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         title: Row(
           children: [
-            Image.asset("assets/—Pngtree—vector car repair tools illustration_5458319.png",height: 30,width: 30,),
-            SizedBox(width: 10,),
+            Image.asset("assets/—Pngtree—vector car repair tools illustration_5458319.png",height: 30.h,width: 30.w,),
+            SizedBox(width: 10.w,),
             Text(
               "DriveResQ",
               style: GoogleFonts.poppins(
-                fontSize: 20,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
-                color: const Color(0xFF6C63FF),
+                color: Color(0xFF6C63FF),
               ),
             ),
           ],
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: Icon(Icons.refresh),
             onPressed: () => controller.refreshLocation(),
             tooltip: "Refresh Location",
           ),
@@ -105,18 +107,18 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
       if (!controller.isLocationLoaded.value) {
         return Container(
           color: Colors.orange.shade50,
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
           child: Row(
             children: [
-              const SizedBox(
-                width: 16,
-                height: 16,
+              SizedBox(
+                width: 16.w,
+                height: 16.h,
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Text(
                 "Getting your location...",
-                style: GoogleFonts.poppins(fontSize: 13),
+                style: GoogleFonts.poppins(fontSize: 13.sp),
               ),
             ],
           ),
@@ -125,16 +127,16 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
 
       return Container(
         color: Colors.green.shade50,
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
         child: Row(
           children: [
-            const Icon(Icons.location_on, color: Colors.green, size: 16),
-            const SizedBox(width: 8),
+            Icon(Icons.location_on, color: Colors.green, size: 16.w),
+            SizedBox(width: 8.w),
             Expanded(
               child: Text(
                 "Location active • Showing requests within 20 km",
                 style: GoogleFonts.poppins(
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   color: Colors.green.shade800,
                 ),
               ),
@@ -167,14 +169,14 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
       child: GestureDetector(
         onTap: () => controller.changeInnerTab(index),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
+          duration: Duration(milliseconds: 300),
           curve: Curves.easeInOut,
-          padding: const EdgeInsets.symmetric(vertical: 14),
+          padding: EdgeInsets.symmetric(vertical: 14.h),
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
-                color: isActive ? const Color(0xFF6C63FF) : Colors.transparent,
-                width: 3,
+                color: isActive ? Color(0xFF6C63FF) : Colors.transparent,
+                width: 3.w,
               ),
             ),
           ),
@@ -182,9 +184,9 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
             child: Text(
               text,
               style: GoogleFonts.poppins(
-                color: isActive ? const Color(0xFF6C63FF) : Colors.grey,
+                color: isActive ? Color(0xFF6C63FF) : Colors.grey,
                 fontWeight: FontWeight.w600,
-                fontSize: 15,
+                fontSize: 15.sp,
               ),
             ),
           ),
@@ -197,12 +199,12 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
   Widget _buildAllRequestsTab(MechanicController controller) {
     return Obx(() {
       if (!controller.isLocationLoaded.value) {
-        return const Center(
+        return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CircularProgressIndicator(),
-              SizedBox(height: 16),
+              SizedBox(height: 16.h),
               Text("Loading location..."),
             ],
           ),
@@ -222,21 +224,21 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.search_off, size: 80, color: Colors.grey.shade300),
-              const SizedBox(height: 16),
+              Icon(Icons.search_off, size: 80.w, color: Colors.grey.shade300),
+              SizedBox(height: 16.h),
               Text(
                 "No nearby requests",
                 style: GoogleFonts.poppins(
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.grey,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               Text(
                 "Requests within 20 km will appear here",
                 style: GoogleFonts.poppins(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   color: Colors.grey.shade500,
                 ),
               ),
@@ -246,40 +248,40 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
       }
 
       return ListView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         children: [
           // Show indicator card ONLY HERE if there's an accepted job
-          if (hasAcceptedJob) const AcceptedRequestIndicatorCard(),
+          if (hasAcceptedJob) AcceptedRequestIndicatorCard(),
 
-          if (hasAcceptedJob) const SizedBox(height: 12),
+          if (hasAcceptedJob) SizedBox(height: 12.h),
 
           // Show message if no open requests but has accepted job
           if (openRequestsList.isEmpty && hasAcceptedJob)
             Center(
               child: Padding(
-                padding: const EdgeInsets.all(32),
+                padding: EdgeInsets.all(32.w),
                 child: Column(
                   children: [
                     Icon(
                       Icons.inbox_outlined,
-                      size: 70,
+                      size: 70.w,
                       color: Colors.grey.shade300,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     Text(
                       "No new requests",
                       style: GoogleFonts.poppins(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.grey,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     Text(
                       "You're currently working on an active request",
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
-                        fontSize: 13,
+                        fontSize: 13.sp,
                         color: Colors.grey.shade500,
                       ),
                     ),
@@ -306,7 +308,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
     return Obx(() {
       if (controller.hasActiveJob.value && controller.activeJob.value != null) {
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.w),
           child: MechanicActiveJobCard(
             job: controller.activeJob.value!,
             isActive: true,
@@ -314,7 +316,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
           ),
         );
       } else {
-        return const MechanicEmptyState();
+        return MechanicEmptyState();
       }
     });
   }
@@ -327,7 +329,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
       textConfirm: "Accept",
       textCancel: "Cancel",
       confirmTextColor: Colors.white,
-      buttonColor: const Color(0xFF6C63FF),
+      buttonColor: Color(0xFF6C63FF),
       onConfirm: () {
         Get.back();
         controller.acceptRequest(requestId);

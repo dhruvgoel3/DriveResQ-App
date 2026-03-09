@@ -50,7 +50,7 @@ class JobCompletionController extends GetxController {
   // Invoice
   var invoiceNumber = ''.obs;
 
-  static const List<String> serviceOptions = [
+  static List<String> serviceOptions = [
     'Engine Repair',
     'Tire Change',
     'Battery Jump Start',
@@ -63,7 +63,7 @@ class JobCompletionController extends GetxController {
     'Other',
   ];
 
-  static const List<String> ratingTags = [
+  static List<String> ratingTags = [
     'Cooperative',
     'Respectful',
     'Paid on time',
@@ -242,7 +242,7 @@ class JobCompletionController extends GetxController {
       if (acceptedAt is Timestamp) {
         startTime = acceptedAt.toDate();
       } else {
-        startTime = now.subtract(const Duration(hours: 1));
+        startTime = now.subtract(Duration(hours: 1));
       }
 
       final completionData = {

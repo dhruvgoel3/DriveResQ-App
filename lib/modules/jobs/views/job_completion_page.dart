@@ -6,9 +6,11 @@ import 'completion/step1_job_summary.dart';
 import 'completion/step2_payment.dart';
 import 'completion/step3_rating.dart';
 import 'completion/step4_completion_success.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class JobCompletionPage extends StatelessWidget {
   const JobCompletionPage({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -31,21 +33,21 @@ class JobCompletionPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(100),
+          preferredSize: Size.fromHeight(100),
           child: Obx(() => _buildAppBar(c)),
         ),
         body: Obx(() {
           switch (c.currentStep.value) {
             case 0:
-              return const JobSummaryView();
+              return JobSummaryView();
             case 1:
-              return const PaymentView();
+              return PaymentView();
             case 2:
-              return const RatingView();
+              return RatingView();
             case 3:
-              return const CompletionSuccessView();
+              return CompletionSuccessView();
             default:
-              return const JobSummaryView();
+              return JobSummaryView();
           }
         }),
       ),
@@ -64,7 +66,7 @@ class JobCompletionPage extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
             blurRadius: 8,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -73,12 +75,12 @@ class JobCompletionPage extends StatelessWidget {
         children: [
           // Title row
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
             child: Row(
               children: [
                 if (!isSuccess)
                   IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.black87),
+                    icon: Icon(Icons.arrow_back, color: Colors.black87),
                     onPressed: () {
                       if (step > 0) {
                         c.prevStep();
@@ -88,19 +90,19 @@ class JobCompletionPage extends StatelessWidget {
                     },
                   )
                 else
-                  const SizedBox(width: 48),
+                  SizedBox(width: 48.w),
                 Expanded(
                   child: Text(
                     isSuccess ? 'Completed!' : _stepTitle(step),
                     style: GoogleFonts.poppins(
-                      fontSize: 18,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.black87,
                     ),
                     textAlign: TextAlign.center,
                   ),
                 ),
-                const SizedBox(width: 48),
+                SizedBox(width: 48.w),
               ],
             ),
           ),
@@ -108,17 +110,17 @@ class JobCompletionPage extends StatelessWidget {
           // Progress Bar
           if (!isSuccess)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
               child: Row(
                 children: List.generate(3, (i) {
                   final active = i <= step;
                   return Expanded(
                     child: Container(
-                      height: 4,
-                      margin: const EdgeInsets.symmetric(horizontal: 3),
+                      height: 4.h,
+                      margin: EdgeInsets.symmetric(horizontal: 3.w),
                       decoration: BoxDecoration(
                         color: active
-                            ? const Color(0xFF4CAF50)
+                            ? Color(0xFF4CAF50)
                             : Colors.grey.shade200,
                         borderRadius: BorderRadius.circular(2),
                       ),
@@ -127,7 +129,7 @@ class JobCompletionPage extends StatelessWidget {
                 }),
               ),
             ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
         ],
       ),
     );

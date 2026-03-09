@@ -2,40 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/driver_profile_controller.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class DriverProfileView extends StatelessWidget {
-  const DriverProfileView({super.key});
 
   static const _accent = Color(0xFF6C63FF);
+
+  const DriverProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final c = Get.put(DriverProfileController());
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+      backgroundColor: Color(0xFFF5F6FA),
       body: Obx(() {
         if (c.userData.value == null) {
-          return const Center(child: CircularProgressIndicator(color: _accent));
+          return Center(child: CircularProgressIndicator(color: _accent));
         }
 
         return CustomScrollView(
           slivers: [
             _buildHeader(c),
             SliverPadding(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.w),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   _statsRow(c),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _personalInfoCard(c),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _identityCard(c),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _safetyCard(c),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   _logoutButton(c),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                 ]),
               ),
             ),
@@ -65,7 +67,7 @@ class DriverProfileView extends StatelessWidget {
       ],
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [Color(0xFF6C63FF), Color(0xFF8B7CFF)],
               begin: Alignment.topLeft,
@@ -76,69 +78,69 @@ class DriverProfileView extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 15),
+                SizedBox(height: 15.h),
                 // Avatar
                 Container(
-                  padding: const EdgeInsets.all(3),
+                  padding: EdgeInsets.all(3.w),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 3),
+                    border: Border.all(color: Colors.white, width: 3.w),
                   ),
                   child: CircleAvatar(
-                    radius: 42,
+                    radius: 42.r,
                     backgroundColor: Colors.white24,
                     child: Text(
                       c.displayName.isNotEmpty
                           ? c.displayName[0].toUpperCase()
                           : 'D',
                       style: GoogleFonts.poppins(
-                        fontSize: 36,
+                        fontSize: 36.sp,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 Text(
                   c.displayName,
                   style: GoogleFonts.poppins(
-                    fontSize: 22,
+                    fontSize: 22.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   c.phone,
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     color: Colors.white70,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 4,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 14.w,
+                    vertical: 4.h,
                   ),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(20.r),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
                         c.isOnboarded ? Icons.verified : Icons.pending,
-                        size: 14,
+                        size: 14.w,
                         color: Colors.white,
                       ),
-                      const SizedBox(width: 6),
+                      SizedBox(width: 6.w),
                       Text(
                         c.isOnboarded ? 'VERIFIED DRIVER' : 'SETUP PENDING',
                         style: GoogleFonts.poppins(
-                          fontSize: 11,
+                          fontSize: 11.sp,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
                         ),
@@ -157,15 +159,15 @@ class DriverProfileView extends StatelessWidget {
   // ─── Stats row ───
   Widget _statsRow(DriverProfileController c) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+      padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 12.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
             blurRadius: 10,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -200,12 +202,12 @@ class DriverProfileView extends StatelessWidget {
     return Expanded(
       child: Column(
         children: [
-          Icon(icon, color: color, size: 22),
-          const SizedBox(height: 6),
+          Icon(icon, color: color, size: 22.w),
+          SizedBox(height: 6.h),
           Text(
             value,
             style: GoogleFonts.poppins(
-              fontSize: 18,
+              fontSize: 18.sp,
               fontWeight: FontWeight.bold,
               color: color,
             ),
@@ -213,7 +215,7 @@ class DriverProfileView extends StatelessWidget {
           Text(
             label,
             style: GoogleFonts.poppins(
-              fontSize: 11,
+              fontSize: 11.sp,
               color: Colors.grey.shade500,
             ),
           ),
@@ -223,7 +225,7 @@ class DriverProfileView extends StatelessWidget {
   }
 
   Widget _divider() {
-    return Container(width: 1, height: 40, color: Colors.grey.shade200);
+    return Container(width: 1, height: 40.h, color: Colors.grey.shade200);
   }
 
   // ─── Personal Info (editable) ───
@@ -237,16 +239,16 @@ class DriverProfileView extends StatelessWidget {
           children: [
             if (edit) ...[
               _editField('Full Name', c.nameController, Icons.person),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               _editField('Email', c.emailController, Icons.email),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               _editField(
                 'Address',
                 c.addressController,
                 Icons.home,
                 maxLines: 2,
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               SizedBox(
                 width: double.infinity,
                 child: Obx(
@@ -255,16 +257,16 @@ class DriverProfileView extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _accent,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: EdgeInsets.symmetric(vertical: 14.h),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                       elevation: 0,
                     ),
                     child: c.isLoading.value
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
+                        ? SizedBox(
+                            height: 20.h,
+                            width: 20.w,
                             child: CircularProgressIndicator(
                               color: Colors.white,
                               strokeWidth: 2,
@@ -309,7 +311,7 @@ class DriverProfileView extends StatelessWidget {
   // ─── Identity Card ───
   Widget _identityCard(DriverProfileController c) {
     if (c.govtIdType.isEmpty) {
-      return const SizedBox.shrink();
+      return SizedBox.shrink();
     }
 
     return _card(
@@ -324,22 +326,22 @@ class DriverProfileView extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
                   color: Colors.green.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.check_circle,
                   color: Colors.green,
-                  size: 20,
+                  size: 20.w,
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Text(
                 'ID Verified',
                 style: GoogleFonts.poppins(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.green,
                 ),
@@ -375,15 +377,15 @@ class DriverProfileView extends StatelessWidget {
     required Widget child,
   }) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
             blurRadius: 10,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -392,12 +394,12 @@ class DriverProfileView extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, size: 16, color: _accent),
-              const SizedBox(width: 6),
+              Icon(icon, size: 16.w, color: _accent),
+              SizedBox(width: 6.w),
               Text(
                 title,
                 style: GoogleFonts.poppins(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.grey.shade600,
                   letterSpacing: 0.5,
@@ -405,7 +407,7 @@ class DriverProfileView extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14.h),
           child,
         ],
       ),
@@ -414,18 +416,18 @@ class DriverProfileView extends StatelessWidget {
 
   Widget _infoRow(IconData icon, String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.symmetric(vertical: 4.h),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
               color: _accent.withOpacity(0.08),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8.r),
             ),
-            child: Icon(icon, size: 18, color: _accent),
+            child: Icon(icon, size: 18.w, color: _accent),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -433,14 +435,14 @@ class DriverProfileView extends StatelessWidget {
                 Text(
                   label,
                   style: GoogleFonts.poppins(
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     color: Colors.grey.shade500,
                   ),
                 ),
                 Text(
                   value,
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -454,27 +456,27 @@ class DriverProfileView extends StatelessWidget {
 
   Widget _statusRow(String label, bool active, IconData icon) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.symmetric(vertical: 4.h),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
               color: (active ? Colors.green : Colors.red).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8.r),
             ),
             child: Icon(
               active ? Icons.check_circle : Icons.cancel,
-              size: 20,
+              size: 20.w,
               color: active ? Colors.green : Colors.red,
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           Expanded(
             child: Text(
               label,
               style: GoogleFonts.poppins(
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -482,7 +484,7 @@ class DriverProfileView extends StatelessWidget {
           Text(
             active ? 'Active' : 'Pending',
             style: GoogleFonts.poppins(
-              fontSize: 12,
+              fontSize: 12.sp,
               color: active ? Colors.green : Colors.orange,
             ),
           ),
@@ -492,7 +494,7 @@ class DriverProfileView extends StatelessWidget {
   }
 
   Widget _sep() =>
-      Divider(height: 16, thickness: 0.5, color: Colors.grey.shade200);
+      Divider(height: 16.h, thickness: 0.5, color: Colors.grey.shade200);
 
   Widget _editField(
     String label,
@@ -503,29 +505,29 @@ class DriverProfileView extends StatelessWidget {
     return TextField(
       controller: controller,
       maxLines: maxLines,
-      style: GoogleFonts.poppins(fontSize: 14),
+      style: GoogleFonts.poppins(fontSize: 14.sp),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.poppins(fontSize: 13),
-        prefixIcon: Icon(icon, size: 20, color: _accent),
+        labelStyle: GoogleFonts.poppins(fontSize: 13.sp),
+        prefixIcon: Icon(icon, size: 20.w, color: _accent),
         filled: false,
         fillColor: Colors.grey.shade50,
         isDense: true,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 14,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 14.w,
+          vertical: 14.h,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(color: Colors.grey.shade200),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(color: Colors.grey.shade200),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: _accent, width: 2),
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(color: _accent, width: 2),
         ),
       ),
     );
@@ -536,17 +538,17 @@ class DriverProfileView extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton.icon(
         onPressed: c.logout,
-        icon: const Icon(Icons.logout),
+        icon: Icon(Icons.logout),
         label: Text(
           'Logout',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 16),
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 16.sp),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.red,
           foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 14),
+          padding: EdgeInsets.symmetric(vertical: 14.h),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(14.r),
           ),
           elevation: 0,
         ),

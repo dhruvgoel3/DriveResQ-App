@@ -3,9 +3,11 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 import '../controllers/auth_controller.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class OTPVerificationView extends StatelessWidget {
   const OTPVerificationView({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class OTPVerificationView extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Get.back(),
         ),
       ),
@@ -27,61 +29,61 @@ class OTPVerificationView extends StatelessWidget {
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.symmetric(horizontal: 24.w),
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: IntrinsicHeight(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.h),
 
                       // Header
                       Text(
                         "Verify your",
                         style: GoogleFonts.poppins(
-                          fontSize: 28,
+                          fontSize: 28.sp,
                           color: Colors.grey.shade600,
                         ),
                       ),
                       Text(
                         "Phone Number",
                         style: GoogleFonts.poppins(
-                          fontSize: 32,
+                          fontSize: 32.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.h),
                       Text(
                         "Code sent to +91 ${controller.phoneController.text}",
                         style: GoogleFonts.poppins(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           color: Colors.grey.shade500,
                         ),
                       ),
 
-                      const SizedBox(height: 36),
+                      SizedBox(height: 36.h),
 
                       // OTP Icon
                       Center(
                         child: Container(
-                          padding: const EdgeInsets.all(18),
+                          padding: EdgeInsets.all(18.w),
                           decoration: BoxDecoration(
-                            color: const Color(
+                            color: Color(
                               0xFF6C63FF,
                             ).withValues(alpha: 0.1),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.phone_android,
-                            size: 48,
+                            size: 48.w,
                             color: Color(0xFF6C63FF),
                           ),
                         ),
                       ),
 
-                      const SizedBox(height: 32),
+                      SizedBox(height: 32.h),
 
                       // OTP Input
                       Center(
@@ -89,51 +91,51 @@ class OTPVerificationView extends StatelessWidget {
                           controller: controller.otpController,
                           length: 6,
                           defaultPinTheme: PinTheme(
-                            width: 48,
-                            height: 56,
+                            width: 48.w,
+                            height: 56.h,
                             textStyle: GoogleFonts.poppins(
-                              fontSize: 20,
+                              fontSize: 20.sp,
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
                             ),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(12.r),
                               border: Border.all(color: Colors.grey.shade300),
                             ),
                           ),
                           focusedPinTheme: PinTheme(
-                            width: 48,
-                            height: 56,
+                            width: 48.w,
+                            height: 56.h,
                             textStyle: GoogleFonts.poppins(
-                              fontSize: 20,
+                              fontSize: 20.sp,
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
                             ),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(12.r),
                               border: Border.all(
-                                color: const Color(0xFF6C63FF),
+                                color: Color(0xFF6C63FF),
                                 width: 2,
                               ),
                             ),
                           ),
                           submittedPinTheme: PinTheme(
-                            width: 48,
-                            height: 56,
+                            width: 48.w,
+                            height: 56.h,
                             textStyle: GoogleFonts.poppins(
-                              fontSize: 20,
+                              fontSize: 20.sp,
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(
+                              color: Color(
                                 0xFF6C63FF,
                               ).withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(12.r),
                               border: Border.all(
-                                color: const Color(0xFF6C63FF),
+                                color: Color(0xFF6C63FF),
                               ),
                             ),
                           ),
@@ -141,7 +143,7 @@ class OTPVerificationView extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24.h),
 
                       // Resend OTP
                       Center(
@@ -150,8 +152,8 @@ class OTPVerificationView extends StatelessWidget {
                           child: Text(
                             "Didn't receive code? Resend",
                             style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              color: const Color(0xFF6C63FF),
+                              fontSize: 14.sp,
+                              color: Color(0xFF6C63FF),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -159,30 +161,30 @@ class OTPVerificationView extends StatelessWidget {
                       ),
 
                       // Flexible space
-                      const Spacer(),
+                      Spacer(),
 
                       // Verify button
                       Obx(
                         () => SizedBox(
                           width: double.infinity,
-                          height: 56,
+                          height: 56.h,
                           child: ElevatedButton(
                             onPressed: controller.isLoading.value
                                 ? null
                                 : controller.verifyOTP,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF6C63FF),
+                              backgroundColor: Color(0xFF6C63FF),
                               foregroundColor: Colors.white,
                               disabledBackgroundColor: Colors.grey.shade300,
                               elevation: 0,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(16.r),
                               ),
                             ),
                             child: controller.isLoading.value
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
+                                ? SizedBox(
+                                    height: 20.h,
+                                    width: 20.w,
                                     child: CircularProgressIndicator(
                                       color: Colors.white,
                                       strokeWidth: 2,
@@ -191,7 +193,7 @@ class OTPVerificationView extends StatelessWidget {
                                 : Text(
                                     "Verify & Continue",
                                     style: GoogleFonts.poppins(
-                                      fontSize: 16,
+                                      fontSize: 16.sp,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),

@@ -4,9 +4,11 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/onboarding_controller.dart';
 import 'step5_availability.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class Step4BankDetails extends StatelessWidget {
   const Step4BankDetails({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -21,21 +23,21 @@ class Step4BankDetails extends StatelessWidget {
             _buildProgressBar(c),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(24.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildHeader(),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     _buildSecurityBanner(),
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28.h),
                     _buildField(
                       c.accountHolderController,
                       'Account Holder Name *',
                       'Enter account holder name',
                       Icons.person_outline,
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     _buildField(
                       c.accountNumberController,
                       'Account Number *',
@@ -45,7 +47,7 @@ class Step4BankDetails extends StatelessWidget {
                       formatters: [FilteringTextInputFormatter.digitsOnly],
                       obscure: true,
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     _buildField(
                       c.confirmAccountController,
                       'Re-enter Account Number *',
@@ -54,7 +56,7 @@ class Step4BankDetails extends StatelessWidget {
                       type: TextInputType.number,
                       formatters: [FilteringTextInputFormatter.digitsOnly],
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     _buildField(
                       c.ifscController,
                       'IFSC Code *',
@@ -62,21 +64,21 @@ class Step4BankDetails extends StatelessWidget {
                       Icons.code,
                       caps: true,
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     _buildField(
                       c.bankNameController,
                       'Bank Name *',
                       'Enter bank name',
                       Icons.account_balance_wallet,
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     _buildField(
                       c.upiController,
                       'UPI ID (Optional)',
                       'e.g. name@upi',
                       Icons.payment,
                     ),
-                    const SizedBox(height: 40),
+                    SizedBox(height: 40.h),
                   ],
                 ),
               ),
@@ -93,10 +95,10 @@ class Step4BankDetails extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(
+        icon: Icon(
           Icons.arrow_back_ios_new,
           color: Colors.black87,
-          size: 20,
+          size: 20.w,
         ),
         onPressed: () {
           c.currentStep.value = 3;
@@ -107,7 +109,7 @@ class Step4BankDetails extends StatelessWidget {
         'Mechanic Registration',
         style: GoogleFonts.poppins(
           color: Colors.black87,
-          fontSize: 18,
+          fontSize: 18.sp,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -118,7 +120,7 @@ class Step4BankDetails extends StatelessWidget {
   Widget _buildProgressBar(MechanicOnboardingController c) {
     return Obx(
       () => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
         child: Column(
           children: [
             Row(
@@ -127,28 +129,28 @@ class Step4BankDetails extends StatelessWidget {
                 Text(
                   'Step ${c.currentStep.value} of 6',
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFFFF9800),
+                    color: Color(0xFFFF9800),
                   ),
                 ),
                 Text(
                   'Bank Details',
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     color: Colors.grey.shade500,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             ClipRRect(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8.r),
               child: LinearProgressIndicator(
                 value: c.currentStep.value / 6,
-                minHeight: 6,
+                minHeight: 6.h,
                 backgroundColor: Colors.grey.shade200,
-                valueColor: const AlwaysStoppedAnimation<Color>(
+                valueColor: AlwaysStoppedAnimation<Color>(
                   Color(0xFFFF9800),
                 ),
               ),
@@ -166,15 +168,15 @@ class Step4BankDetails extends StatelessWidget {
         Text(
           'Bank Details',
           style: GoogleFonts.poppins(
-            fontSize: 26,
+            fontSize: 26.sp,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6.h),
         Text(
           'For secure payment processing',
-          style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey.shade500),
+          style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.grey.shade500),
         ),
       ],
     );
@@ -182,21 +184,21 @@ class Step4BankDetails extends StatelessWidget {
 
   Widget _buildSecurityBanner() {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
         color: Colors.blue.shade50,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: Colors.blue.shade200),
       ),
       child: Row(
         children: [
-          Icon(Icons.shield, color: Colors.blue.shade700, size: 22),
-          const SizedBox(width: 12),
+          Icon(Icons.shield, color: Colors.blue.shade700, size: 22.w),
+          SizedBox(width: 12.w),
           Expanded(
             child: Text(
               'Your bank details are encrypted and stored securely',
               style: GoogleFonts.poppins(
-                fontSize: 12,
+                fontSize: 12.sp,
                 color: Colors.blue.shade700,
                 fontWeight: FontWeight.w500,
               ),
@@ -223,16 +225,16 @@ class Step4BankDetails extends StatelessWidget {
         Text(
           label,
           style: GoogleFonts.poppins(
-            fontSize: 13,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w600,
             color: Colors.grey.shade700,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Container(
           decoration: BoxDecoration(
             color: Colors.grey.shade50,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(14.r),
             border: Border.all(color: Colors.grey.shade200, width: 1.5),
           ),
           child: TextField(
@@ -243,15 +245,15 @@ class Step4BankDetails extends StatelessWidget {
             textCapitalization: caps
                 ? TextCapitalization.characters
                 : TextCapitalization.none,
-            style: GoogleFonts.poppins(fontSize: 15),
+            style: GoogleFonts.poppins(fontSize: 15.sp),
             decoration: InputDecoration(
               hintText: hint,
               hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400),
-              prefixIcon: Icon(icon, color: const Color(0xFFFF9800), size: 22),
+              prefixIcon: Icon(icon, color: Color(0xFFFF9800), size: 22.w),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 16,
-                horizontal: 16,
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 16.h,
+                horizontal: 16.w,
               ),
             ),
           ),
@@ -262,29 +264,29 @@ class Step4BankDetails extends StatelessWidget {
 
   Widget _buildContinueButton(MechanicOnboardingController c) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(24.w),
       child: SizedBox(
         width: double.infinity,
-        height: 56,
+        height: 56.h,
         child: ElevatedButton(
           onPressed: () {
             c.nextStep();
             if (c.currentStep.value == 5) {
-              Get.to(() => const Step5Availability());
+              Get.to(() => Step5Availability());
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFFF9800),
+            backgroundColor: Color(0xFFFF9800),
             foregroundColor: Colors.white,
             elevation: 0,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
             ),
           ),
           child: Text(
             'Continue',
             style: GoogleFonts.poppins(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),

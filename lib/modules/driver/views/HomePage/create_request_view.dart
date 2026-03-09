@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../utils/widgets/TextFields/app_input_decoration.dart';
 import '../../../../utils/widgets/TextFields/app_text_fields.dart';
 import '../../controllers/create_request_controller.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class CreateRequestView extends StatelessWidget {
   CreateRequestView({super.key});
@@ -31,7 +31,7 @@ class CreateRequestView extends StatelessWidget {
         title: Text(
           "Create Help Request",
           style: GoogleFonts.poppins(
-            fontSize: 20,
+            fontSize: 20.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
@@ -43,7 +43,7 @@ class CreateRequestView extends StatelessWidget {
         }
 
         return SingleChildScrollView(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -52,10 +52,10 @@ class CreateRequestView extends StatelessWidget {
                 "Location",
                 style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4.h),
               Text(controller.locationName.value),
 
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
 
               // 📌 Landmark
               AppTextField(
@@ -65,11 +65,11 @@ class CreateRequestView extends StatelessWidget {
                 isRequired: true,
               ),
 
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
 
               // 🚗 Vehicle Type
               DropdownButtonFormField<String>(
-                value: controller.selectedVehicle.value.isEmpty
+                initialValue: controller.selectedVehicle.value.isEmpty
                     ? null
                     : controller.selectedVehicle.value,
                 items: vehicleTypes
@@ -84,7 +84,7 @@ class CreateRequestView extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
 
               // ❗ Problem
               AppTextField(
@@ -94,7 +94,7 @@ class CreateRequestView extends StatelessWidget {
                 isRequired: true,
               ),
 
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
 
               // 📝 Description
               AppTextField(
@@ -104,7 +104,7 @@ class CreateRequestView extends StatelessWidget {
                 maxLines: 3,
               ),
 
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
 
               // 📷 Image
               ElevatedButton.icon(
@@ -117,31 +117,31 @@ class CreateRequestView extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     color: Color(0xFF6C63FF),
                     fontWeight: FontWeight.w600,
-                    fontSize: 14,
+                    fontSize: 14.sp,
                   ),
                 ),
               ),
 
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
 
               // 🚀 Submit
               ElevatedButton(
                 onPressed: controller.submitRequest,
                 style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 52),
+                  minimumSize: Size(double.infinity, 52),
                   backgroundColor: Color(0xFF6C63FF),
                   // Primary (modern blue-violet)
                   foregroundColor: Colors.white,
                   elevation: 4,
                   shadowColor: Colors.black.withOpacity(0.2),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(14.r),
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   "Submit Request",
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.4,
                   ),

@@ -11,9 +11,11 @@ import '../../../../utils/role_change/dev_role_container.dart';
 import '../../controllers/driver_controller.dart';
 import '../widgets/active_requests_card.dart';
 import 'create_request_view.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class DriverHomeView extends StatelessWidget {
   const DriverHomeView({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,7 @@ class DriverHomeView extends StatelessWidget {
         title: Text(
           "DriveResQ",
           style: GoogleFonts.poppins(
-            fontSize: 24,
+            fontSize: 24.sp,
             fontWeight: FontWeight.bold,
             color: Color(0xFF6C63FF),
           ),
@@ -34,7 +36,7 @@ class DriverHomeView extends StatelessWidget {
         actions: [
           if (DevConfig.devMode)
             PopupMenuButton<String>(
-              icon: const Icon(Icons.bug_report),
+              icon: Icon(Icons.bug_report),
               onSelected: (value) {
                 final devRole = Get.find<DevRoleController>();
 
@@ -47,11 +49,11 @@ class DriverHomeView extends StatelessWidget {
                 }
               },
               itemBuilder: (context) => [
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'driver',
                   child: Text('Switch to Driver'),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'mechanic',
                   child: Text('Switch to Mechanic'),
                 ),
@@ -60,10 +62,10 @@ class DriverHomeView extends StatelessWidget {
 
           Obx(() {
             if (!controller.hasActiveRequest.value) {
-              return const SizedBox();
+              return SizedBox();
             }
             return IconButton(
-              icon: const Icon(Icons.delete_outline),
+              icon: Icon(Icons.delete_outline),
               onPressed: () {
                 Get.defaultDialog(
                   title: "Cancel Request",
@@ -86,13 +88,13 @@ class DriverHomeView extends StatelessWidget {
           final request = controller.requestData.value!;
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             child: Column(
               children: [
                 // 🔹 Active Request Card
                 ActiveRequestCard(request: request),
 
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
 
                 SafetyTipsSection(),
               ],

@@ -6,11 +6,12 @@ import '../controllers/chat_controller.dart';
 import '../widgets/message_bubble.dart';
 import '../widgets/price_quote_card.dart';
 import '../widgets/quick_replies.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key});
-
   static const _accent = Color(0xFF6C63FF);
+
+  const ChatScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,22 +32,22 @@ class ChatScreen extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.chat_bubble_outline,
-                        size: 64,
+                        size: 64.w,
                         color: Colors.grey.shade300,
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       Text(
                         'No messages yet',
                         style: GoogleFonts.poppins(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           color: Colors.grey.shade400,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Text(
                         'Say hello! 👋',
                         style: GoogleFonts.poppins(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           color: Colors.grey.shade400,
                         ),
                       ),
@@ -58,7 +59,7 @@ class ChatScreen extends StatelessWidget {
               return ListView.builder(
                 controller: c.scrollController,
                 reverse: true,
-                padding: const EdgeInsets.symmetric(vertical: 10),
+                padding: EdgeInsets.symmetric(vertical: 10.h),
                 itemCount: c.messages.length,
                 itemBuilder: (_, i) {
                   final msg = c.messages[i];
@@ -86,7 +87,7 @@ class ChatScreen extends StatelessWidget {
                     replies: c.quickReplies,
                     onTap: c.sendQuickReply,
                   )
-                : const SizedBox.shrink(),
+                : SizedBox.shrink(),
           ),
 
           // Input bar
@@ -104,25 +105,25 @@ class ChatScreen extends StatelessWidget {
       titleSpacing: 0,
       leadingWidth: 36,
       leading: Padding(
-        padding: const EdgeInsets.only(left: 4),
+        padding: EdgeInsets.only(left: 4.w),
         child: IconButton(
-          icon: const Icon(Icons.arrow_back, size: 22),
+          icon: Icon(Icons.arrow_back, size: 22.w),
           onPressed: () => Get.back(),
         ),
       ),
       title: Row(
         children: [
           CircleAvatar(
-            radius: 18,
+            radius: 18.r,
             backgroundImage: c.otherUserPhoto.isNotEmpty
                 ? NetworkImage(c.otherUserPhoto)
                 : null,
             backgroundColor: Colors.white24,
             child: c.otherUserPhoto.isEmpty
-                ? const Icon(Icons.person, color: Colors.white70, size: 18)
+                ? Icon(Icons.person, color: Colors.white70, size: 18.w)
                 : null,
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,7 +131,7 @@ class ChatScreen extends StatelessWidget {
                 Text(
                   c.otherUserName,
                   style: GoogleFonts.poppins(
-                    fontSize: 15,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
                   ),
@@ -138,7 +139,7 @@ class ChatScreen extends StatelessWidget {
                 Text(
                   c.myRole == 'driver' ? 'Mechanic' : 'Driver',
                   style: GoogleFonts.poppins(
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     color: Colors.white70,
                   ),
                 ),
@@ -151,11 +152,14 @@ class ChatScreen extends StatelessWidget {
         // Estimate button (mechanic only)
         if (c.myRole == 'mechanic')
           IconButton(
-            icon: const Icon(Icons.receipt_long, size: 22),
+            icon: Icon(Icons.receipt_long, size: 22.w),
             tooltip: 'Send Estimate',
             onPressed: () => _showEstimateDialog(c),
           ),
-        IconButton(icon: const Icon(Icons.phone, size: 22), onPressed: () {}),
+        IconButton(
+          icon: Icon(Icons.phone, size: 22.w),
+          onPressed: () {},
+        ),
       ],
     );
   }
@@ -163,9 +167,9 @@ class ChatScreen extends StatelessWidget {
   Widget _buildInputBar(ChatController c) {
     return Container(
       padding: EdgeInsets.only(
-        left: 8,
-        right: 8,
-        top: 8,
+        left: 8.w,
+        right: 8.w,
+        top: 8.h,
         bottom: MediaQuery.of(Get.context!).padding.bottom + 8,
       ),
       decoration: BoxDecoration(
@@ -174,7 +178,7 @@ class ChatScreen extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 8,
-            offset: const Offset(0, -2),
+            offset: Offset(0, -2),
           ),
         ],
       ),
@@ -185,7 +189,7 @@ class ChatScreen extends StatelessWidget {
             icon: Icon(
               Icons.add_circle_outline,
               color: Colors.grey.shade500,
-              size: 24,
+              size: 24.w,
             ),
             onPressed: () => _showAttachMenu(c),
           ),
@@ -198,7 +202,7 @@ class ChatScreen extends StatelessWidget {
                 color: c.showQuickReplies.value
                     ? _accent
                     : Colors.grey.shade500,
-                size: 24,
+                size: 24.w,
               ),
               onPressed: () =>
                   c.showQuickReplies.value = !c.showQuickReplies.value,
@@ -210,23 +214,26 @@ class ChatScreen extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(24.r),
               ),
               child: TextField(
                 controller: c.textController,
-                style: GoogleFonts.poppins(fontSize: 14, color: Colors.black87),
+                style: GoogleFonts.poppins(
+                  fontSize: 14.sp,
+                  color: Colors.black87,
+                ),
                 maxLines: 4,
                 minLines: 1,
                 textCapitalization: TextCapitalization.sentences,
                 decoration: InputDecoration(
                   hintText: 'Type a message...',
                   hintStyle: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     color: Colors.grey.shade400,
                   ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 10.h,
                   ),
                   border: InputBorder.none,
                 ),
@@ -234,7 +241,7 @@ class ChatScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(width: 6),
+          SizedBox(width: 6.w),
 
           // Send
           Obx(
@@ -245,15 +252,15 @@ class ChatScreen extends StatelessWidget {
               ),
               child: IconButton(
                 icon: c.isSending.value
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
+                    ? SizedBox(
+                        width: 20.w,
+                        height: 20.h,
                         child: CircularProgressIndicator(
                           color: Colors.white,
                           strokeWidth: 2,
                         ),
                       )
-                    : const Icon(Icons.send, color: Colors.white, size: 20),
+                    : Icon(Icons.send, color: Colors.white, size: 20.w),
                 onPressed: c.isSending.value ? null : c.sendMessage,
               ),
             ),
@@ -266,23 +273,23 @@ class ChatScreen extends StatelessWidget {
   void _showAttachMenu(ChatController c) {
     Get.bottomSheet(
       Container(
-        padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
+        padding: EdgeInsets.all(20.w),
+        decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 40,
-              height: 4,
+              width: 40.w,
+              height: 4.h,
               decoration: BoxDecoration(
                 color: Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -300,7 +307,7 @@ class ChatScreen extends StatelessWidget {
                 }),
               ],
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
           ],
         ),
       ),
@@ -318,18 +325,18 @@ class ChatScreen extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(14),
+            padding: EdgeInsets.all(14.w),
             decoration: BoxDecoration(
               color: color.withOpacity(0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: color, size: 26),
+            child: Icon(icon, color: color, size: 26.w),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6.h),
           Text(
             label,
             style: GoogleFonts.poppins(
-              fontSize: 12,
+              fontSize: 12.sp,
               color: Colors.grey.shade600,
             ),
           ),
@@ -346,10 +353,10 @@ class ChatScreen extends StatelessWidget {
 
     Get.bottomSheet(
       Container(
-        padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
+        padding: EdgeInsets.all(20.w),
+        decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
         child: SingleChildScrollView(
           child: Column(
@@ -358,33 +365,33 @@ class ChatScreen extends StatelessWidget {
             children: [
               Center(
                 child: Container(
-                  width: 40,
-                  height: 4,
+                  width: 40.w,
+                  height: 4.h,
                   decoration: BoxDecoration(
                     color: Colors.grey.shade300,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               Text(
                 'Send Service Estimate',
                 style: GoogleFonts.poppins(
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               TextField(
                 controller: serviceCtrl,
                 decoration: InputDecoration(
                   labelText: 'Service Description *',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Row(
                 children: [
                   Expanded(
@@ -394,12 +401,12 @@ class ChatScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         labelText: 'Cost (₹) *',
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12.w),
                   Expanded(
                     child: TextField(
                       controller: timeCtrl,
@@ -407,25 +414,25 @@ class ChatScreen extends StatelessWidget {
                         labelText: 'Est. Time *',
                         hintText: 'e.g. 1 hour',
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               TextField(
                 controller: notesCtrl,
                 maxLines: 2,
                 decoration: InputDecoration(
                   labelText: 'Notes (optional)',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
@@ -447,7 +454,7 @@ class ChatScreen extends StatelessWidget {
                           : null,
                     );
                   },
-                  icon: const Icon(Icons.send),
+                  icon: Icon(Icons.send),
                   label: Text(
                     'Send Estimate',
                     style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
@@ -455,14 +462,14 @@ class ChatScreen extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _accent,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
             ],
           ),
         ),

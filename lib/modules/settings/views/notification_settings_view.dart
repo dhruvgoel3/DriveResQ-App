@@ -3,9 +3,11 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class NotificationSettingsView extends StatefulWidget {
   const NotificationSettingsView({super.key});
+
 
   @override
   State<NotificationSettingsView> createState() =>
@@ -82,30 +84,30 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     // Whether individual keys are disabled due to "All Notifications" switch
     final bool masterSwitch = settings['all_notifications'] ?? true;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+      backgroundColor: Color(0xFFF5F6FA),
       appBar: AppBar(
         title: Text(
           'Notification Preferences',
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             color: Colors.black87,
-            fontSize: 18,
+            fontSize: 18.sp,
           ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.black87),
+        iconTheme: IconThemeData(color: Colors.black87),
       ),
       body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: EdgeInsets.symmetric(vertical: 16.h),
         children: [
           _sectionHeader('Master Switch'),
           _switchTile(
@@ -114,7 +116,7 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView> {
             'all_notifications',
           ),
 
-          const Divider(height: 32),
+          Divider(height: 32.h),
           _sectionHeader('Alert Types'),
           _switchTile(
             'New Requests',
@@ -147,7 +149,7 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView> {
             enabled: masterSwitch,
           ),
 
-          const Divider(height: 32),
+          Divider(height: 32.h),
           _sectionHeader('Device Defaults'),
           _switchTile(
             'Sound Enabled',
@@ -168,13 +170,13 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView> {
 
   Widget _sectionHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+      padding: EdgeInsets.fromLTRB(20, 0, 20, 8),
       child: Text(
         title.toUpperCase(),
         style: GoogleFonts.poppins(
-          fontSize: 12,
+          fontSize: 12.sp,
           fontWeight: FontWeight.bold,
-          color: const Color(0xFF6C63FF),
+          color: Color(0xFF6C63FF),
           letterSpacing: 1.0,
         ),
       ),
@@ -188,7 +190,7 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView> {
     bool enabled = true,
   }) {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+      contentPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 4.h),
       title: Text(
         title,
         style: GoogleFonts.poppins(
@@ -198,12 +200,12 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView> {
       ),
       subtitle: Text(
         subtitle,
-        style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey.shade500),
+        style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey.shade500),
       ),
       trailing: Switch(
         value: enabled ? (settings[key] ?? true) : false,
         onChanged: enabled ? (val) => _updateSetting(key, val) : null,
-        activeColor: const Color(0xFF6C63FF),
+        activeThumbColor: Color(0xFF6C63FF),
       ),
     );
   }

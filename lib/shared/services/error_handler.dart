@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:driveresq_app/theme/app_spacing.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 /// Centralized error handler — parse errors and show friendly messages.
 class ErrorHandler {
@@ -138,9 +139,9 @@ class ErrorHandler {
         isError ? Icons.error_outline : Icons.info_outline,
         color: Colors.white,
       ),
-      margin: const EdgeInsets.all(12),
+      margin: EdgeInsets.all(12.w),
       borderRadius: AppRadius.medium,
-      duration: const Duration(seconds: 4),
+      duration: Duration(seconds: 4),
       mainButton: onRetry != null
           ? TextButton(
               onPressed: () {
@@ -167,10 +168,10 @@ class ErrorHandler {
       snackPosition: SnackPosition.BOTTOM,
       backgroundColor: AppColors.success,
       colorText: Colors.white,
-      icon: const Icon(Icons.check_circle_outline, color: Colors.white),
-      margin: const EdgeInsets.all(12),
+      icon: Icon(Icons.check_circle_outline, color: Colors.white),
+      margin: EdgeInsets.all(12.w),
       borderRadius: AppRadius.medium,
-      duration: const Duration(seconds: 3),
+      duration: Duration(seconds: 3),
     );
   }
 
@@ -191,8 +192,8 @@ class ErrorHandler {
         onRetry: onRetry,
       ),
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
       ),
     );
   }
@@ -231,55 +232,55 @@ class _ErrorSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+      padding: EdgeInsets.fromLTRB(24, 16, 24, 32),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // Handle
           Container(
-            width: 40,
-            height: 4,
+            width: 40.w,
+            height: 4.h,
             decoration: BoxDecoration(
               color: Colors.grey.shade300,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // Icon
           Container(
-            width: 72,
-            height: 72,
+            width: 72.w,
+            height: 72.h,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: color.withValues(alpha: 0.1),
             ),
-            child: Icon(icon, size: 36, color: color),
+            child: Icon(icon, size: 36.w, color: color),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
 
           // Title
           Text(
             title,
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
-              fontSize: 20,
+              fontSize: 20.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
 
           // Message
           Text(
             message,
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
-              fontSize: 14,
+              fontSize: 14.sp,
               color: Colors.grey.shade500,
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // Actions
           Row(
@@ -288,9 +289,9 @@ class _ErrorSheet extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: () => Get.back(),
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
                   child: Text(
@@ -300,7 +301,7 @@ class _ErrorSheet extends StatelessWidget {
                 ),
               ),
               if (onRetry != null) ...[
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
@@ -310,9 +311,9 @@ class _ErrorSheet extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: color,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: EdgeInsets.symmetric(vertical: 14.h),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                     ),
                     child: Text(
@@ -338,7 +339,8 @@ class ErrorStateWidget extends StatelessWidget {
   final Color color;
   final VoidCallback? onRetry;
 
-  const ErrorStateWidget({
+
+  ErrorStateWidget({
     super.key,
     this.title = 'Something Went Wrong',
     this.message = 'An unexpected error occurred.',
@@ -351,43 +353,43 @@ class ErrorStateWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: EdgeInsets.all(32.w),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 80,
-              height: 80,
+              width: 80.w,
+              height: 80.h,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: color.withValues(alpha: 0.1),
               ),
-              child: Icon(icon, size: 40, color: color),
+              child: Icon(icon, size: 40.w, color: color),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h),
             Text(
               title,
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
-                fontSize: 18,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               message,
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
-                fontSize: 13,
+                fontSize: 13.sp,
                 color: Colors.grey.shade500,
                 height: 1.5,
               ),
             ),
             if (onRetry != null) ...[
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
               ElevatedButton.icon(
                 onPressed: onRetry,
-                icon: const Icon(Icons.refresh, size: 18),
+                icon: Icon(Icons.refresh, size: 18.w),
                 label: Text(
                   'Try Again',
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
@@ -395,12 +397,12 @@ class ErrorStateWidget extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: color,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 24.w,
+                    vertical: 12.h,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
                 ),
               ),

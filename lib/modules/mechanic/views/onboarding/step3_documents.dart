@@ -5,9 +5,11 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/onboarding_controller.dart';
 import 'step4_bank_details.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class Step3Documents extends StatelessWidget {
   const Step3Documents({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -22,42 +24,42 @@ class Step3Documents extends StatelessWidget {
             _buildProgressBar(c),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(24.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildHeader(),
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28.h),
                     _buildDocCard(
                       label: 'Aadhaar Card - Front *',
                       file: c.aadhaarFront,
                       onTap: () => c.pickImage(c.aadhaarFront),
                       icon: Icons.credit_card,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     _buildDocCard(
                       label: 'Aadhaar Card - Back *',
                       file: c.aadhaarBack,
                       onTap: () => c.pickImage(c.aadhaarBack),
                       icon: Icons.credit_card,
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     _buildAadhaarNumber(c),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     _buildDocCard(
                       label: 'PAN Card (Optional)',
                       file: c.panCard,
                       onTap: () => c.pickImage(c.panCard),
                       icon: Icons.badge,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     _buildDocCard(
                       label: 'Trade License / Work Permit (Optional)',
                       file: c.tradeLicense,
                       onTap: () => c.pickImage(c.tradeLicense),
                       icon: Icons.description,
                     ),
-                    const SizedBox(height: 40),
+                    SizedBox(height: 40.h),
                   ],
                 ),
               ),
@@ -74,10 +76,10 @@ class Step3Documents extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(
+        icon: Icon(
           Icons.arrow_back_ios_new,
           color: Colors.black87,
-          size: 20,
+          size: 20.w,
         ),
         onPressed: () {
           c.currentStep.value = 2;
@@ -88,7 +90,7 @@ class Step3Documents extends StatelessWidget {
         'Mechanic Registration',
         style: GoogleFonts.poppins(
           color: Colors.black87,
-          fontSize: 18,
+          fontSize: 18.sp,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -99,7 +101,7 @@ class Step3Documents extends StatelessWidget {
   Widget _buildProgressBar(MechanicOnboardingController c) {
     return Obx(
       () => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
         child: Column(
           children: [
             Row(
@@ -108,28 +110,28 @@ class Step3Documents extends StatelessWidget {
                 Text(
                   'Step ${c.currentStep.value} of 6',
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFFFF9800),
+                    color: Color(0xFFFF9800),
                   ),
                 ),
                 Text(
                   'Documents',
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     color: Colors.grey.shade500,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             ClipRRect(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8.r),
               child: LinearProgressIndicator(
                 value: c.currentStep.value / 6,
-                minHeight: 6,
+                minHeight: 6.h,
                 backgroundColor: Colors.grey.shade200,
-                valueColor: const AlwaysStoppedAnimation<Color>(
+                valueColor: AlwaysStoppedAnimation<Color>(
                   Color(0xFFFF9800),
                 ),
               ),
@@ -147,15 +149,15 @@ class Step3Documents extends StatelessWidget {
         Text(
           'Document Upload',
           style: GoogleFonts.poppins(
-            fontSize: 26,
+            fontSize: 26.sp,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6.h),
         Text(
           'Upload your documents for verification',
-          style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey.shade500),
+          style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.grey.shade500),
         ),
       ],
     );
@@ -173,12 +175,12 @@ class Step3Documents extends StatelessWidget {
         Text(
           label,
           style: GoogleFonts.poppins(
-            fontSize: 13,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w600,
             color: Colors.grey.shade700,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Obx(() {
           final hasFile = file.value != null;
           return GestureDetector(
@@ -188,10 +190,10 @@ class Step3Documents extends StatelessWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                 color: hasFile ? null : Colors.grey.shade50,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
                 border: Border.all(
                   color: hasFile
-                      ? const Color(0xFF4CAF50)
+                      ? Color(0xFF4CAF50)
                       : Colors.grey.shade200,
                   width: 1.5,
                 ),
@@ -206,15 +208,15 @@ class Step3Documents extends StatelessWidget {
                   ? Align(
                       alignment: Alignment.topRight,
                       child: Container(
-                        margin: const EdgeInsets.all(8),
-                        padding: const EdgeInsets.all(6),
-                        decoration: const BoxDecoration(
+                        margin: EdgeInsets.all(8.w),
+                        padding: EdgeInsets.all(6.w),
+                        decoration: BoxDecoration(
                           color: Color(0xFF4CAF50),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.check,
-                          size: 16,
+                          size: 16.w,
                           color: Colors.white,
                         ),
                       ),
@@ -222,12 +224,12 @@ class Step3Documents extends StatelessWidget {
                   : Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(icon, size: 32, color: Colors.grey.shade400),
-                        const SizedBox(height: 8),
+                        Icon(icon, size: 32.w, color: Colors.grey.shade400),
+                        SizedBox(height: 8.h),
                         Text(
                           'Tap to upload',
                           style: GoogleFonts.poppins(
-                            fontSize: 13,
+                            fontSize: 13.sp,
                             color: Colors.grey.shade400,
                           ),
                         ),
@@ -247,16 +249,16 @@ class Step3Documents extends StatelessWidget {
         Text(
           'Aadhaar Number *',
           style: GoogleFonts.poppins(
-            fontSize: 13,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w600,
             color: Colors.grey.shade700,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Container(
           decoration: BoxDecoration(
             color: Colors.grey.shade50,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(14.r),
             border: Border.all(color: Colors.grey.shade200, width: 1.5),
           ),
           child: TextField(
@@ -264,36 +266,36 @@ class Step3Documents extends StatelessWidget {
             keyboardType: TextInputType.number,
             maxLength: 12,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            style: GoogleFonts.poppins(fontSize: 15, letterSpacing: 2),
+            style: GoogleFonts.poppins(fontSize: 15.sp, letterSpacing: 2),
             decoration: InputDecoration(
               hintText: 'XXXX XXXX XXXX',
               hintStyle: GoogleFonts.poppins(
                 color: Colors.grey.shade400,
                 letterSpacing: 2,
               ),
-              prefixIcon: const Icon(
+              prefixIcon: Icon(
                 Icons.fingerprint,
                 color: Color(0xFFFF9800),
-                size: 22,
+                size: 22.w,
               ),
               border: InputBorder.none,
               counterText: '',
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 16,
-                horizontal: 16,
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 16.h,
+                horizontal: 16.w,
               ),
             ),
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6.h),
         Row(
           children: [
-            Icon(Icons.lock, size: 14, color: Colors.grey.shade400),
-            const SizedBox(width: 4),
+            Icon(Icons.lock, size: 14.w, color: Colors.grey.shade400),
+            SizedBox(width: 4.w),
             Text(
               'Your Aadhaar number will be securely stored',
               style: GoogleFonts.poppins(
-                fontSize: 11,
+                fontSize: 11.sp,
                 color: Colors.grey.shade400,
               ),
             ),
@@ -305,29 +307,29 @@ class Step3Documents extends StatelessWidget {
 
   Widget _buildContinueButton(MechanicOnboardingController c) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(24.w),
       child: SizedBox(
         width: double.infinity,
-        height: 56,
+        height: 56.h,
         child: ElevatedButton(
           onPressed: () {
             c.nextStep();
             if (c.currentStep.value == 4) {
-              Get.to(() => const Step4BankDetails());
+              Get.to(() => Step4BankDetails());
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFFF9800),
+            backgroundColor: Color(0xFFFF9800),
             foregroundColor: Colors.white,
             elevation: 0,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
             ),
           ),
           child: Text(
             'Continue',
             style: GoogleFonts.poppins(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),

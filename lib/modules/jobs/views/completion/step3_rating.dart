@@ -2,57 +2,59 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/job_completion_controller.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class RatingView extends StatelessWidget {
   const RatingView({super.key});
+
 
   @override
   Widget build(BuildContext context) {
     final c = Get.find<JobCompletionController>();
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       child: Column(
         children: [
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
 
           // Driver avatar
           CircleAvatar(
-            radius: 40,
-            backgroundColor: const Color(0xFF4CAF50).withOpacity(0.1),
-            child: const Icon(Icons.person, size: 44, color: Color(0xFF4CAF50)),
+            radius: 40.r,
+            backgroundColor: Color(0xFF4CAF50).withOpacity(0.1),
+            child: Icon(Icons.person, size: 44.w, color: Color(0xFF4CAF50)),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           Text(
             'Rate Your Customer',
             style: GoogleFonts.poppins(
-              fontSize: 22,
+              fontSize: 22.sp,
               fontWeight: FontWeight.bold,
               color: Colors.black87,
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Text(
             'How was your experience with the driver?',
             style: GoogleFonts.poppins(
-              fontSize: 14,
+              fontSize: 14.sp,
               color: Colors.grey.shade500,
             ),
           ),
 
-          const SizedBox(height: 28),
+          SizedBox(height: 28.h),
 
           // Star Rating
           Text(
             'Overall Experience',
             style: GoogleFonts.poppins(
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w500,
               color: Colors.grey.shade600,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           Obx(
             () => Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -61,13 +63,13 @@ class RatingView extends StatelessWidget {
                 return GestureDetector(
                   onTap: () => c.mechanicRating.value = (i + 1).toDouble(),
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    margin: const EdgeInsets.symmetric(horizontal: 6),
+                    duration: Duration(milliseconds: 200),
+                    margin: EdgeInsets.symmetric(horizontal: 6.w),
                     child: Icon(
                       filled ? Icons.star_rounded : Icons.star_border_rounded,
-                      size: 48,
+                      size: 48.w,
                       color: filled
-                          ? const Color(0xFFFFB300)
+                          ? Color(0xFFFFB300)
                           : Colors.grey.shade300,
                     ),
                   ),
@@ -79,24 +81,24 @@ class RatingView extends StatelessWidget {
             () => Text(
               _ratingLabel(c.mechanicRating.value),
               style: GoogleFonts.poppins(
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
                 color: c.mechanicRating.value > 0
-                    ? const Color(0xFFFFB300)
+                    ? Color(0xFFFFB300)
                     : Colors.grey.shade400,
               ),
             ),
           ),
 
-          const SizedBox(height: 28),
+          SizedBox(height: 28.h),
 
           // Quick Tags
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
               color: Colors.grey.shade50,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(14.r),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,11 +106,11 @@ class RatingView extends StatelessWidget {
                 Text(
                   'Quick Tags',
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 Obx(
                   () => Wrap(
                     spacing: 8,
@@ -120,19 +122,19 @@ class RatingView extends StatelessWidget {
                         label: Text(
                           tag,
                           style: GoogleFonts.poppins(
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             color: selected
                                 ? Colors.white
                                 : Colors.grey.shade700,
                           ),
                         ),
                         onSelected: (_) => c.toggleTag(tag),
-                        selectedColor: const Color(0xFF4CAF50),
+                        selectedColor: Color(0xFF4CAF50),
                         backgroundColor: Colors.white,
                         checkmarkColor: Colors.white,
                         side: BorderSide(
                           color: selected
-                              ? const Color(0xFF4CAF50)
+                              ? Color(0xFF4CAF50)
                               : Colors.grey.shade300,
                         ),
                       );
@@ -143,31 +145,31 @@ class RatingView extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
 
           // Review Text
           TextField(
             controller: c.reviewController,
             maxLines: 3,
             maxLength: 500,
-            style: GoogleFonts.poppins(fontSize: 14),
+            style: GoogleFonts.poppins(fontSize: 14.sp),
             decoration: InputDecoration(
               hintText: 'Write a review (optional)',
               hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400),
               filled: false,
               fillColor: Colors.grey.shade50,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
                 borderSide: BorderSide(color: Colors.grey.shade200),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
                 borderSide: BorderSide(color: Colors.grey.shade200),
               ),
             ),
           ),
 
-          const SizedBox(height: 28),
+          SizedBox(height: 28.h),
 
           // Buttons
           Row(
@@ -178,9 +180,9 @@ class RatingView extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.grey.shade700,
                     side: BorderSide(color: Colors.grey.shade300),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(14.r),
                     ),
                   ),
                   child: Text(
@@ -189,7 +191,7 @@ class RatingView extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 flex: 2,
                 child: Obx(
@@ -198,19 +200,19 @@ class RatingView extends StatelessWidget {
                         ? null
                         : () => c.submitCompletion(),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF4CAF50),
+                      backgroundColor: Color(0xFF4CAF50),
                       foregroundColor: Colors.white,
                       disabledBackgroundColor: Colors.grey.shade300,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(14.r),
                       ),
                     ),
                     child: c.isLoading.value
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
+                        ? SizedBox(
+                            height: 20.h,
+                            width: 20.w,
                             child: CircularProgressIndicator(
                               color: Colors.white,
                               strokeWidth: 2,
@@ -219,7 +221,7 @@ class RatingView extends StatelessWidget {
                         : Text(
                             'Submit & Complete',
                             style: GoogleFonts.poppins(
-                              fontSize: 15,
+                              fontSize: 15.sp,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -229,7 +231,7 @@ class RatingView extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
 
           // Skip option
           TextButton(
@@ -238,12 +240,12 @@ class RatingView extends StatelessWidget {
               'Skip Rating',
               style: GoogleFonts.poppins(
                 color: Colors.grey.shade400,
-                fontSize: 13,
+                fontSize: 13.sp,
               ),
             ),
           ),
 
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
         ],
       ),
     );

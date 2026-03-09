@@ -3,29 +3,31 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/job_completion_controller.dart';
 import '../../services/invoice_generator.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class CompletionSuccessView extends StatelessWidget {
   const CompletionSuccessView({super.key});
+
 
   @override
   Widget build(BuildContext context) {
     final c = Get.find<JobCompletionController>();
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       child: Column(
         children: [
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
 
           // Success Animation
           TweenAnimationBuilder<double>(
             tween: Tween(begin: 0, end: 1),
-            duration: const Duration(milliseconds: 800),
+            duration: Duration(milliseconds: 800),
             curve: Curves.elasticOut,
             builder: (_, v, child) => Transform.scale(scale: v, child: child),
             child: Container(
-              width: 120,
-              height: 120,
+              width: 120.w,
+              height: 120.h,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
@@ -35,23 +37,23 @@ class CompletionSuccessView extends StatelessWidget {
                   BoxShadow(
                     color: Colors.green.withOpacity(0.3),
                     blurRadius: 20,
-                    offset: const Offset(0, 8),
+                    offset: Offset(0, 8),
                   ),
                 ],
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.check_rounded,
                 color: Colors.white,
-                size: 64,
+                size: 64.w,
               ),
             ),
           ),
 
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           TweenAnimationBuilder<double>(
             tween: Tween(begin: 0, end: 1),
-            duration: const Duration(milliseconds: 600),
+            duration: Duration(milliseconds: 600),
             curve: Curves.easeOut,
             builder: (_, v, child) => Opacity(opacity: v, child: child),
             child: Column(
@@ -59,16 +61,16 @@ class CompletionSuccessView extends StatelessWidget {
                 Text(
                   'Job Completed! 🎉',
                   style: GoogleFonts.poppins(
-                    fontSize: 24,
+                    fontSize: 24.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6.h),
                 Text(
                   'Great work! Payment has been recorded.',
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     color: Colors.grey.shade500,
                   ),
                 ),
@@ -76,20 +78,20 @@ class CompletionSuccessView extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 28),
+          SizedBox(height: 28.h),
 
           // Summary Card
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(20.w),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.05),
                   blurRadius: 10,
-                  offset: const Offset(0, 4),
+                  offset: Offset(0, 4),
                 ),
               ],
             ),
@@ -101,14 +103,14 @@ class CompletionSuccessView extends StatelessWidget {
                   Colors.green.shade700,
                   true,
                 ),
-                Divider(color: Colors.grey.shade100, height: 24),
+                Divider(color: Colors.grey.shade100, height: 24.h),
                 _summaryRow(
                   'Payment Method',
                   c.paymentMethod.value,
                   Colors.blue.shade700,
                   false,
                 ),
-                Divider(color: Colors.grey.shade100, height: 24),
+                Divider(color: Colors.grey.shade100, height: 24.h),
                 _summaryRow(
                   'Invoice',
                   c.invoiceNumber.value,
@@ -116,14 +118,14 @@ class CompletionSuccessView extends StatelessWidget {
                   false,
                 ),
                 if (c.mechanicRating.value > 0) ...[
-                  Divider(color: Colors.grey.shade100, height: 24),
+                  Divider(color: Colors.grey.shade100, height: 24.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         'Rating Given',
                         style: GoogleFonts.poppins(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           color: Colors.grey.shade600,
                         ),
                       ),
@@ -134,8 +136,8 @@ class CompletionSuccessView extends StatelessWidget {
                             i < c.mechanicRating.value
                                 ? Icons.star_rounded
                                 : Icons.star_border_rounded,
-                            color: const Color(0xFFFFB300),
-                            size: 20,
+                            color: Color(0xFFFFB300),
+                            size: 20.w,
                           ),
                         ),
                       ),
@@ -146,63 +148,63 @@ class CompletionSuccessView extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // Action Buttons
           SizedBox(
             width: double.infinity,
-            height: 52,
+            height: 52.h,
             child: ElevatedButton.icon(
               onPressed: () => _downloadInvoice(c),
-              icon: const Icon(Icons.download, size: 20),
+              icon: Icon(Icons.download, size: 20.w),
               label: Text(
                 'Download Invoice',
                 style: GoogleFonts.poppins(
-                  fontSize: 15,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4CAF50),
+                backgroundColor: Color(0xFF4CAF50),
                 foregroundColor: Colors.white,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(14.r),
                 ),
               ),
             ),
           ),
 
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
 
           SizedBox(
             width: double.infinity,
-            height: 52,
+            height: 52.h,
             child: OutlinedButton.icon(
               onPressed: () => _shareInvoice(c),
-              icon: const Icon(Icons.share, size: 20),
+              icon: Icon(Icons.share, size: 20.w),
               label: Text(
                 'Share Invoice',
                 style: GoogleFonts.poppins(
-                  fontSize: 15,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
               style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF4CAF50),
-                side: const BorderSide(color: Color(0xFF4CAF50)),
+                foregroundColor: Color(0xFF4CAF50),
+                side: BorderSide(color: Color(0xFF4CAF50)),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(14.r),
                 ),
               ),
             ),
           ),
 
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
 
           SizedBox(
             width: double.infinity,
-            height: 52,
+            height: 52.h,
             child: ElevatedButton(
               onPressed: () {
                 Get.until((route) => route.isFirst);
@@ -212,20 +214,20 @@ class CompletionSuccessView extends StatelessWidget {
                 foregroundColor: Colors.white,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(14.r),
                 ),
               ),
               child: Text(
                 'Go to Dashboard',
                 style: GoogleFonts.poppins(
-                  fontSize: 15,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
           ),
 
-          const SizedBox(height: 30),
+          SizedBox(height: 30.h),
         ],
       ),
     );
@@ -237,7 +239,7 @@ class CompletionSuccessView extends StatelessWidget {
       children: [
         Text(
           label,
-          style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade600),
+          style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade600),
         ),
         Text(
           value,
@@ -267,7 +269,7 @@ class CompletionSuccessView extends StatelessWidget {
         'Invoice saved to ${pdfFile.path}',
         backgroundColor: Colors.green.shade50,
         colorText: Colors.green,
-        duration: const Duration(seconds: 4),
+        duration: Duration(seconds: 4),
       );
     } catch (e) {
       Get.snackbar(

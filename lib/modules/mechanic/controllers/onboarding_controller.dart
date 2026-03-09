@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class MechanicOnboardingController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -33,7 +34,7 @@ class MechanicOnboardingController extends GetxController {
   var specializations = <String>[].obs;
   var servicesOffered = <String>[].obs;
 
-  static const List<String> allSpecializations = [
+  static List<String> allSpecializations = [
     'Engine Repair',
     'Electrical',
     'Tires',
@@ -45,7 +46,7 @@ class MechanicOnboardingController extends GetxController {
     'General Repair',
   ];
 
-  static const List<String> allServices = [
+  static List<String> allServices = [
     'Roadside Assistance',
     'Towing Service',
     'Jump Start',
@@ -79,10 +80,10 @@ class MechanicOnboardingController extends GetxController {
   final baseChargeController = TextEditingController();
   final perKmChargeController = TextEditingController();
   final emergencySurchargeController = TextEditingController();
-  var workingHoursStart = const TimeOfDay(hour: 9, minute: 0).obs;
-  var workingHoursEnd = const TimeOfDay(hour: 18, minute: 0).obs;
+  var workingHoursStart = TimeOfDay(hour: 9, minute: 0).obs;
+  var workingHoursEnd = TimeOfDay(hour: 18, minute: 0).obs;
 
-  static const List<String> allDays = [
+  static List<String> allDays = [
     'Monday',
     'Tuesday',
     'Wednesday',
@@ -127,7 +128,7 @@ class MechanicOnboardingController extends GetxController {
         backgroundColor: Colors.orange.withOpacity(0.1),
         colorText: Colors.orange.shade800,
         snackPosition: SnackPosition.BOTTOM,
-        margin: const EdgeInsets.all(16),
+        margin: EdgeInsets.all(16.w),
       );
       return;
     }
@@ -148,35 +149,43 @@ class MechanicOnboardingController extends GetxController {
   String? _validateCurrentStep() {
     switch (currentStep.value) {
       case 1:
-        if (nameController.text.trim().isEmpty)
+        if (nameController.text.trim().isEmpty) {
           return 'Please enter your full name';
+        }
         if (dob.value == null) return 'Please select your date of birth';
         if (gender.value.isEmpty) return 'Please select your gender';
         return null;
       case 2:
-        if (shopNameController.text.trim().isEmpty)
+        if (shopNameController.text.trim().isEmpty) {
           return 'Please enter shop/garage name';
-        if (shopAddressController.text.trim().isEmpty)
+        }
+        if (shopAddressController.text.trim().isEmpty) {
           return 'Please enter shop address';
+        }
         if (shopPhoto.value == null) return 'Please add a shop photo';
-        if (experienceController.text.trim().isEmpty)
+        if (experienceController.text.trim().isEmpty) {
           return 'Please enter years of experience';
-        if (specializations.isEmpty)
+        }
+        if (specializations.isEmpty) {
           return 'Please select at least one specialization';
+        }
         return null;
       case 3:
-        if (aadhaarFront.value == null)
+        if (aadhaarFront.value == null) {
           return 'Please upload Aadhaar card front';
+        }
         if (aadhaarBack.value == null) return 'Please upload Aadhaar card back';
         if (aadhaarNumberController.text.trim().length != 12) {
           return 'Please enter valid 12-digit Aadhaar number';
         }
         return null;
       case 4:
-        if (accountHolderController.text.trim().isEmpty)
+        if (accountHolderController.text.trim().isEmpty) {
           return 'Please enter account holder name';
-        if (accountNumberController.text.trim().isEmpty)
+        }
+        if (accountNumberController.text.trim().isEmpty) {
           return 'Please enter account number';
+        }
         if (confirmAccountController.text.trim() !=
             accountNumberController.text.trim()) {
           return 'Account numbers do not match';
@@ -187,21 +196,26 @@ class MechanicOnboardingController extends GetxController {
         ).hasMatch(ifscController.text.trim().toUpperCase())) {
           return 'Please enter a valid IFSC code (e.g., SBIN0001234)';
         }
-        if (bankNameController.text.trim().isEmpty)
+        if (bankNameController.text.trim().isEmpty) {
           return 'Please enter bank name';
+        }
         return null;
       case 5:
-        if (availableDays.isEmpty)
+        if (availableDays.isEmpty) {
           return 'Please select at least one working day';
-        if (baseChargeController.text.trim().isEmpty)
+        }
+        if (baseChargeController.text.trim().isEmpty) {
           return 'Please enter base service charge';
-        if (perKmChargeController.text.trim().isEmpty)
+        }
+        if (perKmChargeController.text.trim().isEmpty) {
           return 'Please enter per km charge';
+        }
         return null;
       case 6:
         if (!agreeTerms.value) return 'Please agree to terms and conditions';
-        if (!agreeVerification.value)
+        if (!agreeVerification.value) {
           return 'Please consent to background verification';
+        }
         if (!agreePrivacy.value) return 'Please accept the privacy policy';
         return null;
       default:
@@ -215,7 +229,7 @@ class MechanicOnboardingController extends GetxController {
       final picked = await _picker.pickImage(
         source: source,
         imageQuality: 75,
-        maxWidth: 1200,
+        maxWidth: 1200.w,
       );
       if (picked != null) {
         target.value = File(picked.path);
@@ -225,17 +239,17 @@ class MechanicOnboardingController extends GetxController {
       Get.bottomSheet(
         SafeArea(
           child: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
             ),
             child: Wrap(
               children: [
-                const SizedBox(height: 12, width: double.infinity),
+                SizedBox(height: 12.h, width: double.infinity),
                 Center(
                   child: Container(
-                    width: 40,
-                    height: 4,
+                    width: 40.w,
+                    height: 4.h,
                     decoration: BoxDecoration(
                       color: Colors.grey.shade300,
                       borderRadius: BorderRadius.circular(2),
@@ -243,38 +257,38 @@ class MechanicOnboardingController extends GetxController {
                   ),
                 ),
                 ListTile(
-                  leading: const Icon(
+                  leading: Icon(
                     Icons.camera_alt,
                     color: Color(0xFFFF9800),
                   ),
-                  title: const Text('Take Photo'),
+                  title: Text('Take Photo'),
                   onTap: () async {
                     Get.back();
                     final picked = await _picker.pickImage(
                       source: ImageSource.camera,
                       imageQuality: 75,
-                      maxWidth: 1200,
+                      maxWidth: 1200.w,
                     );
                     if (picked != null) target.value = File(picked.path);
                   },
                 ),
                 ListTile(
-                  leading: const Icon(
+                  leading: Icon(
                     Icons.photo_library,
                     color: Color(0xFFFF9800),
                   ),
-                  title: const Text('Choose from Gallery'),
+                  title: Text('Choose from Gallery'),
                   onTap: () async {
                     Get.back();
                     final picked = await _picker.pickImage(
                       source: ImageSource.gallery,
                       imageQuality: 75,
-                      maxWidth: 1200,
+                      maxWidth: 1200.w,
                     );
                     if (picked != null) target.value = File(picked.path);
                   },
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
               ],
             ),
           ),
@@ -314,11 +328,11 @@ class MechanicOnboardingController extends GetxController {
       context: context,
       initialDate: dob.value ?? DateTime(2000, 1, 1),
       firstDate: DateTime(1950),
-      lastDate: DateTime.now().subtract(const Duration(days: 365 * 18)),
+      lastDate: DateTime.now().subtract(Duration(days: 365 * 18)),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(primary: Color(0xFFFF9800)),
+            colorScheme: ColorScheme.light(primary: Color(0xFFFF9800)),
           ),
           child: child!,
         );
@@ -334,7 +348,7 @@ class MechanicOnboardingController extends GetxController {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(primary: Color(0xFFFF9800)),
+            colorScheme: ColorScheme.light(primary: Color(0xFFFF9800)),
           ),
           child: child!,
         );
@@ -350,7 +364,7 @@ class MechanicOnboardingController extends GetxController {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(primary: Color(0xFFFF9800)),
+            colorScheme: ColorScheme.light(primary: Color(0xFFFF9800)),
           ),
           child: child!,
         );

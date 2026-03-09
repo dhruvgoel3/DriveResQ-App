@@ -5,9 +5,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
+
 
   @override
   State<SplashView> createState() => _SplashViewState();
@@ -41,7 +43,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     // Logo
     _logoCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: Duration(milliseconds: 1200),
     );
     _logoFade = CurvedAnimation(parent: _logoCtrl, curve: Curves.easeOut);
     _logoScale = Tween<double>(
@@ -52,7 +54,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     // Pulse
     _pulseCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: Duration(milliseconds: 1500),
     )..repeat(reverse: true);
     _pulse = Tween<double>(
       begin: 1.0,
@@ -62,7 +64,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     // Progress
     _progressCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 3500),
+      duration: Duration(milliseconds: 3500),
     );
     _progress = Tween<double>(
       begin: 0,
@@ -73,10 +75,10 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     // Tagline
     _taglineCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: Duration(milliseconds: 800),
     );
     _taglineSlide = Tween<Offset>(
-      begin: const Offset(0, 0.5),
+      begin: Offset(0, 0.5),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _taglineCtrl, curve: Curves.easeOut));
     _taglineFade = CurvedAnimation(parent: _taglineCtrl, curve: Curves.easeOut);
@@ -84,7 +86,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     // Car
     _carCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2500),
+      duration: Duration(milliseconds: 2500),
     )..repeat();
     _carPos = Tween<double>(
       begin: -1.2,
@@ -94,7 +96,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     // Exit
     _exitCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 600),
+      duration: Duration(milliseconds: 600),
     );
     _exitFade = Tween<double>(
       begin: 1,
@@ -124,15 +126,15 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
   }
 
   Future<void> _startSequence() async {
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(Duration(milliseconds: 200));
     if (!mounted) return;
     _logoCtrl.forward();
 
-    await Future.delayed(const Duration(milliseconds: 800));
+    await Future.delayed(Duration(milliseconds: 800));
     if (!mounted) return;
     _taglineCtrl.forward();
 
-    await Future.delayed(const Duration(milliseconds: 400));
+    await Future.delayed(Duration(milliseconds: 400));
     if (!mounted) return;
     _progressCtrl.forward();
 
@@ -143,7 +145,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     if (_navigated) return;
 
     try {
-      await Future.delayed(const Duration(milliseconds: 3800));
+      await Future.delayed(Duration(milliseconds: 3800));
       if (_navigated || !mounted) return;
 
       final prefs = await SharedPreferences.getInstance();
@@ -230,7 +232,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
             child: Container(
               width: sz.width,
               height: sz.height,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -263,15 +265,15 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                   SafeArea(
                     child: Column(
                       children: [
-                        const Spacer(flex: 3),
+                        Spacer(flex: 3),
                         _logo(),
-                        const SizedBox(height: 28),
+                        SizedBox(height: 28.h),
                         _appName(),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10.h),
                         _tagline(),
-                        const Spacer(flex: 2),
+                        Spacer(flex: 2),
                         _progressSection(sz),
-                        const Spacer(),
+                        Spacer(),
                       ],
                     ),
                   ),
@@ -304,7 +306,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
           offset: Offset(_carPos.value * sz.width * 0.5, 0),
           child: Icon(
             Icons.directions_car,
-            size: 22,
+            size: 22.w,
             color: Colors.white.withValues(alpha: 0.25),
           ),
         ),
@@ -320,41 +322,41 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
         child: Transform.scale(
           scale: _logoScale.value * _pulse.value,
           child: Container(
-            width: 120,
-            height: 120,
+            width: 120.w,
+            height: 120.h,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF6C63FF).withValues(alpha: 0.4),
+                  color: Color(0xFF6C63FF).withValues(alpha: 0.4),
                   blurRadius: 40,
                   spreadRadius: 5,
                 ),
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.15),
                   blurRadius: 20,
-                  offset: const Offset(0, 10),
+                  offset: Offset(0, 10),
                 ),
               ],
             ),
             child: Stack(
               alignment: Alignment.center,
               children: [
-                const Icon(
+                Icon(
                   Icons.directions_car,
-                  size: 40,
+                  size: 40.w,
                   color: Color(0xFF6C63FF),
                 ),
                 Positioned(
-                  right: 22,
-                  bottom: 24,
+                  right: 22.w,
+                  bottom: 24.h,
                   child: Transform.rotate(
                     angle: -0.4,
                     child: Icon(
                       Icons.build,
-                      size: 22,
-                      color: const Color(0xFFFF9800).withValues(alpha: 0.9),
+                      size: 22.w,
+                      color: Color(0xFFFF9800).withValues(alpha: 0.9),
                     ),
                   ),
                 ),
@@ -370,13 +372,13 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     return FadeTransition(
       opacity: _logoFade,
       child: ShaderMask(
-        shaderCallback: (b) => const LinearGradient(
+        shaderCallback: (b) => LinearGradient(
           colors: [Colors.white, Color(0xFFFFD180)],
         ).createShader(b),
         child: Text(
           'DriveResQ',
           style: GoogleFonts.poppins(
-            fontSize: 42,
+            fontSize: 42.sp,
             fontWeight: FontWeight.w800,
             color: Colors.white,
             letterSpacing: 1.5,
@@ -394,7 +396,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
         child: Text(
           'Your Roadside Guardian',
           style: GoogleFonts.poppins(
-            fontSize: 16,
+            fontSize: 16.sp,
             color: Colors.white.withValues(alpha: 0.85),
             letterSpacing: 0.8,
             fontWeight: FontWeight.w300,
@@ -423,9 +425,9 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                   return Transform.scale(
                     scale: sc,
                     child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      width: 10,
-                      height: 10,
+                      margin: EdgeInsets.symmetric(horizontal: 4.w),
+                      width: 10.w,
+                      height: 10.h,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: i == 1
@@ -436,13 +438,13 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                   );
                 }),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
 
               // Progress bar
               ClipRRect(
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(6.r),
                 child: SizedBox(
-                  height: 5,
+                  height: 5.h,
                   child: Stack(
                     children: [
                       Container(color: Colors.white.withValues(alpha: 0.15)),
@@ -450,8 +452,8 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                         widthFactor: v,
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6),
-                            gradient: const LinearGradient(
+                            borderRadius: BorderRadius.circular(6.r),
+                            gradient: LinearGradient(
                               colors: [
                                 Color(0xFFFF9800),
                                 Color(0xFFFFD180),
@@ -465,28 +467,28 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              const SizedBox(height: 14),
+              SizedBox(height: 14.h),
 
               // Status
               AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
+                duration: Duration(milliseconds: 300),
                 child: Text(
                   _status,
                   key: ValueKey(_status),
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     color: Colors.white.withValues(alpha: 0.7),
                     letterSpacing: 0.3,
                   ),
                 ),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4.h),
 
               // Percentage
               Text(
                 '${(v * 100).toInt()}%',
                 style: GoogleFonts.poppins(
-                  fontSize: 11,
+                  fontSize: 11.sp,
                   color: Colors.white.withValues(alpha: 0.5),
                   fontWeight: FontWeight.w500,
                 ),

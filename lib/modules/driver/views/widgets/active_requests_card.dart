@@ -5,18 +5,20 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../tracking/views/live_tracking_view.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class ActiveRequestCard extends StatefulWidget {
   final Map<String, dynamic> request;
 
-  const ActiveRequestCard({super.key, required this.request});
+
+  ActiveRequestCard({super.key, required this.request});
 
   @override
   State<ActiveRequestCard> createState() => _ActiveRequestCardState();
 }
 
 class _ActiveRequestCardState extends State<ActiveRequestCard> {
-  static const Color primaryColor = Color(0xFF6C63FF);
+  static Color primaryColor = Color(0xFF6C63FF);
 
   GoogleMapController? _mapController;
   double? mechanicLat;
@@ -79,10 +81,10 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
       _markers.clear();
       _markers.add(
         Marker(
-          markerId: const MarkerId('mechanic'),
+          markerId: MarkerId('mechanic'),
           position: LatLng(mechanicLat!, mechanicLng!),
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-          infoWindow: const InfoWindow(title: 'Mechanic'),
+          infoWindow: InfoWindow(title: 'Mechanic'),
         ),
       );
     });
@@ -93,16 +95,16 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
     final status = widget.request['status'];
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.symmetric(horizontal: 0, vertical: 5.h),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.06),
             blurRadius: 20,
-            offset: const Offset(0, 8),
+            offset: Offset(0, 8),
           ),
         ],
       ),
@@ -111,14 +113,14 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
         children: [
           // 🔰 HEADER
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
+            padding: EdgeInsets.symmetric(horizontal: 6.w),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   "Active Request",
                   style: GoogleFonts.poppins(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
                   ),
@@ -128,11 +130,11 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
             ),
           ),
 
-          const SizedBox(height: 14),
+          SizedBox(height: 14.h),
 
           // 🗺️ MAP PREVIEW (NEW!)
           if (status == 'accepted') _buildMapPreview(),
-          if (status == 'accepted') const SizedBox(height: 14),
+          if (status == 'accepted') SizedBox(height: 14.h),
 
           // 📍 LOCATION
           _infoTile(
@@ -153,45 +155,45 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
             subtitle: "Reported Issue",
           ),
 
-          const SizedBox(height: 18),
+          SizedBox(height: 18.h),
 
           // Show different buttons based on status
           if (status == 'accepted') ...[
             // 📞 CALL BUTTON
             SizedBox(
               width: double.infinity,
-              height: 48,
+              height: 48.h,
               child: ElevatedButton.icon(
                 onPressed: () => _callMechanic(widget.request['mechanicPhone']),
-                icon: const Icon(Icons.call, size: 18),
-                label: const Text("Call Mechanic"),
+                icon: Icon(Icons.call, size: 18.w),
+                label: Text("Call Mechanic"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryColor,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(14.r),
                   ),
                 ),
               ),
             ),
 
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
 
             // 🧭 TRACK MECHANIC BUTTON
             SizedBox(
               width: double.infinity,
-              height: 48,
+              height: 48.h,
               child: OutlinedButton.icon(
                 onPressed: () {
                   Get.to(() => LiveTrackingView(requestId: widget.request['id']));
                 },
-                icon: const Icon(Icons.location_searching, size: 18),
-                label: const Text("Track Mechanic Live"),
+                icon: Icon(Icons.location_searching, size: 18.w),
+                label: Text("Track Mechanic Live"),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: primaryColor,
-                  side: const BorderSide(color: primaryColor, width: 1.5),
+                  side: BorderSide(color: primaryColor, width: 1.5),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(14.r),
                   ),
                 ),
               ),
@@ -199,20 +201,20 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
           ] else ...[
             // For 'open' status - show waiting message
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
                 color: Colors.orange.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.access_time, color: Colors.orange),
-                  const SizedBox(width: 12),
+                  Icon(Icons.access_time, color: Colors.orange),
+                  SizedBox(width: 12.w),
                   Expanded(
                     child: Text(
                       "Waiting for a mechanic to accept your request...",
                       style: GoogleFonts.poppins(
-                        fontSize: 13,
+                        fontSize: 13.sp,
                         color: Colors.orange.shade900,
                       ),
                     ),
@@ -234,13 +236,13 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
         Get.to(() => LiveTrackingView(requestId: widget.request['id']));
       },
       child: Container(
-        height: 180,
+        height: 180.h,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           border: Border.all(color: Colors.grey.shade200, width: 2),
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(14.r),
           child: Stack(
             children: [
               // Google Map
@@ -268,12 +270,12 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const CircularProgressIndicator(),
-                      const SizedBox(height: 12),
+                      CircularProgressIndicator(),
+                      SizedBox(height: 12.h),
                       Text(
                         "Loading mechanic location...",
                         style: GoogleFonts.poppins(
-                          fontSize: 12,
+                          fontSize: 12.sp,
                           color: Colors.grey.shade600,
                         ),
                       ),
@@ -284,16 +286,16 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
 
               // Tap to view indicator
               Positioned(
-                top: 12,
-                right: 12,
+                top: 12.h,
+                right: 12.w,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
+                    vertical: 6.h,
                   ),
                   decoration: BoxDecoration(
                     color: primaryColor,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(20.r),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.2),
@@ -304,16 +306,16 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.touch_app,
-                        size: 14,
+                        size: 14.w,
                         color: Colors.white,
                       ),
-                      const SizedBox(width: 4),
+                      SizedBox(width: 4.w),
                       Text(
                         "Tap to view",
                         style: GoogleFonts.poppins(
-                          fontSize: 11,
+                          fontSize: 11.sp,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
                         ),
@@ -326,16 +328,16 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
               // Mechanic en route label
               if (mechanicLat != null && mechanicLng != null)
                 Positioned(
-                  left: 12,
-                  bottom: 12,
+                  left: 12.w,
+                  bottom: 12.h,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 6.h,
                     ),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(20.r),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.1),
@@ -347,18 +349,18 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
-                          width: 8,
-                          height: 8,
-                          decoration: const BoxDecoration(
+                          width: 8.w,
+                          height: 8.h,
+                          decoration: BoxDecoration(
                             color: Colors.green,
                             shape: BoxShape.circle,
                           ),
                         ),
-                        const SizedBox(width: 6),
+                        SizedBox(width: 6.w),
                         Text(
                           "MECHANIC EN ROUTE",
                           style: GoogleFonts.poppins(
-                            fontSize: 10,
+                            fontSize: 10.sp,
                             fontWeight: FontWeight.w600,
                             color: Colors.black87,
                           ),
@@ -398,15 +400,15 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
       decoration: BoxDecoration(
         color: color.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
       ),
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 12,
+          fontSize: 12.sp,
           fontWeight: FontWeight.w600,
           color: color,
         ),
@@ -421,19 +423,19 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
     required String subtitle,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 12.h),
       child: Row(
         children: [
           Container(
-            width: 42,
-            height: 42,
+            width: 42.w,
+            height: 42.h,
             decoration: BoxDecoration(
               color: primaryColor.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
-            child: Icon(icon, color: primaryColor, size: 20),
+            child: Icon(icon, color: primaryColor, size: 20.w),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -442,11 +444,11 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
                   title,
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: 2),
                 Text(
                   subtitle,
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     color: Colors.grey.shade600,
                   ),
                 ),

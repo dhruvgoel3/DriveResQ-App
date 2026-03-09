@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:get/get.dart';
 import '../../../chat/controllers/chat_controller.dart';
 import '../../../chat/views/chat_screen.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class MechanicActiveJobCard extends StatelessWidget {
   final Map<String, dynamic> job;
@@ -11,7 +12,7 @@ class MechanicActiveJobCard extends StatelessWidget {
   final VoidCallback? onAccept;
   final VoidCallback? onCancel;
 
-  const MechanicActiveJobCard({
+  MechanicActiveJobCard({
     super.key,
     required this.job,
     this.isActive = false,
@@ -24,15 +25,15 @@ class MechanicActiveJobCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: EdgeInsets.only(bottom: 16.h),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.06),
             blurRadius: 20,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -44,29 +45,29 @@ class MechanicActiveJobCard extends StatelessWidget {
 
           // Main Content
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Distance Badge (Most Important)
                 if (job['distance'] != null) _buildDistanceBadge(),
 
-                if (job['distance'] != null) const SizedBox(height: 16),
+                if (job['distance'] != null) SizedBox(height: 16.h),
 
                 // Location Info (Single, Clean Display)
                 _buildLocationCard(),
 
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
 
                 // Additional Details
                 _buildDetailsSection(),
 
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
 
                 // Problem Card (Highlighted)
                 _buildProblemCard(),
 
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
 
                 // Action Buttons
                 isActive
@@ -82,7 +83,7 @@ class MechanicActiveJobCard extends StatelessWidget {
 
   Widget _buildHeader() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isActive
@@ -91,9 +92,9 @@ class MechanicActiveJobCard extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.r),
+          topRight: Radius.circular(20.r),
         ),
       ),
       child: Row(
@@ -104,13 +105,13 @@ class MechanicActiveJobCard extends StatelessWidget {
               Icon(
                 isActive ? Icons.build_circle : Icons.new_releases,
                 color: Colors.white,
-                size: 22,
+                size: 22.w,
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Text(
                 isActive ? "ACTIVE REQUEST" : "NEW REQUEST",
                 style: GoogleFonts.poppins(
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   letterSpacing: 0.5,
@@ -119,15 +120,15 @@ class MechanicActiveJobCard extends StatelessWidget {
             ],
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.25),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
             child: Text(
               isActive ? "IN PROGRESS" : "AWAITING",
               style: GoogleFonts.poppins(
-                fontSize: 10,
+                fontSize: 10.sp,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
                 letterSpacing: 0.3,
@@ -141,29 +142,29 @@ class MechanicActiveJobCard extends StatelessWidget {
 
   Widget _buildDistanceBadge() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [Colors.blue.shade500, Colors.blue.shade700],
         ),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         boxShadow: [
           BoxShadow(
             color: Colors.blue.withOpacity(0.3),
             blurRadius: 8,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.near_me, color: Colors.white, size: 20),
-          const SizedBox(width: 8),
+          Icon(Icons.near_me, color: Colors.white, size: 20.w),
+          SizedBox(width: 8.w),
           Text(
             "${job['distance']} km away",
             style: GoogleFonts.poppins(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
@@ -175,10 +176,10 @@ class MechanicActiveJobCard extends StatelessWidget {
 
   Widget _buildLocationCard() {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(color: Colors.grey.shade200, width: 1.5),
       ),
       child: Column(
@@ -187,14 +188,14 @@ class MechanicActiveJobCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
                   color: primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
-                child: const Icon(Icons.location_on, color: primary, size: 20),
+                child: Icon(Icons.location_on, color: primary, size: 20.w),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,16 +203,16 @@ class MechanicActiveJobCard extends StatelessWidget {
                     Text(
                       "Driver Location",
                       style: GoogleFonts.poppins(
-                        fontSize: 11,
+                        fontSize: 11.sp,
                         color: Colors.grey.shade600,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2),
                     Text(
                       job['locationName'] ?? 'Location not available',
                       style: GoogleFonts.poppins(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.black87,
                       ),
@@ -223,22 +224,22 @@ class MechanicActiveJobCard extends StatelessWidget {
           ),
           if (job['landmark'] != null &&
               job['landmark'].toString().isNotEmpty) ...[
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.place, size: 16, color: Colors.grey.shade600),
-                  const SizedBox(width: 6),
+                  Icon(Icons.place, size: 16.w, color: Colors.grey.shade600),
+                  SizedBox(width: 6.w),
                   Expanded(
                     child: Text(
                       job['landmark'],
                       style: GoogleFonts.poppins(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         color: Colors.grey.shade700,
                       ),
                     ),
@@ -262,7 +263,7 @@ class MechanicActiveJobCard extends StatelessWidget {
         ),
         if (job['description'] != null &&
             job['description'].toString().isNotEmpty) ...[
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           _buildDescriptionCard(),
         ],
       ],
@@ -271,19 +272,19 @@ class MechanicActiveJobCard extends StatelessWidget {
 
   Widget _buildInfoRow(IconData icon, String label, String value) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: Colors.grey.shade700),
-          const SizedBox(width: 10),
+          Icon(icon, size: 20.w, color: Colors.grey.shade700),
+          SizedBox(width: 10.w),
           Text(
             "$label: ",
             style: GoogleFonts.poppins(
-              fontSize: 13,
+              fontSize: 13.sp,
               color: Colors.grey.shade600,
               fontWeight: FontWeight.w500,
             ),
@@ -292,7 +293,7 @@ class MechanicActiveJobCard extends StatelessWidget {
             child: Text(
               value,
               style: GoogleFonts.poppins(
-                fontSize: 13,
+                fontSize: 13.sp,
                 fontWeight: FontWeight.w600,
                 color: Colors.black87,
               ),
@@ -305,17 +306,17 @@ class MechanicActiveJobCard extends StatelessWidget {
 
   Widget _buildDescriptionCard() {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: Colors.blue.shade50,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: Colors.blue.shade100),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.notes_rounded, color: Colors.blue.shade700, size: 20),
-          const SizedBox(width: 10),
+          Icon(Icons.notes_rounded, color: Colors.blue.shade700, size: 20.w),
+          SizedBox(width: 10.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -323,16 +324,16 @@ class MechanicActiveJobCard extends StatelessWidget {
                 Text(
                   "Additional Info",
                   style: GoogleFonts.poppins(
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     color: Colors.blue.shade700,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   job['description'],
                   style: GoogleFonts.poppins(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     color: Colors.black87,
                   ),
                 ),
@@ -346,29 +347,25 @@ class MechanicActiveJobCard extends StatelessWidget {
 
   Widget _buildProblemCard() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [Colors.red.shade50, Colors.red.shade100],
         ),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(color: Colors.red.shade200, width: 1.5),
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
               color: Colors.red.shade200,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(10.r),
             ),
-            child: const Icon(
-              Icons.warning_rounded,
-              color: Colors.red,
-              size: 24,
-            ),
+            child: Icon(Icons.warning_rounded, color: Colors.red, size: 24.w),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -376,17 +373,17 @@ class MechanicActiveJobCard extends StatelessWidget {
                 Text(
                   "PROBLEM REPORTED",
                   style: GoogleFonts.poppins(
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.red.shade700,
                     letterSpacing: 0.5,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   job['problem'] ?? 'No problem specified',
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
                   ),
@@ -413,16 +410,16 @@ class MechanicActiveJobCard extends StatelessWidget {
                 onPressed: _callDriver,
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
             Expanded(
               child: _actionButton(
                 icon: Icons.chat_bubble,
                 label: "Chat",
-                color: const Color(0xFF6C63FF),
+                color: Color(0xFF6C63FF),
                 onPressed: _openChat,
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
             Expanded(
               child: _actionButton(
                 icon: Icons.navigation,
@@ -433,32 +430,32 @@ class MechanicActiveJobCard extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Row(
           children: [
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: onCancel,
-                icon: const Icon(Icons.cancel_outlined),
+                icon: Icon(Icons.cancel_outlined),
                 label: Text(
                   "Cancel",
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.red,
-                  side: const BorderSide(color: Colors.red, width: 1.5),
+                  side: BorderSide(color: Colors.red, width: 1.5),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: EdgeInsets.symmetric(vertical: 14.h),
                 ),
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: _completeJob,
-                icon: const Icon(Icons.check_circle),
+                icon: Icon(Icons.check_circle),
                 label: Text(
                   "Complete",
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
@@ -467,9 +464,9 @@ class MechanicActiveJobCard extends StatelessWidget {
                   backgroundColor: Colors.green,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: EdgeInsets.symmetric(vertical: 14.h),
                   elevation: 2,
                 ),
               ),
@@ -486,18 +483,21 @@ class MechanicActiveJobCard extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton.icon(
         onPressed: onAccept,
-        icon: const Icon(Icons.check_circle_outline, size: 22),
+        icon: Icon(Icons.check_circle_outline, size: 22.w),
         label: Text(
           "Accept Request",
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 15),
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            fontSize: 15.sp,
+          ),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: primary,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(14.r),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: EdgeInsets.symmetric(vertical: 16.h),
           elevation: 2,
         ),
       ),
@@ -512,7 +512,7 @@ class MechanicActiveJobCard extends StatelessWidget {
   }) {
     return ElevatedButton.icon(
       onPressed: onPressed,
-      icon: Icon(icon, size: 20),
+      icon: Icon(icon, size: 20.w),
       label: Text(
         label,
         style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
@@ -520,8 +520,10 @@ class MechanicActiveJobCard extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        padding: EdgeInsets.symmetric(vertical: 14.h),
         elevation: 2,
       ),
     );
@@ -600,9 +602,9 @@ class MechanicActiveJobCard extends StatelessWidget {
       ),
     );
     Get.to(
-      () => const ChatScreen(),
+      () => ChatScreen(),
       transition: Transition.rightToLeft,
-      duration: const Duration(milliseconds: 250),
+      duration: Duration(milliseconds: 250),
     );
   }
 }
