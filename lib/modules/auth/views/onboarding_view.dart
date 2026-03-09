@@ -75,8 +75,10 @@ class _OnboardingViewState extends State<OnboardingView>
 
     if (role != null) {
       Get.put(AuthController()).selectRole(role);
+      Get.offAllNamed('/login');
+    } else {
+      Get.offAllNamed('/role');
     }
-    Get.offAllNamed('/role');
   }
 
   Future<void> _skip() async {

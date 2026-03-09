@@ -17,7 +17,7 @@ class ChatScreen extends StatelessWidget {
     final c = Get.find<ChatController>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F2F5),
+      backgroundColor: Colors.white,
       appBar: _buildAppBar(c),
       body: Column(
         children: [
