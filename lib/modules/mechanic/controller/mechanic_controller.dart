@@ -7,7 +7,7 @@ import 'package:geolocator/geolocator.dart';
 
 import '../../driver/services/mechanic_location_service.dart';
 import '../../chat/services/chat_service.dart';
-import '../../../services/notification_sender.dart';
+import '../../notifications/services/notification_sender.dart';
 
 class MechanicController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

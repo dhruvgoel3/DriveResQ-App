@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../services/notification_sender.dart';
+import '../../modules/notifications/services/notification_sender.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

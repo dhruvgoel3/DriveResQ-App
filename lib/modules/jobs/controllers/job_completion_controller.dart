@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../services/notification_sender.dart';
+import '../../notifications/services/notification_sender.dart';
 
 class JobCompletionController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../services/location_service.dart';
-import '../../../services/notification_sender.dart';
+import '../../notifications/services/notification_sender.dart';
 
 class CreateRequestController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
