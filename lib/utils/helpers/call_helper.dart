@@ -1,9 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CallHelper {
   static Future<void> callNumber(String phone) async {
     if (phone.isEmpty) {
-      print("📞 Phone number is empty");
+      debugPrint("Phone number is empty");
       return;
     }
 
@@ -11,15 +12,12 @@ class CallHelper {
 
     try {
       if (await canLaunchUrl(uri)) {
-        await launchUrl(
-          uri,
-          mode: LaunchMode.externalApplication,
-        );
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
       } else {
-        print("❌ Cannot launch dialer for $phone");
+        debugPrint("Cannot launch dialer for $phone");
       }
     } catch (e) {
-      print("❌ Call error: $e");
+      debugPrint("Call error: $e");
     }
   }
 }

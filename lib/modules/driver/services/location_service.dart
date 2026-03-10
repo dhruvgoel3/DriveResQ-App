@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
@@ -41,7 +42,7 @@ class LocationService {
         'lng': position.longitude,
       };
     } catch (e) {
-      print("❌ LocationService Error: $e");
+      debugPrint("LocationService Error: $e");
       rethrow;
     }
   }
@@ -78,7 +79,7 @@ class LocationService {
 
       return 'Unknown Location';
     } catch (e) {
-      print("❌ Geocoding Error: $e");
+      debugPrint("Geocoding Error: $e");
       return 'Location: $lat, $lng';
     }
   }

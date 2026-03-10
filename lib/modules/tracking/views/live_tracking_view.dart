@@ -76,7 +76,7 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
 
       _updateDriverMarker();
     } catch (e) {
-      print("❌ Error getting driver location: $e");
+      debugPrint("Error getting driver location: $e");
       Get.snackbar("Error", "Could not get your location");
     }
   }
@@ -120,7 +120,7 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
         .snapshots()
         .listen((snapshot) {
           if (!snapshot.exists) {
-            print("⚠️ Mechanic location not available");
+            debugPrint("Mechanic location not available");
             return;
           }
 

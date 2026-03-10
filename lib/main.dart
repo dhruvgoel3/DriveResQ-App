@@ -11,16 +11,9 @@ import 'theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  print("🔥 main() started");
-
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  print("🔥 Firebase initialized");
-
   Get.put(AuthController(), permanent: true);
-  print("🔥 AuthController registered");
-
   runApp(const DriveResQApp());
-  print("🔥 runApp called");
 }
 
 class DriveResQApp extends StatelessWidget {
@@ -31,20 +24,14 @@ class DriveResQApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'DriveResQ',
       debugShowCheckedModeBanner: false,
-
-      // 🎨 Design System
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: ThemeMode.system,
-
-      // 🔥 REGISTER GLOBAL CONTROLLERS HERE
       initialBinding: BindingsBuilder(() {
         Get.put(DevRoleController(), permanent: true);
       }),
-
       initialRoute: Routes.SPLASH,
       getPages: AppPages.pages,
     );
   }
 }
-// main file

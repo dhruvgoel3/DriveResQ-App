@@ -1,9 +1,0 @@
-﻿Analyzing fcm_service.dart, notifications_view.dart...
-
-  error - lib\modules\notifications\views\notifications_view.dart:46:40 - The getter 'ref' isn't defined for the type 'QueryDocumentSnapshot<Map<String, dynamic>>'. Try importing the library that defines 'ref', correcting the name to the name of an existing getter, or defining a getter or field named 'ref'. - undefined_getter
-  error - lib\services\fcm_service.dart:85:31 - The named parameter 'settings' is required, but there's no corresponding argument. Try adding the required argument. - missing_required_argument
-  error - lib\services\fcm_service.dart:86:7 - Too many positional arguments: 0 expected, but 1 found. Try removing the extra positional arguments, or specifying the name for named arguments. - extra_positional_arguments_could_be_named
-  error - lib\services\fcm_service.dart:153:27 - The named parameter 'id' is required, but there's no corresponding argument. Try adding the required argument. - missing_required_argument
-  error - lib\services\fcm_service.dart:154:9 - Too many positional arguments: 0 expected, but 4 found. Try removing the extra positional arguments, or specifying the name for named arguments. - extra_positional_arguments_could_be_named
-
-5 issues found.

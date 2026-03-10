@@ -95,9 +95,11 @@ class MechanicController extends GetxController {
       mechanicLng.value = position.longitude;
       isLocationLoaded.value = true;
 
-      print("✅ Mechanic Location: ${mechanicLat.value}, ${mechanicLng.value}");
+      debugPrint(
+        "Mechanic Location: ${mechanicLat.value}, ${mechanicLng.value}",
+      );
     } catch (e) {
-      print("❌ Location Error: $e");
+      debugPrint("Location Error: $e");
       Get.snackbar("Error", "Could not fetch location: $e");
     }
   }
@@ -126,7 +128,7 @@ class MechanicController extends GetxController {
               // 🚀 START LOCATION TRACKING when job is active
               MechanicLocationService.startTracking();
 
-              print("✅ Active job found: ${activeJob.value!['id']}");
+              debugPrint("Active job found: ${activeJob.value!['id']}");
             } else {
               hasActiveJob.value = false;
               activeJob.value = null;
@@ -134,11 +136,11 @@ class MechanicController extends GetxController {
               // 🛑 STOP LOCATION TRACKING when no active job
               MechanicLocationService.stopTracking();
 
-              print("ℹ️ No active job");
+              debugPrint("No active job");
             }
           },
           onError: (error) {
-            print("❌ Error listening to active job: $error");
+            debugPrint("Error listening to active job: $error");
             Get.snackbar("Error", "Failed to load active job");
           },
         );
@@ -167,7 +169,7 @@ class MechanicController extends GetxController {
 
               // Validate location data
               if (driverLat == null || driverLng == null) {
-                print("⚠️ Request ${doc.id} has missing location data");
+                debugPrint("Request ${doc.id} has missing location data");
                 continue;
               }
 
@@ -191,7 +193,9 @@ class MechanicController extends GetxController {
                   });
                 }
               } catch (e) {
-                print("❌ Error calculating distance for request ${doc.id}: $e");
+                debugPrint(
+                  "Error calculating distance for request ${doc.id}: $e",
+                );
                 continue;
               }
             }
@@ -208,10 +212,10 @@ class MechanicController extends GetxController {
             });
 
             openRequests.value = nearbyList;
-            print("✅ Found ${nearbyList.length} nearby open requests");
+            debugPrint("Found ${nearbyList.length} nearby open requests");
           },
           onError: (error) {
-            print("❌ Error listening to requests: $error");
+            debugPrint("Error listening to requests: $error");
             Get.snackbar("Error", "Failed to load requests");
           },
         );
@@ -319,9 +323,9 @@ class MechanicController extends GetxController {
       changeInnerTab(1); // Switch to "Accepted Requests" tab
 
       // Location tracking will auto-start via _listenToActiveJob
-      print("✅ Request $requestId accepted successfully");
+      debugPrint("Request $requestId accepted successfully");
     } catch (e) {
-      print("❌ Error accepting request: $e");
+      debugPrint("Error accepting request: $e");
 
       // More specific error messages
       if (e.toString().contains('permission')) {
@@ -368,11 +372,11 @@ class MechanicController extends GetxController {
         colorText: Colors.white,
       );
 
-      print("✅ Job cancelled: ${activeJob.value!['id']}");
+      debugPrint("Job cancelled: ${activeJob.value!['id']}");
 
       // Location tracking will auto-stop via _listenToActiveJob
     } catch (e) {
-      print("❌ Error cancelling job: $e");
+      debugPrint("Error cancelling job: $e");
       Get.snackbar("Error", "Failed to cancel job: $e");
     }
   }
@@ -419,11 +423,11 @@ class MechanicController extends GetxController {
         duration: Duration(seconds: 3),
       );
 
-      print("✅ Job completed: $jobId");
+      debugPrint("Job completed: $jobId");
 
       // Location tracking will auto-stop via _listenToActiveJob
     } catch (e) {
-      print("❌ Error completing job: $e");
+      debugPrint("Error completing job: $e");
       Get.snackbar("Error", "Failed to complete job: $e");
     }
   }
