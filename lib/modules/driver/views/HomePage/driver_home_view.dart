@@ -16,7 +16,6 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 class DriverHomeView extends StatelessWidget {
   const DriverHomeView({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<DriverController>();
@@ -49,10 +48,7 @@ class DriverHomeView extends StatelessWidget {
                 }
               },
               itemBuilder: (context) => [
-                PopupMenuItem(
-                  value: 'driver',
-                  child: Text('Switch to Driver'),
-                ),
+                PopupMenuItem(value: 'driver', child: Text('Switch to Driver')),
                 PopupMenuItem(
                   value: 'mechanic',
                   child: Text('Switch to Mechanic'),

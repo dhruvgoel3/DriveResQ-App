@@ -8,7 +8,6 @@ import 'HomePage/driver_home_view.dart';
 class DriverDashboardView extends StatelessWidget {
   const DriverDashboardView({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<DriverController>();
@@ -17,11 +16,7 @@ class DriverDashboardView extends StatelessWidget {
       return Scaffold(
         body: IndexedStack(
           index: controller.currentIndex.value,
-          children: [
-            DriverHomeView(),
-            ChatListView(),
-            DriverProfileView(),
-          ],
+          children: [DriverHomeView(), ChatListView(), DriverProfileView()],
         ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,

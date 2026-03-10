@@ -8,7 +8,6 @@ class ShimmerLoader extends StatelessWidget {
   final int itemCount;
   final ShimmerCardType cardType;
 
-
   ShimmerLoader({
     super.key,
     this.itemCount = 3,

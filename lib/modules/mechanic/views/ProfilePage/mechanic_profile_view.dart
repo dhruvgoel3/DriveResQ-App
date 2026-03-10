@@ -5,7 +5,6 @@ import '../../controller/mechanic_profile_controller.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class MechanicProfileView extends StatelessWidget {
-
   static const _accent = Color(0xFF6C63FF);
 
   const MechanicProfileView({super.key});
@@ -107,11 +106,7 @@ class MechanicProfileView extends StatelessWidget {
                     backgroundImage: _profileImage(data),
                     backgroundColor: Colors.white.withOpacity(0.15),
                     child: _profileImage(data) == null
-                        ? Icon(
-                            Icons.person,
-                            size: 46.w,
-                            color: Colors.white70,
-                          )
+                        ? Icon(Icons.person, size: 46.w, color: Colors.white70)
                         : null,
                   ),
                 ),
@@ -686,10 +681,7 @@ class MechanicProfileView extends StatelessWidget {
         filled: false,
         fillColor: Colors.grey.shade50,
         isDense: true,
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 14.w,
-          vertical: 14.h,
-        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(color: Colors.grey.shade200),
@@ -808,7 +800,9 @@ class MechanicProfileView extends StatelessWidget {
         foregroundColor: Colors.white,
         minimumSize: Size(double.infinity, 52),
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14.r),
+        ),
       ),
     );
   }

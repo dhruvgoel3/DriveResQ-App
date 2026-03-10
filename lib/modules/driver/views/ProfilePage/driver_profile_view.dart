@@ -5,7 +5,6 @@ import '../../controllers/driver_profile_controller.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class DriverProfileView extends StatelessWidget {
-
   static const _accent = Color(0xFF6C63FF);
 
   const DriverProfileView({super.key});
@@ -513,10 +512,7 @@ class DriverProfileView extends StatelessWidget {
         filled: false,
         fillColor: Colors.grey.shade50,
         isDense: true,
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 14.w,
-          vertical: 14.h,
-        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(color: Colors.grey.shade200),
@@ -541,7 +537,10 @@ class DriverProfileView extends StatelessWidget {
         icon: Icon(Icons.logout),
         label: Text(
           'Logout',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 16.sp),
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            fontSize: 16.sp,
+          ),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.red,

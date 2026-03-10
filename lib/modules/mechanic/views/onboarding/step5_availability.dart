@@ -9,7 +9,6 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 class Step5Availability extends StatelessWidget {
   const Step5Availability({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final c = Get.find<MechanicOnboardingController>();
@@ -53,11 +52,7 @@ class Step5Availability extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: Icon(
-          Icons.arrow_back_ios_new,
-          color: Colors.black87,
-          size: 20.w,
-        ),
+        icon: Icon(Icons.arrow_back_ios_new, color: Colors.black87, size: 20.w),
         onPressed: () {
           c.currentStep.value = 4;
           Get.back();
@@ -108,9 +103,7 @@ class Step5Availability extends StatelessWidget {
                 value: c.currentStep.value / 6,
                 minHeight: 6.h,
                 backgroundColor: Colors.grey.shade200,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Color(0xFFFF9800),
-                ),
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF9800)),
               ),
             ),
           ],
@@ -134,7 +127,10 @@ class Step5Availability extends StatelessWidget {
         SizedBox(height: 6.h),
         Text(
           'Set your working hours and service charges',
-          style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.grey.shade500),
+          style: GoogleFonts.poppins(
+            fontSize: 14.sp,
+            color: Colors.grey.shade500,
+          ),
         ),
       ],
     );
@@ -251,9 +247,7 @@ class Step5Availability extends StatelessWidget {
                     vertical: 10.h,
                   ),
                   decoration: BoxDecoration(
-                    color: selected
-                        ? Color(0xFFFF9800)
-                        : Colors.grey.shade50,
+                    color: selected ? Color(0xFFFF9800) : Colors.grey.shade50,
                     borderRadius: BorderRadius.circular(25.r),
                     border: Border.all(
                       color: selected

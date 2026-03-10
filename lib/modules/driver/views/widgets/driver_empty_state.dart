@@ -5,7 +5,6 @@ import '../../../../shared/widgets/empty_state_widget.dart';
 class DriverEmptyState extends StatelessWidget {
   final VoidCallback onNewRequest;
 
-
   DriverEmptyState({super.key, required this.onNewRequest});
 
   @override

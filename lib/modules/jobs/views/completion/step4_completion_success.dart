@@ -8,7 +8,6 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 class CompletionSuccessView extends StatelessWidget {
   const CompletionSuccessView({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final c = Get.find<JobCompletionController>();
@@ -41,11 +40,7 @@ class CompletionSuccessView extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Icon(
-                Icons.check_rounded,
-                color: Colors.white,
-                size: 64.w,
-              ),
+              child: Icon(Icons.check_rounded, color: Colors.white, size: 64.w),
             ),
           ),
 
@@ -239,7 +234,10 @@ class CompletionSuccessView extends StatelessWidget {
       children: [
         Text(
           label,
-          style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade600),
+          style: GoogleFonts.poppins(
+            fontSize: 13.sp,
+            color: Colors.grey.shade600,
+          ),
         ),
         Text(
           value,

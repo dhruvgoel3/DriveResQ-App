@@ -6,12 +6,7 @@ class QuickRepliesBar extends StatelessWidget {
   final List<String> replies;
   final void Function(String) onTap;
 
-
-  QuickRepliesBar({
-    super.key,
-    required this.replies,
-    required this.onTap,
-  });
+  QuickRepliesBar({super.key, required this.replies, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +32,7 @@ class QuickRepliesBar extends StatelessWidget {
                       ),
                     ),
                     backgroundColor: Color(0xFF6C63FF).withOpacity(0.08),
-                    side: BorderSide(
-                      color: Color(0xFF6C63FF).withOpacity(0.2),
-                    ),
+                    side: BorderSide(color: Color(0xFF6C63FF).withOpacity(0.2)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.r),
                     ),

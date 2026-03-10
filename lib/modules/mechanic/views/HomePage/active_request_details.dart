@@ -6,7 +6,6 @@ import '../../controller/mechanic_controller.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class ActiveRequestDetailsPage extends StatelessWidget {
-
   static const primary = Color(0xFF6C63FF);
 
   const ActiveRequestDetailsPage({super.key});
@@ -162,11 +161,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
               color: Colors.white.withOpacity(0.2),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              Icons.build_circle,
-              color: Colors.white,
-              size: 32.w,
-            ),
+            child: Icon(Icons.build_circle, color: Colors.white, size: 32.w),
           ),
           SizedBox(height: 10.h),
           Text(
@@ -265,11 +260,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                     color: primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12.r),
                   ),
-                  child: Icon(
-                    Icons.location_on,
-                    color: primary,
-                    size: 24.w,
-                  ),
+                  child: Icon(Icons.location_on, color: primary, size: 24.w),
                 ),
                 SizedBox(width: 12.w),
                 Expanded(
@@ -573,7 +564,9 @@ class ActiveRequestDetailsPage extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14.r),
+        ),
         padding: EdgeInsets.symmetric(vertical: 16.h),
         elevation: 2,
       ),

@@ -5,7 +5,6 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 class SafetyTipsSection extends StatelessWidget {
   const SafetyTipsSection({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return Padding(

@@ -5,16 +5,15 @@ import '../HomePage/active_request_details.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class AcceptedRequestIndicatorCard extends StatefulWidget {
-
-  AcceptedRequestIndicatorCard({
-    super.key,
-  });
+  AcceptedRequestIndicatorCard({super.key});
 
   @override
-  State<AcceptedRequestIndicatorCard> createState() => _AcceptedRequestIndicatorCardState();
+  State<AcceptedRequestIndicatorCard> createState() =>
+      _AcceptedRequestIndicatorCardState();
 }
 
-class _AcceptedRequestIndicatorCardState extends State<AcceptedRequestIndicatorCard>
+class _AcceptedRequestIndicatorCardState
+    extends State<AcceptedRequestIndicatorCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _pulseAnimation;
@@ -32,10 +31,13 @@ class _AcceptedRequestIndicatorCardState extends State<AcceptedRequestIndicatorC
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: Offset(0.05, 0),
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
+    _slideAnimation = Tween<Offset>(begin: Offset.zero, end: Offset(0.05, 0))
+        .animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeInOut,
+          ),
+        );
   }
 
   @override
@@ -50,7 +52,7 @@ class _AcceptedRequestIndicatorCardState extends State<AcceptedRequestIndicatorC
       onTap: () {
         // Navigate to Active Request Details Page
         Get.to(
-              () => ActiveRequestDetailsPage(),
+          () => ActiveRequestDetailsPage(),
           transition: Transition.rightToLeft,
           duration: Duration(milliseconds: 300),
         );
@@ -59,10 +61,7 @@ class _AcceptedRequestIndicatorCardState extends State<AcceptedRequestIndicatorC
         margin: EdgeInsets.only(bottom: 8.h),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Color(0xFF6C63FF),
-              Color(0xFF5A52E8),
-            ],
+            colors: [Color(0xFF6C63FF), Color(0xFF5A52E8)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -81,9 +80,7 @@ class _AcceptedRequestIndicatorCardState extends State<AcceptedRequestIndicatorC
             Positioned.fill(
               child: Opacity(
                 opacity: 0.1,
-                child: CustomPaint(
-                  painter: DotPatternPainter(),
-                ),
+                child: CustomPaint(painter: DotPatternPainter()),
               ),
             ),
 

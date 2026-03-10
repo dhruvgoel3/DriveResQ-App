@@ -5,7 +5,6 @@ import '../../controllers/driver_onboarding_controller.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class DriverOnboardingView extends StatelessWidget {
-
   static const _accent = Color(0xFF6C63FF);
 
   const DriverOnboardingView({super.key});
@@ -114,7 +113,10 @@ class DriverOnboardingView extends StatelessWidget {
         SizedBox(height: 6.h),
         Text(
           'This helps us personalize your experience',
-          style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
+          style: GoogleFonts.poppins(
+            fontSize: 13.sp,
+            color: Colors.grey.shade500,
+          ),
         ),
         SizedBox(height: 24.h),
 
@@ -231,7 +233,10 @@ class DriverOnboardingView extends StatelessWidget {
         SizedBox(height: 6.h),
         Text(
           'Upload any one government ID to verify your identity',
-          style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
+          style: GoogleFonts.poppins(
+            fontSize: 13.sp,
+            color: Colors.grey.shade500,
+          ),
         ),
         SizedBox(height: 24.h),
 
@@ -257,7 +262,10 @@ class DriverOnboardingView extends StatelessWidget {
               child: DropdownButton<String>(
                 value: c.selectedIdType.value,
                 isExpanded: true,
-                style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black87),
+                style: GoogleFonts.poppins(
+                  fontSize: 14.sp,
+                  color: Colors.black87,
+                ),
                 items: c.idTypes
                     .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                     .toList(),
@@ -409,10 +417,7 @@ class DriverOnboardingView extends StatelessWidget {
         filled: false,
         fillColor: Colors.grey.shade50,
         isDense: true,
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 14.w,
-          vertical: 14.h,
-        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(color: Colors.grey.shade200),

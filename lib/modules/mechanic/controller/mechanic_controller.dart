@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -23,6 +26,7 @@ class MechanicController extends GetxController {
   var mechanicLat = 0.0.obs;
   var mechanicLng = 0.0.obs;
   var isLocationLoaded = false.obs;
+  var locationError = RxnString(); // null = no error, string = error message
 
   // Active job management
   var hasActiveJob = false.obs;
@@ -44,29 +48,38 @@ class MechanicController extends GetxController {
   void onClose() {
     _requestsSubscription?.cancel();
     _activeJobSubscription?.cancel();
-    MechanicLocationService.stopTracking(); // Stop location tracking
+    MechanicLocationService.stopTracking();
     super.onClose();
   }
 
-  // 📍 Initialize mechanic location and listeners
   Future<void> _initializeMechanic() async {
-    // Check if user is authenticated
     if (_auth.currentUser == null) {
       Get.snackbar("Error", "User not authenticated. Please login again.");
       return;
     }
 
     await _getMechanicLocation();
+    // Always start listeners — even without location, mechanic can see
+    // accepted jobs and other UI; distance filtering just won't apply.
     _listenToActiveJob();
     _listenToNearbyRequests();
   }
 
-  // 📍 Get mechanic's current location
+  /// Get mechanic's current location with fallback accuracy
   Future<void> _getMechanicLocation() async {
     try {
+      locationError.value = null;
+
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        Get.snackbar("Error", "Please enable location services");
+        locationError.value = "Location services are disabled";
+        Get.snackbar(
+          "Location Disabled",
+          "Please enable location services to see nearby requests",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.orange.withOpacity(0.9),
+          colorText: Colors.white,
+        );
         return;
       }
 
@@ -74,33 +87,62 @@ class MechanicController extends GetxController {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          Get.snackbar("Error", "Location permission denied");
+          locationError.value = "Location permission denied";
+          Get.snackbar(
+            "Permission Required",
+            "Allow location access to see nearby requests",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.orange.withOpacity(0.9),
+            colorText: Colors.white,
+          );
           return;
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
+        locationError.value = "Location permission permanently denied";
         Get.snackbar(
-          "Error",
-          "Location permission denied permanently. Please enable in settings.",
+          "Permission Required",
+          "Please enable location in your device settings",
+          snackPosition: SnackPosition.BOTTOM,
+          duration: const Duration(seconds: 5),
+          backgroundColor: Colors.red.withOpacity(0.9),
+          colorText: Colors.white,
         );
         return;
       }
 
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
+      // Try high accuracy first, fall back to medium on failure
+      Position position;
+      try {
+        position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        ).timeout(const Duration(seconds: 10));
+      } catch (_) {
+        debugPrint("High accuracy failed, trying medium...");
+        position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.medium,
+        ).timeout(const Duration(seconds: 10));
+      }
 
       mechanicLat.value = position.latitude;
       mechanicLng.value = position.longitude;
       isLocationLoaded.value = true;
+      locationError.value = null;
 
       debugPrint(
         "Mechanic Location: ${mechanicLat.value}, ${mechanicLng.value}",
       );
     } catch (e) {
       debugPrint("Location Error: $e");
-      Get.snackbar("Error", "Could not fetch location: $e");
+      locationError.value = "Could not fetch location";
+      Get.snackbar(
+        "Location Error",
+        "Could not get your location. Pull down to retry.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withOpacity(0.9),
+        colorText: Colors.white,
+      );
     }
   }
 
@@ -277,12 +319,18 @@ class MechanicController extends GetxController {
         return;
       }
 
-      // ✅ All validations passed - Accept the request
+      // Generate verification code
+      final verificationCode = _generateVerificationCode();
+
+      // All validations passed — Accept the request
       await _firestore.collection('requests').doc(requestId).update({
         'status': 'accepted',
         'mechanicId': uid,
         'mechanicPhone': mechanicPhone,
         'acceptedAt': FieldValue.serverTimestamp(),
+        'verificationCode': verificationCode,
+        'verificationAttempts': 0,
+        'codeGeneratedAt': FieldValue.serverTimestamp(),
       });
 
       // 💬 Create chat for this request
@@ -354,6 +402,9 @@ class MechanicController extends GetxController {
             'mechanicId': FieldValue.delete(),
             'mechanicPhone': FieldValue.delete(),
             'acceptedAt': FieldValue.delete(),
+            'verificationCode': FieldValue.delete(),
+            'verificationAttempts': FieldValue.delete(),
+            'codeGeneratedAt': FieldValue.delete(),
           });
 
       // Notify Driver about cancellation
@@ -451,5 +502,87 @@ class MechanicController extends GetxController {
   // 🆕 Check mechanic's availability
   bool isAvailable() {
     return !hasActiveJob.value && isLocationLoaded.value;
+  }
+
+  /// Generate a secure 6-digit verification code
+  String _generateVerificationCode() {
+    final random = Random.secure();
+    return List.generate(6, (_) => random.nextInt(10)).join();
+  }
+
+  /// Verify the code and complete the job
+  /// Returns: null on success, error message on failure
+  Future<String?> verifyAndCompleteJob(String code) async {
+    if (activeJob.value == null) {
+      return 'No active job';
+    }
+
+    final jobId = activeJob.value!['id'];
+
+    try {
+      // Re-fetch latest data to get current attempt count
+      final doc = await _firestore.collection('requests').doc(jobId).get();
+      if (!doc.exists) return 'Job not found';
+
+      final data = doc.data()!;
+      final storedCode = data['verificationCode'] as String?;
+      final attempts = (data['verificationAttempts'] ?? 0) as int;
+
+      // Check attempt limit
+      if (attempts >= 5) {
+        return 'Too many attempts. Ask the driver to share the code again.';
+      }
+
+      // Increment attempts
+      await _firestore.collection('requests').doc(jobId).update({
+        'verificationAttempts': attempts + 1,
+      });
+
+      // Verify code
+      if (storedCode == null || storedCode != code) {
+        final remaining = 4 - attempts; // 5 max - (attempts+1)
+        return 'Wrong code. ${remaining > 0 ? "$remaining attempts left." : "No attempts left."}';
+      }
+
+      // Code matches — complete the job
+      await _firestore.collection('requests').doc(jobId).update({
+        'status': 'completed',
+        'completedAt': FieldValue.serverTimestamp(),
+        'verifiedAt': FieldValue.serverTimestamp(),
+      });
+
+      // Notify driver
+      if (activeJob.value!['driverId'] != null) {
+        final mechanicDoc = await _firestore
+            .collection('users')
+            .doc(_auth.currentUser!.uid)
+            .get();
+        final mechName =
+            mechanicDoc.data()?['fullName'] ??
+            mechanicDoc.data()?['name'] ??
+            'Mechanic';
+
+        await NotificationSender.notifyDriverJobCompleted(
+          requestId: jobId,
+          driverId: activeJob.value!['driverId'],
+          mechanicName: mechName,
+          totalAmount: 0.0,
+        );
+      }
+
+      Get.snackbar(
+        'Success',
+        'Job completed successfully! Great work!',
+        backgroundColor: const Color(0xFF4CAF50).withOpacity(0.9),
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+      );
+
+      debugPrint('Job completed with verification: $jobId');
+      return null; // success
+    } catch (e) {
+      debugPrint('Error verifying/completing job: $e');
+      return 'Something went wrong. Please try again.';
+    }
   }
 }

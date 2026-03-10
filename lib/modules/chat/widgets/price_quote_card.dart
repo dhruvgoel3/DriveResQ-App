@@ -10,7 +10,6 @@ class PriceQuoteCard extends StatelessWidget {
   final bool isMe;
   final ChatController controller;
 
-
   PriceQuoteCard({
     super.key,
     required this.message,
@@ -62,9 +61,7 @@ class PriceQuoteCard extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
               decoration: BoxDecoration(
                 color: _statusColor(status).withOpacity(0.08),
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(14.r),
-                ),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(14.r)),
               ),
               child: Row(
                 children: [

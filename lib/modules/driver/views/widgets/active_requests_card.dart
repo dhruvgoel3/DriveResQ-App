@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../tracking/views/live_tracking_view.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class ActiveRequestCard extends StatefulWidget {
   final Map<String, dynamic> request;
-
 
   ActiveRequestCard({super.key, required this.request});
 
@@ -49,28 +50,28 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
         .doc(mechanicId)
         .snapshots()
         .listen((snapshot) {
-      if (!snapshot.exists || !mounted) return;
+          if (!snapshot.exists || !mounted) return;
 
-      final data = snapshot.data()!;
-      final lat = data['latitude'];
-      final lng = data['longitude'];
+          final data = snapshot.data()!;
+          final lat = data['latitude'];
+          final lng = data['longitude'];
 
-      if (lat != null && lng != null) {
-        setState(() {
-          mechanicLat = lat;
-          mechanicLng = lng;
-          _updateMarkers();
+          if (lat != null && lng != null) {
+            setState(() {
+              mechanicLat = lat;
+              mechanicLng = lng;
+              _updateMarkers();
+            });
+
+            // Move camera to mechanic location
+            _mapController?.animateCamera(
+              CameraUpdate.newLatLngZoom(
+                LatLng(mechanicLat!, mechanicLng!),
+                14,
+              ),
+            );
+          }
         });
-
-        // Move camera to mechanic location
-        _mapController?.animateCamera(
-          CameraUpdate.newLatLngZoom(
-            LatLng(mechanicLat!, mechanicLng!),
-            14,
-          ),
-        );
-      }
-    });
   }
 
   // Update map markers
@@ -83,7 +84,9 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
         Marker(
           markerId: MarkerId('mechanic'),
           position: LatLng(mechanicLat!, mechanicLng!),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueGreen,
+          ),
           infoWindow: InfoWindow(title: 'Mechanic'),
         ),
       );
@@ -155,6 +158,15 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
             subtitle: "Reported Issue",
           ),
 
+          // Verification code display (for accepted requests)
+          if (status == 'accepted' &&
+              widget.request['verificationCode'] != null)
+            _buildVerificationCode(),
+
+          if (status == 'accepted' &&
+              widget.request['verificationCode'] != null)
+            SizedBox(height: 14.h),
+
           SizedBox(height: 18.h),
 
           // Show different buttons based on status
@@ -185,7 +197,9 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
               height: 48.h,
               child: OutlinedButton.icon(
                 onPressed: () {
-                  Get.to(() => LiveTrackingView(requestId: widget.request['id']));
+                  Get.to(
+                    () => LiveTrackingView(requestId: widget.request['id']),
+                  );
                 },
                 icon: Icon(Icons.location_searching, size: 18.w),
                 label: Text("Track Mechanic Live"),
@@ -248,41 +262,41 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
               // Google Map
               mechanicLat != null && mechanicLng != null
                   ? GoogleMap(
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(mechanicLat!, mechanicLng!),
-                  zoom: 14,
-                ),
-                markers: _markers,
-                onMapCreated: (controller) {
-                  _mapController = controller;
-                },
-                myLocationEnabled: false,
-                zoomControlsEnabled: false,
-                scrollGesturesEnabled: false,
-                zoomGesturesEnabled: false,
-                tiltGesturesEnabled: false,
-                rotateGesturesEnabled: false,
-                mapToolbarEnabled: false,
-              )
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(mechanicLat!, mechanicLng!),
+                        zoom: 14,
+                      ),
+                      markers: _markers,
+                      onMapCreated: (controller) {
+                        _mapController = controller;
+                      },
+                      myLocationEnabled: false,
+                      zoomControlsEnabled: false,
+                      scrollGesturesEnabled: false,
+                      zoomGesturesEnabled: false,
+                      tiltGesturesEnabled: false,
+                      rotateGesturesEnabled: false,
+                      mapToolbarEnabled: false,
+                    )
                   : Container(
-                color: Colors.grey.shade100,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(),
-                      SizedBox(height: 12.h),
-                      Text(
-                        "Loading mechanic location...",
-                        style: GoogleFonts.poppins(
-                          fontSize: 12.sp,
-                          color: Colors.grey.shade600,
+                      color: Colors.grey.shade100,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(height: 12.h),
+                            Text(
+                              "Loading mechanic location...",
+                              style: GoogleFonts.poppins(
+                                fontSize: 12.sp,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
+                    ),
 
               // Tap to view indicator
               Positioned(
@@ -306,11 +320,7 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        Icons.touch_app,
-                        size: 14.w,
-                        color: Colors.white,
-                      ),
+                      Icon(Icons.touch_app, size: 14.w, color: Colors.white),
                       SizedBox(width: 4.w),
                       Text(
                         "Tap to view",
@@ -473,5 +483,153 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
     } else {
       Get.snackbar("Error", "Cannot make call");
     }
+  }
+
+  // 🔐 Verification code display
+  Widget _buildVerificationCode() {
+    final code = widget.request['verificationCode'] as String;
+
+    return Container(
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            primaryColor.withOpacity(0.08),
+            primaryColor.withOpacity(0.04),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: primaryColor.withOpacity(0.2)),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Icon(Icons.verified_user, color: primaryColor, size: 20.w),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Text(
+                  "Verification Code",
+                  style: GoogleFonts.poppins(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w700,
+                    color: primaryColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            "Share this code with the mechanic to confirm job completion",
+            style: GoogleFonts.poppins(
+              fontSize: 11.sp,
+              color: Colors.grey.shade600,
+            ),
+          ),
+          SizedBox(height: 14.h),
+          // Code digits
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: code.split('').map((digit) {
+              return Container(
+                width: 42.w,
+                height: 48.h,
+                margin: EdgeInsets.symmetric(horizontal: 3.w),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.r),
+                  border: Border.all(color: primaryColor.withOpacity(0.3)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: primaryColor.withOpacity(0.08),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: Text(
+                    digit,
+                    style: GoogleFonts.poppins(
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.w800,
+                      color: primaryColor,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+          SizedBox(height: 14.h),
+          // Action buttons
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    Clipboard.setData(ClipboardData(text: code));
+                    Get.snackbar(
+                      "Copied!",
+                      "Verification code copied to clipboard",
+                      snackPosition: SnackPosition.BOTTOM,
+                      duration: const Duration(seconds: 2),
+                      backgroundColor: Colors.green.withOpacity(0.9),
+                      colorText: Colors.white,
+                    );
+                  },
+                  icon: Icon(Icons.copy, size: 16.w),
+                  label: Text(
+                    "Copy",
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: primaryColor,
+                    side: BorderSide(color: primaryColor),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                  ),
+                ),
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    final mechanicPhone = widget.request['mechanicPhone'];
+                    if (mechanicPhone != null) {
+                      final uri = Uri.parse(
+                        'sms:$mechanicPhone?body=Your DriveResQ verification code is: $code',
+                      );
+                      launchUrl(uri);
+                    } else {
+                      SharePlus.instance.share(
+                        ShareParams(
+                          text: 'Your DriveResQ verification code is: $code',
+                        ),
+                      );
+                    }
+                  },
+                  icon: Icon(Icons.share, size: 16.w),
+                  label: Text(
+                    "Share",
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: primaryColor,
+                    side: BorderSide(color: primaryColor),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

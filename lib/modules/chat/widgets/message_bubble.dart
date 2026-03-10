@@ -7,7 +7,6 @@ class MessageBubble extends StatelessWidget {
   final MessageModel message;
   final bool isMe;
 
-
   MessageBubble({super.key, required this.message, required this.isMe});
 
   @override
@@ -122,9 +121,7 @@ class MessageBubble extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(16.r),
-              ),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
               child: GestureDetector(
                 onTap: () => _showFullImage(context),
                 child: Image.network(
@@ -157,10 +154,7 @@ class MessageBubble extends StatelessWidget {
             ),
             if (message.content.isNotEmpty)
               Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 10.w,
-                  vertical: 6.h,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
                 child: Text(
                   message.content,
                   style: GoogleFonts.poppins(

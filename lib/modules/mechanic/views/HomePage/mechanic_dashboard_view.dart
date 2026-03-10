@@ -8,7 +8,6 @@ import 'current_request_view.dart';
 class MechanicDashboardView extends StatelessWidget {
   const MechanicDashboardView({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<MechanicController>();

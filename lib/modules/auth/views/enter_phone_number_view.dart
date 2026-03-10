@@ -4,10 +4,58 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controllers/auth_controller.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/utils/helpers/form_validators.dart';
 
-class PhoneNumberView extends StatelessWidget {
+class PhoneNumberView extends StatefulWidget {
   const PhoneNumberView({super.key});
 
+  @override
+  State<PhoneNumberView> createState() => _PhoneNumberViewState();
+}
+
+class _PhoneNumberViewState extends State<PhoneNumberView> {
+  static const _primary = Color(0xFF6C63FF);
+  static const _green = Color(0xFF4CAF50);
+  static const _red = Color(0xFFF44336);
+
+  String? _phoneError;
+  bool _hasInteracted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final controller = Get.find<AuthController>();
+    controller.phoneController.addListener(_onPhoneChanged);
+  }
+
+  @override
+  void dispose() {
+    Get.find<AuthController>().phoneController.removeListener(_onPhoneChanged);
+    super.dispose();
+  }
+
+  void _onPhoneChanged() {
+    final text = Get.find<AuthController>().phoneController.text;
+    if (!_hasInteracted && text.length >= 3) {
+      _hasInteracted = true;
+    }
+    if (_hasInteracted) {
+      setState(() {
+        _phoneError = FormValidators.validatePhone(text);
+      });
+    }
+  }
+
+  bool get _isPhoneValid =>
+      _hasInteracted &&
+      _phoneError == null &&
+      Get.find<AuthController>().phoneController.text.isNotEmpty;
+
+  Color get _borderColor {
+    if (_hasInteracted && _phoneError != null) return _red;
+    if (_isPhoneValid) return _green;
+    return Colors.grey.shade300;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +69,7 @@ class PhoneNumberView extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Get.back(),
         ),
       ),
@@ -111,15 +159,16 @@ class PhoneNumberView extends StatelessWidget {
 
                       SizedBox(height: 24.h),
 
-                      // Phone input
-                      Container(
+                      // Phone input with inline validation
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
                         padding: EdgeInsets.symmetric(horizontal: 20.w),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16.r),
                           border: Border.all(
-                            color: Colors.grey.shade300,
-                            width: 1,
+                            color: _borderColor,
+                            width: _hasInteracted ? 1.5 : 1,
                           ),
                         ),
                         child: Row(
@@ -130,9 +179,7 @@ class PhoneNumberView extends StatelessWidget {
                                 vertical: 8.h,
                               ),
                               decoration: BoxDecoration(
-                                color: Color(
-                                  0xFF6C63FF,
-                                ).withValues(alpha: 0.1),
+                                color: _primary.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8.r),
                               ),
                               child: Text(
@@ -140,7 +187,7 @@ class PhoneNumberView extends StatelessWidget {
                                 style: GoogleFonts.poppins(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
-                                  color: Color(0xFF6C63FF),
+                                  color: _primary,
                                 ),
                               ),
                             ),
@@ -172,6 +219,11 @@ class PhoneNumberView extends StatelessWidget {
                                   contentPadding: EdgeInsets.zero,
                                   isCollapsed: true,
                                   filled: false,
+                                  suffixIcon: _buildSuffixIcon(),
+                                  suffixIconConstraints: BoxConstraints(
+                                    minWidth: 28.w,
+                                    minHeight: 28.h,
+                                  ),
                                 ),
                               ),
                             ),
@@ -179,20 +231,50 @@ class PhoneNumberView extends StatelessWidget {
                         ),
                       ),
 
-                      // Flexible space instead of Spacer
-                      Spacer(),
+                      // Inline error text
+                      AnimatedSize(
+                        duration: const Duration(milliseconds: 200),
+                        child: _hasInteracted && _phoneError != null
+                            ? Padding(
+                                padding: EdgeInsets.only(top: 8.h, left: 4.w),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.error_outline,
+                                      color: _red,
+                                      size: 14.w,
+                                    ),
+                                    SizedBox(width: 4.w),
+                                    Expanded(
+                                      child: Text(
+                                        _phoneError!,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 12.sp,
+                                          color: _red,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                      ),
 
-                      // Send OTP button
+                      const Spacer(),
+
+                      // Send OTP button — disabled until valid
                       Obx(
                         () => SizedBox(
                           width: double.infinity,
                           height: 56.h,
                           child: ElevatedButton(
-                            onPressed: controller.isLoading.value
+                            onPressed:
+                                controller.isLoading.value || !_isPhoneValid
                                 ? null
                                 : controller.sendOTP,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF6C63FF),
+                              backgroundColor: _primary,
                               foregroundColor: Colors.white,
                               disabledBackgroundColor: Colors.grey.shade300,
                               elevation: 0,
@@ -204,7 +286,7 @@ class PhoneNumberView extends StatelessWidget {
                                 ? SizedBox(
                                     height: 20.h,
                                     width: 20.w,
-                                    child: CircularProgressIndicator(
+                                    child: const CircularProgressIndicator(
                                       color: Colors.white,
                                       strokeWidth: 2,
                                     ),
@@ -230,5 +312,22 @@ class PhoneNumberView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget? _buildSuffixIcon() {
+    if (!_hasInteracted) return null;
+    if (_isPhoneValid) {
+      return Padding(
+        padding: EdgeInsets.only(right: 4.w),
+        child: Icon(Icons.check_circle, color: _green, size: 22.w),
+      );
+    }
+    if (_phoneError != null) {
+      return Padding(
+        padding: EdgeInsets.only(right: 4.w),
+        child: Icon(Icons.cancel, color: _red, size: 22.w),
+      );
+    }
+    return null;
   }
 }

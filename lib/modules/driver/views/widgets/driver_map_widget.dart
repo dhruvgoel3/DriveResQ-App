@@ -5,16 +5,13 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 class DriverMapWidget extends StatelessWidget {
   const DriverMapWidget({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 220.h, // 🔥 REQUIRED
       width: double.infinity,
       margin: EdgeInsets.symmetric(vertical: 12.h),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16.r)),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16.r),
         child: GoogleMap(

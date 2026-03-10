@@ -42,44 +42,45 @@ class LiveTrackingController extends GetxController {
         .doc(requestId)
         .snapshots()
         .listen((doc) {
-      final data = doc.data();
-      if (data == null) return;
+          final data = doc.data();
+          if (data == null) return;
 
-      if (data['driverLat'] != null && data['driverLng'] != null) {
-        driverLatLng = LatLng(data['driverLat'], data['driverLng']);
-        driverMarker.value = Marker(
-          markerId: MarkerId("driver"),
-          position: driverLatLng!,
-          infoWindow: InfoWindow(title: "Driver"),
-        );
-      }
+          if (data['driverLat'] != null && data['driverLng'] != null) {
+            driverLatLng = LatLng(data['driverLat'], data['driverLng']);
+            driverMarker.value = Marker(
+              markerId: MarkerId("driver"),
+              position: driverLatLng!,
+              infoWindow: InfoWindow(title: "Driver"),
+            );
+          }
 
-      if (data['mechanicLat'] != null && data['mechanicLng'] != null) {
-        mechanicLatLng = LatLng(data['mechanicLat'], data['mechanicLng']);
-        mechanicMarker.value = Marker(
-          markerId: MarkerId("mechanic"),
-          position: mechanicLatLng!,
-          infoWindow: InfoWindow(title: "Mechanic"),
-        );
-      }
+          if (data['mechanicLat'] != null && data['mechanicLng'] != null) {
+            mechanicLatLng = LatLng(data['mechanicLat'], data['mechanicLng']);
+            mechanicMarker.value = Marker(
+              markerId: MarkerId("mechanic"),
+              position: mechanicLatLng!,
+              infoWindow: InfoWindow(title: "Mechanic"),
+            );
+          }
 
-      _updateCamera();
-    });
+          _updateCamera();
+        });
   }
 
   // 📡 SEND MECHANIC LOCATION ONLY
   void _startSendingMyLocation() {
-    locationSub = Geolocator.getPositionStream(
-      locationSettings: LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10,
-      ),
-    ).listen((pos) {
-      _firestore.collection('requests').doc(requestId).update({
-        'mechanicLat': pos.latitude,
-        'mechanicLng': pos.longitude,
-      });
-    });
+    locationSub =
+        Geolocator.getPositionStream(
+          locationSettings: LocationSettings(
+            accuracy: LocationAccuracy.high,
+            distanceFilter: 10,
+          ),
+        ).listen((pos) {
+          _firestore.collection('requests').doc(requestId).update({
+            'mechanicLat': pos.latitude,
+            'mechanicLng': pos.longitude,
+          });
+        });
   }
 
   // 🎥 CAMERA FIT
@@ -109,9 +110,7 @@ class LiveTrackingController extends GetxController {
       ),
     );
 
-    mapController!.animateCamera(
-      CameraUpdate.newLatLngBounds(bounds, 80),
-    );
+    mapController!.animateCamera(CameraUpdate.newLatLngBounds(bounds, 80));
   }
 
   @override

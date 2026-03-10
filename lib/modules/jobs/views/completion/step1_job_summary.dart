@@ -8,7 +8,6 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 class JobSummaryView extends StatelessWidget {
   const JobSummaryView({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final c = Get.find<JobCompletionController>();
@@ -176,10 +175,7 @@ class JobSummaryView extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 10.w,
-                  vertical: 4.h,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(8.r),
@@ -277,11 +273,7 @@ class JobSummaryView extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: Icon(
-                  Icons.remove_circle,
-                  color: Colors.red,
-                  size: 22.w,
-                ),
+                icon: Icon(Icons.remove_circle, color: Colors.red, size: 22.w),
                 onPressed: () => c.removePart(i),
               ),
             ],
@@ -335,11 +327,7 @@ class JobSummaryView extends StatelessWidget {
                         color: Colors.red,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
-                        Icons.close,
-                        color: Colors.white,
-                        size: 14.w,
-                      ),
+                      child: Icon(Icons.close, color: Colors.white, size: 14.w),
                     ),
                   ),
                 ),
@@ -508,7 +496,10 @@ class JobSummaryView extends StatelessWidget {
   InputDecoration _inputDecor(String hint) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400, fontSize: 12.sp),
+      hintStyle: GoogleFonts.poppins(
+        color: Colors.grey.shade400,
+        fontSize: 12.sp,
+      ),
       isDense: true,
       contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
       border: OutlineInputBorder(

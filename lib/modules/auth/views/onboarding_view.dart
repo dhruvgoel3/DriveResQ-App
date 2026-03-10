@@ -8,7 +8,6 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 class OnboardingView extends StatefulWidget {
   const OnboardingView({super.key});
 
-
   @override
   State<OnboardingView> createState() => _OnboardingViewState();
 }
@@ -179,9 +178,7 @@ class _OnboardingViewState extends State<OnboardingView>
                 width: isActive ? 28 : 8,
                 height: 8.h,
                 decoration: BoxDecoration(
-                  color: isActive
-                      ? Color(0xFF6C63FF)
-                      : Colors.grey.shade300,
+                  color: isActive ? Color(0xFF6C63FF) : Colors.grey.shade300,
                   borderRadius: BorderRadius.circular(4.r),
                 ),
               );
@@ -206,11 +203,7 @@ class _OnboardingViewState extends State<OnboardingView>
                   ),
                 ],
               ),
-              child: Icon(
-                Icons.arrow_forward,
-                color: Colors.white,
-                size: 22.w,
-              ),
+              child: Icon(Icons.arrow_forward, color: Colors.white, size: 22.w),
             ),
           ),
         ],
@@ -246,7 +239,10 @@ class _OnboardingViewState extends State<OnboardingView>
               SizedBox(height: 40.h),
               Text(
                 'Welcome to',
-                style: GoogleFonts.poppins(fontSize: 22.sp, color: Colors.white70),
+                style: GoogleFonts.poppins(
+                  fontSize: 22.sp,
+                  color: Colors.white70,
+                ),
               ),
               SizedBox(height: 4.h),
               ShaderMask(

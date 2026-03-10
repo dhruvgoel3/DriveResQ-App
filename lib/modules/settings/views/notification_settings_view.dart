@@ -8,7 +8,6 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 class NotificationSettingsView extends StatefulWidget {
   const NotificationSettingsView({super.key});
 
-
   @override
   State<NotificationSettingsView> createState() =>
       _NotificationSettingsViewState();
@@ -200,7 +199,10 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView> {
       ),
       subtitle: Text(
         subtitle,
-        style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey.shade500),
+        style: GoogleFonts.poppins(
+          fontSize: 12.sp,
+          color: Colors.grey.shade500,
+        ),
       ),
       trailing: Switch(
         value: enabled ? (settings[key] ?? true) : false,

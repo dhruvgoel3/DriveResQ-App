@@ -8,7 +8,6 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 class Step1PersonalDetails extends StatelessWidget {
   const Step1PersonalDetails({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final c = Get.find<MechanicOnboardingController>();
@@ -54,11 +53,7 @@ class Step1PersonalDetails extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: Icon(
-          Icons.arrow_back_ios_new,
-          color: Colors.black87,
-          size: 20.w,
-        ),
+        icon: Icon(Icons.arrow_back_ios_new, color: Colors.black87, size: 20.w),
         onPressed: () => Get.back(),
       ),
       title: Text(
@@ -106,9 +101,7 @@ class Step1PersonalDetails extends StatelessWidget {
                 value: c.currentStep.value / 6,
                 minHeight: 6.h,
                 backgroundColor: Colors.grey.shade200,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Color(0xFFFF9800),
-                ),
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF9800)),
               ),
             ),
           ],
@@ -132,7 +125,10 @@ class Step1PersonalDetails extends StatelessWidget {
         SizedBox(height: 6.h),
         Text(
           'Tell us about yourself to set up your profile',
-          style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.grey.shade500),
+          style: GoogleFonts.poppins(
+            fontSize: 14.sp,
+            color: Colors.grey.shade500,
+          ),
         ),
       ],
     );
@@ -163,11 +159,7 @@ class Step1PersonalDetails extends StatelessWidget {
                       : null,
                 ),
                 child: c.profilePhoto.value == null
-                    ? Icon(
-                        Icons.person,
-                        size: 50.w,
-                        color: Color(0xFFFF9800),
-                      )
+                    ? Icon(Icons.person, size: 50.w, color: Color(0xFFFF9800))
                     : null,
               ),
               Positioned(
@@ -216,11 +208,7 @@ class Step1PersonalDetails extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(
-                Icons.calendar_today,
-                color: Color(0xFFFF9800),
-                size: 22.w,
-              ),
+              Icon(Icons.calendar_today, color: Color(0xFFFF9800), size: 22.w),
               SizedBox(width: 14.w),
               Expanded(
                 child: Text(

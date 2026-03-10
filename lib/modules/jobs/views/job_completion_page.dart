@@ -11,7 +11,6 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 class JobCompletionPage extends StatelessWidget {
   const JobCompletionPage({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final c = Get.find<JobCompletionController>();

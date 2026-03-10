@@ -10,7 +10,6 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 class Step3Documents extends StatelessWidget {
   const Step3Documents({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final c = Get.find<MechanicOnboardingController>();
@@ -76,11 +75,7 @@ class Step3Documents extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: Icon(
-          Icons.arrow_back_ios_new,
-          color: Colors.black87,
-          size: 20.w,
-        ),
+        icon: Icon(Icons.arrow_back_ios_new, color: Colors.black87, size: 20.w),
         onPressed: () {
           c.currentStep.value = 2;
           Get.back();
@@ -131,9 +126,7 @@ class Step3Documents extends StatelessWidget {
                 value: c.currentStep.value / 6,
                 minHeight: 6.h,
                 backgroundColor: Colors.grey.shade200,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Color(0xFFFF9800),
-                ),
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF9800)),
               ),
             ),
           ],
@@ -157,7 +150,10 @@ class Step3Documents extends StatelessWidget {
         SizedBox(height: 6.h),
         Text(
           'Upload your documents for verification',
-          style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.grey.shade500),
+          style: GoogleFonts.poppins(
+            fontSize: 14.sp,
+            color: Colors.grey.shade500,
+          ),
         ),
       ],
     );
@@ -192,9 +188,7 @@ class Step3Documents extends StatelessWidget {
                 color: hasFile ? null : Colors.grey.shade50,
                 borderRadius: BorderRadius.circular(14.r),
                 border: Border.all(
-                  color: hasFile
-                      ? Color(0xFF4CAF50)
-                      : Colors.grey.shade200,
+                  color: hasFile ? Color(0xFF4CAF50) : Colors.grey.shade200,
                   width: 1.5,
                 ),
                 image: hasFile

@@ -7,7 +7,6 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 class RatingView extends StatelessWidget {
   const RatingView({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final c = Get.find<JobCompletionController>();
@@ -68,9 +67,7 @@ class RatingView extends StatelessWidget {
                     child: Icon(
                       filled ? Icons.star_rounded : Icons.star_border_rounded,
                       size: 48.w,
-                      color: filled
-                          ? Color(0xFFFFB300)
-                          : Colors.grey.shade300,
+                      color: filled ? Color(0xFFFFB300) : Colors.grey.shade300,
                     ),
                   ),
                 );

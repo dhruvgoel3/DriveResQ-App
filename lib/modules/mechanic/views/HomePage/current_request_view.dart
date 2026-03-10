@@ -4,12 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import '../widgets/accept_request_indicator_card.dart';
 import '../widgets/mechanic_active_job_card.dart';
 import '../widgets/mechanic_empty_state.dart';
+import '../widgets/request_card_shimmer.dart';
 import '../../controller/mechanic_controller.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class CurrentRequestView extends StatefulWidget {
   const CurrentRequestView({super.key});
-
 
   @override
   State<CurrentRequestView> createState() => _CurrentRequestViewState();
@@ -54,8 +54,12 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
         elevation: 0,
         title: Row(
           children: [
-            Image.asset("assets/—Pngtree—vector car repair tools illustration_5458319.png",height: 30.h,width: 30.w,),
-            SizedBox(width: 10.w,),
+            Image.asset(
+              "assets/—Pngtree—vector car repair tools illustration_5458319.png",
+              height: 30.h,
+              width: 30.w,
+            ),
+            SizedBox(width: 10.w),
             Text(
               "DriveResQ",
               style: GoogleFonts.poppins(
@@ -101,9 +105,54 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
     );
   }
 
-  // 📍 Location Status Bar
+  // Location Status Bar
   Widget _locationStatusBar(MechanicController controller) {
     return Obx(() {
+      // Error state — show error with retry
+      if (controller.locationError.value != null) {
+        return Container(
+          color: Colors.red.shade50,
+          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
+          child: Row(
+            children: [
+              Icon(Icons.location_off, color: Colors.red, size: 16.w),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Text(
+                  controller.locationError.value!,
+                  style: GoogleFonts.poppins(
+                    fontSize: 13.sp,
+                    color: Colors.red.shade800,
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () => controller.refreshLocation(),
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
+                    vertical: 4.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade100,
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Text(
+                    "Retry",
+                    style: GoogleFonts.poppins(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.red.shade800,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+
+      // Loading state
       if (!controller.isLocationLoaded.value) {
         return Container(
           color: Colors.orange.shade50,
@@ -125,6 +174,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
         );
       }
 
+      // Success state
       return Container(
         color: Colors.green.shade50,
         padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
@@ -195,28 +245,22 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
     );
   }
 
-  // 📋 ALL REQUESTS TAB
+  // ALL REQUESTS TAB
   Widget _buildAllRequestsTab(MechanicController controller) {
     return Obx(() {
-      if (!controller.isLocationLoaded.value) {
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16.h),
-              Text("Loading location..."),
-            ],
-          ),
+      // Show shimmer while location is loading (and no error)
+      if (!controller.isLocationLoaded.value &&
+          controller.locationError.value == null) {
+        return Padding(
+          padding: EdgeInsets.all(16.w),
+          child: const RequestCardShimmer(count: 3),
         );
       }
 
-      // Filter only OPEN requests
       final openRequestsList = controller.openRequests
           .where((req) => req['status'] == 'open')
           .toList();
 
-      // Check if there's an accepted job
       final hasAcceptedJob = controller.hasActiveJob.value;
 
       if (openRequestsList.isEmpty && !hasAcceptedJob) {
@@ -236,7 +280,9 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
               ),
               SizedBox(height: 8.h),
               Text(
-                "Requests within 20 km will appear here",
+                controller.locationError.value != null
+                    ? "Enable location to discover requests"
+                    : "Requests within 20 km will appear here",
                 style: GoogleFonts.poppins(
                   fontSize: 14.sp,
                   color: Colors.grey.shade500,
@@ -247,58 +293,61 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
         );
       }
 
-      return ListView(
-        padding: EdgeInsets.all(16.w),
-        children: [
-          // Show indicator card ONLY HERE if there's an accepted job
-          if (hasAcceptedJob) AcceptedRequestIndicatorCard(),
+      return RefreshIndicator(
+        onRefresh: () => controller.refreshLocation(),
+        color: const Color(0xFF6C63FF),
+        child: ListView(
+          padding: EdgeInsets.all(16.w),
+          children: [
+            if (hasAcceptedJob) AcceptedRequestIndicatorCard(),
+            if (hasAcceptedJob) SizedBox(height: 12.h),
 
-          if (hasAcceptedJob) SizedBox(height: 12.h),
-
-          // Show message if no open requests but has accepted job
-          if (openRequestsList.isEmpty && hasAcceptedJob)
-            Center(
-              child: Padding(
-                padding: EdgeInsets.all(32.w),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.inbox_outlined,
-                      size: 70.w,
-                      color: Colors.grey.shade300,
-                    ),
-                    SizedBox(height: 16.h),
-                    Text(
-                      "No new requests",
-                      style: GoogleFonts.poppins(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.grey,
+            if (openRequestsList.isEmpty && hasAcceptedJob)
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.all(32.w),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.inbox_outlined,
+                        size: 70.w,
+                        color: Colors.grey.shade300,
                       ),
-                    ),
-                    SizedBox(height: 8.h),
-                    Text(
-                      "You're currently working on an active request",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.poppins(
-                        fontSize: 13.sp,
-                        color: Colors.grey.shade500,
+                      SizedBox(height: 16.h),
+                      Text(
+                        "No new requests",
+                        style: GoogleFonts.poppins(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey,
+                        ),
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 8.h),
+                      Text(
+                        "You're currently working on an active request",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.poppins(
+                          fontSize: 13.sp,
+                          color: Colors.grey.shade500,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
 
-          // List of open requests
-          ...openRequestsList.map(
-            (request) => MechanicActiveJobCard(
-              job: request,
-              isActive: false,
-              onAccept: () => _showAcceptDialog(controller, request['id']),
+            // List with stagger animation index
+            ...openRequestsList.asMap().entries.map(
+              (entry) => MechanicActiveJobCard(
+                job: entry.value,
+                isActive: false,
+                animationIndex: entry.key,
+                onAccept: () =>
+                    _showAcceptDialog(controller, entry.value['id']),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       );
     });
   }

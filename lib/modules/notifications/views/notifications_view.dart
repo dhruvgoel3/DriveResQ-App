@@ -9,7 +9,6 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 class NotificationsView extends StatelessWidget {
   const NotificationsView({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser?.uid;

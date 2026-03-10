@@ -8,7 +8,6 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 class VerificationPendingView extends StatelessWidget {
   const VerificationPendingView({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,7 +121,11 @@ class VerificationPendingView extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(Icons.info_outline, color: Colors.blue.shade700, size: 22.w),
+                Icon(
+                  Icons.info_outline,
+                  color: Colors.blue.shade700,
+                  size: 22.w,
+                ),
                 SizedBox(width: 12.w),
                 Expanded(
                   child: Text(
@@ -172,13 +175,9 @@ class VerificationPendingView extends StatelessWidget {
                 height: 28.h,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: completed
-                      ? Color(0xFF4CAF50)
-                      : Colors.grey.shade200,
+                  color: completed ? Color(0xFF4CAF50) : Colors.grey.shade200,
                   border: Border.all(
-                    color: completed
-                        ? Color(0xFF4CAF50)
-                        : Colors.grey.shade300,
+                    color: completed ? Color(0xFF4CAF50) : Colors.grey.shade300,
                     width: 2,
                   ),
                 ),
@@ -189,9 +188,7 @@ class VerificationPendingView extends StatelessWidget {
               Container(
                 width: 2,
                 height: 24.h,
-                color: completed
-                    ? Color(0xFF4CAF50)
-                    : Colors.grey.shade200,
+                color: completed ? Color(0xFF4CAF50) : Colors.grey.shade200,
               ),
             ],
           ),

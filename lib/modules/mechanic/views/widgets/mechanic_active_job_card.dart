@@ -1,96 +1,189 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:get/get.dart';
 import '../../../chat/controllers/chat_controller.dart';
 import '../../../chat/views/chat_screen.dart';
+import 'complete_job_verification_dialog.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
-class MechanicActiveJobCard extends StatelessWidget {
+class MechanicActiveJobCard extends StatefulWidget {
   final Map<String, dynamic> job;
   final bool isActive;
   final VoidCallback? onAccept;
   final VoidCallback? onCancel;
+  final int animationIndex;
 
-  MechanicActiveJobCard({
+  const MechanicActiveJobCard({
     super.key,
     required this.job,
     this.isActive = false,
     this.onAccept,
     this.onCancel,
+    this.animationIndex = 0,
   });
 
-  static const primary = Color(0xFF6C63FF);
+  @override
+  State<MechanicActiveJobCard> createState() => _MechanicActiveJobCardState();
+}
+
+class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
+    with SingleTickerProviderStateMixin {
+  static const _primary = Color(0xFF6C63FF);
+  static const _orange = Color(0xFFFF9800);
+  static const _green = Color(0xFF4CAF50);
+  static const _red = Color(0xFFF44336);
+
+  late AnimationController _animController;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.15),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeOut));
+    _fadeAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeOut));
+
+    Future.delayed(Duration(milliseconds: widget.animationIndex * 100), () {
+      if (mounted) _animController.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
+  }
+
+  bool get _isUrgent {
+    final createdAt = widget.job['createdAt'];
+    if (createdAt == null) return false;
+    try {
+      final ts = createdAt.toDate() as DateTime;
+      return DateTime.now().difference(ts).inMinutes > 30;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  bool get _isVeryClose {
+    final d = widget.job['distance'];
+    if (d == null) return false;
+    try {
+      return double.parse(d.toString()) < 5;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  String get _timeAgo {
+    final createdAt = widget.job['createdAt'];
+    if (createdAt == null) return '';
+    try {
+      final ts = createdAt.toDate() as DateTime;
+      final diff = DateTime.now().difference(ts);
+      if (diff.inMinutes < 1) return 'Just now';
+      if (diff.inMinutes < 60) return '${diff.inMinutes} mins ago';
+      if (diff.inHours < 24) return '${diff.inHours}h ago';
+      return '${diff.inDays}d ago';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  IconData _problemIcon(String? problem) {
+    final p = (problem ?? '').toLowerCase();
+    if (p.contains('tire') || p.contains('tyre') || p.contains('flat')) {
+      return Icons.car_repair;
+    }
+    if (p.contains('engine') || p.contains('motor')) return Icons.build;
+    if (p.contains('battery') || p.contains('charge')) {
+      return Icons.battery_charging_full;
+    }
+    if (p.contains('fuel') || p.contains('petrol') || p.contains('diesel')) {
+      return Icons.local_gas_station;
+    }
+    if (p.contains('key') || p.contains('lock')) return Icons.vpn_key;
+    return Icons.warning_rounded;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 16.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 20,
-            offset: Offset(0, 4),
+    return SlideTransition(
+      position: _slideAnimation,
+      child: FadeTransition(
+        opacity: _fadeAnimation,
+        child: Container(
+          margin: EdgeInsets.only(bottom: 16.h),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20.r),
+            border: _isUrgent && !widget.isActive
+                ? Border.all(color: _red.withOpacity(0.5), width: 2)
+                : null,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.07),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header with status
-          _buildHeader(),
-
-          // Main Content
-          Padding(
-            padding: EdgeInsets.all(16.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Distance Badge (Most Important)
-                if (job['distance'] != null) _buildDistanceBadge(),
-
-                if (job['distance'] != null) SizedBox(height: 16.h),
-
-                // Location Info (Single, Clean Display)
-                _buildLocationCard(),
-
-                SizedBox(height: 12.h),
-
-                // Additional Details
-                _buildDetailsSection(),
-
-                SizedBox(height: 16.h),
-
-                // Problem Card (Highlighted)
-                _buildProblemCard(),
-
-                SizedBox(height: 16.h),
-
-                // Action Buttons
-                isActive
-                    ? _buildActiveJobButtons()
-                    : _buildOpenRequestButtons(),
-              ],
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(),
+              Padding(
+                padding: EdgeInsets.all(16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildProblemSection(),
+                    SizedBox(height: 14.h),
+                    _buildDriverInfo(),
+                    if (widget.job['description'] != null &&
+                        widget.job['description'].toString().isNotEmpty) ...[
+                      SizedBox(height: 12.h),
+                      _buildDescription(),
+                    ],
+                    if (_timeAgo.isNotEmpty) ...[
+                      SizedBox(height: 12.h),
+                      _buildTimestamp(),
+                    ],
+                    SizedBox(height: 16.h),
+                    widget.isActive
+                        ? _buildActiveJobButtons()
+                        : _buildOpenRequestButtons(),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
+  // ─── HEADER ───────────────────────────────────────────────
   Widget _buildHeader() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: isActive
-              ? [Colors.green.shade400, Colors.green.shade600]
-              : [Colors.orange.shade400, Colors.orange.shade600],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          colors: widget.isActive
+              ? [_green, _green.withGreen(180)]
+              : [_orange, _orange.withRed(230)],
         ),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20.r),
@@ -98,150 +191,72 @@ class MechanicActiveJobCard extends StatelessWidget {
         ),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Icon(
-                isActive ? Icons.build_circle : Icons.new_releases,
+          // Location
+          Icon(Icons.location_on, color: Colors.white, size: 18.w),
+          SizedBox(width: 6.w),
+          Expanded(
+            child: Text(
+              widget.job['locationName'] ?? 'Location',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.poppins(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
                 color: Colors.white,
-                size: 22.w,
               ),
-              SizedBox(width: 8.w),
-              Text(
-                isActive ? "ACTIVE REQUEST" : "NEW REQUEST",
-                style: GoogleFonts.poppins(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 0.5,
-                ),
-              ),
-            ],
+            ),
           ),
+          SizedBox(width: 8.w),
+          // Status badge
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.25),
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: Text(
-              isActive ? "IN PROGRESS" : "AWAITING",
-              style: GoogleFonts.poppins(
-                fontSize: 10.sp,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                letterSpacing: 0.3,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (_isUrgent && !widget.isActive)
+                  _PulsingDot(color: Colors.white, size: 8.w),
+                if (_isUrgent && !widget.isActive) SizedBox(width: 4.w),
+                Text(
+                  widget.isActive
+                      ? "IN PROGRESS"
+                      : _isUrgent
+                      ? "URGENT"
+                      : "OPEN",
+                  style: GoogleFonts.poppins(
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDistanceBadge() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.blue.shade500, Colors.blue.shade700],
-        ),
-        borderRadius: BorderRadius.circular(14.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blue.withOpacity(0.3),
-            blurRadius: 8,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.near_me, color: Colors.white, size: 20.w),
-          SizedBox(width: 8.w),
-          Text(
-            "${job['distance']} km away",
-            style: GoogleFonts.poppins(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLocationCard() {
-    return Container(
-      padding: EdgeInsets.all(14.w),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: Colors.grey.shade200, width: 1.5),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(8.w),
-                decoration: BoxDecoration(
-                  color: primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-                child: Icon(Icons.location_on, color: primary, size: 20.w),
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Driver Location",
-                      style: GoogleFonts.poppins(
-                        fontSize: 11.sp,
-                        color: Colors.grey.shade600,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      job['locationName'] ?? 'Location not available',
-                      style: GoogleFonts.poppins(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          if (job['landmark'] != null &&
-              job['landmark'].toString().isNotEmpty) ...[
-            SizedBox(height: 10.h),
+          // Distance
+          if (widget.job['distance'] != null) ...[
+            SizedBox(width: 8.w),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8.r),
+                color: Colors.white.withOpacity(0.25),
+                borderRadius: BorderRadius.circular(10.r),
               ),
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.place, size: 16.w, color: Colors.grey.shade600),
-                  SizedBox(width: 6.w),
-                  Expanded(
-                    child: Text(
-                      job['landmark'],
-                      style: GoogleFonts.poppins(
-                        fontSize: 12.sp,
-                        color: Colors.grey.shade700,
-                      ),
+                  Icon(Icons.navigation, color: Colors.white, size: 12.w),
+                  SizedBox(width: 4.w),
+                  Text(
+                    "${widget.job['distance']} km",
+                    style: GoogleFonts.poppins(
+                      fontSize: 11.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
                   ),
                 ],
@@ -253,48 +268,147 @@ class MechanicActiveJobCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailsSection() {
-    return Column(
-      children: [
-        _buildInfoRow(
-          Icons.directions_car_rounded,
-          "Vehicle Type",
-          job['vehicleType'] ?? 'Not specified',
-        ),
-        if (job['description'] != null &&
-            job['description'].toString().isNotEmpty) ...[
-          SizedBox(height: 10.h),
-          _buildDescriptionCard(),
+  // ─── PROBLEM SECTION ──────────────────────────────────────
+  Widget _buildProblemSection() {
+    final problem = widget.job['problem'] ?? 'Not specified';
+    return Container(
+      padding: EdgeInsets.all(14.w),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(10.w),
+            decoration: BoxDecoration(
+              color: _orange.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Icon(_problemIcon(problem), color: _orange, size: 24.w),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        problem,
+                        style: GoogleFonts.poppins(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                    if (_isVeryClose && !widget.isActive)
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.w,
+                          vertical: 2.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: _green.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        child: Text(
+                          "VERY CLOSE",
+                          style: GoogleFonts.poppins(
+                            fontSize: 9.sp,
+                            fontWeight: FontWeight.bold,
+                            color: _green,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  widget.job['vehicleType'] ?? 'Vehicle not specified',
+                  style: GoogleFonts.poppins(
+                    fontSize: 13.sp,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
+      ),
+    );
+  }
+
+  // ─── DRIVER INFO ──────────────────────────────────────────
+  Widget _buildDriverInfo() {
+    return Row(
+      children: [
+        Icon(Icons.person, color: _orange, size: 20.w),
+        SizedBox(width: 8.w),
+        Expanded(
+          child: Text(
+            widget.job['driverName'] ?? 'Driver',
+            style: GoogleFonts.poppins(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+        if (widget.job['driverPhone'] != null)
+          GestureDetector(
+            onTap: _callDriver,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+              decoration: BoxDecoration(
+                color: _primary.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.phone, color: _primary, size: 16.w),
+                  SizedBox(width: 6.w),
+                  Text(
+                    "Call",
+                    style: GoogleFonts.poppins(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                      color: _primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
       ],
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
+  // ─── DESCRIPTION ──────────────────────────────────────────
+  Widget _buildDescription() {
     return Container(
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12.r),
+        color: Colors.blue.shade50,
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(color: Colors.blue.shade100),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 20.w, color: Colors.grey.shade700),
+          Icon(Icons.notes_rounded, color: Colors.blue.shade600, size: 18.w),
           SizedBox(width: 10.w),
-          Text(
-            "$label: ",
-            style: GoogleFonts.poppins(
-              fontSize: 13.sp,
-              color: Colors.grey.shade600,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
           Expanded(
             child: Text(
-              value,
+              widget.job['description'],
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: GoogleFonts.poppins(
                 fontSize: 13.sp,
-                fontWeight: FontWeight.w600,
                 color: Colors.black87,
               ),
             ),
@@ -304,128 +418,48 @@ class MechanicActiveJobCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDescriptionCard() {
-    return Container(
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        color: Colors.blue.shade50,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.blue.shade100),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.notes_rounded, color: Colors.blue.shade700, size: 20.w),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Additional Info",
-                  style: GoogleFonts.poppins(
-                    fontSize: 11.sp,
-                    color: Colors.blue.shade700,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  job['description'],
-                  style: GoogleFonts.poppins(
-                    fontSize: 13.sp,
-                    color: Colors.black87,
-                  ),
-                ),
-              ],
-            ),
+  // ─── TIMESTAMP ────────────────────────────────────────────
+  Widget _buildTimestamp() {
+    return Row(
+      children: [
+        Icon(Icons.access_time, color: Colors.grey.shade500, size: 16.w),
+        SizedBox(width: 6.w),
+        Text(
+          "Created $_timeAgo",
+          style: GoogleFonts.poppins(
+            fontSize: 12.sp,
+            color: Colors.grey.shade600,
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProblemCard() {
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.red.shade50, Colors.red.shade100],
         ),
-        borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: Colors.red.shade200, width: 1.5),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(8.w),
-            decoration: BoxDecoration(
-              color: Colors.red.shade200,
-              borderRadius: BorderRadius.circular(10.r),
-            ),
-            child: Icon(Icons.warning_rounded, color: Colors.red, size: 24.w),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "PROBLEM REPORTED",
-                  style: GoogleFonts.poppins(
-                    fontSize: 11.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red.shade700,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  job['problem'] ?? 'No problem specified',
-                  style: GoogleFonts.poppins(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      ],
     );
   }
 
-  // Buttons for ACTIVE job
+  // ─── BUTTONS: ACTIVE JOB ─────────────────────────────────
   Widget _buildActiveJobButtons() {
     return Column(
       children: [
         Row(
           children: [
             Expanded(
-              child: _actionButton(
-                icon: Icons.phone,
-                label: "Call",
-                color: primary,
-                onPressed: _callDriver,
+              child: _miniAction(Icons.phone, "Call", _primary, _callDriver),
+            ),
+            SizedBox(width: 8.w),
+            Expanded(
+              child: _miniAction(
+                Icons.chat_bubble,
+                "Chat",
+                _primary,
+                _openChat,
               ),
             ),
-            SizedBox(width: 10.w),
+            SizedBox(width: 8.w),
             Expanded(
-              child: _actionButton(
-                icon: Icons.chat_bubble,
-                label: "Chat",
-                color: Color(0xFF6C63FF),
-                onPressed: _openChat,
-              ),
-            ),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: _actionButton(
-                icon: Icons.navigation,
-                label: "Navigate",
-                color: Colors.blue,
-                onPressed: _navigateToDriver,
+              child: _miniAction(
+                Icons.navigation,
+                "Navigate",
+                Colors.blue,
+                _navigateToDriver,
               ),
             ),
           ],
@@ -434,40 +468,57 @@ class MechanicActiveJobCard extends StatelessWidget {
         Row(
           children: [
             Expanded(
+              flex: 2,
               child: OutlinedButton.icon(
-                onPressed: onCancel,
-                icon: Icon(Icons.cancel_outlined),
+                onPressed: widget.onCancel,
+                icon: Icon(Icons.close, size: 18.w),
                 label: Text(
                   "Cancel",
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
                 ),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.red,
-                  side: BorderSide(color: Colors.red, width: 1.5),
+                  foregroundColor: _red,
+                  side: BorderSide(color: _red, width: 1.5),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.r),
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 14.h),
+                  padding: EdgeInsets.symmetric(vertical: 13.h),
                 ),
               ),
             ),
             SizedBox(width: 10.w),
             Expanded(
-              child: ElevatedButton.icon(
-                onPressed: _completeJob,
-                icon: Icon(Icons.check_circle),
-                label: Text(
-                  "Complete",
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
+              flex: 3,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [_green, _green.withGreen(180)],
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 14.h),
-                  elevation: 2,
+                  borderRadius: BorderRadius.circular(12.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _green.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: ElevatedButton.icon(
+                  onPressed: _completeJob,
+                  icon: Icon(Icons.check_circle, size: 20.w),
+                  label: Text(
+                    "Complete",
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 13.h),
+                  ),
                 ),
               ),
             ),
@@ -477,45 +528,96 @@ class MechanicActiveJobCard extends StatelessWidget {
     );
   }
 
-  // Buttons for OPEN request
+  // ─── BUTTONS: OPEN REQUEST ────────────────────────────────
   Widget _buildOpenRequestButtons() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: onAccept,
-        icon: Icon(Icons.check_circle_outline, size: 22.w),
-        label: Text(
-          "Accept Request",
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
-            fontSize: 15.sp,
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: OutlinedButton.icon(
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+              // Reject = dismiss from view (no Firestore action needed)
+            },
+            icon: Icon(Icons.close, size: 18.w),
+            label: Text(
+              "Reject",
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w600,
+                fontSize: 14.sp,
+              ),
+            ),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: _red,
+              side: BorderSide(color: _red, width: 1.5),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 14.h),
+            ),
           ),
         ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: primary,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14.r),
+        SizedBox(width: 12.w),
+        Expanded(
+          flex: 3,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [_orange, const Color(0xFFF57C00)],
+              ),
+              borderRadius: BorderRadius.circular(12.r),
+              boxShadow: [
+                BoxShadow(
+                  color: _orange.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: ElevatedButton.icon(
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                widget.onAccept?.call();
+              },
+              icon: Icon(Icons.check, size: 20.w),
+              label: Text(
+                "Accept Request",
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14.sp,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 14.h),
+              ),
+            ),
           ),
-          padding: EdgeInsets.symmetric(vertical: 16.h),
-          elevation: 2,
         ),
-      ),
+      ],
     );
   }
 
-  Widget _actionButton({
-    required IconData icon,
-    required String label,
-    required Color color,
-    required VoidCallback onPressed,
-  }) {
+  Widget _miniAction(
+    IconData icon,
+    String label,
+    Color color,
+    VoidCallback onTap,
+  ) {
     return ElevatedButton.icon(
-      onPressed: onPressed,
-      icon: Icon(icon, size: 20.w),
+      onPressed: onTap,
+      icon: Icon(icon, size: 18.w),
       label: Text(
         label,
-        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+        style: GoogleFonts.poppins(
+          fontWeight: FontWeight.w600,
+          fontSize: 12.sp,
+        ),
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
@@ -523,15 +625,15 @@ class MechanicActiveJobCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.r),
         ),
-        padding: EdgeInsets.symmetric(vertical: 14.h),
-        elevation: 2,
+        padding: EdgeInsets.symmetric(vertical: 12.h),
+        elevation: 1,
       ),
     );
   }
 
-  // 📞 Call Driver
+  // ─── ACTIONS ──────────────────────────────────────────────
   void _callDriver() async {
-    final phone = job['driverPhone'];
+    final phone = widget.job['driverPhone'];
     if (phone != null) {
       final uri = Uri.parse('tel:$phone');
       if (await canLaunchUrl(uri)) {
@@ -544,16 +646,13 @@ class MechanicActiveJobCard extends StatelessWidget {
     }
   }
 
-  // 🗺 Navigate to Driver
   void _navigateToDriver() async {
-    final lat = job['driverLat'];
-    final lng = job['driverLng'];
-
+    final lat = widget.job['driverLat'];
+    final lng = widget.job['driverLng'];
     if (lat != null && lng != null) {
       final uri = Uri.parse(
         'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng',
       );
-
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       } else {
@@ -564,47 +663,79 @@ class MechanicActiveJobCard extends StatelessWidget {
     }
   }
 
-  // ✅ Navigate to Job Completion Flow
   void _completeJob() {
-    Get.defaultDialog(
-      title: "Complete Job",
-      middleText:
-          "Ready to complete? You'll fill in a summary, collect payment, and rate the customer.",
-      textConfirm: "Yes, Proceed",
-      textCancel: "Not Yet",
-      confirmTextColor: Colors.white,
-      buttonColor: Colors.green,
-      onConfirm: () {
-        Get.back();
-        Get.toNamed(
-          '/job-completion',
-          arguments: {'job': job, 'jobId': job['id']},
-        );
-      },
+    Get.bottomSheet(
+      const CompleteJobVerificationDialog(),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
     );
   }
 
-  // 💬 Open Chat with Driver
   void _openChat() {
-    final chatId = job['id'] ?? '';
+    final chatId = widget.job['id'] ?? '';
     if (chatId.isEmpty) {
       Get.snackbar('Error', 'Chat not available');
       return;
     }
-
     Get.delete<ChatController>(force: true);
     Get.put(
       ChatController(
         chatId: chatId,
-        otherUserName: job['driverName'] ?? 'Driver',
-        otherUserPhoto: job['driverPhoto'] ?? '',
+        otherUserName: widget.job['driverName'] ?? 'Driver',
+        otherUserPhoto: widget.job['driverPhoto'] ?? '',
         myRole: 'mechanic',
       ),
     );
     Get.to(
       () => ChatScreen(),
       transition: Transition.rightToLeft,
-      duration: Duration(milliseconds: 250),
+      duration: const Duration(milliseconds: 250),
+    );
+  }
+}
+
+/// Pulsing dot indicator for urgent requests
+class _PulsingDot extends StatefulWidget {
+  final Color color;
+  final double size;
+
+  const _PulsingDot({required this.color, required this.size});
+
+  @override
+  State<_PulsingDot> createState() => _PulsingDotState();
+}
+
+class _PulsingDotState extends State<_PulsingDot>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _ctrl,
+      builder: (_, __) => Container(
+        width: widget.size,
+        height: widget.size,
+        decoration: BoxDecoration(
+          color: widget.color.withOpacity(0.5 + _ctrl.value * 0.5),
+          shape: BoxShape.circle,
+        ),
+      ),
     );
   }
 }

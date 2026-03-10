@@ -7,7 +7,6 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 class PaymentView extends StatelessWidget {
   const PaymentView({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final c = Get.find<JobCompletionController>();

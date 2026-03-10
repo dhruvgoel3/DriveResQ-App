@@ -97,10 +97,7 @@ class DriverOnboardingController extends GetxController {
               onTap: () => Get.back(result: ImageSource.camera),
             ),
             ListTile(
-              leading: Icon(
-                Icons.photo_library,
-                color: Color(0xFF6C63FF),
-              ),
+              leading: Icon(Icons.photo_library, color: Color(0xFF6C63FF)),
               title: Text('Gallery'),
               onTap: () => Get.back(result: ImageSource.gallery),
             ),

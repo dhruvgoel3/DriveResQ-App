@@ -339,7 +339,6 @@ class ErrorStateWidget extends StatelessWidget {
   final Color color;
   final VoidCallback? onRetry;
 
-
   ErrorStateWidget({
     super.key,
     this.title = 'Something Went Wrong',

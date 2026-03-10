@@ -10,7 +10,6 @@ import '../../../shared/widgets/shimmer_loader.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class ChatListView extends StatelessWidget {
-
   static const _accent = Color(0xFF6C63FF);
 
   const ChatListView({super.key});
@@ -74,10 +73,7 @@ class ChatListView extends StatelessWidget {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return ShimmerLoader(
-              itemCount: 5,
-              cardType: ShimmerCardType.chat,
-            );
+            return ShimmerLoader(itemCount: 5, cardType: ShimmerCardType.chat);
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {

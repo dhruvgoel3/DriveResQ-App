@@ -177,10 +177,7 @@ class InvoiceGenerator {
                           color: PdfColor.fromHex('#FFF3E0'),
                           borderRadius: pw.BorderRadius.circular(4),
                         ),
-                        child: pw.Text(
-                          s,
-                          style: pw.TextStyle(fontSize: 9),
-                        ),
+                        child: pw.Text(s, style: pw.TextStyle(fontSize: 9)),
                       ),
                     )
                     .toList(),

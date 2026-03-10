@@ -7,7 +7,6 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 class RoleSelectionView extends StatelessWidget {
   const RoleSelectionView({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(AuthController());

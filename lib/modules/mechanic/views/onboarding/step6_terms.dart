@@ -7,7 +7,6 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 class Step6Terms extends StatelessWidget {
   const Step6Terms({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final c = Get.find<MechanicOnboardingController>();
@@ -47,11 +46,7 @@ class Step6Terms extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: Icon(
-          Icons.arrow_back_ios_new,
-          color: Colors.black87,
-          size: 20.w,
-        ),
+        icon: Icon(Icons.arrow_back_ios_new, color: Colors.black87, size: 20.w),
         onPressed: () {
           c.currentStep.value = 5;
           Get.back();
@@ -102,9 +97,7 @@ class Step6Terms extends StatelessWidget {
                 value: c.currentStep.value / 6,
                 minHeight: 6.h,
                 backgroundColor: Colors.grey.shade200,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Color(0xFFFF9800),
-                ),
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF9800)),
               ),
             ),
           ],
@@ -128,7 +121,10 @@ class Step6Terms extends StatelessWidget {
         SizedBox(height: 6.h),
         Text(
           'Please read and accept our policies',
-          style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.grey.shade500),
+          style: GoogleFonts.poppins(
+            fontSize: 14.sp,
+            color: Colors.grey.shade500,
+          ),
         ),
       ],
     );

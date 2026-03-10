@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class DriverActiveRequestView extends StatelessWidget {
   final Map<String, dynamic> request;
 
-
   DriverActiveRequestView({super.key, required this.request});
 
   @override

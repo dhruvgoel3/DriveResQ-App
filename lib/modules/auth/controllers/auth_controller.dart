@@ -18,7 +18,6 @@ class AuthController extends GetxController {
   final phoneController = TextEditingController();
   final otpController = TextEditingController();
 
-
   @override
   void onClose() {
     phoneController.dispose();
