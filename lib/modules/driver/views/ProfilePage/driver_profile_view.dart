@@ -287,23 +287,15 @@ class DriverProfileView extends StatelessWidget {
             ] else ...[
               _infoRow(Icons.person, 'Full Name', c.displayName),
               _sep(),
-              _infoRow(Icons.phone, 'Phone', c.phone),
-              if (c.email.isNotEmpty) ...[
-                _sep(),
-                _infoRow(Icons.email, 'Email', c.email),
-              ],
-              if (c.address.isNotEmpty) ...[
-                _sep(),
-                _infoRow(Icons.home, 'Address', c.address),
-              ],
-              if (c.gender.isNotEmpty) ...[
-                _sep(),
-                _infoRow(Icons.wc, 'Gender', c.gender),
-              ],
-              if (c.dob.isNotEmpty) ...[
-                _sep(),
-                _infoRow(Icons.cake, 'Date of Birth', c.dob),
-              ],
+              _infoRow(Icons.phone, 'Phone', c.phone.isNotEmpty ? c.phone : 'Not added'),
+              _sep(),
+              _infoRow(Icons.email, 'Email', c.email.isNotEmpty ? c.email : 'Not added'),
+              _sep(),
+              _infoRow(Icons.home, 'Address', c.address.isNotEmpty ? c.address : 'Not added'),
+              _sep(),
+              _infoRow(Icons.wc, 'Gender', c.gender.isNotEmpty ? c.gender : 'Not added'),
+              _sep(),
+              _infoRow(Icons.cake, 'Date of Birth', c.dob.isNotEmpty ? c.dob : 'Not added'),
             ],
           ],
         );
@@ -447,6 +439,9 @@ class DriverProfileView extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
+                    color: value == 'Not added'
+                        ? Colors.grey.shade400
+                        : Colors.black87,
                   ),
                 ),
               ],

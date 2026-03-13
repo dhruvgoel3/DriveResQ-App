@@ -142,21 +142,34 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
           // 📍 LOCATION
           _infoTile(
             icon: Icons.location_on_outlined,
-            title: widget.request['locationName'] ?? 'Location',
+            title: (widget.request['locationName'] ?? '').toString().isEmpty
+                ? 'Location not available'
+                : widget.request['locationName'],
             subtitle: "Pickup Location",
           ),
 
           _infoTile(
             icon: Icons.directions_car,
-            title: widget.request['vehicleType'] ?? 'Vehicle',
-            subtitle: "Vehicle Details",
+            title: (widget.request['vehicleType'] ?? '').toString().isEmpty
+                ? 'Not specified'
+                : widget.request['vehicleType'],
+            subtitle: "Vehicle Type",
           ),
 
           _infoTile(
             icon: Icons.report_problem_outlined,
-            title: widget.request['problem'] ?? 'Issue',
+            title: (widget.request['problem'] ?? '').toString().isEmpty
+                ? 'Not specified'
+                : widget.request['problem'],
             subtitle: "Reported Issue",
           ),
+
+          if ((widget.request['landmark'] ?? '').toString().isNotEmpty)
+            _infoTile(
+              icon: Icons.pin_drop_outlined,
+              title: widget.request['landmark'],
+              subtitle: "Nearby Landmark",
+            ),
 
           // Verification code display (for accepted requests)
           if (status == 'accepted' &&
@@ -452,7 +465,10 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
               children: [
                 Text(
                   title,
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
                 ),
                 SizedBox(height: 2),
                 Text(

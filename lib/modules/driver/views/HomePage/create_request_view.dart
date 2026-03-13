@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../utils/widgets/TextFields/app_input_decoration.dart';
-import '../../../../utils/widgets/TextFields/app_text_fields.dart';
 import '../../controllers/create_request_controller.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class CreateRequestView extends StatelessWidget {
   CreateRequestView({super.key});
+
+  static const _accent = Color(0xFF6C63FF);
 
   final controller = Get.put(CreateRequestController());
 
@@ -26,21 +26,43 @@ class CreateRequestView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFFF7F7FC),
       appBar: AppBar(
         backgroundColor: Colors.white,
+        elevation: 0,
+        surfaceTintColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Get.back(),
+        ),
         title: Text(
           "Create Help Request",
           style: GoogleFonts.poppins(
-            fontSize: 20.sp,
+            fontSize: 18.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
         ),
+        centerTitle: true,
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(color: _accent),
+                SizedBox(height: 16.h),
+                Text(
+                  "Submitting your request...",
+                  style: GoogleFonts.poppins(
+                    fontSize: 14.sp,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ],
+            ),
+          );
         }
 
         return SingleChildScrollView(
@@ -48,110 +70,283 @@ class CreateRequestView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 📍 Location
-              Text(
-                "Location",
-                style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+              // ━━━ LOCATION CARD ━━━
+              _sectionLabel("📍 Your Location"),
+              SizedBox(height: 8.h),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14.r),
+                  border: Border.all(color: Colors.grey.shade200),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.03),
+                      blurRadius: 8,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(10.w),
+                      decoration: BoxDecoration(
+                        color: _accent.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Icon(Icons.my_location, color: _accent, size: 22.w),
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Current Location",
+                            style: GoogleFonts.poppins(
+                              fontSize: 11.sp,
+                              color: Colors.grey.shade500,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(height: 2.h),
+                          Obx(() => Text(
+                                controller.locationName.value.isEmpty
+                                    ? "Fetching location..."
+                                    : controller.locationName.value,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: controller.locationName.value ==
+                                          "Enable location to continue"
+                                      ? Colors.red.shade400
+                                      : Colors.black87,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              )),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.chevron_right, color: Colors.grey.shade400),
+                  ],
+                ),
               ),
-              SizedBox(height: 4.h),
-              Text(controller.locationName.value),
+
+              SizedBox(height: 24.h),
+
+              // ━━━ LANDMARK ━━━
+              _sectionLabel("📌 Nearby Landmark"),
+              SizedBox(height: 8.h),
+              _buildTextField(
+                controller: controller.landmarkController,
+                hint: "e.g. Near SBI Bank, Main Road",
+                icon: Icons.location_on_outlined,
+              ),
 
               SizedBox(height: 20.h),
 
-              // 📌 Landmark
-              AppTextField(
-                controller: controller.landmarkController,
-                label: "Nearby Landmark",
-                icon: Icons.location_on,
-                isRequired: true,
-              ),
-
-              SizedBox(height: 16.h),
-
-              // 🚗 Vehicle Type
-              DropdownButtonFormField<String>(
-                value: controller.selectedVehicle.value.isEmpty
-                    ? null
-                    : controller.selectedVehicle.value,
-                items: vehicleTypes
-                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                    .toList(),
-                onChanged: (value) {
-                  controller.selectedVehicle.value = value!;
-                },
-                decoration: AppInputDecoration(
-                  label: "Vehicle Type *",
-                  icon: Icons.directions_car,
+              // ━━━ VEHICLE TYPE ━━━
+              _sectionLabel("🚗 Vehicle Type"),
+              SizedBox(height: 8.h),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14.r),
+                  border: Border.all(color: Colors.grey.shade200),
+                ),
+                child: DropdownButtonFormField<String>(
+                  value: controller.selectedVehicle.value.isEmpty
+                      ? null
+                      : controller.selectedVehicle.value,
+                  hint: Text(
+                    "Select your vehicle type",
+                    style: GoogleFonts.poppins(
+                      fontSize: 14.sp,
+                      color: Colors.grey.shade400,
+                    ),
+                  ),
+                  items: vehicleTypes
+                      .map((e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(
+                              e,
+                              style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black87),
+                            ),
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    controller.selectedVehicle.value = value!;
+                  },
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.directions_car, color: _accent, size: 22.w),
+                    border: InputBorder.none,
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                  ),
+                  dropdownColor: Colors.white,
+                  borderRadius: BorderRadius.circular(14.r),
                 ),
               ),
 
-              SizedBox(height: 16.h),
+              SizedBox(height: 20.h),
 
-              // ❗ Problem
-              AppTextField(
+              // ━━━ PROBLEM ━━━
+              _sectionLabel("❗ What's the problem?"),
+              SizedBox(height: 8.h),
+              _buildTextField(
                 controller: controller.problemController,
-                label: "Problem",
-                icon: Icons.report_problem,
-                isRequired: true,
+                hint: "e.g. Flat tyre, Engine won't start, Battery dead",
+                icon: Icons.report_problem_outlined,
               ),
 
-              SizedBox(height: 16.h),
+              SizedBox(height: 20.h),
 
-              // 📝 Description
-              AppTextField(
+              // ━━━ DESCRIPTION ━━━
+              _sectionLabel("📝 Additional Details (Optional)"),
+              SizedBox(height: 8.h),
+              _buildTextField(
                 controller: controller.descriptionController,
-                label: "Description (Optional)",
-                icon: Icons.notes,
+                hint: "Any extra info for the mechanic...",
+                icon: Icons.notes_outlined,
                 maxLines: 3,
               ),
 
-              SizedBox(height: 16.h),
+              SizedBox(height: 20.h),
 
-              // 📷 Image
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-
-                onPressed: controller.pickImage,
-                icon: Icon(Icons.camera_alt),
-                label: Text(
-                  "Add Image (Optional)",
-                  style: GoogleFonts.poppins(
-                    color: Color(0xFF6C63FF),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14.sp,
-                  ),
-                ),
-              ),
+              // ━━━ IMAGE ━━━
+              _sectionLabel("📷 Add Photo (Optional)"),
+              SizedBox(height: 8.h),
+              Obx(() => GestureDetector(
+                    onTap: controller.pickImage,
+                    child: Container(
+                      width: double.infinity,
+                      height: 80.h,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14.r),
+                        border: Border.all(
+                          color: controller.imageFile.value != null
+                              ? _accent.withOpacity(0.4)
+                              : Colors.grey.shade200,
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            controller.imageFile.value != null
+                                ? Icons.check_circle
+                                : Icons.camera_alt_outlined,
+                            color: controller.imageFile.value != null
+                                ? Colors.green
+                                : Colors.grey.shade400,
+                            size: 26.w,
+                          ),
+                          SizedBox(width: 10.w),
+                          Text(
+                            controller.imageFile.value != null
+                                ? "Photo selected ✓  (tap to change)"
+                                : "Tap to take a photo",
+                            style: GoogleFonts.poppins(
+                              fontSize: 14.sp,
+                              color: controller.imageFile.value != null
+                                  ? _accent
+                                  : Colors.grey.shade500,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )),
 
               SizedBox(height: 32.h),
 
-              // 🚀 Submit
-              ElevatedButton(
-                onPressed: controller.submitRequest,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 52),
-                  backgroundColor: Color(0xFF6C63FF),
-                  // Primary (modern blue-violet)
-                  foregroundColor: Colors.white,
-                  elevation: 4,
-                  shadowColor: Colors.black.withOpacity(0.2),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14.r),
+              // ━━━ SUBMIT ━━━
+              SizedBox(
+                width: double.infinity,
+                height: 54.h,
+                child: ElevatedButton(
+                  onPressed: controller.submitRequest,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _accent,
+                    foregroundColor: Colors.white,
+                    elevation: 2,
+                    shadowColor: _accent.withOpacity(0.3),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.r),
+                    ),
                   ),
-                ),
-                child: Text(
-                  "Submit Request",
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.4,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.send_rounded, size: 20.w),
+                      SizedBox(width: 8.w),
+                      Text(
+                        "Submit Request",
+                        style: GoogleFonts.poppins(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
+
+              SizedBox(height: 24.h),
             ],
           ),
         );
       }),
+    );
+  }
+
+  // ─── Section Label ───
+  Widget _sectionLabel(String text) {
+    return Text(
+      text,
+      style: GoogleFonts.poppins(
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w600,
+        color: Colors.black87,
+      ),
+    );
+  }
+
+  // ─── Styled TextField ───
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hint,
+    required IconData icon,
+    int maxLines = 1,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: TextField(
+        controller: controller,
+        maxLines: maxLines,
+        style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black87),
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: GoogleFonts.poppins(
+            fontSize: 13.sp,
+            color: Colors.grey.shade400,
+          ),
+          prefixIcon: Icon(icon, color: _accent, size: 22.w),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+        ),
+      ),
     );
   }
 }

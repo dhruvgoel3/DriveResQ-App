@@ -27,7 +27,7 @@ class DriverController extends GetxController {
     _firestore
         .collection('requests')
         .where('driverId', isEqualTo: uid)
-        .where('status', whereIn: ['open', 'accepted'])
+        .where('status', whereIn: ['open', 'accepted', 'verified'])
         .limit(1)
         .snapshots()
         .listen((snapshot) {

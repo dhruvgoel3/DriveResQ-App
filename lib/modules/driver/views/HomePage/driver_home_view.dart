@@ -23,119 +23,50 @@ class DriverHomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<DriverController>();
+    final uid = FirebaseAuth.instance.currentUser?.uid;
 
     return Scaffold(
       backgroundColor: Color(0xFFF7F7FC),
-      body: SafeArea(
-        child: Obx(() {
-          if (controller.hasActiveRequest.value) {
-            final request = controller.requestData.value!;
-
-            return CustomScrollView(
-              slivers: [
-                // Premium App Bar
-                SliverToBoxAdapter(child: _buildHeader(controller)),
-
-                SliverPadding(
-                  padding: EdgeInsets.all(16.w),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate([
-                      ActiveRequestCard(request: request),
-                      SizedBox(height: 12.h),
-                      SafetyTipsSection(),
-                    ]),
-                  ),
-                ),
-              ],
-            );
-          }
-
-          return Column(
-            children: [
-              _buildHeader(controller),
-              Expanded(
-                child: DriverEmptyState(
-                  onNewRequest: () => Get.to(() => CreateRequestView()),
-                ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        surfaceTintColor: Colors.white,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "DriveResQ",
+              style: GoogleFonts.poppins(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.bold,
+                color: _accent,
               ),
-            ],
-          );
-        }),
-      ),
-    );
-  }
-
-  Widget _buildHeader(DriverController controller) {
-    // Get the user's name from Firestore
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-
-    return Container(
-      padding: EdgeInsets.fromLTRB(20.w, 16.h, 12.w, 16.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // Logo + Greeting
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "DriveResQ",
-                  style: GoogleFonts.poppins(
-                    fontSize: 22.sp,
-                    fontWeight: FontWeight.bold,
-                    color: _accent,
-                  ),
-                ),
-                SizedBox(height: 2.h),
-                uid != null
-                    ? StreamBuilder<DocumentSnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(uid)
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          String name = 'Driver';
-                          if (snapshot.hasData && snapshot.data!.exists) {
-                            final data =
-                                snapshot.data!.data() as Map<String, dynamic>;
-                            name = data['fullName'] ??
-                                data['name'] ??
-                                'Driver';
-                          }
-                          return Text(
-                            "Hello, $name 👋",
-                            style: GoogleFonts.poppins(
-                              fontSize: 13.sp,
-                              color: Colors.grey.shade600,
-                            ),
-                          );
-                        },
-                      )
-                    : Text(
-                        "Hello, Driver 👋",
-                        style: GoogleFonts.poppins(
-                          fontSize: 13.sp,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-              ],
             ),
-          ),
-
-          // Notification Bell
+            if (uid != null)
+              StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(uid)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  String name = 'Driver';
+                  if (snapshot.hasData && snapshot.data!.exists) {
+                    final data = snapshot.data!.data() as Map<String, dynamic>;
+                    name = data['fullName'] ?? data['name'] ?? 'Driver';
+                  }
+                  return Text(
+                    "Hello, $name 👋",
+                    style: GoogleFonts.poppins(
+                      fontSize: 12.sp,
+                      color: Colors.grey.shade600,
+                    ),
+                  );
+                },
+              ),
+          ],
+        ),
+        actions: [
           const NotificationBellIcon(),
-
-          // Dev mode switcher
           if (DevConfig.devMode)
             PopupMenuButton<String>(
               icon: Icon(Icons.bug_report, size: 22.w),
@@ -150,14 +81,11 @@ class DriverHomeView extends StatelessWidget {
                 }
               },
               itemBuilder: (context) => [
-                PopupMenuItem(
-                    value: 'driver', child: Text('Switch to Driver')),
+                PopupMenuItem(value: 'driver', child: Text('Switch to Driver')),
                 PopupMenuItem(
                     value: 'mechanic', child: Text('Switch to Mechanic')),
               ],
             ),
-
-          // Cancel request button
           Obx(() {
             if (!controller.hasActiveRequest.value) return SizedBox();
             return IconButton(
@@ -165,8 +93,7 @@ class DriverHomeView extends StatelessWidget {
               onPressed: () {
                 Get.defaultDialog(
                   title: "Cancel Request",
-                  middleText:
-                      "Are you sure you want to cancel this request?",
+                  middleText: "Are you sure you want to cancel this request?",
                   textConfirm: "Yes",
                   textCancel: "No",
                   confirmTextColor: Colors.white,
@@ -180,6 +107,26 @@ class DriverHomeView extends StatelessWidget {
           }),
         ],
       ),
+      body: Obx(() {
+        if (controller.hasActiveRequest.value) {
+          final request = controller.requestData.value!;
+
+          return SingleChildScrollView(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              children: [
+                ActiveRequestCard(request: request),
+                SizedBox(height: 12.h),
+                SafetyTipsSection(),
+              ],
+            ),
+          );
+        }
+
+        return DriverEmptyState(
+          onNewRequest: () => Get.to(() => CreateRequestView()),
+        );
+      }),
     );
   }
 }

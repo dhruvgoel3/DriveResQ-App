@@ -155,7 +155,7 @@ class MechanicController extends GetxController {
     _activeJobSubscription = _firestore
         .collection('requests')
         .where('mechanicId', isEqualTo: uid)
-        .where('status', isEqualTo: 'accepted')
+        .where('status', whereIn: ['accepted', 'verified'])
         .limit(1)
         .snapshots()
         .listen(
@@ -544,41 +544,21 @@ class MechanicController extends GetxController {
         return 'Wrong code. ${remaining > 0 ? "$remaining attempts left." : "No attempts left."}';
       }
 
-      // Code matches — complete the job
+      // Code matches — mark as verified (NOT completed yet - completion page handles that)
       await _firestore.collection('requests').doc(jobId).update({
-        'status': 'completed',
-        'completedAt': FieldValue.serverTimestamp(),
+        'status': 'verified',
         'verifiedAt': FieldValue.serverTimestamp(),
       });
 
-      // Notify driver
-      if (activeJob.value!['driverId'] != null) {
-        final mechanicDoc = await _firestore
-            .collection('users')
-            .doc(_auth.currentUser!.uid)
-            .get();
-        final mechName =
-            mechanicDoc.data()?['fullName'] ??
-            mechanicDoc.data()?['name'] ??
-            'Mechanic';
-
-        await NotificationSender.notifyDriverJobCompleted(
-          requestId: jobId,
-          driverId: activeJob.value!['driverId'],
-          mechanicName: mechName,
-          totalAmount: 0.0,
-        );
-      }
-
       Get.snackbar(
-        'Success',
-        'Job completed successfully! Great work!',
+        'Verified!',
+        'Code verified! Complete the job details now.',
         backgroundColor: const Color(0xFF4CAF50).withOpacity(0.9),
         colorText: Colors.white,
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 2),
       );
 
-      debugPrint('Job completed with verification: $jobId');
+      debugPrint('Job verified: $jobId');
       return null; // success
     } catch (e) {
       debugPrint('Error verifying/completing job: $e');
