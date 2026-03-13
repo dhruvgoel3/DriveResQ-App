@@ -19,10 +19,11 @@ class DriverProfileController extends GetxController {
   var completedRequests = 0.obs;
   var totalSpent = 0.0.obs;
 
-  // Editable fields
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final addressController = TextEditingController();
+  final genderController = TextEditingController();
+  final dobController = TextEditingController();
 
   @override
   void onInit() {
@@ -36,6 +37,8 @@ class DriverProfileController extends GetxController {
     nameController.dispose();
     emailController.dispose();
     addressController.dispose();
+    genderController.dispose();
+    dobController.dispose();
     super.onClose();
   }
 
@@ -59,6 +62,8 @@ class DriverProfileController extends GetxController {
         nameController.text = data['fullName'] ?? data['name'] ?? '';
         emailController.text = data['email'] ?? '';
         addressController.text = data['address'] ?? '';
+        genderController.text = data['gender'] ?? '';
+        dobController.text = data['dob'] ?? '';
       }
     } catch (e) {
       debugPrint('❌ Error fetching profile: $e');
@@ -104,6 +109,8 @@ class DriverProfileController extends GetxController {
         nameController.text = data['fullName'] ?? data['name'] ?? '';
         emailController.text = data['email'] ?? '';
         addressController.text = data['address'] ?? '';
+        genderController.text = data['gender'] ?? '';
+        dobController.text = data['dob'] ?? '';
       }
     }
     isEditMode.value = !isEditMode.value;
@@ -129,6 +136,8 @@ class DriverProfileController extends GetxController {
         'fullName': nameController.text.trim(),
         'email': emailController.text.trim(),
         'address': addressController.text.trim(),
+        'gender': genderController.text.trim(),
+        'dob': dobController.text.trim(),
         'updatedAt': FieldValue.serverTimestamp(),
       });
 

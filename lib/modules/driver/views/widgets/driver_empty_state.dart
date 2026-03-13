@@ -10,17 +10,16 @@ class DriverEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EmptyStateWidget(
-      icon: Icons.directions_car,
+      icon: Icons.car_crash_rounded,
       iconColor: Color(0xFF6C63FF),
-      title: 'No Active Requests',
+      title: 'Need Roadside Help?',
       message:
-          'Need roadside assistance?\nCreate a request and get help from nearby mechanics!',
-      buttonText: 'Create Request',
-      onButtonPressed: onNewRequest,
+          'Tap the + button below to create a request.\nVerified mechanics near you will respond in minutes!',
       tips: [
-        'Average response time: ~5 minutes',
-        'Verified mechanics near you 24/7',
-        'Track your mechanic in real time',
+        '⚡ Average response time: ~5 minutes',
+        '🔒 All mechanics are verified & trusted',
+        '📍 Track your mechanic in real time',
+        '💬 Chat directly with your mechanic',
       ],
     );
   }

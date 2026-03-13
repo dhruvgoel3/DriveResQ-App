@@ -24,6 +24,7 @@ import '../../modules/auth/views/otp_verification_view.dart';
 import '../../modules/auth/views/role_selection_view.dart';
 import '../../modules/auth/views/splash_view.dart';
 import '../../modules/auth/views/onboarding_view.dart';
+import '../../modules/notifications/views/notifications_view.dart';
 import 'app_pages.dart';
 
 class AppPages {
@@ -187,6 +188,14 @@ class AppPages {
       binding: BindingsBuilder(() {
         Get.lazyPut<JobCompletionController>(() => JobCompletionController());
       }),
+    ),
+
+    // Notifications
+    GetPage(
+      name: Routes.NOTIFICATIONS,
+      page: () => const NotificationsView(),
+      transition: Transition.rightToLeft,
+      transitionDuration: _dur,
     ),
   ];
 }

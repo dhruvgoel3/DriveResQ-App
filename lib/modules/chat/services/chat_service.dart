@@ -77,12 +77,12 @@ class ChatService {
     final unreadField = senderRole == 'driver'
         ? 'mechanicUnreadCount'
         : 'driverUnreadCount';
-    await _firestore.collection('chats').doc(chatId).update({
+    await _firestore.collection('chats').doc(chatId).set({
       'lastMessage': content,
       'lastMessageTime': FieldValue.serverTimestamp(),
       'lastMessageBy': _uid,
       unreadField: FieldValue.increment(1),
-    });
+    }, SetOptions(merge: true));
 
     // 🔔 Notify recipient
     await _sendNotification(
@@ -108,11 +108,11 @@ class ChatService {
           'delivered': true,
         });
 
-    await _firestore.collection('chats').doc(chatId).update({
+    await _firestore.collection('chats').doc(chatId).set({
       'lastMessage': content,
       'lastMessageTime': FieldValue.serverTimestamp(),
       'lastMessageBy': 'system',
-    });
+    }, SetOptions(merge: true));
   }
 
   // ─── Send image message (web-compatible via XFile path) ───
@@ -157,12 +157,12 @@ class ChatService {
     final unreadField = senderRole == 'driver'
         ? 'mechanicUnreadCount'
         : 'driverUnreadCount';
-    await _firestore.collection('chats').doc(chatId).update({
+    await _firestore.collection('chats').doc(chatId).set({
       'lastMessage': '📷 Photo',
       'lastMessageTime': FieldValue.serverTimestamp(),
       'lastMessageBy': _uid,
       unreadField: FieldValue.increment(1),
-    });
+    }, SetOptions(merge: true));
 
     // 🔔 Notify recipient
     await _sendNotification(
@@ -228,13 +228,13 @@ class ChatService {
           'delivered': true,
         });
 
-    await _firestore.collection('chats').doc(chatId).update({
+    await _firestore.collection('chats').doc(chatId).set({
       'lastMessage':
           '💰 Sent an estimate: ₹${estimatedCost.toStringAsFixed(0)}',
       'lastMessageTime': FieldValue.serverTimestamp(),
       'lastMessageBy': _uid,
       'driverUnreadCount': FieldValue.increment(1),
-    });
+    }, SetOptions(merge: true));
 
     // 🔔 Notify recipient
     await _sendNotification(
@@ -270,9 +270,9 @@ class ChatService {
 
     if (response == 'accepted') {
       final cost = priceData['estimatedCost'] ?? 0;
-      await _firestore.collection('chats').doc(chatId).update({
+      await _firestore.collection('chats').doc(chatId).set({
         'priceAgreed': cost,
-      });
+      }, SetOptions(merge: true));
       await sendSystemMessage(
         chatId,
         '✅ Price agreed: ₹${(cost as num).toStringAsFixed(0)}',

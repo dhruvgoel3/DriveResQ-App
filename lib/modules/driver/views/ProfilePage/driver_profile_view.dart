@@ -247,6 +247,10 @@ class DriverProfileView extends StatelessWidget {
                 Icons.home,
                 maxLines: 2,
               ),
+              SizedBox(height: 12.h),
+              _editField('Gender', c.genderController, Icons.wc),
+              SizedBox(height: 12.h),
+              _editField('Date of Birth (YYYY-MM-DD)', c.dobController, Icons.cake),
               SizedBox(height: 16.h),
               SizedBox(
                 width: double.infinity,

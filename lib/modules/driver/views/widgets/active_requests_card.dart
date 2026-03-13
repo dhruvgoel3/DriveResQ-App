@@ -532,29 +532,31 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: code.split('').map((digit) {
-              return Container(
-                width: 42.w,
-                height: 48.h,
-                margin: EdgeInsets.symmetric(horizontal: 3.w),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10.r),
-                  border: Border.all(color: primaryColor.withOpacity(0.3)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: primaryColor.withOpacity(0.08),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: Text(
-                    digit,
-                    style: GoogleFonts.poppins(
-                      fontSize: 22.sp,
-                      fontWeight: FontWeight.w800,
-                      color: primaryColor,
+              return Flexible(
+                child: Container(
+                  width: 40.w,
+                  height: 48.h,
+                  margin: EdgeInsets.symmetric(horizontal: 3.w),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.r),
+                    border: Border.all(color: primaryColor.withOpacity(0.3)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: primaryColor.withOpacity(0.08),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      digit,
+                      style: GoogleFonts.poppins(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w800,
+                        color: primaryColor,
+                      ),
                     ),
                   ),
                 ),

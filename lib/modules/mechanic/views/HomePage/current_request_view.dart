@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../shared/widgets/notification_bell_icon.dart';
 import '../widgets/accept_request_indicator_card.dart';
 import '../widgets/mechanic_active_job_card.dart';
 import '../widgets/mechanic_empty_state.dart';
@@ -71,6 +72,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
           ],
         ),
         actions: [
+          const NotificationBellIcon(),
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: () => controller.refreshLocation(),

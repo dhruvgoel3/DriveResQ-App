@@ -1,1 +1,38 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"driveresq-app","appId":"1:704482320936:android:620c95ffbc48f34e980b1d","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"driveresq-app","configurations":{"android":"1:704482320936:android:620c95ffbc48f34e980b1d","ios":"1:704482320936:ios:73b39d2a6bccf758980b1d","macos":"1:704482320936:ios:73b39d2a6bccf758980b1d","web":"1:704482320936:web:b10e1a185459554d980b1d","windows":"1:704482320936:web:6b18f7e6fb3132ef980b1d"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "driveresq-app",
+          "appId": "1:704482320936:android:620c95ffbc48f34e980b1d",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "driveresq-app",
+          "configurations": {
+            "android": "1:704482320936:android:620c95ffbc48f34e980b1d",
+            "ios": "1:704482320936:ios:73b39d2a6bccf758980b1d",
+            "macos": "1:704482320936:ios:73b39d2a6bccf758980b1d",
+            "web": "1:704482320936:web:b10e1a185459554d980b1d",
+            "windows": "1:704482320936:web:6b18f7e6fb3132ef980b1d"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ]
+}

@@ -71,8 +71,8 @@ class _EmptyStateWidgetState extends State<EmptyStateWidget>
         position: _slide,
         child: FadeTransition(
           opacity: _fade,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 32.w),
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 16.h),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

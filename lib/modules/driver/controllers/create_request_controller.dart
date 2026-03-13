@@ -80,9 +80,25 @@ class CreateRequestController extends GetxController {
       imageUrl = await ref.getDownloadURL();
     }
 
+    // 1️⃣ FETCH DRIVER DETAILS FOR CHAT display
+    String driverName = 'Driver';
+    String driverPhoto = '';
+    try {
+      final doc = await _firestore.collection('users').doc(_auth.currentUser!.uid).get();
+      if (doc.exists) {
+        final data = doc.data()!;
+        driverName = data['fullName'] ?? data['name'] ?? 'Driver';
+        driverPhoto = data['profilePhotoUrl'] ?? data['photoUrl'] ?? '';
+      }
+    } catch (e) {
+      debugPrint('Error fetching driver details: $e');
+    }
+
     // 🧠 SAVE REQUEST (WITH COORDINATES)
     final requestRef = await _firestore.collection('requests').add({
       'driverId': _auth.currentUser!.uid,
+      'driverName': driverName,
+      'driverPhoto': driverPhoto,
       'driverPhone': _auth.currentUser!.phoneNumber,
       'status': 'open',
       'problem': problemController.text.trim(),

@@ -26,6 +26,7 @@ class CreateRequestView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
@@ -69,7 +70,7 @@ class CreateRequestView extends StatelessWidget {
 
               // 🚗 Vehicle Type
               DropdownButtonFormField<String>(
-                initialValue: controller.selectedVehicle.value.isEmpty
+                value: controller.selectedVehicle.value.isEmpty
                     ? null
                     : controller.selectedVehicle.value,
                 items: vehicleTypes

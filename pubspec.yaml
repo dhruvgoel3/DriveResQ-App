@@ -56,9 +56,9 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/icon/DriveResQ.png"
+  image_path: "assets/icon/image.png"
   adaptive_icon_background: "#6C63FF"
-  adaptive_icon_foreground: "assets/icon/DriveResQ.png"
+  adaptive_icon_foreground: "assets/icon/image.png"
   remove_alpha_ios: true
 
 flutter:

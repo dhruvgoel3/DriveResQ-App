@@ -23,4 +23,7 @@ abstract class Routes {
 
   // Chat
   static const CHAT = '/chat';
+
+  // Notifications
+  static const NOTIFICATIONS = '/notifications';
 }

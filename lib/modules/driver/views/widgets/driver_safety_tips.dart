@@ -26,18 +26,22 @@ class SafetyTipsSection extends StatelessWidget {
           // 🧱 Cards Row
           Row(
             children: [
-              _SafetyTipCard(
-                icon: Icons.warning_amber_rounded,
-                iconColor: Colors.orange,
-                title: "Stay in Vehicle",
-                subtitle: "Keep your doors locked until help arrives.",
+              Flexible(
+                child: _SafetyTipCard(
+                  icon: Icons.warning_amber_rounded,
+                  iconColor: Colors.orange,
+                  title: "Stay in Vehicle",
+                  subtitle: "Keep your doors locked until help arrives.",
+                ),
               ),
               SizedBox(width: 12.w),
-              _SafetyTipCard(
-                icon: Icons.lightbulb_outline,
-                iconColor: Colors.blue,
-                title: "Hazard Lights",
-                subtitle: "Turn on hazard lights to stay visible.",
+              Flexible(
+                child: _SafetyTipCard(
+                  icon: Icons.lightbulb_outline,
+                  iconColor: Colors.blue,
+                  title: "Hazard Lights",
+                  subtitle: "Turn on hazard lights to stay visible.",
+                ),
               ),
             ],
           ),
