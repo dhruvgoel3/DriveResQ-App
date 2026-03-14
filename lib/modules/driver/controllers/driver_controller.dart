@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class DriverController extends GetxController {
@@ -45,20 +46,30 @@ class DriverController extends GetxController {
   }
 
   Future<void> cancelActiveRequest() async {
-    final uid = _auth.currentUser!.uid;
+    try {
+      final data = requestData.value;
+      final requestId = data?['id'];
 
-    final snapshot = await _firestore
-        .collection('requests')
-        .where('driverId', isEqualTo: uid)
-        .where('status', whereIn: ['open', 'accepted'])
-        .limit(1)
-        .get();
+      if (requestId == null || requestId.toString().isEmpty) {
+        Get.snackbar('Error', 'No active request found to cancel.');
+        return;
+      }
 
-    if (snapshot.docs.isNotEmpty) {
+      debugPrint('🚫 Cancelling request: $requestId');
+
       await _firestore
           .collection('requests')
-          .doc(snapshot.docs.first.id)
-          .update({'status': 'cancelled'});
+          .doc(requestId)
+          .update({
+            'status': 'cancelled',
+            'cancelledAt': FieldValue.serverTimestamp(),
+          });
+
+      debugPrint('✅ Request cancelled successfully');
+      Get.snackbar('Cancelled', 'Your request has been cancelled.');
+    } catch (e) {
+      debugPrint('❌ Error cancelling request: $e');
+      Get.snackbar('Error', 'Failed to cancel request. Please try again.');
     }
   }
 }

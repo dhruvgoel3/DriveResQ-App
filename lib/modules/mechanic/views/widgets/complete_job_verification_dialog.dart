@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import '../../controller/mechanic_controller.dart';
+import '../../../jobs/controllers/job_completion_controller.dart';
+import '../../../jobs/views/job_completion_page.dart';
 
 /// Bottom sheet dialog for mechanic to enter verification code before completing a job
 class CompleteJobVerificationDialog extends StatefulWidget {
@@ -86,18 +88,48 @@ class _CompleteJobVerificationDialogState
     });
 
     final controller = Get.find<MechanicController>();
+
+    // Save job data BEFORE verification (since status change may clear activeJob)
+    final jobData = controller.activeJob.value != null
+        ? Map<String, dynamic>.from(controller.activeJob.value!)
+        : null;
+    final savedJobId = jobData?['id'];
+
     final result = await controller.verifyAndCompleteJob(code);
 
     if (!mounted) return;
 
     if (result == null) {
-      // Success
+      // Success — show checkmark, then navigate to job completion page
       setState(() {
         _isSuccess = true;
         _isVerifying = false;
       });
-      await Future.delayed(const Duration(milliseconds: 1200));
-      if (mounted) Get.back();
+      await Future.delayed(const Duration(milliseconds: 1000));
+      if (mounted) {
+        Get.back(); // Close dialog
+
+        // Navigate to Job Completion Page
+        if (jobData != null) {
+          // Register controller if not already
+          if (!Get.isRegistered<JobCompletionController>()) {
+            Get.put(JobCompletionController());
+          } else {
+            // Reset if already registered
+            final existingCtrl = Get.find<JobCompletionController>();
+            existingCtrl.currentStep.value = 0;
+            existingCtrl.jobData.value = null;
+          }
+
+          Get.to(
+            () => const JobCompletionPage(),
+            arguments: {
+              'job': jobData,
+              'jobId': savedJobId,
+            },
+          );
+        }
+      }
     } else {
       // Error — shake and show message
       setState(() {

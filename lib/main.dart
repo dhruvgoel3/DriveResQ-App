@@ -23,12 +23,19 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // 🔔 Initialize FCM
+  // 🔔 Register background handler (sync, won't block)
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  await FCMService.initialize();
 
   Get.put(AuthController(), permanent: true);
   runApp(const DriveResQApp());
+
+  // 🔔 Initialize FCM *after* runApp so it doesn't block the UI from rendering.
+  // If FCM permission dialog or token fetch hangs, the app still starts.
+  try {
+    await FCMService.initialize();
+  } catch (e) {
+    debugPrint('⚠️ FCM initialization failed: $e');
+  }
 }
 
 class DriveResQApp extends StatelessWidget {
