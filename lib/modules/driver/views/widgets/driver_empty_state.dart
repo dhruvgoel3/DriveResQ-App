@@ -14,13 +14,15 @@ class DriverEmptyState extends StatelessWidget {
       iconColor: Color(0xFF6C63FF),
       title: 'Need Roadside Help?',
       message:
-          'Tap the + button below to create a request.\nVerified mechanics near you will respond in minutes!',
+          'Your vehicle status is clear. Need help?\nTap the button below to request assistance.',
       tips: [
         '⚡ Average response time: ~5 minutes',
         '🔒 All mechanics are verified & trusted',
         '📍 Track your mechanic in real time',
         '💬 Chat directly with your mechanic',
       ],
+      buttonText: '🚗  Request Assistance',
+      onButtonPressed: onNewRequest,
     );
   }
 }

@@ -26,14 +26,42 @@ class ChatService {
     final doc = await chatRef.get();
     if (doc.exists) return;
 
+    // Attempt to resolve real names if generic or missing
+    String finalDriverName = driverName ?? 'Driver';
+    String finalMechanicName = mechanicName ?? 'Mechanic';
+    String finalDriverPhoto = driverPhoto ?? '';
+    String finalMechanicPhoto = mechanicPhoto ?? '';
+
+    try {
+      if (finalDriverName == 'Driver' || finalDriverName.isEmpty) {
+        final dDoc = await _firestore.collection('users').doc(driverId).get();
+        if (dDoc.exists) {
+          final data = dDoc.data()!;
+          finalDriverName = data['fullName'] ?? data['name'] ?? 'Driver';
+          finalDriverPhoto = data['profilePhotoUrl'] ?? data['photoUrl'] ?? finalDriverPhoto;
+        }
+      }
+      
+      if (finalMechanicName == 'Mechanic' || finalMechanicName.isEmpty) {
+        final mDoc = await _firestore.collection('users').doc(mechanicId).get();
+        if (mDoc.exists) {
+          final data = mDoc.data()!;
+          finalMechanicName = data['fullName'] ?? data['name'] ?? 'Mechanic';
+          finalMechanicPhoto = data['profilePhotoUrl'] ?? data['photoUrl'] ?? finalMechanicPhoto;
+        }
+      }
+    } catch (e) {
+      // Ignore errors, fallback to whatever was passed
+    }
+
     await chatRef.set({
       'participants': [driverId, mechanicId],
       'driverId': driverId,
       'mechanicId': mechanicId,
-      'driverName': driverName ?? 'Driver',
-      'mechanicName': mechanicName ?? 'Mechanic',
-      'driverPhoto': driverPhoto ?? '',
-      'mechanicPhoto': mechanicPhoto ?? '',
+      'driverName': finalDriverName,
+      'mechanicName': finalMechanicName,
+      'driverPhoto': finalDriverPhoto,
+      'mechanicPhoto': finalMechanicPhoto,
       'lastMessage': 'Chat started',
       'lastMessageTime': FieldValue.serverTimestamp(),
       'lastMessageBy': '',

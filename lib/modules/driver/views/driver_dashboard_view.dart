@@ -6,7 +6,6 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import '../controllers/driver_controller.dart';
 import '../../chat/views/chat_list_view.dart';
 import 'HomePage/driver_home_view.dart';
-import 'HomePage/create_request_view.dart';
 
 class DriverDashboardView extends StatelessWidget {
   static const _accent = Color(0xFF6C63FF);
@@ -23,18 +22,6 @@ class DriverDashboardView extends StatelessWidget {
           index: controller.currentIndex.value,
           children: [DriverHomeView(), ChatListView(), DriverProfileView()],
         ),
-        floatingActionButton: controller.hasActiveRequest.value
-            ? null
-            : FloatingActionButton(
-                onPressed: () => Get.to(() => CreateRequestView()),
-                backgroundColor: _accent,
-                elevation: 6,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                child: Icon(Icons.add, color: Colors.white, size: 28.w),
-              ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
             color: Colors.white,
