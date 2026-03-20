@@ -96,7 +96,8 @@ class CreateRequestView extends StatelessWidget {
                         color: _accent.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(10.r),
                       ),
-                      child: Icon(Icons.my_location, color: _accent, size: 22.w),
+                      child: Icon(
+                          Icons.my_location, color: _accent, size: 22.w),
                     ),
                     SizedBox(width: 12.w),
                     Expanded(
@@ -112,7 +113,8 @@ class CreateRequestView extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 2.h),
-                          Obx(() => Text(
+                          Obx(() =>
+                              Text(
                                 controller.locationName.value.isEmpty
                                     ? "Fetching location..."
                                     : controller.locationName.value,
@@ -120,7 +122,7 @@ class CreateRequestView extends StatelessWidget {
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w500,
                                   color: controller.locationName.value ==
-                                          "Enable location to continue"
+                                      "Enable location to continue"
                                       ? Colors.red.shade400
                                       : Colors.black87,
                                 ),
@@ -169,22 +171,25 @@ class CreateRequestView extends StatelessWidget {
                     ),
                   ),
                   items: vehicleTypes
-                      .map((e) => DropdownMenuItem(
-                            value: e,
-                            child: Text(
-                              e,
-                              style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black87),
-                            ),
-                          ))
+                      .map((e) =>
+                      DropdownMenuItem(
+                        value: e,
+                        child: Text(
+                          e,
+                          style: GoogleFonts.poppins(
+                              fontSize: 14.sp, color: Colors.black87),
+                        ),
+                      ))
                       .toList(),
                   onChanged: (value) {
                     controller.selectedVehicle.value = value!;
                   },
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.directions_car, color: _accent, size: 22.w),
+                    prefixIcon: Icon(
+                        Icons.directions_car, color: _accent, size: 22.w),
                     border: InputBorder.none,
                     contentPadding:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                    EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
                   ),
                   dropdownColor: Colors.white,
                   borderRadius: BorderRadius.circular(14.r),
@@ -219,7 +224,8 @@ class CreateRequestView extends StatelessWidget {
               // ━━━ IMAGE ━━━
               _sectionLabel("📷 Add Photo (Optional)"),
               SizedBox(height: 8.h),
-              Obx(() => GestureDetector(
+              Obx(() =>
+                  GestureDetector(
                     onTap: controller.pickImage,
                     child: Container(
                       width: double.infinity,
@@ -344,7 +350,8 @@ class CreateRequestView extends StatelessWidget {
           ),
           prefixIcon: Icon(icon, color: _accent, size: 22.w),
           border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+          contentPadding: EdgeInsets.symmetric(
+              horizontal: 16.w, vertical: 14.h),
         ),
       ),
     );
