@@ -23,8 +23,6 @@ class ChatService {
     String? mechanicPhoto,
   }) async {
     final chatRef = _firestore.collection('chats').doc(requestId);
-    final doc = await chatRef.get();
-    if (doc.exists) return;
 
     // Attempt to resolve real names if generic or missing
     String finalDriverName = driverName ?? 'Driver';
@@ -55,7 +53,7 @@ class ChatService {
     }
 
     await chatRef.set({
-      'participants': [driverId, mechanicId],
+      'participants': FieldValue.arrayUnion([driverId, mechanicId]),
       'driverId': driverId,
       'mechanicId': mechanicId,
       'driverName': finalDriverName,
@@ -65,12 +63,9 @@ class ChatService {
       'lastMessage': 'Chat started',
       'lastMessageTime': FieldValue.serverTimestamp(),
       'lastMessageBy': '',
-      'driverUnreadCount': 0,
-      'mechanicUnreadCount': 0,
-      'priceAgreed': null,
       'status': 'active',
       'createdAt': FieldValue.serverTimestamp(),
-    });
+    }, SetOptions(merge: true));
 
     // Send a system message
     await sendSystemMessage(

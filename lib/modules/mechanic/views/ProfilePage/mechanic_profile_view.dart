@@ -673,7 +673,7 @@ class MechanicProfileView extends StatelessWidget {
   ) {
     return TextField(
       controller: controller,
-      style: GoogleFonts.poppins(fontSize: 14.sp),
+      style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black87),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: GoogleFonts.poppins(fontSize: 13.sp),

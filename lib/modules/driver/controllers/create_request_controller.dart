@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -45,6 +45,44 @@ class CreateRequestController extends GetxController {
     } catch (e) {
       locationName.value = "Enable location to continue";
     }
+  }
+
+  // ✏️ Edit location manually
+  void editLocationName() {
+    final TextEditingController editController =
+        TextEditingController(text: locationName.value);
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: Colors.white,
+        title: const Text("Edit Location"),
+        content: TextField(
+          controller: editController,
+          decoration: const InputDecoration(
+            hintText: "Enter location manually",
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (editController.text.trim().isNotEmpty) {
+                locationName.value = editController.text.trim();
+              }
+              Get.back();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF6C63FF),
+              foregroundColor: Colors.white,
+            ),
+            child: const Text("Save"),
+          ),
+        ],
+      ),
+    );
   }
 
   // 📷 Pick image

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../services/driver_service.dart';
 
 class DriverController extends GetxController {
   var currentIndex = 0.obs;
@@ -57,13 +58,7 @@ class DriverController extends GetxController {
 
       debugPrint('🚫 Cancelling request: $requestId');
 
-      await _firestore
-          .collection('requests')
-          .doc(requestId)
-          .update({
-            'status': 'cancelled',
-            'cancelledAt': FieldValue.serverTimestamp(),
-          });
+      await DriverService.cancelActiveRequest(requestId);
 
       debugPrint('✅ Request cancelled successfully');
       Get.snackbar('Cancelled', 'Your request has been cancelled.');

@@ -236,6 +236,7 @@ class ChatListView extends StatelessWidget {
                                 otherName,
                                 style: GoogleFonts.poppins(
                                   fontSize: 15.sp,
+                                  color: Colors.black87,
                                   fontWeight: unreadCount > 0
                                       ? FontWeight.w700
                                       : FontWeight.w500,

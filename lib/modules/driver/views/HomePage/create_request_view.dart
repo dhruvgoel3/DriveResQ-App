@@ -73,67 +73,69 @@ class CreateRequestView extends StatelessWidget {
               // ━━━ LOCATION CARD ━━━
               _sectionLabel("📍 Your Location"),
               SizedBox(height: 8.h),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(16.w),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14.r),
-                  border: Border.all(color: Colors.grey.shade200),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.03),
-                      blurRadius: 8,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(10.w),
-                      decoration: BoxDecoration(
-                        color: _accent.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(10.r),
+              GestureDetector(
+                onTap: controller.editLocationName,
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(16.w),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14.r),
+                    border: Border.all(color: Colors.grey.shade200),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.03),
+                        blurRadius: 8,
+                        offset: Offset(0, 2),
                       ),
-                      child: Icon(
-                          Icons.my_location, color: _accent, size: 22.w),
-                    ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Current Location",
-                            style: GoogleFonts.poppins(
-                              fontSize: 11.sp,
-                              color: Colors.grey.shade500,
-                              fontWeight: FontWeight.w500,
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(10.w),
+                        decoration: BoxDecoration(
+                          color: _accent.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        child: Icon(
+                            Icons.my_location, color: _accent, size: 22.w),
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Current Location (Tap to edit)",
+                              style: GoogleFonts.poppins(
+                                fontSize: 11.sp,
+                                color: _accent,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 2.h),
-                          Obx(() =>
-                              Text(
-                                controller.locationName.value.isEmpty
-                                    ? "Fetching location..."
-                                    : controller.locationName.value,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: controller.locationName.value ==
-                                      "Enable location to continue"
-                                      ? Colors.red.shade400
-                                      : Colors.black87,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              )),
-                        ],
+                            SizedBox(height: 2.h),
+                            Obx(() => Text(
+                                  controller.locationName.value.isEmpty
+                                      ? "Fetching location..."
+                                      : controller.locationName.value,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: controller.locationName.value ==
+                                            "Enable location to continue"
+                                        ? Colors.red.shade400
+                                        : Colors.black87,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                )),
+                          ],
+                        ),
                       ),
-                    ),
-                    Icon(Icons.chevron_right, color: Colors.grey.shade400),
-                  ],
+                      Icon(Icons.edit, color: _accent, size: 20.w),
+                    ],
+                  ),
                 ),
               ),
 

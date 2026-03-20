@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -9,8 +8,7 @@ import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../driver/services/mechanic_location_service.dart';
-import '../../chat/services/chat_service.dart';
-import '../../notifications/services/notification_sender.dart';
+import '../services/mechanic_service.dart';
 
 class MechanicController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -266,100 +264,7 @@ class MechanicController extends GetxController {
   // ✅ Accept a request with validation
   Future<void> acceptRequest(String requestId) async {
     try {
-      // Validation 1: Check if user is authenticated
-      if (_auth.currentUser == null) {
-        Get.snackbar("Error", "User not authenticated");
-        return;
-      }
-
-      // Validation 2: Check if mechanic already has an active job
-      if (hasActiveJob.value) {
-        Get.snackbar(
-          "Already Busy",
-          "You already have an active request. Complete or cancel it first.",
-          duration: Duration(seconds: 3),
-        );
-        return;
-      }
-
-      final uid = _auth.currentUser!.uid;
-      final mechanicPhone = _auth.currentUser!.phoneNumber;
-
-      if (mechanicPhone == null) {
-        Get.snackbar("Error", "Phone number not available");
-        return;
-      }
-
-      // Validation 3: Check if request still exists and is open (Race condition prevention)
-      final requestDoc = await _firestore
-          .collection('requests')
-          .doc(requestId)
-          .get();
-
-      if (!requestDoc.exists) {
-        Get.snackbar("Error", "Request no longer exists");
-        return;
-      }
-
-      final requestData = requestDoc.data();
-      if (requestData == null || requestData['status'] != 'open') {
-        Get.snackbar(
-          "Request Unavailable",
-          "This request has already been accepted by another mechanic",
-          duration: Duration(seconds: 3),
-        );
-        return;
-      }
-
-      // Validation 4: Validate driver information
-      if (requestData['driverLat'] == null ||
-          requestData['driverLng'] == null ||
-          requestData['driverPhone'] == null) {
-        Get.snackbar("Error", "Request has incomplete information");
-        return;
-      }
-
-      // Generate verification code
-      final verificationCode = _generateVerificationCode();
-
-      // All validations passed — Accept the request
-      await _firestore.collection('requests').doc(requestId).update({
-        'status': 'accepted',
-        'mechanicId': uid,
-        'mechanicPhone': mechanicPhone,
-        'acceptedAt': FieldValue.serverTimestamp(),
-        'verificationCode': verificationCode,
-        'verificationAttempts': 0,
-        'codeGeneratedAt': FieldValue.serverTimestamp(),
-      });
-
-      // 💬 Create chat for this request
-      try {
-        final mechanicDoc = await _firestore.collection('users').doc(uid).get();
-        final mechanicData = mechanicDoc.data() ?? {};
-        // Notify Driver about Acceptance
-        await NotificationSender.notifyDriverRequestAccepted(
-          requestId: requestId,
-          driverId: requestData['driverId'] ?? '',
-          mechanicId: uid,
-          mechanicName:
-              mechanicData['fullName'] ?? mechanicData['name'] ?? 'Mechanic',
-          mechanicPhone: mechanicPhone,
-        );
-
-        await ChatService.createChat(
-          requestId: requestId,
-          driverId: requestData['driverId'] ?? '',
-          mechanicId: uid,
-          driverName: requestData['driverName'] ?? 'Driver',
-          mechanicName:
-              mechanicData['fullName'] ?? mechanicData['name'] ?? 'Mechanic',
-          driverPhoto: requestData['driverPhoto'] ?? '',
-          mechanicPhoto: mechanicData['profilePhotoUrl'] ?? '',
-        );
-      } catch (chatError) {
-        debugPrint('⚠️ Chat creation error (non-blocking): $chatError');
-      }
+      await MechanicService.acceptRequest(requestId, hasActiveJob.value);
 
       Get.snackbar(
         "Success",
@@ -381,7 +286,7 @@ class MechanicController extends GetxController {
       } else if (e.toString().contains('network')) {
         Get.snackbar("Error", "Network error. Please check your connection");
       } else {
-        Get.snackbar("Error", "Failed to accept request. Please try again");
+        Get.snackbar("Error", e.toString().replaceFirst('Exception: ', ''));
       }
     }
   }
@@ -394,27 +299,7 @@ class MechanicController extends GetxController {
     }
 
     try {
-      await _firestore
-          .collection('requests')
-          .doc(activeJob.value!['id'])
-          .update({
-            'status': 'open',
-            'mechanicId': FieldValue.delete(),
-            'mechanicPhone': FieldValue.delete(),
-            'acceptedAt': FieldValue.delete(),
-            'verificationCode': FieldValue.delete(),
-            'verificationAttempts': FieldValue.delete(),
-            'codeGeneratedAt': FieldValue.delete(),
-          });
-
-      // Notify Driver about cancellation
-      if (activeJob.value!['driverId'] != null) {
-        await NotificationSender.notifyRequestCancelled(
-          requestId: activeJob.value!['id'],
-          recipientId: activeJob.value!['driverId'],
-          reason: 'Mechanic cancelled the request',
-        );
-      }
+      await MechanicService.cancelActiveJob(activeJob.value!);
 
       Get.snackbar(
         "Success",
@@ -440,31 +325,7 @@ class MechanicController extends GetxController {
     }
 
     try {
-      final jobId = activeJob.value!['id'];
-
-      await _firestore.collection('requests').doc(jobId).update({
-        'status': 'completed',
-        'completedAt': FieldValue.serverTimestamp(),
-      });
-
-      // 🔔 Notify driver job is completed
-      if (activeJob.value!['driverId'] != null) {
-        final mechanicDoc = await _firestore
-            .collection('users')
-            .doc(_auth.currentUser!.uid)
-            .get();
-        final mechName =
-            mechanicDoc.data()?['fullName'] ??
-            mechanicDoc.data()?['name'] ??
-            'Mechanic';
-
-        await NotificationSender.notifyDriverJobCompleted(
-          requestId: jobId,
-          driverId: activeJob.value!['driverId'],
-          mechanicName: mechName,
-          totalAmount: 0.0, // Assuming payment happens before or in parallel
-        );
-      }
+      await MechanicService.completeJob(activeJob.value!);
 
       Get.snackbar(
         "Success",
@@ -474,7 +335,7 @@ class MechanicController extends GetxController {
         duration: Duration(seconds: 3),
       );
 
-      debugPrint("Job completed: $jobId");
+      debugPrint("Job completed: ${activeJob.value!['id']}");
 
       // Location tracking will auto-stop via _listenToActiveJob
     } catch (e) {
@@ -504,11 +365,7 @@ class MechanicController extends GetxController {
     return !hasActiveJob.value && isLocationLoaded.value;
   }
 
-  /// Generate a secure 6-digit verification code
-  String _generateVerificationCode() {
-    final random = Random.secure();
-    return List.generate(6, (_) => random.nextInt(10)).join();
-  }
+
 
   /// Verify the code and complete the job
   /// Returns: null on success, error message on failure
@@ -518,38 +375,10 @@ class MechanicController extends GetxController {
     }
 
     final jobId = activeJob.value!['id'];
-
-    try {
-      // Re-fetch latest data to get current attempt count
-      final doc = await _firestore.collection('requests').doc(jobId).get();
-      if (!doc.exists) return 'Job not found';
-
-      final data = doc.data()!;
-      final storedCode = data['verificationCode'] as String?;
-      final attempts = (data['verificationAttempts'] ?? 0) as int;
-
-      // Check attempt limit
-      if (attempts >= 5) {
-        return 'Too many attempts. Ask the driver to share the code again.';
-      }
-
-      // Increment attempts
-      await _firestore.collection('requests').doc(jobId).update({
-        'verificationAttempts': attempts + 1,
-      });
-
-      // Verify code
-      if (storedCode == null || storedCode != code) {
-        final remaining = 4 - attempts; // 5 max - (attempts+1)
-        return 'Wrong code. ${remaining > 0 ? "$remaining attempts left." : "No attempts left."}';
-      }
-
-      // Code matches — mark as verified (NOT completed yet - completion page handles that)
-      await _firestore.collection('requests').doc(jobId).update({
-        'status': 'verified',
-        'verifiedAt': FieldValue.serverTimestamp(),
-      });
-
+    
+    final errorMsg = await MechanicService.verifyAndCompleteJob(activeJob.value!, code);
+    
+    if (errorMsg == null) {
       Get.snackbar(
         'Verified!',
         'Code verified! Complete the job details now.',
@@ -557,12 +386,10 @@ class MechanicController extends GetxController {
         colorText: Colors.white,
         duration: const Duration(seconds: 2),
       );
-
       debugPrint('Job verified: $jobId');
-      return null; // success
-    } catch (e) {
-      debugPrint('Error verifying/completing job: $e');
-      return 'Something went wrong. Please try again.';
+      return null;
+    } else {
+      return errorMsg;
     }
   }
 }

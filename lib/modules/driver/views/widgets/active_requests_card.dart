@@ -4,10 +4,12 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../chat/controllers/chat_controller.dart';
+import '../../../chat/views/chat_screen.dart';
 import '../../../tracking/views/live_tracking_view.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import '../../services/driver_service.dart';
 
 class ActiveRequestCard extends StatefulWidget {
   final Map<String, dynamic> request;
@@ -45,10 +47,7 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
     final mechanicId = widget.request['mechanicId'];
     if (mechanicId == null) return;
 
-    FirebaseFirestore.instance
-        .collection('mechanic_locations')
-        .doc(mechanicId)
-        .snapshots()
+    DriverService.getMechanicLocationStream(mechanicId)
         .listen((snapshot) {
           if (!snapshot.exists || !mounted) return;
 
@@ -184,22 +183,45 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
 
           // Show different buttons based on status
           if (status == 'accepted') ...[
-            // 📞 CALL BUTTON
-            SizedBox(
-              width: double.infinity,
-              height: 48.h,
-              child: ElevatedButton.icon(
-                onPressed: () => _callMechanic(widget.request['mechanicPhone']),
-                icon: Icon(Icons.call, size: 18.w),
-                label: Text("Call Mechanic"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14.r),
+            // 📞 CALL AND CHAT BUTTONS
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 48.h,
+                    child: ElevatedButton.icon(
+                      onPressed: () => _callMechanic(widget.request['mechanicPhone']),
+                      icon: Icon(Icons.call, size: 18.w),
+                      label: Text("Call"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.r),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                SizedBox(width: 8.w),
+                Expanded(
+                  child: SizedBox(
+                    height: 48.h,
+                    child: ElevatedButton.icon(
+                      onPressed: _openChat,
+                      icon: Icon(Icons.chat_bubble, size: 18.w),
+                      label: Text("Chat"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.r),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
 
             SizedBox(height: 12.h),
@@ -648,6 +670,31 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
           ),
         ],
       ),
+    );
+  }
+
+  // 💬 Open Chat
+  void _openChat() {
+    final chatId = widget.request['id'] ?? '';
+    if (chatId.isEmpty) {
+      Get.snackbar('Error', 'Chat not available yet');
+      return;
+    }
+    
+    Get.delete<ChatController>(force: true);
+    Get.put(
+      ChatController(
+        chatId: chatId,
+        otherUserName: widget.request['mechanicName'] ?? 'Mechanic',
+        otherUserPhoto: widget.request['mechanicPhoto'] ?? '',
+        myRole: 'driver',
+      ),
+    );
+    
+    Get.to(
+      () => ChatScreen(),
+      transition: Transition.rightToLeft,
+      duration: const Duration(milliseconds: 250),
     );
   }
 }

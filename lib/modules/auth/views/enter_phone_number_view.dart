@@ -195,6 +195,7 @@ class _PhoneNumberViewState extends State<PhoneNumberView> {
                             Expanded(
                               child: TextField(
                                 controller: controller.phoneController,
+                                cursorColor: Colors.black,
                                 keyboardType: TextInputType.phone,
                                 maxLength: 15,
                                 style: GoogleFonts.poppins(

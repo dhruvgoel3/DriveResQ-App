@@ -32,8 +32,6 @@ class DriverProfileView extends StatelessWidget {
                   _personalInfoCard(c),
                   SizedBox(height: 16.h),
                   _identityCard(c),
-                  SizedBox(height: 16.h),
-                  _safetyCard(c),
                   SizedBox(height: 24.h),
                   _logoutButton(c),
                   SizedBox(height: 24.h),
@@ -348,23 +346,6 @@ class DriverProfileView extends StatelessWidget {
     );
   }
 
-  // ─── Safety card ───
-  Widget _safetyCard(DriverProfileController c) {
-    return _card(
-      title: 'SAFETY & TRUST',
-      icon: Icons.shield,
-      child: Column(
-        children: [
-          _statusRow('Phone Verified', true, Icons.phone_android),
-          _sep(),
-          _statusRow('Location Access', true, Icons.location_on),
-          _sep(),
-          _statusRow('identity Verified', c.isOnboarded, Icons.badge),
-        ],
-      ),
-    );
-  }
-
   // ─── Reusable widgets ───
   Widget _card({
     required String title,
@@ -452,45 +433,6 @@ class DriverProfileView extends StatelessWidget {
     );
   }
 
-  Widget _statusRow(String label, bool active, IconData icon) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4.h),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(8.w),
-            decoration: BoxDecoration(
-              color: (active ? Colors.green : Colors.red).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8.r),
-            ),
-            child: Icon(
-              active ? Icons.check_circle : Icons.cancel,
-              size: 20.w,
-              color: active ? Colors.green : Colors.red,
-            ),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Text(
-              label,
-              style: GoogleFonts.poppins(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          Text(
-            active ? 'Active' : 'Pending',
-            style: GoogleFonts.poppins(
-              fontSize: 12.sp,
-              color: active ? Colors.green : Colors.orange,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _sep() =>
       Divider(height: 16.h, thickness: 0.5, color: Colors.grey.shade200);
 
@@ -503,7 +445,7 @@ class DriverProfileView extends StatelessWidget {
     return TextField(
       controller: controller,
       maxLines: maxLines,
-      style: GoogleFonts.poppins(fontSize: 14.sp),
+      style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black87),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: GoogleFonts.poppins(fontSize: 13.sp),

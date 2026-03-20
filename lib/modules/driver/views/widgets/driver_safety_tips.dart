@@ -1,3 +1,4 @@
+import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
@@ -16,6 +17,7 @@ class SafetyTipsSection extends StatelessWidget {
           Text(
             "Safety Tips",
             style: GoogleFonts.poppins(
+              color: AppColors.darkBackground,
               fontSize: 18.sp,
               fontWeight: FontWeight.w600,
             ),
@@ -33,7 +35,7 @@ class SafetyTipsSection extends StatelessWidget {
                   title: "Stay in Vehicle",
                   subtitle: "Keep your doors locked until help arrives.",
                 ),
-              ),
+              ),  
               SizedBox(width: 12.w),
               Flexible(
                 child: _SafetyTipCard(
