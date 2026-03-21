@@ -1,11 +1,13 @@
+import 'package:driveresq_app/modules/chat/views/chat_list_view.dart';
 import 'package:driveresq_app/modules/driver/views/ProfilePage/driver_profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import '../controllers/driver_controller.dart';
-import '../../chat/views/chat_list_view.dart';
+
 import 'HomePage/driver_home_view.dart';
+import 'FindMechanics/find_mechanics_view.dart';
 
 class DriverDashboardView extends StatelessWidget {
   static const _accent = Color(0xFF6C63FF);
@@ -20,7 +22,12 @@ class DriverDashboardView extends StatelessWidget {
       return Scaffold(
         body: IndexedStack(
           index: controller.currentIndex.value,
-          children: [DriverHomeView(), ChatListView(), DriverProfileView()],
+          children: [
+            DriverHomeView(),
+            FindMechanicsView(),
+            ChatListView(),
+            DriverProfileView()
+          ],
         ),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
@@ -60,11 +67,22 @@ class DriverDashboardView extends StatelessWidget {
               BottomNavigationBarItem(
                 icon: Padding(
                   padding: EdgeInsets.only(bottom: 2.h),
-                  child: Icon(Icons.chat_bubble_rounded, size: 22.w),
+                  child: Icon(Icons.search_rounded, size: 24.w),
                 ),
                 activeIcon: Padding(
                   padding: EdgeInsets.only(bottom: 2.h),
+                  child: Icon(Icons.search_rounded, size: 26.w),
+                ),
+                label: "Find",
+              ),
+              BottomNavigationBarItem(
+                icon: Padding(
+                  padding: EdgeInsets.only(bottom: 2.h),
                   child: Icon(Icons.chat_bubble_rounded, size: 24.w),
+                ),
+                activeIcon: Padding(
+                  padding: EdgeInsets.only(bottom: 2.h),
+                  child: Icon(Icons.chat_bubble_rounded, size: 26.w),
                 ),
                 label: "Chats",
               ),

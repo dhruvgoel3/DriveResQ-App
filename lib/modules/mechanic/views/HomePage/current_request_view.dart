@@ -5,7 +5,6 @@ import '../../../../shared/widgets/notification_bell_icon.dart';
 import '../widgets/accept_request_indicator_card.dart';
 import '../widgets/mechanic_active_job_card.dart';
 import '../widgets/mechanic_empty_state.dart';
-import '../widgets/request_card_shimmer.dart';
 import '../../controller/mechanic_controller.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
@@ -250,12 +249,11 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
   // ALL REQUESTS TAB
   Widget _buildAllRequestsTab(MechanicController controller) {
     return Obx(() {
-      // Show shimmer while location is loading (and no error)
+      // Show a sleek progress indicator instead of the shimmer that causes flex issues
       if (!controller.isLocationLoaded.value &&
           controller.locationError.value == null) {
-        return Padding(
-          padding: EdgeInsets.all(16.w),
-          child: const RequestCardShimmer(count: 3),
+        return const Center(
+          child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
         );
       }
 

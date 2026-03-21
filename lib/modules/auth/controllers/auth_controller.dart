@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../notifications/services/fcm_service.dart';
 import '../../../app/routes/app_pages.dart';
 
 class AuthController extends GetxController {
@@ -241,6 +242,9 @@ class AuthController extends GetxController {
             });
           }
         }
+
+        // Save FCM token now that user is signed in
+        await FCMService.saveFCMToken();
 
         isLoading.value = false;
         await _navigateBasedOnRole(user.uid);

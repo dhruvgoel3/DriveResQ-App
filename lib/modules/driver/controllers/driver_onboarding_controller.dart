@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class DriverOnboardingController extends GetxController {
@@ -83,27 +84,73 @@ class DriverOnboardingController extends GetxController {
   Future<void> pickIdPhoto({required bool isFront}) async {
     final source = await Get.bottomSheet<ImageSource>(
       Container(
-        padding: EdgeInsets.all(20.w),
+        padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 32.h),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Drag handle
+            Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+            SizedBox(height: 20.h),
+            Text(
+              'Upload Photo',
+              style: GoogleFonts.poppins(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            SizedBox(height: 16.h),
             ListTile(
-              leading: Icon(Icons.camera_alt, color: Color(0xFF6C63FF)),
-              title: Text('Camera'),
+              contentPadding: EdgeInsets.zero,
+              leading: CircleAvatar(
+                backgroundColor: const Color(0xFF6C63FF).withOpacity(0.1),
+                radius: 20.r,
+                child: Icon(Icons.camera_alt_rounded, color: const Color(0xFF6C63FF), size: 20.w),
+              ),
+              title: Text(
+                'Take a Photo',
+                style: GoogleFonts.poppins(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
+              ),
               onTap: () => Get.back(result: ImageSource.camera),
             ),
+            const Divider(height: 1, thickness: 1, color: Color(0xFFEEEEEE)),
             ListTile(
-              leading: Icon(Icons.photo_library, color: Color(0xFF6C63FF)),
-              title: Text('Gallery'),
+              contentPadding: EdgeInsets.zero,
+              leading: CircleAvatar(
+                backgroundColor: const Color(0xFF6C63FF).withOpacity(0.1),
+                radius: 20.r,
+                child: Icon(Icons.photo_library_rounded, color: const Color(0xFF6C63FF), size: 20.w),
+              ),
+              title: Text(
+                'Choose from Gallery',
+                style: GoogleFonts.poppins(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
+              ),
               onTap: () => Get.back(result: ImageSource.gallery),
             ),
           ],
         ),
       ),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
     );
 
     if (source == null) return;

@@ -400,37 +400,66 @@ class DriverOnboardingView extends StatelessWidget {
     TextInputType? keyboard,
     int maxLines = 1,
   }) {
-    return TextField(
-      controller: controller,
-      keyboardType: keyboard,
-      maxLines: maxLines,
-      style: GoogleFonts.poppins(fontSize: 14.sp),
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        labelStyle: GoogleFonts.poppins(fontSize: 13.sp),
-        hintStyle: GoogleFonts.poppins(
-          fontSize: 13.sp,
-          color: Colors.grey.shade400,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.poppins(
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey.shade700,
+          ),
         ),
-        prefixIcon: Icon(icon, size: 20.w, color: _accent),
-        filled: false,
-        fillColor: Colors.grey.shade50,
-        isDense: true,
-        contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.r),
-          borderSide: BorderSide(color: Colors.grey.shade200),
+        SizedBox(height: 8.h),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: TextField(
+            controller: controller,
+            keyboardType: keyboard,
+            maxLines: maxLines,
+            style: GoogleFonts.poppins(
+              fontSize: 14.sp,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: GoogleFonts.poppins(
+                fontSize: 13.sp,
+                color: Colors.grey.shade400,
+              ),
+              prefixIcon: Icon(icon, size: 20.w, color: _accent.withOpacity(0.8)),
+              filled: true,
+              fillColor: Colors.white,
+              isDense: true,
+              contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14.r),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14.r),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14.r),
+                borderSide: BorderSide(color: _accent, width: 1.5),
+              ),
+            ),
+          ),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.r),
-          borderSide: BorderSide(color: Colors.grey.shade200),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.r),
-          borderSide: BorderSide(color: _accent, width: 2),
-        ),
-      ),
+      ],
     );
   }
 
