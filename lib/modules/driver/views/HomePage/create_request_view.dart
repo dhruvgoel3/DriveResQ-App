@@ -1,8 +1,9 @@
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../../controllers/create_request_controller.dart';
-import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class CreateRequestView extends StatelessWidget {
   CreateRequestView({super.key});
@@ -99,7 +100,10 @@ class CreateRequestView extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: Icon(
-                            Icons.my_location, color: _accent, size: 22.w),
+                          Icons.my_location,
+                          color: _accent,
+                          size: 22.w,
+                        ),
                       ),
                       SizedBox(width: 12.w),
                       Expanded(
@@ -115,21 +119,24 @@ class CreateRequestView extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: 2.h),
-                            Obx(() => Text(
-                                  controller.locationName.value.isEmpty
-                                      ? "Fetching location..."
-                                      : controller.locationName.value,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: controller.locationName.value ==
-                                            "Enable location to continue"
-                                        ? Colors.red.shade400
-                                        : Colors.black87,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                )),
+                            Obx(
+                              () => Text(
+                                controller.locationName.value.isEmpty
+                                    ? "Fetching location..."
+                                    : controller.locationName.value,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color:
+                                      controller.locationName.value ==
+                                          "Enable location to continue"
+                                      ? Colors.red.shade400
+                                      : Colors.black87,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -173,25 +180,33 @@ class CreateRequestView extends StatelessWidget {
                     ),
                   ),
                   items: vehicleTypes
-                      .map((e) =>
-                      DropdownMenuItem(
-                        value: e,
-                        child: Text(
-                          e,
-                          style: GoogleFonts.poppins(
-                              fontSize: 14.sp, color: Colors.black87),
+                      .map(
+                        (e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(
+                            e,
+                            style: GoogleFonts.poppins(
+                              fontSize: 14.sp,
+                              color: Colors.black87,
+                            ),
+                          ),
                         ),
-                      ))
+                      )
                       .toList(),
                   onChanged: (value) {
                     controller.selectedVehicle.value = value!;
                   },
                   decoration: InputDecoration(
                     prefixIcon: Icon(
-                        Icons.directions_car, color: _accent, size: 22.w),
+                      Icons.directions_car,
+                      color: _accent,
+                      size: 22.w,
+                    ),
                     border: InputBorder.none,
-                    contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 14.h,
+                    ),
                   ),
                   dropdownColor: Colors.white,
                   borderRadius: BorderRadius.circular(14.r),
@@ -226,51 +241,52 @@ class CreateRequestView extends StatelessWidget {
               // ━━━ IMAGE ━━━
               _sectionLabel("📷 Add Photo (Optional)"),
               SizedBox(height: 8.h),
-              Obx(() =>
-                  GestureDetector(
-                    onTap: controller.pickImage,
-                    child: Container(
-                      width: double.infinity,
-                      height: 80.h,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(14.r),
-                        border: Border.all(
-                          color: controller.imageFile.value != null
-                              ? _accent.withOpacity(0.4)
-                              : Colors.grey.shade200,
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            controller.imageFile.value != null
-                                ? Icons.check_circle
-                                : Icons.camera_alt_outlined,
-                            color: controller.imageFile.value != null
-                                ? Colors.green
-                                : Colors.grey.shade400,
-                            size: 26.w,
-                          ),
-                          SizedBox(width: 10.w),
-                          Text(
-                            controller.imageFile.value != null
-                                ? "Photo selected ✓  (tap to change)"
-                                : "Tap to take a photo",
-                            style: GoogleFonts.poppins(
-                              fontSize: 14.sp,
-                              color: controller.imageFile.value != null
-                                  ? _accent
-                                  : Colors.grey.shade500,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
+              Obx(
+                () => GestureDetector(
+                  onTap: controller.pickImage,
+                  child: Container(
+                    width: double.infinity,
+                    height: 80.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14.r),
+                      border: Border.all(
+                        color: controller.imageFile.value != null
+                            ? _accent.withOpacity(0.4)
+                            : Colors.grey.shade200,
+                        width: 1.5,
                       ),
                     ),
-                  )),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          controller.imageFile.value != null
+                              ? Icons.check_circle
+                              : Icons.camera_alt_outlined,
+                          color: controller.imageFile.value != null
+                              ? Colors.green
+                              : Colors.grey.shade400,
+                          size: 26.w,
+                        ),
+                        SizedBox(width: 10.w),
+                        Text(
+                          controller.imageFile.value != null
+                              ? "Photo selected ✓  (tap to change)"
+                              : "Tap to take a photo",
+                          style: GoogleFonts.poppins(
+                            fontSize: 14.sp,
+                            color: controller.imageFile.value != null
+                                ? _accent
+                                : Colors.grey.shade500,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
 
               SizedBox(height: 32.h),
 
@@ -353,7 +369,9 @@ class CreateRequestView extends StatelessWidget {
           prefixIcon: Icon(icon, color: _accent, size: 22.w),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
-              horizontal: 16.w, vertical: 14.h),
+            horizontal: 16.w,
+            vertical: 14.h,
+          ),
         ),
       ),
     );

@@ -1,10 +1,11 @@
 import 'package:driveresq_app/modules/driver/views/widgets/driver_dashboard_shimmer.dart';
 import 'package:driveresq_app/modules/driver/views/widgets/driver_empty_state.dart';
 import 'package:driveresq_app/modules/driver/views/widgets/driver_safety_tips.dart';
+import 'package:driveresq_app/theme/app_colors.dart';
+import 'package:driveresq_app/theme/app_text_styles.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -17,8 +18,6 @@ import '../widgets/active_requests_card.dart';
 import 'create_request_view.dart';
 
 class DriverHomeView extends StatelessWidget {
-  static const _accent = Color(0xFF6C63FF);
-
   const DriverHomeView({super.key});
 
   @override
@@ -27,20 +26,19 @@ class DriverHomeView extends StatelessWidget {
     final uid = FirebaseAuth.instance.currentUser?.uid;
 
     return Scaffold(
-      backgroundColor: Color(0xFFF7F7FC),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface,
         elevation: 0,
-        surfaceTintColor: Colors.white,
+        surfaceTintColor: AppColors.surface,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "DriveResQ",
-              style: GoogleFonts.poppins(
-                fontSize: 20.sp,
+              style: AppTextStyles.h3.copyWith(
                 fontWeight: FontWeight.bold,
-                color: _accent,
+                color: AppColors.primary,
               ),
             ),
             if (uid != null)
@@ -57,10 +55,7 @@ class DriverHomeView extends StatelessWidget {
                   }
                   return Text(
                     "Hello, $name 👋",
-                    style: GoogleFonts.poppins(
-                      fontSize: 12.sp,
-                      color: Colors.grey.shade600,
-                    ),
+                    style: AppTextStyles.caption,
                   );
                 },
               ),
@@ -81,23 +76,22 @@ class DriverHomeView extends StatelessWidget {
                   Get.offAllNamed(Routes.MECHANIC);
                 }
               },
-              itemBuilder: (context) => [
+              itemBuilder: (context) => const [
                 PopupMenuItem(value: 'driver', child: Text('Switch to Driver')),
-                PopupMenuItem(
-                    value: 'mechanic', child: Text('Switch to Mechanic')),
+                PopupMenuItem(value: 'mechanic', child: Text('Switch to Mechanic')),
               ],
             ),
           Obx(() {
-            if (controller.isLoadingRequest.value || !controller.hasActiveRequest.value) return SizedBox();
+            if (controller.isLoadingRequest.value || !controller.hasActiveRequest.value) return const SizedBox();
             return IconButton(
-              icon: Icon(Icons.delete_outline, color: Colors.red.shade400, size: 22.w),
+              icon: Icon(Icons.delete_outline, color: AppColors.error, size: 22.w),
               onPressed: () {
                 Get.defaultDialog(
                   title: "Cancel Request",
                   middleText: "Are you sure you want to cancel this request?",
                   textConfirm: "Yes",
                   textCancel: "No",
-                  confirmTextColor: Colors.white,
+                  confirmTextColor: AppColors.surface,
                   onConfirm: () async {
                     Get.back();
                     await controller.cancelActiveRequest();
@@ -122,7 +116,7 @@ class DriverHomeView extends StatelessWidget {
               children: [
                 ActiveRequestCard(request: request),
                 SizedBox(height: 12.h),
-                SafetyTipsSection(),
+                const SafetyTipsSection(),
               ],
             ),
           );
