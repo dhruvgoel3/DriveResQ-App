@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
@@ -138,7 +139,7 @@ class _EmptyStateWidgetState extends State<EmptyStateWidget>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Icon(
-                                    Icons.lightbulb_outline,
+                                    Iconsax.lamp,
                                     size: 16.w,
                                     color: Colors.amber.shade600,
                                   ),
@@ -169,7 +170,7 @@ class _EmptyStateWidgetState extends State<EmptyStateWidget>
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: widget.onButtonPressed,
-                      icon: Icon(Icons.add, size: 20.w),
+                      icon: Icon(Iconsax.add, size: 20.w),
                       label: Text(
                         widget.buttonText!,
                         style: GoogleFonts.poppins(

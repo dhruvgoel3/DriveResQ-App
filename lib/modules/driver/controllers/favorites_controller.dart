@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ class FavoritesController extends GetxController {
         "You can quickly book this mechanic from your favorites",
         backgroundColor: Colors.green.withOpacity(0.1),
         colorText: Colors.green,
-        icon: const Icon(Icons.favorite, color: Colors.green),
+        icon: const Icon(Iconsax.heart, color: Colors.green),
         snackPosition: SnackPosition.BOTTOM,
         margin: const EdgeInsets.all(16),
       );

@@ -1,18 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:driveresq_app/theme/app_colors.dart';
+import 'package:driveresq_app/theme/app_text_styles.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../controllers/chat_controller.dart';
-import 'chat_screen.dart';
+
 import '../../../shared/widgets/empty_state_widget.dart';
 import '../../../shared/widgets/shimmer_loader.dart';
-import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import '../controllers/chat_controller.dart';
+import 'chat_screen.dart';
 
 class ChatListView extends StatelessWidget {
-  static const _accent = Color(0xFF6C63FF);
-
   const ChatListView({super.key});
 
   String get _uid => FirebaseAuth.instance.currentUser?.uid ?? '';
@@ -20,18 +21,14 @@ class ChatListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface,
         elevation: 0,
         automaticallyImplyLeading: false,
         title: Text(
           'Messages',
-          style: GoogleFonts.poppins(
-            fontSize: 22.sp,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
+          style: AppTextStyles.h1.copyWith(fontSize: 22.sp),
         ),
         centerTitle: false,
       ),
@@ -47,25 +44,21 @@ class ChatListView extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    Icons.error_outline,
+                    Iconsax.close_circle,
                     size: 64.w,
-                    color: Colors.red.shade300,
+                    color: AppColors.error.withOpacity(0.7),
                   ),
                   SizedBox(height: 12.h),
                   Text(
                     'Error loading chats',
-                    style: GoogleFonts.poppins(
-                      fontSize: 16.sp,
-                      color: Colors.red.shade400,
-                    ),
+                    style: AppTextStyles.body1.copyWith(color: AppColors.error),
                   ),
                   SizedBox(height: 4.h),
                   Text(
                     '${snapshot.error}',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
-                      fontSize: 11.sp,
-                      color: Colors.grey.shade400,
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textHint,
                     ),
                   ),
                 ],
@@ -79,8 +72,8 @@ class ChatListView extends StatelessWidget {
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return EmptyStateWidget(
-              icon: Icons.chat_bubble_outline,
-              iconColor: Color(0xFF6C63FF),
+              icon: Iconsax.message,
+              iconColor: AppColors.primary,
               title: 'No Messages Yet',
               message:
                   'Chats will appear here when a mechanic accepts your request.',
@@ -113,21 +106,37 @@ class ChatListView extends StatelessWidget {
           return ListView.separated(
             padding: EdgeInsets.symmetric(vertical: 8.h),
             itemCount: chats.length,
-            separatorBuilder: (_, __) =>
-                Divider(height: 1, indent: 76, color: Colors.grey.shade200),
+            separatorBuilder: (_, __) => Divider(
+              height: 1,
+              indent: 76.w,
+              color: AppColors.border.withOpacity(0.5),
+            ),
             itemBuilder: (_, i) {
               final chat = chats[i].data() as Map<String, dynamic>;
               final chatId = chats[i].id;
-              return _chatTile(chat, chatId);
+              return _ChatTile(chat: chat, chatId: chatId, uid: _uid);
             },
           );
         },
       ),
     );
   }
+}
 
-  Widget _chatTile(Map<String, dynamic> chat, String chatId) {
-    final isDriver = _uid == chat['driverId'];
+class _ChatTile extends StatelessWidget {
+  final Map<String, dynamic> chat;
+  final String chatId;
+  final String uid;
+
+  const _ChatTile({
+    required this.chat,
+    required this.chatId,
+    required this.uid,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDriver = uid == chat['driverId'];
     final otherId = isDriver ? chat['mechanicId'] : chat['driverId'];
     var otherName = isDriver
         ? (chat['mechanicName'] ?? 'Mechanic')
@@ -135,7 +144,7 @@ class ChatListView extends StatelessWidget {
     var otherPhoto = isDriver
         ? (chat['mechanicPhoto'] ?? '')
         : (chat['driverPhoto'] ?? '');
-    
+
     final myRole = isDriver ? 'driver' : 'mechanic';
     final unreadCount = isDriver
         ? (chat['driverUnreadCount'] ?? 0)
@@ -145,30 +154,36 @@ class ChatListView extends StatelessWidget {
     final lastTime = chat['lastMessageTime'];
     final status = chat['status'] ?? 'active';
 
-    // If the name is generic, try fetching the real name from the users collection
-    final needsRefresh = otherName == 'Driver' || otherName == 'Mechanic' || otherName.isEmpty;
-    
+    final needsRefresh =
+        otherName == 'Driver' || otherName == 'Mechanic' || otherName.isEmpty;
+
     return FutureBuilder<DocumentSnapshot?>(
       future: needsRefresh && otherId != null
           ? FirebaseFirestore.instance.collection('users').doc(otherId).get()
           : Future.value(null),
       builder: (context, snapshot) {
-        if (snapshot.hasData && snapshot.data != null && snapshot.data!.exists) {
+        if (snapshot.hasData &&
+            snapshot.data != null &&
+            snapshot.data!.exists) {
           final userData = snapshot.data!.data() as Map<String, dynamic>;
           otherName = userData['fullName'] ?? userData['name'] ?? otherName;
-          otherPhoto = userData['profilePhotoUrl'] ?? userData['photoUrl'] ?? otherPhoto;
-          
-          // Optionally update the chat document in the background so we don't need to fetch again
+          otherPhoto =
+              userData['profilePhotoUrl'] ?? userData['photoUrl'] ?? otherPhoto;
+
           if (otherName != 'Driver' && otherName != 'Mechanic') {
             final updateFields = isDriver
                 ? {'mechanicName': otherName, 'mechanicPhoto': otherPhoto}
                 : {'driverName': otherName, 'driverPhoto': otherPhoto};
-            FirebaseFirestore.instance.collection('chats').doc(chatId).update(updateFields).catchError((_) {});
+            FirebaseFirestore.instance
+                .collection('chats')
+                .doc(chatId)
+                .update(updateFields)
+                .catchError((_) {});
           }
         }
 
         return Material(
-          color: Colors.white,
+          color: AppColors.surface,
           child: InkWell(
             onTap: () {
               Get.delete<ChatController>(force: true);
@@ -181,9 +196,9 @@ class ChatListView extends StatelessWidget {
                 ),
               );
               Get.to(
-                () => ChatScreen(),
+                () => const ChatScreen(),
                 transition: Transition.rightToLeft,
-                duration: Duration(milliseconds: 250),
+                duration: const Duration(milliseconds: 250),
               );
             },
             child: Padding(
@@ -198,11 +213,11 @@ class ChatListView extends StatelessWidget {
                         backgroundImage: otherPhoto.isNotEmpty
                             ? CachedNetworkImageProvider(otherPhoto)
                             : null,
-                        backgroundColor: _accent.withOpacity(0.1),
+                        backgroundColor: AppColors.primary.withOpacity(0.1),
                         child: otherPhoto.isEmpty
                             ? Icon(
-                                isDriver ? Icons.build : Icons.directions_car,
-                                color: _accent,
+                                isDriver ? Iconsax.setting_2 : Iconsax.car,
+                                color: AppColors.primary,
                                 size: 22.w,
                               )
                             : null,
@@ -215,9 +230,12 @@ class ChatListView extends StatelessWidget {
                             width: 14.w,
                             height: 14.h,
                             decoration: BoxDecoration(
-                              color: Colors.green,
+                              color: AppColors.success,
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 2),
+                              border: Border.all(
+                                color: AppColors.surface,
+                                width: 2.w,
+                              ),
                             ),
                           ),
                         ),
@@ -235,27 +253,24 @@ class ChatListView extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 otherName,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 15.sp,
-                                  color: Colors.black87,
+                                style: AppTextStyles.body1.copyWith(
                                   fontWeight: unreadCount > 0
                                       ? FontWeight.w700
-                                      : FontWeight.w500,
+                                      : FontWeight.w600,
                                 ),
                               ),
                             ),
                             Text(
                               _formatTime(lastTime),
-                              style: GoogleFonts.poppins(
-                                fontSize: 11.sp,
+                              style: AppTextStyles.caption.copyWith(
                                 color: unreadCount > 0
-                                    ? _accent
-                                    : Colors.grey.shade400,
+                                    ? AppColors.primary
+                                    : AppColors.textHint,
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 3.h),
+                        SizedBox(height: 4.h),
                         Row(
                           children: [
                             Expanded(
@@ -263,13 +278,12 @@ class ChatListView extends StatelessWidget {
                                 lastMsg,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 13.sp,
+                                style: AppTextStyles.body2.copyWith(
                                   color: unreadCount > 0
-                                      ? Colors.black87
-                                      : Colors.grey.shade500,
+                                      ? AppColors.textPrimary
+                                      : AppColors.textSecondary,
                                   fontWeight: unreadCount > 0
-                                      ? FontWeight.w500
+                                      ? FontWeight.w600
                                       : FontWeight.normal,
                                 ),
                               ),
@@ -278,17 +292,16 @@ class ChatListView extends StatelessWidget {
                               Container(
                                 padding: EdgeInsets.symmetric(
                                   horizontal: 7.w,
-                                  vertical: 2,
+                                  vertical: 2.h,
                                 ),
-                                decoration: BoxDecoration(
-                                  color: _accent,
+                                decoration: const BoxDecoration(
+                                  color: AppColors.primary,
                                   shape: BoxShape.circle,
                                 ),
                                 child: Text(
                                   '$unreadCount',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 11.sp,
-                                    color: Colors.white,
+                                  style: AppTextStyles.caption.copyWith(
+                                    color: AppColors.surface,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),

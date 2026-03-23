@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -34,14 +35,14 @@ class Step4BankDetails extends StatelessWidget {
                       c.accountHolderController,
                       'Account Holder Name *',
                       'Enter account holder name',
-                      Icons.person_outline,
+                      Iconsax.user,
                     ),
                     SizedBox(height: 20.h),
                     _buildField(
                       c.accountNumberController,
                       'Account Number *',
                       'Enter account number',
-                      Icons.account_balance,
+                      Iconsax.bank,
                       type: TextInputType.number,
                       formatters: [FilteringTextInputFormatter.digitsOnly],
                       obscure: true,
@@ -51,7 +52,7 @@ class Step4BankDetails extends StatelessWidget {
                       c.confirmAccountController,
                       'Re-enter Account Number *',
                       'Confirm account number',
-                      Icons.account_balance,
+                      Iconsax.bank,
                       type: TextInputType.number,
                       formatters: [FilteringTextInputFormatter.digitsOnly],
                     ),
@@ -60,7 +61,7 @@ class Step4BankDetails extends StatelessWidget {
                       c.ifscController,
                       'IFSC Code *',
                       'e.g. SBIN0001234',
-                      Icons.code,
+                      Iconsax.code,
                       caps: true,
                     ),
                     SizedBox(height: 20.h),
@@ -68,14 +69,14 @@ class Step4BankDetails extends StatelessWidget {
                       c.bankNameController,
                       'Bank Name *',
                       'Enter bank name',
-                      Icons.account_balance_wallet,
+                      Iconsax.wallet,
                     ),
                     SizedBox(height: 20.h),
                     _buildField(
                       c.upiController,
                       'UPI ID (Optional)',
                       'e.g. name@upi',
-                      Icons.payment,
+                      Iconsax.card,
                     ),
                     SizedBox(height: 40.h),
                   ],
@@ -94,7 +95,7 @@ class Step4BankDetails extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios_new, color: Colors.black87, size: 20.w),
+        icon: Icon(Iconsax.arrow_left_2, color: Colors.black87, size: 20.w),
         onPressed: () {
           c.currentStep.value = 3;
           Get.back();
@@ -188,7 +189,7 @@ class Step4BankDetails extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.shield, color: Colors.blue.shade700, size: 22.w),
+          Icon(Iconsax.shield, color: Colors.blue.shade700, size: 22.w),
           SizedBox(width: 12.w),
           Expanded(
             child: Text(

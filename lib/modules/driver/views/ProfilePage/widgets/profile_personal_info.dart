@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:driveresq_app/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -14,26 +15,26 @@ class ProfilePersonalInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProfileCardContainer(
       title: 'PERSONAL INFORMATION',
-      icon: Icons.person,
+      icon: Iconsax.user,
       child: Obx(() {
         final edit = controller.isEditMode.value;
         return Column(
           children: [
             if (edit) ...[
-              _editField('Full Name', controller.nameController, Icons.person),
+              _editField('Full Name', controller.nameController, Iconsax.user),
               SizedBox(height: 12.h),
-              _editField('Email', controller.emailController, Icons.email),
+              _editField('Email', controller.emailController, Iconsax.sms),
               SizedBox(height: 12.h),
               _editField(
                 'Address',
                 controller.addressController,
-                Icons.home,
+                Iconsax.home,
                 maxLines: 2,
               ),
               SizedBox(height: 12.h),
-              _editField('Gender', controller.genderController, Icons.wc),
+              _editField('Gender', controller.genderController, Iconsax.profile_2user),
               SizedBox(height: 12.h),
-              _editField('Date of Birth (YYYY-MM-DD)', controller.dobController, Icons.cake),
+              _editField('Date of Birth (YYYY-MM-DD)', controller.dobController, Iconsax.cake),
               SizedBox(height: 16.h),
               SizedBox(
                 width: double.infinity,
@@ -66,17 +67,17 @@ class ProfilePersonalInfo extends StatelessWidget {
                 ),
               ),
             ] else ...[
-              _infoRow(Icons.person, 'Full Name', controller.displayName),
+              _infoRow(Iconsax.user, 'Full Name', controller.displayName),
               _sep(),
-              _infoRow(Icons.phone, 'Phone', controller.phone.isNotEmpty ? controller.phone : 'Not added'),
+              _infoRow(Iconsax.call, 'Phone', controller.phone.isNotEmpty ? controller.phone : 'Not added'),
               _sep(),
-              _infoRow(Icons.email, 'Email', controller.email.isNotEmpty ? controller.email : 'Not added'),
+              _infoRow(Iconsax.sms, 'Email', controller.email.isNotEmpty ? controller.email : 'Not added'),
               _sep(),
-              _infoRow(Icons.home, 'Address', controller.address.isNotEmpty ? controller.address : 'Not added'),
+              _infoRow(Iconsax.home, 'Address', controller.address.isNotEmpty ? controller.address : 'Not added'),
               _sep(),
-              _infoRow(Icons.wc, 'Gender', controller.gender.isNotEmpty ? controller.gender : 'Not added'),
+              _infoRow(Iconsax.profile_2user, 'Gender', controller.gender.isNotEmpty ? controller.gender : 'Not added'),
               _sep(),
-              _infoRow(Icons.cake, 'Date of Birth', controller.dob.isNotEmpty ? controller.dob : 'Not added'),
+              _infoRow(Iconsax.cake, 'Date of Birth', controller.dob.isNotEmpty ? controller.dob : 'Not added'),
             ],
           ],
         );

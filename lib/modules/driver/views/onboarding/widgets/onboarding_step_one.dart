@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:driveresq_app/theme/app_colors.dart';
@@ -26,7 +27,7 @@ class OnboardingStepOne extends StatelessWidget {
         OnboardingShared.inputField(
           'Full Name *',
           controller.nameController,
-          Icons.person,
+          Iconsax.user,
           hint: 'Enter your full name',
         ),
         SizedBox(height: 16.h),
@@ -34,7 +35,7 @@ class OnboardingStepOne extends StatelessWidget {
         OnboardingShared.inputField(
           'Email (optional)',
           controller.emailController,
-          Icons.email,
+          Iconsax.sms,
           hint: 'yourname@email.com',
           keyboard: TextInputType.emailAddress,
         ),
@@ -43,7 +44,7 @@ class OnboardingStepOne extends StatelessWidget {
         OnboardingShared.inputField(
           'Address *',
           controller.addressController,
-          Icons.home,
+          Iconsax.home,
           hint: 'Your home/contact address',
           maxLines: 2,
         ),
@@ -110,7 +111,7 @@ class OnboardingStepOne extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.cake, size: 20.w, color: AppColors.primary),
+                  Icon(Iconsax.cake, size: 20.w, color: AppColors.primary),
                   SizedBox(width: 12.w),
                   Text(
                     controller.dob.value != null

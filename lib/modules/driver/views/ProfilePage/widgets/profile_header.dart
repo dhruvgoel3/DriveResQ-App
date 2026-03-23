@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:driveresq_app/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class ProfileHeader extends StatelessWidget {
         Obx(
           () => IconButton(
             icon: Icon(
-              controller.isEditMode.value ? Icons.close : Icons.edit,
+              controller.isEditMode.value ? Iconsax.close_square : Iconsax.edit_2,
               color: AppColors.surface,
             ),
             onPressed: controller.toggleEditMode,
@@ -87,7 +88,7 @@ class ProfileHeader extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        controller.isOnboarded ? Icons.verified : Icons.pending,
+                        controller.isOnboarded ? Iconsax.verify : Iconsax.clock,
                         size: 14.w,
                         color: AppColors.surface,
                       ),

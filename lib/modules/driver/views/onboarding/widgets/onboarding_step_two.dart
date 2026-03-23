@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:driveresq_app/theme/app_colors.dart';
@@ -66,7 +67,7 @@ class OnboardingStepTwo extends StatelessWidget {
         OnboardingShared.inputField(
           'ID Number *',
           controller.idNumberController,
-          Icons.credit_card,
+          Iconsax.card,
           hint: 'Enter your ID number',
         ),
         SizedBox(height: 20.h),

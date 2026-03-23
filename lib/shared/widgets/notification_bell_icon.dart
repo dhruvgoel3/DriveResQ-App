@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -34,8 +35,8 @@ class NotificationBellIcon extends StatelessWidget {
             children: [
               Icon(
                 unreadCount > 0
-                    ? Icons.notifications_active
-                    : Icons.notifications_outlined,
+                    ? Iconsax.notification_bing
+                    : Iconsax.notification,
                 color: const Color(0xFF6C63FF),
                 size: 26.w,
               ),

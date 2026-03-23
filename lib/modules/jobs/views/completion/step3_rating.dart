@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,7 +22,7 @@ class RatingView extends StatelessWidget {
           CircleAvatar(
             radius: 40.r,
             backgroundColor: Color(0xFF4CAF50).withOpacity(0.1),
-            child: Icon(Icons.person, size: 44.w, color: Color(0xFF4CAF50)),
+            child: Icon(Iconsax.user, size: 44.w, color: Color(0xFF4CAF50)),
           ),
           SizedBox(height: 16.h),
 
@@ -65,7 +66,7 @@ class RatingView extends StatelessWidget {
                     duration: Duration(milliseconds: 200),
                     margin: EdgeInsets.symmetric(horizontal: 6.w),
                     child: Icon(
-                      filled ? Icons.star_rounded : Icons.star_border_rounded,
+                      filled ? Iconsax.star : Iconsax.star,
                       size: 48.w,
                       color: filled ? Color(0xFFFFB300) : Colors.grey.shade300,
                     ),

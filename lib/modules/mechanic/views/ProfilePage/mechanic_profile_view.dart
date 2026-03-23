@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -63,14 +64,14 @@ class MechanicProfileView extends StatelessWidget {
       pinned: true,
       backgroundColor: _accent,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: Colors.white),
+        icon: Icon(Iconsax.arrow_left, color: Colors.white),
         onPressed: () => Get.back(),
       ),
       actions: [
         Obx(
           () => IconButton(
             icon: Icon(
-              c.isEditMode.value ? Icons.close : Icons.edit_outlined,
+              c.isEditMode.value ? Iconsax.close_square : Iconsax.edit_2,
               color: Colors.white,
             ),
             onPressed: c.toggleEditMode,
@@ -106,7 +107,7 @@ class MechanicProfileView extends StatelessWidget {
                     backgroundImage: _profileImage(data),
                     backgroundColor: Colors.white.withOpacity(0.15),
                     child: _profileImage(data) == null
-                        ? Icon(Icons.person, size: 46.w, color: Colors.white70)
+                        ? Icon(Iconsax.user, size: 46.w, color: Colors.white70)
                         : null,
                   ),
                 ),
@@ -148,8 +149,8 @@ class MechanicProfileView extends StatelessWidget {
                     children: [
                       Icon(
                         c.verificationColor == Color(0xFF4CAF50)
-                            ? Icons.verified
-                            : Icons.pending,
+                            ? Iconsax.verify
+                            : Iconsax.clock,
                         size: 14.w,
                         color: Colors.white,
                       ),
@@ -188,28 +189,28 @@ class MechanicProfileView extends StatelessWidget {
       () => Row(
         children: [
           _statTile(
-            Icons.check_circle,
+            Iconsax.tick_circle,
             'Jobs',
             c.totalJobsCompleted.value.toString(),
             Colors.green,
           ),
           SizedBox(width: 10.w),
           _statTile(
-            Icons.star_rounded,
+            Iconsax.star,
             'Rating',
             c.rating.value > 0 ? c.rating.value.toStringAsFixed(1) : '—',
             Colors.amber,
           ),
           SizedBox(width: 10.w),
           _statTile(
-            Icons.account_balance_wallet,
+            Iconsax.wallet,
             'Earned',
             '₹${c.totalEarnings.value.toStringAsFixed(0)}',
             _accent,
           ),
           SizedBox(width: 10.w),
           _statTile(
-            Icons.bolt,
+            Iconsax.flash,
             'Active',
             c.activeJobs.value.toString(),
             Colors.blue,
@@ -263,31 +264,31 @@ class MechanicProfileView extends StatelessWidget {
     return Obx(() {
       final isEdit = c.isEditMode.value;
       return _card(
-        icon: Icons.person_outline,
+        icon: Iconsax.user,
         title: 'Personal Information',
         child: Column(
           children: [
             isEdit
-                ? _editField('Full Name', c.nameController, Icons.badge)
-                : _infoRow(Icons.badge, 'Full Name', c.displayName),
+                ? _editField('Full Name', c.nameController, Iconsax.award)
+                : _infoRow(Iconsax.award, 'Full Name', c.displayName),
             Divider(height: 20.h),
-            _infoRow(Icons.phone, 'Phone', data['phone'] ?? '—'),
+            _infoRow(Iconsax.call, 'Phone', data['phone'] ?? '—'),
             Divider(height: 20.h),
             isEdit
-                ? _editField('Email', c.emailController, Icons.email)
+                ? _editField('Email', c.emailController, Iconsax.sms)
                 : _infoRow(
-                    Icons.email_outlined,
+                    Iconsax.sms,
                     'Email',
                     data['email'] ?? 'Not added',
                   ),
             Divider(height: 20.h),
             _infoRow(
-              Icons.cake_outlined,
+              Iconsax.box,
               'Date of Birth',
               _formatDob(data['dob']),
             ),
             Divider(height: 20.h),
-            _infoRow(Icons.person, 'Gender', data['gender'] ?? '—'),
+            _infoRow(Iconsax.user, 'Gender', data['gender'] ?? '—'),
             if (isEdit) ...[SizedBox(height: 16.h), _saveButton(c)],
           ],
         ),
@@ -300,7 +301,7 @@ class MechanicProfileView extends StatelessWidget {
     return Obx(() {
       final isEdit = c.isEditMode.value;
       return _card(
-        icon: Icons.store_outlined,
+        icon: Iconsax.shop,
         title: 'Shop / Garage',
         child: Column(
           children: [
@@ -308,10 +309,10 @@ class MechanicProfileView extends StatelessWidget {
                 ? _editField(
                     'Shop Name',
                     c.shopNameController,
-                    Icons.storefront,
+                    Iconsax.shop,
                   )
                 : _infoRow(
-                    Icons.storefront,
+                    Iconsax.shop,
                     'Shop Name',
                     data['shopName'] ?? '—',
                   ),
@@ -320,10 +321,10 @@ class MechanicProfileView extends StatelessWidget {
                 ? _editField(
                     'Address',
                     c.shopAddressController,
-                    Icons.location_on,
+                    Iconsax.location,
                   )
                 : _infoRow(
-                    Icons.location_on_outlined,
+                    Iconsax.location,
                     'Address',
                     data['shopAddress'] ?? 'Not added',
                   ),
@@ -332,10 +333,10 @@ class MechanicProfileView extends StatelessWidget {
                 ? _editField(
                     'Experience (years)',
                     c.experienceController,
-                    Icons.work_history,
+                    Iconsax.clock,
                   )
                 : _infoRow(
-                    Icons.work_history_outlined,
+                    Iconsax.clock,
                     'Experience',
                     '${data['experience'] ?? '—'} years',
                   ),
@@ -344,7 +345,7 @@ class MechanicProfileView extends StatelessWidget {
               Divider(height: 20.h),
               Row(
                 children: [
-                  _iconBox(Icons.photo_camera_outlined),
+                  _iconBox(Iconsax.camera),
                   SizedBox(width: 12.w),
                   Expanded(
                     child: Column(
@@ -376,7 +377,7 @@ class MechanicProfileView extends StatelessWidget {
   // ─────────────────────── SPECIALIZATIONS & SERVICES ───────────────────────
   Widget _specializationsCard(MechanicProfileController c) {
     return _card(
-      icon: Icons.build_circle_outlined,
+      icon: Iconsax.setting_2,
       title: 'Expertise & Services',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -405,7 +406,7 @@ class MechanicProfileView extends StatelessWidget {
             ),
           ],
           if (c.specializations.isEmpty && c.servicesOffered.isEmpty)
-            _infoRow(Icons.info_outline, 'Info', 'Not specified yet'),
+            _infoRow(Iconsax.info_circle, 'Info', 'Not specified yet'),
         ],
       ),
     );
@@ -417,16 +418,16 @@ class MechanicProfileView extends StatelessWidget {
     Map<String, dynamic> data,
   ) {
     return _card(
-      icon: Icons.schedule_outlined,
+      icon: Iconsax.clock,
       title: 'Availability',
       child: Column(
         children: [
-          _infoRow(Icons.access_time, 'Working Hours', c.workingHoursFormatted),
+          _infoRow(Iconsax.clock, 'Working Hours', c.workingHoursFormatted),
           Divider(height: 20.h),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _iconBox(Icons.calendar_month_outlined),
+              _iconBox(Iconsax.calendar),
               SizedBox(width: 12.w),
               Expanded(
                 child: Column(
@@ -475,7 +476,7 @@ class MechanicProfileView extends StatelessWidget {
           ),
           Divider(height: 20.h),
           _infoRow(
-            Icons.radar,
+            Iconsax.radar,
             'Service Radius',
             '${data['serviceRadius'] ?? '—'} km',
           ),
@@ -489,7 +490,7 @@ class MechanicProfileView extends StatelessWidget {
     return Obx(() {
       final isEdit = c.isEditMode.value;
       return _card(
-        icon: Icons.currency_rupee,
+        icon: Iconsax.money,
         title: 'Pricing',
         child: Column(
           children: [
@@ -497,24 +498,24 @@ class MechanicProfileView extends StatelessWidget {
                 ? _editField(
                     'Base Charge (₹)',
                     c.baseChargeController,
-                    Icons.receipt_long,
+                    Iconsax.receipt_item,
                   )
                 : _infoRow(
-                    Icons.receipt_long_outlined,
+                    Iconsax.receipt_item,
                     'Base Charge',
                     '₹${data['baseCharge'] ?? '—'}',
                   ),
             Divider(height: 20.h),
             isEdit
-                ? _editField('Per Km (₹)', c.perKmChargeController, Icons.route)
+                ? _editField('Per Km (₹)', c.perKmChargeController, Iconsax.routing)
                 : _infoRow(
-                    Icons.route,
+                    Iconsax.routing,
                     'Per Km Charge',
                     '₹${data['perKmCharge'] ?? '—'}',
                   ),
             Divider(height: 20.h),
             _infoRow(
-              Icons.bolt,
+              Iconsax.flash,
               'Emergency Surcharge',
               '₹${data['emergencySurcharge'] ?? '—'}',
             ),
@@ -530,17 +531,17 @@ class MechanicProfileView extends StatelessWidget {
     Map<String, dynamic> data,
   ) {
     return _card(
-      icon: Icons.verified_user_outlined,
+      icon: Iconsax.verify,
       title: 'Verification & Trust',
       child: Column(
         children: [
-          _statusRow('Phone Verified', true, Icons.phone_android),
+          _statusRow('Phone Verified', true, Iconsax.mobile),
           Divider(height: 20.h),
           _statusRow(
             'Aadhaar Submitted',
             data['aadhaarNumber'] != null &&
                 data['aadhaarNumber'].toString().isNotEmpty,
-            Icons.credit_card,
+            Iconsax.card,
           ),
           if (data['aadhaarNumber'] != null &&
               data['aadhaarNumber'].toString().isNotEmpty) ...[
@@ -560,25 +561,25 @@ class MechanicProfileView extends StatelessWidget {
             'PAN Card',
             data['panCardUrl'] != null &&
                 data['panCardUrl'].toString().isNotEmpty,
-            Icons.account_balance,
+            Iconsax.bank,
           ),
           Divider(height: 20.h),
           _statusRow(
             'Trade License',
             data['tradeLicenseUrl'] != null &&
                 data['tradeLicenseUrl'].toString().isNotEmpty,
-            Icons.workspace_premium,
+            Iconsax.award,
           ),
           Divider(height: 20.h),
           _statusRow(
             'Bank Account Linked',
             data['bankAccountNumber'] != null &&
                 data['bankAccountNumber'].toString().isNotEmpty,
-            Icons.account_balance_wallet,
+            Iconsax.wallet,
           ),
           if (data['upiId'] != null && data['upiId'].toString().isNotEmpty) ...[
             Divider(height: 20.h),
-            _infoRow(Icons.qr_code, 'UPI ID', data['upiId']),
+            _infoRow(Iconsax.scan_barcode, 'UPI ID', data['upiId']),
           ],
         ],
       ),
@@ -727,7 +728,7 @@ class MechanicProfileView extends StatelessWidget {
             borderRadius: BorderRadius.circular(10.r),
           ),
           child: Icon(
-            verified ? Icons.check_circle : Icons.radio_button_unchecked,
+            verified ? Iconsax.tick_circle : Iconsax.record_circle,
             color: verified ? Colors.green : Colors.grey.shade400,
             size: 20.w,
           ),
@@ -786,7 +787,7 @@ class MechanicProfileView extends StatelessWidget {
   Widget _logoutButton(MechanicProfileController c) {
     return ElevatedButton.icon(
       onPressed: c.logout,
-      icon: Icon(Icons.logout, color: Colors.white, size: 20.w),
+      icon: Icon(Iconsax.logout, color: Colors.white, size: 20.w),
       label: Text(
         'Logout',
         style: GoogleFonts.poppins(

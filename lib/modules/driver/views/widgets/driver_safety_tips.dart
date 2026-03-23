@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,7 +31,7 @@ class SafetyTipsSection extends StatelessWidget {
             children: [
               Flexible(
                 child: _SafetyTipCard(
-                  icon: Icons.warning_amber_rounded,
+                  icon: Iconsax.warning_2,
                   iconColor: Colors.orange,
                   title: "Stay in Vehicle",
                   subtitle: "Keep your doors locked until help arrives.",
@@ -39,7 +40,7 @@ class SafetyTipsSection extends StatelessWidget {
               SizedBox(width: 12.w),
               Flexible(
                 child: _SafetyTipCard(
-                  icon: Icons.lightbulb_outline,
+                  icon: Iconsax.lamp,
                   iconColor: Colors.blue,
                   title: "Hazard Lights",
                   subtitle: "Turn on hazard lights to stay visible.",

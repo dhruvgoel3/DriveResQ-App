@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -66,7 +67,7 @@ class PriceQuoteCard extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(
-                    Icons.receipt_long,
+                    Iconsax.receipt_item,
                     size: 18.w,
                     color: _statusColor(status),
                   ),
@@ -216,7 +217,7 @@ class PriceQuoteCard extends StatelessWidget {
                       child: Row(
                         children: [
                           Icon(
-                            Icons.swap_horiz,
+                            Iconsax.arrow_swap_horizontal,
                             size: 16.w,
                             color: Colors.orange,
                           ),

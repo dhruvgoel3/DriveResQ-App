@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -274,7 +275,7 @@ class MechanicProfileController extends GetxController {
           ),
           title: Row(
             children: [
-              Icon(Icons.logout, color: Colors.red),
+              Icon(Iconsax.logout, color: Colors.red),
               SizedBox(width: 8.w),
               Text("Logout"),
             ],

@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:driveresq_app/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class DriverOnboardingView extends StatelessWidget {
         leading: Obx(
           () => c.currentStep.value > 0
               ? IconButton(
-                  icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+                  icon: const Icon(Iconsax.arrow_left, color: AppColors.textPrimary),
                   onPressed: c.previousStep,
                 )
               : const SizedBox.shrink(),

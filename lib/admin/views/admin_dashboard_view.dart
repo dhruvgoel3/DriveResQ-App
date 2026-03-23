@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -51,7 +52,7 @@ class AdminDashboardView extends StatelessWidget {
                         SizedBox(
                           width: 280,
                           child: StatCard(
-                            icon: Icons.people,
+                            icon: Iconsax.people,
                             label: 'Total Mechanics',
                             value: '${c.totalMechanics.value}',
                             color: Colors.blue.shade700,
@@ -61,7 +62,7 @@ class AdminDashboardView extends StatelessWidget {
                         SizedBox(
                           width: 280,
                           child: StatCard(
-                            icon: Icons.pending_actions,
+                            icon: Iconsax.clock,
                             label: 'Pending Verifications',
                             value: '${c.pendingCount.value}',
                             color: Colors.orange.shade700,
@@ -71,7 +72,7 @@ class AdminDashboardView extends StatelessWidget {
                         SizedBox(
                           width: 280,
                           child: StatCard(
-                            icon: Icons.check_circle,
+                            icon: Iconsax.tick_circle,
                             label: 'Approved Today',
                             value: '${c.approvedToday.value}',
                             color: Colors.green.shade700,
@@ -81,7 +82,7 @@ class AdminDashboardView extends StatelessWidget {
                         SizedBox(
                           width: 280,
                           child: StatCard(
-                            icon: Icons.cancel,
+                            icon: Iconsax.close_square,
                             label: 'Rejected Today',
                             value: '${c.rejectedToday.value}',
                             color: Colors.red.shade700,
@@ -108,7 +109,7 @@ class AdminDashboardView extends StatelessWidget {
                     children: [
                       ElevatedButton.icon(
                         onPressed: () => Get.offAllNamed('/admin/pending'),
-                        icon: const Icon(Icons.pending_actions, size: 18),
+                        icon: const Icon(Iconsax.clock, size: 18),
                         label: Text(
                           'View Pending Applications',
                           style: GoogleFonts.poppins(
@@ -132,7 +133,7 @@ class AdminDashboardView extends StatelessWidget {
                       const SizedBox(width: 12),
                       OutlinedButton.icon(
                         onPressed: () => c.fetchStats(),
-                        icon: const Icon(Icons.refresh, size: 18),
+                        icon: const Icon(Iconsax.refresh, size: 18),
                         label: Text(
                           'Refresh Stats',
                           style: GoogleFonts.poppins(
@@ -180,7 +181,7 @@ class AdminDashboardView extends StatelessWidget {
                           child: Column(
                             children: [
                               Icon(
-                                Icons.history,
+                                Iconsax.clock,
                                 size: 48,
                                 color: Colors.grey.shade300,
                               ),
@@ -219,7 +220,7 @@ class AdminDashboardView extends StatelessWidget {
                                   ? Colors.green.shade50
                                   : Colors.red.shade50,
                               child: Icon(
-                                isApproval ? Icons.check : Icons.close,
+                                isApproval ? Iconsax.tick_circle : Iconsax.close_square,
                                 size: 18,
                                 color: isApproval ? Colors.green : Colors.red,
                               ),

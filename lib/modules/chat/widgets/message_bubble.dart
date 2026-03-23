@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -110,7 +111,7 @@ class MessageBubble extends StatelessWidget {
                     if (isMe) ...[
                       SizedBox(width: 4.w),
                       Icon(
-                        message.read ? Icons.done_all : Icons.done,
+                        message.read ? Iconsax.tick_circle : Iconsax.tick_circle,
                         size: 14.w,
                         color: message.read
                             ? Colors.lightBlueAccent
@@ -181,7 +182,7 @@ class MessageBubble extends StatelessWidget {
                         height: 100.h,
                         child: Center(
                           child: Icon(
-                            Icons.broken_image,
+                            Iconsax.image,
                             size: 40.w,
                             color: Colors.grey,
                           ),
@@ -281,7 +282,7 @@ class MessageBubble extends StatelessWidget {
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
-                        isThisPlaying ? Icons.pause : Icons.play_arrow,
+                        isThisPlaying ? Iconsax.pause : Iconsax.play,
                         color: isMe ? Colors.white : const Color(0xFF6C63FF),
                         size: 22.w,
                       ),
@@ -359,8 +360,8 @@ class MessageBubble extends StatelessWidget {
                                   SizedBox(width: 4.w),
                                   Icon(
                                     message.read
-                                        ? Icons.done_all
-                                        : Icons.done,
+                                        ? Iconsax.tick_circle
+                                        : Iconsax.tick_circle,
                                     size: 14.w,
                                     color: message.read
                                         ? Colors.lightBlueAccent

@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -50,7 +51,7 @@ class PendingVerificationsView extends StatelessWidget {
                       ),
                       ElevatedButton.icon(
                         onPressed: () => c.fetchMechanics('pending'),
-                        icon: const Icon(Icons.refresh, size: 18),
+                        icon: const Icon(Iconsax.refresh, size: 18),
                         label: Text(
                           'Refresh',
                           style: GoogleFonts.poppins(fontSize: 13),
@@ -126,7 +127,7 @@ class PendingVerificationsView extends StatelessWidget {
         child: Column(
           children: [
             Icon(
-              Icons.check_circle_outline,
+              Iconsax.tick_circle,
               size: 72,
               color: Colors.green.shade300,
             ),

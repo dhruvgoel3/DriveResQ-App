@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:driveresq_app/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -50,23 +51,23 @@ class ActiveRequestCard extends StatelessWidget {
 
           // 📍 INFO TILES
           _InfoTile(
-            icon: Icons.location_on_outlined,
+            icon: Iconsax.location,
             title: (request['locationName'] ?? '').toString().isEmpty ? 'Location not available' : request['locationName'],
             subtitle: "Pickup Location",
           ),
           _InfoTile(
-            icon: Icons.directions_car,
+            icon: Iconsax.car,
             title: (request['vehicleType'] ?? '').toString().isEmpty ? 'Not specified' : request['vehicleType'],
             subtitle: "Vehicle Type",
           ),
           _InfoTile(
-            icon: Icons.report_problem_outlined,
+            icon: Iconsax.warning_2,
             title: (request['problem'] ?? '').toString().isEmpty ? 'Not specified' : request['problem'],
             subtitle: "Reported Issue",
           ),
           if ((request['landmark'] ?? '').toString().isNotEmpty)
             _InfoTile(
-              icon: Icons.pin_drop_outlined,
+              icon: Iconsax.location,
               title: request['landmark'],
               subtitle: "Nearby Landmark",
             ),
@@ -222,7 +223,7 @@ class _MapPreview extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.touch_app, size: 14.w, color: AppColors.surface),
+                      Icon(Iconsax.mouse_circle, size: 14.w, color: AppColors.surface),
                       SizedBox(width: 4.w),
                       Text(
                         "Tap to view",
@@ -343,7 +344,7 @@ class _VerificationCode extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.verified_user, color: AppColors.primary, size: 20.w),
+              Icon(Iconsax.verify, color: AppColors.primary, size: 20.w),
               SizedBox(width: 8.w),
               Expanded(
                 child: Text(
@@ -401,7 +402,7 @@ class _VerificationCode extends StatelessWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => controller.copyVerificationCode(code),
-                  icon: Icon(Icons.copy, size: 16.w),
+                  icon: Icon(Iconsax.copy, size: 16.w),
                   label: Text("Copy", style: AppTextStyles.button.copyWith(color: AppColors.primary)),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.primary,
@@ -415,7 +416,7 @@ class _VerificationCode extends StatelessWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => controller.shareVerificationCode(code),
-                  icon: Icon(Icons.share, size: 16.w),
+                  icon: Icon(Iconsax.share, size: 16.w),
                   label: Text("Share", style: AppTextStyles.button.copyWith(color: AppColors.primary)),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.primary,
@@ -450,7 +451,7 @@ class _ActionButtons extends StatelessWidget {
                 height: 48.h,
                 child: ElevatedButton.icon(
                   onPressed: controller.callMechanic,
-                  icon: Icon(Icons.call, size: 18.w, color: AppColors.surface),
+                  icon: Icon(Iconsax.call, size: 18.w, color: AppColors.surface),
                   label: Text("Call", style: AppTextStyles.button.copyWith(color: AppColors.surface)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
@@ -468,7 +469,7 @@ class _ActionButtons extends StatelessWidget {
                 height: 48.h,
                 child: ElevatedButton.icon(
                   onPressed: controller.openChat,
-                  icon: Icon(Icons.chat_bubble, size: 18.w, color: AppColors.surface),
+                  icon: Icon(Iconsax.message, size: 18.w, color: AppColors.surface),
                   label: Text("Chat", style: AppTextStyles.button.copyWith(color: AppColors.surface)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
@@ -490,7 +491,7 @@ class _ActionButtons extends StatelessWidget {
             onPressed: () {
               Get.to(() => LiveTrackingView(requestId: request['id']));
             },
-            icon: Icon(Icons.location_searching, size: 18.w, color: AppColors.primary),
+            icon: Icon(Iconsax.location_cross, size: 18.w, color: AppColors.primary),
             label: Text("Track Mechanic Live", style: AppTextStyles.button.copyWith(color: AppColors.primary)),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.primary,
@@ -517,7 +518,7 @@ class _WaitingMessage extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.access_time, color: AppColors.secondaryDark),
+          const Icon(Iconsax.clock, color: AppColors.secondaryDark),
           SizedBox(width: 12.w),
           Expanded(
             child: Text(

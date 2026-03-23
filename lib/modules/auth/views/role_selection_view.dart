@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -72,7 +73,7 @@ class RoleSelectionView extends StatelessWidget {
                           role: 'driver',
                           title: 'Driver',
                           subtitle: 'Need roadside assistance',
-                          icon: Icons.directions_car,
+                          icon: Iconsax.car,
                           color: Colors.blue,
                           isSelected: controller.selectedRole.value == 'driver',
                         ),
@@ -84,7 +85,7 @@ class RoleSelectionView extends StatelessWidget {
                           role: 'mechanic',
                           title: 'Mechanic',
                           subtitle: 'Provide roadside assistance',
-                          icon: Icons.build,
+                          icon: Iconsax.setting_2,
                           color: Colors.orange,
                           isSelected:
                               controller.selectedRole.value == 'mechanic',
@@ -207,7 +208,7 @@ class RoleSelectionView extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(4.w),
                 decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-                child: Icon(Icons.check, color: Colors.white, size: 20.w),
+                child: Icon(Iconsax.tick_circle, color: Colors.white, size: 20.w),
               ),
           ],
         ),

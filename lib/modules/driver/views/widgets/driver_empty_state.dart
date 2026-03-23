@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import '../../../../shared/widgets/empty_state_widget.dart';
 
@@ -10,7 +11,7 @@ class DriverEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EmptyStateWidget(
-      icon: Icons.car_crash_rounded,
+      icon: Iconsax.car,
       iconColor: Color(0xFF6C63FF),
       title: 'Need Roadside Help?',
       message:

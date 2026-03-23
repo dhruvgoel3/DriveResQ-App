@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -56,7 +57,7 @@ class Step2ProfessionalDetails extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios_new, color: Colors.black87, size: 20.w),
+        icon: Icon(Iconsax.arrow_left_2, color: Colors.black87, size: 20.w),
         onPressed: () {
           c.currentStep.value = 1;
           Get.back();
@@ -145,7 +146,7 @@ class Step2ProfessionalDetails extends StatelessWidget {
       controller: c.shopNameController,
       label: 'Shop / Garage Name *',
       hint: 'Enter your shop name',
-      icon: Icons.store,
+      icon: Iconsax.shop,
     );
   }
 
@@ -154,7 +155,7 @@ class Step2ProfessionalDetails extends StatelessWidget {
       controller: c.shopAddressController,
       label: 'Shop Address *',
       hint: 'Enter shop address',
-      icon: Icons.location_on_outlined,
+      icon: Iconsax.location,
       maxLines: 2,
     );
   }
@@ -194,7 +195,7 @@ class Step2ProfessionalDetails extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          Icons.add_a_photo,
+                          Iconsax.camera,
                           size: 40.w,
                           color: Colors.grey.shade400,
                         ),
@@ -221,7 +222,7 @@ class Step2ProfessionalDetails extends StatelessWidget {
       controller: c.experienceController,
       label: 'Years of Experience *',
       hint: 'e.g. 5',
-      icon: Icons.work_history,
+      icon: Iconsax.clock,
       type: TextInputType.number,
       formatters: [FilteringTextInputFormatter.digitsOnly],
     );
@@ -343,7 +344,7 @@ class Step2ProfessionalDetails extends StatelessWidget {
                     children: [
                       if (selected) ...[
                         Icon(
-                          Icons.check_circle,
+                          Iconsax.tick_circle,
                           size: 16.w,
                           color: Color(0xFFFF9800),
                         ),

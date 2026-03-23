@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,14 +34,14 @@ class Step3Documents extends StatelessWidget {
                       label: 'Aadhaar Card - Front *',
                       file: c.aadhaarFront,
                       onTap: () => c.pickImage(c.aadhaarFront),
-                      icon: Icons.credit_card,
+                      icon: Iconsax.card,
                     ),
                     SizedBox(height: 16.h),
                     _buildDocCard(
                       label: 'Aadhaar Card - Back *',
                       file: c.aadhaarBack,
                       onTap: () => c.pickImage(c.aadhaarBack),
-                      icon: Icons.credit_card,
+                      icon: Iconsax.card,
                     ),
                     SizedBox(height: 20.h),
                     _buildAadhaarNumber(c),
@@ -49,14 +50,14 @@ class Step3Documents extends StatelessWidget {
                       label: 'PAN Card (Optional)',
                       file: c.panCard,
                       onTap: () => c.pickImage(c.panCard),
-                      icon: Icons.badge,
+                      icon: Iconsax.award,
                     ),
                     SizedBox(height: 16.h),
                     _buildDocCard(
                       label: 'Trade License / Work Permit (Optional)',
                       file: c.tradeLicense,
                       onTap: () => c.pickImage(c.tradeLicense),
-                      icon: Icons.description,
+                      icon: Iconsax.document_text,
                     ),
                     SizedBox(height: 40.h),
                   ],
@@ -75,7 +76,7 @@ class Step3Documents extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios_new, color: Colors.black87, size: 20.w),
+        icon: Icon(Iconsax.arrow_left_2, color: Colors.black87, size: 20.w),
         onPressed: () {
           c.currentStep.value = 2;
           Get.back();
@@ -209,7 +210,7 @@ class Step3Documents extends StatelessWidget {
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
-                          Icons.check,
+                          Iconsax.tick_circle,
                           size: 16.w,
                           color: Colors.white,
                         ),
@@ -268,7 +269,7 @@ class Step3Documents extends StatelessWidget {
                 letterSpacing: 2,
               ),
               prefixIcon: Icon(
-                Icons.fingerprint,
+                Iconsax.finger_scan,
                 color: Color(0xFFFF9800),
                 size: 22.w,
               ),
@@ -284,7 +285,7 @@ class Step3Documents extends StatelessWidget {
         SizedBox(height: 6.h),
         Row(
           children: [
-            Icon(Icons.lock, size: 14.w, color: Colors.grey.shade400),
+            Icon(Iconsax.lock, size: 14.w, color: Colors.grey.shade400),
             SizedBox(width: 4.w),
             Text(
               'Your Aadhaar number will be securely stored',

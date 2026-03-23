@@ -53,6 +53,8 @@ dependencies:
   shared_preferences: ^2.5.4
   intl: ^0.20.2
   flutter_launcher_icons: ^0.14.4
+  google_nav_bar: 5.0.7
+  iconsax: 0.0.8
 
 dev_dependencies:
   flutter_test:

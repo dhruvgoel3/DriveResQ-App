@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,7 +41,7 @@ class CompletionSuccessView extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Icon(Icons.check_rounded, color: Colors.white, size: 64.w),
+              child: Icon(Iconsax.check, color: Colors.white, size: 64.w),
             ),
           ),
 
@@ -129,8 +130,8 @@ class CompletionSuccessView extends StatelessWidget {
                           5,
                           (i) => Icon(
                             i < c.mechanicRating.value
-                                ? Icons.star_rounded
-                                : Icons.star_border_rounded,
+                                ? Iconsax.star
+                                : Iconsax.star,
                             color: Color(0xFFFFB300),
                             size: 20.w,
                           ),
@@ -151,7 +152,7 @@ class CompletionSuccessView extends StatelessWidget {
             height: 52.h,
             child: ElevatedButton.icon(
               onPressed: () => _downloadInvoice(c),
-              icon: Icon(Icons.download, size: 20.w),
+              icon: Icon(Iconsax.document_download, size: 20.w),
               label: Text(
                 'Download Invoice',
                 style: GoogleFonts.poppins(
@@ -177,7 +178,7 @@ class CompletionSuccessView extends StatelessWidget {
             height: 52.h,
             child: OutlinedButton.icon(
               onPressed: () => _shareInvoice(c),
-              icon: Icon(Icons.share, size: 20.w),
+              icon: Icon(Iconsax.share, size: 20.w),
               label: Text(
                 'Share Invoice',
                 style: GoogleFonts.poppins(

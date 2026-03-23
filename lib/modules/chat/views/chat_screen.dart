@@ -1,16 +1,17 @@
+import 'package:iconsax/iconsax.dart';
+import 'package:driveresq_app/theme/app_colors.dart';
+import 'package:driveresq_app/theme/app_text_styles.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+
 import '../controllers/chat_controller.dart';
 import '../widgets/message_bubble.dart';
 import '../widgets/price_quote_card.dart';
 import '../widgets/quick_replies.dart';
-import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class ChatScreen extends StatelessWidget {
-  static const _accent = Color(0xFF6C63FF);
-
   const ChatScreen({super.key});
 
   @override
@@ -18,11 +19,10 @@ class ChatScreen extends StatelessWidget {
     final c = Get.find<ChatController>();
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _buildAppBar(c),
+      backgroundColor: AppColors.background,
+      appBar: _ChatAppBar(controller: c),
       body: Column(
         children: [
-          // Messages
           Expanded(
             child: Obx(() {
               if (c.messages.isEmpty) {
@@ -31,24 +31,22 @@ class ChatScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        Icons.chat_bubble_outline,
+                        Iconsax.message,
                         size: 64.w,
-                        color: Colors.grey.shade300,
+                        color: AppColors.textHint.withOpacity(0.5),
                       ),
                       SizedBox(height: 12.h),
                       Text(
                         'No messages yet',
-                        style: GoogleFonts.poppins(
-                          fontSize: 16.sp,
-                          color: Colors.grey.shade400,
+                        style: AppTextStyles.body1.copyWith(
+                          color: AppColors.textHint,
                         ),
                       ),
                       SizedBox(height: 4.h),
                       Text(
                         'Say hello! 👋',
-                        style: GoogleFonts.poppins(
-                          fontSize: 13.sp,
-                          color: Colors.grey.shade400,
+                        style: AppTextStyles.body2.copyWith(
+                          color: AppColors.textHint,
                         ),
                       ),
                     ],
@@ -65,7 +63,6 @@ class ChatScreen extends StatelessWidget {
                   final msg = c.messages[i];
                   final isMe = c.isMe(msg);
 
-                  // Price quote
                   if (msg.type == 'price_quote') {
                     return PriceQuoteCard(
                       message: msg,
@@ -80,7 +77,6 @@ class ChatScreen extends StatelessWidget {
             }),
           ),
 
-          // Quick replies
           Obx(
             () => c.showQuickReplies.value
                 ? QuickRepliesBar(
@@ -90,29 +86,36 @@ class ChatScreen extends StatelessWidget {
                 : const SizedBox.shrink(),
           ),
 
-          // Recording overlay
-          Obx(() => c.isRecording.value
-              ? _buildRecordingOverlay(c)
-              : const SizedBox.shrink()),
+          Obx(
+            () => c.isRecording.value
+                ? _ChatRecordingOverlay(controller: c)
+                : const SizedBox.shrink(),
+          ),
 
-          // Input bar
-          _buildInputBar(c),
+          _ChatInputBar(controller: c),
         ],
       ),
     );
   }
+}
 
-  PreferredSizeWidget _buildAppBar(ChatController c) {
+class _ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final ChatController controller;
+
+  const _ChatAppBar({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: _accent,
-      foregroundColor: Colors.white,
+      backgroundColor: AppColors.primary,
+      foregroundColor: AppColors.surface,
       elevation: 0,
       titleSpacing: 0,
-      leadingWidth: 36,
+      leadingWidth: 36.w,
       leading: Padding(
         padding: EdgeInsets.only(left: 4.w),
         child: IconButton(
-          icon: Icon(Icons.arrow_back, size: 22.w),
+          icon: Icon(Iconsax.arrow_left, size: 22.w),
           onPressed: () => Get.back(),
         ),
       ),
@@ -120,12 +123,16 @@ class ChatScreen extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 18.r,
-            backgroundImage: c.otherUserPhoto.isNotEmpty
-                ? NetworkImage(c.otherUserPhoto)
+            backgroundImage: controller.otherUserPhoto.isNotEmpty
+                ? NetworkImage(controller.otherUserPhoto)
                 : null,
-            backgroundColor: Colors.white24,
-            child: c.otherUserPhoto.isEmpty
-                ? Icon(Icons.person, color: Colors.white70, size: 18.w)
+            backgroundColor: AppColors.surface.withOpacity(0.24),
+            child: controller.otherUserPhoto.isEmpty
+                ? Icon(
+                    Iconsax.user,
+                    color: AppColors.surface.withOpacity(0.7),
+                    size: 18.w,
+                  )
                 : null,
           ),
           SizedBox(width: 10.w),
@@ -134,18 +141,16 @@ class ChatScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  c.otherUserName,
-                  style: GoogleFonts.poppins(
-                    fontSize: 15.sp,
+                  controller.otherUserName,
+                  style: AppTextStyles.h3.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: AppColors.surface,
                   ),
                 ),
                 Text(
-                  c.myRole == 'driver' ? 'Mechanic' : 'Driver',
-                  style: GoogleFonts.poppins(
-                    fontSize: 11.sp,
-                    color: Colors.white70,
+                  controller.myRole == 'driver' ? 'Mechanic' : 'Driver',
+                  style: AppTextStyles.caption.copyWith(
+                    color: AppColors.surface.withOpacity(0.7),
                   ),
                 ),
               ],
@@ -154,34 +159,41 @@ class ChatScreen extends StatelessWidget {
         ],
       ),
       actions: [
-        // Estimate button (mechanic only)
-        if (c.myRole == 'mechanic')
+        if (controller.myRole == 'mechanic')
           IconButton(
-            icon: Icon(Icons.receipt_long, size: 22.w),
+            icon: Icon(Iconsax.receipt_item, size: 22.w),
             tooltip: 'Send Estimate',
-            onPressed: () => _showEstimateDialog(c),
+            onPressed: () => _EstimateDialog.show(controller),
           ),
         IconButton(
-          icon: Icon(Icons.phone, size: 22.w),
+          icon: Icon(Iconsax.call, size: 22.w),
           onPressed: () {},
         ),
       ],
     );
   }
 
-  // ─── Recording overlay bar ───
-  Widget _buildRecordingOverlay(ChatController c) {
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+class _ChatRecordingOverlay extends StatelessWidget {
+  final ChatController controller;
+
+  const _ChatRecordingOverlay({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
       decoration: BoxDecoration(
-        color: Colors.red.shade50,
+        color: AppColors.error.withOpacity(0.1),
         border: Border(
-          top: BorderSide(color: Colors.red.shade100, width: 1),
+          top: BorderSide(color: AppColors.error.withOpacity(0.2), width: 1),
         ),
       ),
       child: Row(
         children: [
-          // Pulsing red dot
           TweenAnimationBuilder<double>(
             tween: Tween(begin: 0.3, end: 1.0),
             duration: const Duration(milliseconds: 800),
@@ -192,54 +204,52 @@ class ChatScreen extends StatelessWidget {
               width: 12.w,
               height: 12.w,
               decoration: const BoxDecoration(
-                color: Colors.red,
+                color: AppColors.error,
                 shape: BoxShape.circle,
               ),
             ),
           ),
           SizedBox(width: 10.w),
-
-          // Recording label + duration
           Text(
             'Recording',
-            style: GoogleFonts.poppins(
-              fontSize: 14.sp,
+            style: AppTextStyles.body2.copyWith(
               fontWeight: FontWeight.w600,
-              color: Colors.red.shade700,
+              color: AppColors.error,
             ),
           ),
           SizedBox(width: 8.w),
-          Obx(() => Text(
-                c.formatRecordingDuration(),
-                style: GoogleFonts.poppins(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.red.shade400,
-                ),
-              )),
-
+          Obx(
+            () => Text(
+              controller.formatRecordingDuration(),
+              style: AppTextStyles.body2.copyWith(
+                fontWeight: FontWeight.w500,
+                color: AppColors.error.withOpacity(0.8),
+              ),
+            ),
+          ),
           const Spacer(),
-
-          // Cancel button
           GestureDetector(
-            onTap: c.cancelRecording,
+            onTap: controller.cancelRecording,
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
               decoration: BoxDecoration(
-                color: Colors.red.shade100,
+                color: AppColors.error.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(20.r),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.delete_outline, size: 16.w, color: Colors.red),
+                  Icon(
+                    Iconsax.trash,
+                    size: 16.w,
+                    color: AppColors.error,
+                  ),
                   SizedBox(width: 4.w),
                   Text(
                     'Cancel',
-                    style: GoogleFonts.poppins(
-                      fontSize: 12.sp,
+                    style: AppTextStyles.caption.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: Colors.red,
+                      color: AppColors.error,
                     ),
                   ),
                 ],
@@ -247,35 +257,40 @@ class ChatScreen extends StatelessWidget {
             ),
           ),
           SizedBox(width: 8.w),
-
-          // Send button
           GestureDetector(
-            onTap: c.stopAndSendRecording,
+            onTap: controller.stopAndSendRecording,
             child: Container(
               width: 40.w,
               height: 40.w,
               decoration: const BoxDecoration(
-                color: _accent,
+                color: AppColors.primary,
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.send, color: Colors.white, size: 20.w),
+              child: Icon(Iconsax.send_1, color: AppColors.surface, size: 20.w),
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildInputBar(ChatController c) {
+class _ChatInputBar extends StatelessWidget {
+  final ChatController controller;
+
+  const _ChatInputBar({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
         left: 8.w,
         right: 8.w,
         top: 8.h,
-        bottom: MediaQuery.of(Get.context!).padding.bottom + 8,
+        bottom: MediaQuery.of(context).padding.bottom + 8.h,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -285,57 +300,48 @@ class ChatScreen extends StatelessWidget {
         ],
       ),
       child: Obx(() {
-        // Hide input bar while recording
-        if (c.isRecording.value) return const SizedBox.shrink();
+        if (controller.isRecording.value) return const SizedBox.shrink();
 
         return Row(
           children: [
-            // Attach
             IconButton(
               icon: Icon(
-                Icons.add_circle_outline,
-                color: Colors.grey.shade500,
+                Iconsax.add_circle,
+                color: AppColors.textHint,
                 size: 24.w,
               ),
-              onPressed: () => _showAttachMenu(c),
+              onPressed: () => _showAttachMenu(context, controller),
             ),
-
-            // Quick replies toggle
             Obx(
               () => IconButton(
                 icon: Icon(
-                  Icons.flash_on,
-                  color: c.showQuickReplies.value
-                      ? _accent
-                      : Colors.grey.shade500,
+                  Iconsax.flash,
+                  color: controller.showQuickReplies.value
+                      ? AppColors.primary
+                      : AppColors.textHint,
                   size: 24.w,
                 ),
-                onPressed: () =>
-                    c.showQuickReplies.value = !c.showQuickReplies.value,
+                onPressed: () => controller.showQuickReplies.value =
+                    !controller.showQuickReplies.value,
               ),
             ),
-
-            // Text field
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
+                  color: AppColors.background,
                   borderRadius: BorderRadius.circular(24.r),
+                  border: Border.all(color: AppColors.border),
                 ),
                 child: TextField(
-                  controller: c.textController,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14.sp,
-                    color: Colors.black87,
-                  ),
+                  controller: controller.textController,
+                  style: AppTextStyles.body2,
                   maxLines: 4,
                   minLines: 1,
                   textCapitalization: TextCapitalization.sentences,
                   decoration: InputDecoration(
                     hintText: 'Type a message...',
-                    hintStyle: GoogleFonts.poppins(
-                      fontSize: 14.sp,
-                      color: Colors.grey.shade400,
+                    hintStyle: AppTextStyles.body2.copyWith(
+                      color: AppColors.textHint,
                     ),
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 16.w,
@@ -343,15 +349,11 @@ class ChatScreen extends StatelessWidget {
                     ),
                     border: InputBorder.none,
                   ),
-
                 ),
               ),
             ),
-
             SizedBox(width: 6.w),
-
-            // Dynamic mic / send button
-            _buildSendOrMicButton(c),
+            _buildSendOrMicButton(controller),
           ],
         );
       }),
@@ -364,10 +366,9 @@ class ChatScreen extends StatelessWidget {
       final sending = c.isSending.value;
 
       if (sending) {
-        // Show loading indicator
         return Container(
           decoration: BoxDecoration(
-            color: Colors.grey.shade300,
+            color: AppColors.border,
             shape: BoxShape.circle,
           ),
           child: IconButton(
@@ -375,7 +376,7 @@ class ChatScreen extends StatelessWidget {
               width: 20.w,
               height: 20.h,
               child: const CircularProgressIndicator(
-                color: Colors.white,
+                color: AppColors.surface,
                 strokeWidth: 2,
               ),
             ),
@@ -385,39 +386,37 @@ class ChatScreen extends StatelessWidget {
       }
 
       if (hasText) {
-        // Send text button
         return Container(
           decoration: const BoxDecoration(
-            color: _accent,
+            color: AppColors.primary,
             shape: BoxShape.circle,
           ),
           child: IconButton(
-            icon: Icon(Icons.send, color: Colors.white, size: 20.w),
+            icon: Icon(Iconsax.send_1, color: AppColors.surface, size: 20.w),
             onPressed: c.sendMessage,
           ),
         );
       }
 
-      // Mic button (tap to start, tap again to send)
       return Container(
         decoration: const BoxDecoration(
-          color: _accent,
+          color: AppColors.primary,
           shape: BoxShape.circle,
         ),
         child: IconButton(
-          icon: Icon(Icons.mic, color: Colors.white, size: 22.w),
+          icon: Icon(Iconsax.microphone, color: AppColors.surface, size: 22.w),
           onPressed: c.startRecording,
         ),
       );
     });
   }
 
-  void _showAttachMenu(ChatController c) {
+  void _showAttachMenu(BuildContext context, ChatController c) {
     Get.bottomSheet(
       Container(
         padding: EdgeInsets.all(20.w),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
         child: Column(
@@ -427,7 +426,7 @@ class ChatScreen extends StatelessWidget {
               width: 40.w,
               height: 4.h,
               decoration: BoxDecoration(
-                color: Colors.grey.shade300,
+                color: AppColors.border,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -435,18 +434,23 @@ class ChatScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _attachOption(Icons.camera_alt, 'Camera', Colors.red, () {
+                _attachOption(Iconsax.camera, 'Camera', AppColors.error, () {
                   Get.back();
                   c.pickAndSendImage(source: ImageSource.camera);
                 }),
-                _attachOption(Icons.photo, 'Gallery', Colors.purple, () {
+                _attachOption(Iconsax.gallery, 'Gallery', AppColors.primary, () {
                   Get.back();
                   c.pickAndSendImage(source: ImageSource.gallery);
                 }),
-                _attachOption(Icons.location_on, 'Location', Colors.green, () {
-                  Get.back();
-                  c.sendQuickReply('📍 Sharing my current location');
-                }),
+                _attachOption(
+                  Iconsax.location,
+                  'Location',
+                  AppColors.success,
+                  () {
+                    Get.back();
+                    c.sendQuickReply('📍 Sharing my current location');
+                  },
+                ),
               ],
             ),
             SizedBox(height: 16.h),
@@ -477,17 +481,18 @@ class ChatScreen extends StatelessWidget {
           SizedBox(height: 6.h),
           Text(
             label,
-            style: GoogleFonts.poppins(
-              fontSize: 12.sp,
-              color: Colors.grey.shade600,
+            style: AppTextStyles.caption.copyWith(
+              color: AppColors.textSecondary,
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  void _showEstimateDialog(ChatController c) {
+class _EstimateDialog {
+  static void show(ChatController c) {
     final serviceCtrl = TextEditingController();
     final costCtrl = TextEditingController();
     final timeCtrl = TextEditingController();
@@ -497,7 +502,7 @@ class ChatScreen extends StatelessWidget {
       Container(
         padding: EdgeInsets.all(20.w),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
         child: SingleChildScrollView(
@@ -510,26 +515,25 @@ class ChatScreen extends StatelessWidget {
                   width: 40.w,
                   height: 4.h,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: AppColors.border,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
               ),
               SizedBox(height: 16.h),
-              Text(
-                'Send Service Estimate',
-                style: GoogleFonts.poppins(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              Text('Send Service Estimate', style: AppTextStyles.h2),
               SizedBox(height: 16.h),
               TextField(
                 controller: serviceCtrl,
+                style: AppTextStyles.body2,
                 decoration: InputDecoration(
                   labelText: 'Service Description *',
+                  labelStyle: AppTextStyles.body2.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.r),
+                    borderSide: const BorderSide(color: AppColors.border),
                   ),
                 ),
               ),
@@ -540,10 +544,15 @@ class ChatScreen extends StatelessWidget {
                     child: TextField(
                       controller: costCtrl,
                       keyboardType: TextInputType.number,
+                      style: AppTextStyles.body2,
                       decoration: InputDecoration(
                         labelText: 'Cost (₹) *',
+                        labelStyle: AppTextStyles.body2.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
+                          borderSide: const BorderSide(color: AppColors.border),
                         ),
                       ),
                     ),
@@ -552,11 +561,19 @@ class ChatScreen extends StatelessWidget {
                   Expanded(
                     child: TextField(
                       controller: timeCtrl,
+                      style: AppTextStyles.body2,
                       decoration: InputDecoration(
                         labelText: 'Est. Time *',
                         hintText: 'e.g. 1 hour',
+                        labelStyle: AppTextStyles.body2.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                        hintStyle: AppTextStyles.body2.copyWith(
+                          color: AppColors.textHint,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
+                          borderSide: const BorderSide(color: AppColors.border),
                         ),
                       ),
                     ),
@@ -567,10 +584,15 @@ class ChatScreen extends StatelessWidget {
               TextField(
                 controller: notesCtrl,
                 maxLines: 2,
+                style: AppTextStyles.body2,
                 decoration: InputDecoration(
                   labelText: 'Notes (optional)',
+                  labelStyle: AppTextStyles.body2.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.r),
+                    borderSide: const BorderSide(color: AppColors.border),
                   ),
                 ),
               ),
@@ -583,7 +605,12 @@ class ChatScreen extends StatelessWidget {
                     if (serviceCtrl.text.trim().isEmpty ||
                         cost == null ||
                         timeCtrl.text.trim().isEmpty) {
-                      Get.snackbar('Required', 'Fill service, cost and time');
+                      Get.snackbar(
+                        'Required',
+                        'Fill service, cost and time',
+                        backgroundColor: AppColors.error,
+                        colorText: AppColors.surface,
+                      );
                       return;
                     }
                     Get.back();
@@ -596,14 +623,16 @@ class ChatScreen extends StatelessWidget {
                           : null,
                     );
                   },
-                  icon: const Icon(Icons.send),
+                  icon: const Icon(Iconsax.send_1, color: AppColors.surface),
                   label: Text(
                     'Send Estimate',
-                    style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                    style: AppTextStyles.button.copyWith(
+                      color: AppColors.surface,
+                    ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _accent,
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: AppColors.surface,
                     padding: EdgeInsets.symmetric(vertical: 14.h),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),

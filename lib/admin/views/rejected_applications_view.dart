@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -61,7 +62,7 @@ class RejectedApplicationsView extends StatelessWidget {
                           child: Column(
                             children: [
                               Icon(
-                                Icons.thumb_up,
+                                Iconsax.like_1,
                                 size: 60,
                                 color: Colors.green.shade300,
                               ),
@@ -134,7 +135,7 @@ class RejectedApplicationsView extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(
-                    Icons.info_outline,
+                    Iconsax.info_circle,
                     size: 16,
                     color: Colors.red.shade400,
                   ),

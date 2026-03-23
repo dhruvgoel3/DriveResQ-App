@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -41,13 +42,13 @@ class FindMechanicsView extends StatelessWidget {
         surfaceTintColor: Colors.white,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_none_rounded, color: Colors.black87),
+            icon: const Icon(Iconsax.notification, color: Colors.black87),
             onPressed: () {
               // Notifications
             },
           ),
           IconButton(
-            icon: const Icon(Icons.tune_rounded, color: Colors.black87),
+            icon: const Icon(Iconsax.setting_4, color: Colors.black87),
             onPressed: () {
               Get.bottomSheet(
                 MechanicFilterBottomSheet(controller: controller),
@@ -57,7 +58,7 @@ class FindMechanicsView extends StatelessWidget {
           ),
           Obx(() => IconButton(
                 icon: Icon(
-                  controller.isListView.value ? Icons.map_rounded : Icons.list_rounded,
+                  controller.isListView.value ? Iconsax.map : Iconsax.task_square,
                   color: _accent,
                 ),
                 onPressed: controller.toggleView,
@@ -78,7 +79,7 @@ class FindMechanicsView extends StatelessWidget {
                   // Location
                   Row(
                     children: [
-                      Icon(Icons.location_on, color: _accent, size: 20),
+                      Icon(Iconsax.location, color: _accent, size: 20),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Obx(() => Text(
@@ -127,12 +128,12 @@ class FindMechanicsView extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: "Search mechanics, services, areas...",
                         hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400, fontSize: 13),
-                        prefixIcon: Icon(Icons.search_rounded, color: Colors.grey.shade500),
+                        prefixIcon: Icon(Iconsax.search_normal, color: Colors.grey.shade500),
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(vertical: 14),
                         suffixIcon: Obx(() => controller.searchQuery.value.isNotEmpty
                             ? IconButton(
-                                icon: const Icon(Icons.clear, size: 18),
+                                icon: const Icon(Iconsax.close_square, size: 18),
                                 onPressed: () {
                                   controller.searchQuery.value = '';
                                   // Hack to clear the textfield UI without losing cursor:
@@ -251,7 +252,7 @@ class FindMechanicsView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 40),
-          Icon(Icons.search_off_rounded, size: 80, color: Colors.grey.shade300),
+          Icon(Iconsax.search_normal, size: 80, color: Colors.grey.shade300),
           const SizedBox(height: 16),
           Text(
             "No Mechanics Found",

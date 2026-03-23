@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:driveresq_app/shared/widgets/empty_state_widget.dart';
 
@@ -8,7 +9,7 @@ class MechanicEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EmptyStateWidget(
-      icon: Icons.build_circle,
+      icon: Iconsax.setting_2,
       iconColor: Color(0xFFFF9800),
       title: 'No Nearby Requests',
       message:

@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -43,7 +44,7 @@ class AdminLoginView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: const Icon(
-                    Icons.admin_panel_settings,
+                    Iconsax.security_user,
                     color: Colors.white,
                     size: 36,
                   ),
@@ -72,7 +73,7 @@ class AdminLoginView extends StatelessWidget {
                   controller: c.emailController,
                   label: 'Email',
                   hint: 'admin@driveresq.com',
-                  icon: Icons.email_outlined,
+                  icon: Iconsax.sms,
                   type: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 20),
@@ -83,13 +84,13 @@ class AdminLoginView extends StatelessWidget {
                     controller: c.passwordController,
                     label: 'Password',
                     hint: '••••••••',
-                    icon: Icons.lock_outline,
+                    icon: Iconsax.lock,
                     obscure: c.obscurePassword.value,
                     suffix: IconButton(
                       icon: Icon(
                         c.obscurePassword.value
-                            ? Icons.visibility_off
-                            : Icons.visibility,
+                            ? Iconsax.eye_slash
+                            : Iconsax.eye,
                         color: Colors.grey.shade500,
                         size: 20,
                       ),

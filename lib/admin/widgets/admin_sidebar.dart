@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -36,7 +37,7 @@ class AdminSidebar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(
-                    Icons.admin_panel_settings,
+                    Iconsax.security_user,
                     color: Colors.white,
                     size: 24,
                   ),
@@ -70,22 +71,22 @@ class AdminSidebar extends StatelessWidget {
           const SizedBox(height: 8),
 
           // Menu Items
-          _menuItem(Icons.dashboard_rounded, 'Dashboard', '/admin/dashboard'),
+          _menuItem(Iconsax.category, 'Dashboard', '/admin/dashboard'),
           Obx(
             () => _menuItem(
-              Icons.pending_actions,
+              Iconsax.clock,
               'Pending Verifications',
               '/admin/pending',
               badge: dashC.pendingCount.value,
             ),
           ),
           _menuItem(
-            Icons.check_circle_outline,
+            Iconsax.tick_circle,
             'Approved Mechanics',
             '/admin/approved',
           ),
           _menuItem(
-            Icons.cancel_outlined,
+            Iconsax.close_square,
             'Rejected Applications',
             '/admin/rejected',
           ),
@@ -147,7 +148,7 @@ class AdminSidebar extends StatelessWidget {
           ),
 
           // Logout
-          _menuItem(Icons.logout, 'Logout', 'logout'),
+          _menuItem(Iconsax.logout, 'Logout', 'logout'),
           const SizedBox(height: 16),
         ],
       ),

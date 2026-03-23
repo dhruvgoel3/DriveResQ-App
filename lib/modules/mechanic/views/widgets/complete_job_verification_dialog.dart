@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -168,7 +169,7 @@ class _CompleteJobVerificationDialogState
             color: _green.withOpacity(0.1),
             shape: BoxShape.circle,
           ),
-          child: Icon(Icons.check_circle, color: _green, size: 56.w),
+          child: Icon(Iconsax.tick_circle, color: _green, size: 56.w),
         ),
         SizedBox(height: 20.h),
         Text(
@@ -245,7 +246,7 @@ class _CompleteJobVerificationDialogState
             color: _primary.withOpacity(0.08),
             shape: BoxShape.circle,
           ),
-          child: Icon(Icons.verified_user, color: _primary, size: 32.w),
+          child: Icon(Iconsax.verify, color: _primary, size: 32.w),
         ),
         SizedBox(height: 16.h),
         Text(
@@ -307,7 +308,7 @@ class _CompleteJobVerificationDialogState
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.error_outline, color: Colors.red, size: 18.w),
+                Icon(Iconsax.close_circle, color: Colors.red, size: 18.w),
                 SizedBox(width: 6.w),
                 Flexible(
                   child: Text(

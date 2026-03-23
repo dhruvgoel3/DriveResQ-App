@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:driveresq_app/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -17,12 +18,12 @@ class ProfileIdentityCard extends StatelessWidget {
 
     return ProfileCardContainer(
       title: 'IDENTITY VERIFICATION',
-      icon: Icons.verified_user,
+      icon: Iconsax.verify,
       child: Column(
         children: [
-          _infoRow(Icons.credit_card, 'ID Type', controller.govtIdType),
+          _infoRow(Iconsax.card, 'ID Type', controller.govtIdType),
           _sep(),
-          _infoRow(Icons.numbers, 'ID Number', controller.govtIdNumber),
+          _infoRow(Iconsax.math, 'ID Number', controller.govtIdNumber),
           _sep(),
           Row(
             children: [
@@ -33,7 +34,7 @@ class ProfileIdentityCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(
-                  Icons.check_circle,
+                  Iconsax.tick_circle,
                   color: AppColors.success,
                   size: 20.w,
                 ),

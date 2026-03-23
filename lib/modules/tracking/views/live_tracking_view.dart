@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -267,7 +268,7 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Iconsax.arrow_left, color: Colors.black),
           onPressed: () => Get.back(),
         ),
         title: Text(
@@ -318,7 +319,7 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
                     mini: true,
                     backgroundColor: Colors.white,
                     onPressed: _moveCameraToShowBoth,
-                    child: Icon(Icons.my_location, color: Color(0xFF6C63FF)),
+                    child: Icon(Iconsax.gps, color: Color(0xFF6C63FF)),
                   ),
                 ),
               ],
@@ -384,9 +385,9 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildStatItem(Icons.location_on, distance, "Distance"),
+              _buildStatItem(Iconsax.location, distance, "Distance"),
               Container(width: 1, height: 40.h, color: Colors.grey.shade300),
-              _buildStatItem(Icons.access_time, eta, "ETA"),
+              _buildStatItem(Iconsax.clock, eta, "ETA"),
             ],
           ),
 
@@ -398,7 +399,7 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: _callMechanic,
-                  icon: Icon(Icons.call),
+                  icon: Icon(Iconsax.call),
                   label: Text("Call"),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Color(0xFF6C63FF),
@@ -414,7 +415,7 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
               Expanded(
                 child: ElevatedButton.icon(
                   onPressed: _openNavigation,
-                  icon: Icon(Icons.navigation),
+                  icon: Icon(Iconsax.location),
                   label: Text("Navigate"),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF6C63FF),

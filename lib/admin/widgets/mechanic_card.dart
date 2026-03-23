@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -92,7 +93,7 @@ class MechanicCard extends StatelessWidget {
                 Row(
                   children: [
                     if (phone.isNotEmpty) ...[
-                      Icon(Icons.phone, size: 14, color: Colors.grey.shade400),
+                      Icon(Iconsax.call, size: 14, color: Colors.grey.shade400),
                       const SizedBox(width: 4),
                       Text(
                         phone,
@@ -104,7 +105,7 @@ class MechanicCard extends StatelessWidget {
                       const SizedBox(width: 16),
                     ],
                     if (email.isNotEmpty) ...[
-                      Icon(Icons.email, size: 14, color: Colors.grey.shade400),
+                      Icon(Iconsax.sms, size: 14, color: Colors.grey.shade400),
                       const SizedBox(width: 4),
                       Flexible(
                         child: Text(

@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -171,7 +172,7 @@ class _ValidatedTextFieldState extends State<ValidatedTextField> {
                   padding: EdgeInsets.only(top: 6.h, left: 4.w),
                   child: Row(
                     children: [
-                      Icon(Icons.error_outline, color: _red, size: 14.w),
+                      Icon(Iconsax.close_circle, color: _red, size: 14.w),
                       SizedBox(width: 4.w),
                       Expanded(
                         child: Text(
@@ -195,10 +196,10 @@ class _ValidatedTextFieldState extends State<ValidatedTextField> {
   Widget? _buildSuffixIcon() {
     if (!_hasInteracted || widget.controller.text.isEmpty) return null;
     if (_isValid) {
-      return Icon(Icons.check_circle, color: _green, size: 22.w);
+      return Icon(Iconsax.tick_circle, color: _green, size: 22.w);
     }
     if (_isError) {
-      return Icon(Icons.cancel, color: _red, size: 22.w);
+      return Icon(Iconsax.close_square, color: _red, size: 22.w);
     }
     return null;
   }

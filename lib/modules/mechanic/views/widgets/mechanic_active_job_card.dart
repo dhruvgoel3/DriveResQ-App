@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -105,17 +106,17 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
   IconData _problemIcon(String? problem) {
     final p = (problem ?? '').toLowerCase();
     if (p.contains('tire') || p.contains('tyre') || p.contains('flat')) {
-      return Icons.car_repair;
+      return Iconsax.car;
     }
-    if (p.contains('engine') || p.contains('motor')) return Icons.build;
+    if (p.contains('engine') || p.contains('motor')) return Iconsax.setting_2;
     if (p.contains('battery') || p.contains('charge')) {
-      return Icons.battery_charging_full;
+      return Iconsax.battery_charging;
     }
     if (p.contains('fuel') || p.contains('petrol') || p.contains('diesel')) {
-      return Icons.local_gas_station;
+      return Iconsax.gas_station;
     }
-    if (p.contains('key') || p.contains('lock')) return Icons.vpn_key;
-    return Icons.warning_rounded;
+    if (p.contains('key') || p.contains('lock')) return Iconsax.key;
+    return Iconsax.warning_2;
   }
 
   @override
@@ -193,7 +194,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
       child: Row(
         children: [
           // Location
-          Icon(Icons.location_on, color: Colors.white, size: 18.w),
+          Icon(Iconsax.location, color: Colors.white, size: 18.w),
           SizedBox(width: 6.w),
           Expanded(
             child: Text(
@@ -249,7 +250,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.navigation, color: Colors.white, size: 12.w),
+                  Icon(Iconsax.location, color: Colors.white, size: 12.w),
                   SizedBox(width: 4.w),
                   Text(
                     "${widget.job['distance']} km",
@@ -346,7 +347,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
   Widget _buildDriverInfo() {
     return Row(
       children: [
-        Icon(Icons.person, color: _orange, size: 20.w),
+        Icon(Iconsax.user, color: _orange, size: 20.w),
         SizedBox(width: 8.w),
         Expanded(
           child: Text(
@@ -370,7 +371,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.phone, color: _primary, size: 16.w),
+                  Icon(Iconsax.call, color: _primary, size: 16.w),
                   SizedBox(width: 6.w),
                   Text(
                     "Call",
@@ -400,7 +401,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.notes_rounded, color: Colors.blue.shade600, size: 18.w),
+          Icon(Iconsax.document_text, color: Colors.blue.shade600, size: 18.w),
           SizedBox(width: 10.w),
           Expanded(
             child: Text(
@@ -422,7 +423,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
   Widget _buildTimestamp() {
     return Row(
       children: [
-        Icon(Icons.access_time, color: Colors.grey.shade500, size: 16.w),
+        Icon(Iconsax.clock, color: Colors.grey.shade500, size: 16.w),
         SizedBox(width: 6.w),
         Text(
           "Created $_timeAgo",
@@ -442,12 +443,12 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
         Row(
           children: [
             Expanded(
-              child: _miniAction(Icons.phone, "Call", _primary, _callDriver),
+              child: _miniAction(Iconsax.call, "Call", _primary, _callDriver),
             ),
             SizedBox(width: 8.w),
             Expanded(
               child: _miniAction(
-                Icons.chat_bubble,
+                Iconsax.message,
                 "Chat",
                 _primary,
                 _openChat,
@@ -456,7 +457,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
             SizedBox(width: 8.w),
             Expanded(
               child: _miniAction(
-                Icons.navigation,
+                Iconsax.location,
                 "Navigate",
                 Colors.blue,
                 _navigateToDriver,
@@ -471,7 +472,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
               flex: 2,
               child: OutlinedButton.icon(
                 onPressed: widget.onCancel,
-                icon: Icon(Icons.close, size: 18.w),
+                icon: Icon(Iconsax.close_square, size: 18.w),
                 label: Text(
                   "Cancel",
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
@@ -505,7 +506,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                 ),
                 child: ElevatedButton.icon(
                   onPressed: _completeJob,
-                  icon: Icon(Icons.check_circle, size: 20.w),
+                  icon: Icon(Iconsax.tick_circle, size: 20.w),
                   label: Text(
                     "Complete",
                     style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
@@ -539,7 +540,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
               HapticFeedback.mediumImpact();
               // Reject = dismiss from view (no Firestore action needed)
             },
-            icon: Icon(Icons.close, size: 18.w),
+            icon: Icon(Iconsax.close_square, size: 18.w),
             label: Text(
               "Reject",
               style: GoogleFonts.poppins(
@@ -579,7 +580,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                 HapticFeedback.mediumImpact();
                 widget.onAccept?.call();
               },
-              icon: Icon(Icons.check, size: 20.w),
+              icon: Icon(Iconsax.tick_circle, size: 20.w),
               label: Text(
                 "Accept Request",
                 style: GoogleFonts.poppins(

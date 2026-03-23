@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -76,7 +77,7 @@ class JobCompletionPage extends StatelessWidget {
               children: [
                 if (!isSuccess)
                   IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.black87),
+                    icon: const Icon(Iconsax.arrow_left, color: Colors.black87),
                     onPressed: () {
                       if (step > 0) {
                         c.prevStep();

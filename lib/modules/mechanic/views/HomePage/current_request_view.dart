@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -73,7 +74,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
         actions: [
           const NotificationBellIcon(),
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: Icon(Iconsax.refresh),
             onPressed: () => controller.refreshLocation(),
             tooltip: "Refresh Location",
           ),
@@ -116,7 +117,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
           padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
           child: Row(
             children: [
-              Icon(Icons.location_off, color: Colors.red, size: 16.w),
+              Icon(Iconsax.location_slash, color: Colors.red, size: 16.w),
               SizedBox(width: 8.w),
               Expanded(
                 child: Text(
@@ -181,7 +182,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
         padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
         child: Row(
           children: [
-            Icon(Icons.location_on, color: Colors.green, size: 16.w),
+            Icon(Iconsax.location, color: Colors.green, size: 16.w),
             SizedBox(width: 8.w),
             Expanded(
               child: Text(
@@ -268,7 +269,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.search_off, size: 80.w, color: Colors.grey.shade300),
+              Icon(Iconsax.search_normal, size: 80.w, color: Colors.grey.shade300),
               SizedBox(height: 16.h),
               Text(
                 "No nearby requests",
@@ -309,7 +310,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
                   child: Column(
                     children: [
                       Icon(
-                        Icons.inbox_outlined,
+                        Iconsax.archive,
                         size: 70.w,
                         color: Colors.grey.shade300,
                       ),

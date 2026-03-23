@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -69,7 +70,7 @@ class _PhoneNumberViewState extends State<PhoneNumberView> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Iconsax.arrow_left, color: Colors.black),
           onPressed: () => Get.back(),
         ),
       ),
@@ -131,8 +132,8 @@ class _PhoneNumberViewState extends State<PhoneNumberView> {
                             children: [
                               Icon(
                                 controller.selectedRole.value == 'driver'
-                                    ? Icons.directions_car
-                                    : Icons.build,
+                                    ? Iconsax.car
+                                    : Iconsax.setting_2,
                                 size: 16.w,
                                 color: controller.selectedRole.value == 'driver'
                                     ? Colors.blue
@@ -241,7 +242,7 @@ class _PhoneNumberViewState extends State<PhoneNumberView> {
                                 child: Row(
                                   children: [
                                     Icon(
-                                      Icons.error_outline,
+                                      Iconsax.close_circle,
                                       color: _red,
                                       size: 14.w,
                                     ),
@@ -320,13 +321,13 @@ class _PhoneNumberViewState extends State<PhoneNumberView> {
     if (_isPhoneValid) {
       return Padding(
         padding: EdgeInsets.only(right: 4.w),
-        child: Icon(Icons.check_circle, color: _green, size: 22.w),
+        child: Icon(Iconsax.tick_circle, color: _green, size: 22.w),
       );
     }
     if (_phoneError != null) {
       return Padding(
         padding: EdgeInsets.only(right: 4.w),
-        child: Icon(Icons.cancel, color: _red, size: 22.w),
+        child: Icon(Iconsax.close_square, color: _red, size: 22.w),
       );
     }
     return null;

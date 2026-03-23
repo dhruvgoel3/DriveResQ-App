@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
@@ -99,7 +100,7 @@ class _AcceptedRequestIndicatorCardState
                         borderRadius: BorderRadius.circular(14.r),
                       ),
                       child: Icon(
-                        Icons.assignment_turned_in_rounded,
+                        Iconsax.task_square,
                         color: Colors.white,
                         size: 28.w,
                       ),
@@ -169,7 +170,7 @@ class _AcceptedRequestIndicatorCardState
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: Icon(
-                        Icons.arrow_forward_rounded,
+                        Iconsax.arrow_right_1,
                         color: Colors.white,
                         size: 22.w,
                       ),

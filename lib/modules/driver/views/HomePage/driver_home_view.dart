@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:driveresq_app/modules/driver/views/widgets/driver_dashboard_shimmer.dart';
 import 'package:driveresq_app/modules/driver/views/widgets/driver_empty_state.dart';
 import 'package:driveresq_app/modules/driver/views/widgets/driver_safety_tips.dart';
@@ -65,7 +66,7 @@ class DriverHomeView extends StatelessWidget {
           const NotificationBellIcon(),
           if (DevConfig.devMode)
             PopupMenuButton<String>(
-              icon: Icon(Icons.bug_report, size: 22.w),
+              icon: Icon(Iconsax.bag, size: 22.w),
               onSelected: (value) {
                 final devRole = Get.find<DevRoleController>();
                 if (value == 'driver') {
@@ -84,7 +85,7 @@ class DriverHomeView extends StatelessWidget {
           Obx(() {
             if (controller.isLoadingRequest.value || !controller.hasActiveRequest.value) return const SizedBox();
             return IconButton(
-              icon: Icon(Icons.delete_outline, color: AppColors.error, size: 22.w),
+              icon: Icon(Iconsax.trash, color: AppColors.error, size: 22.w),
               onPressed: () {
                 Get.defaultDialog(
                   title: "Cancel Request",

@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -52,7 +53,7 @@ class Step5Availability extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios_new, color: Colors.black87, size: 20.w),
+        icon: Icon(Iconsax.arrow_left_2, color: Colors.black87, size: 20.w),
         onPressed: () {
           c.currentStep.value = 4;
           Get.back();
@@ -164,7 +165,7 @@ class Step5Availability extends StatelessWidget {
               ),
             ),
             SizedBox(width: 16.w),
-            Icon(Icons.arrow_forward, color: Color(0xFFFF9800)),
+            Icon(Iconsax.arrow_right, color: Color(0xFFFF9800)),
             SizedBox(width: 16.w),
             Expanded(
               child: Obx(
@@ -406,7 +407,7 @@ class Step5Availability extends StatelessWidget {
               hintText: hint,
               hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400),
               prefixIcon: Icon(
-                label.contains('%') ? Icons.percent : Icons.currency_rupee,
+                label.contains('%') ? Iconsax.percentage_circle : Iconsax.money,
                 color: Color(0xFFFF9800),
                 size: 20.w,
               ),

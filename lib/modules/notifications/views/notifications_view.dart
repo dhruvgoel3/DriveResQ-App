@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -32,7 +33,7 @@ class NotificationsView extends StatelessWidget {
         iconTheme: IconThemeData(color: Colors.black87),
         actions: [
           IconButton(
-            icon: Icon(Icons.done_all, color: Color(0xFF6C63FF)),
+            icon: Icon(Iconsax.tick_circle, color: Color(0xFF6C63FF)),
             tooltip: 'Mark all as read',
             onPressed: () {
               // Usually handled internally or with a batch update
@@ -80,7 +81,7 @@ class NotificationsView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.notifications_none,
+                    Iconsax.notification,
                     size: 80.w,
                     color: Colors.grey.shade300,
                   ),
@@ -120,7 +121,7 @@ class NotificationsView extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   padding: EdgeInsets.only(right: 20.w),
                   color: Colors.red,
-                  child: Icon(Icons.delete, color: Colors.white),
+                  child: Icon(Iconsax.trash, color: Colors.white),
                 ),
                 onDismissed: (direction) {
                   docs[index].reference.delete();
@@ -236,29 +237,29 @@ class NotificationsView extends StatelessWidget {
   IconData _getIcon(String type) {
     switch (type) {
       case 'new_request':
-        return Icons.build_circle;
+        return Iconsax.setting_2;
       case 'request_accepted':
-        return Icons.check_circle;
+        return Iconsax.tick_circle;
       case 'mechanic_nearby':
-        return Icons.location_on;
+        return Iconsax.location;
       case 'job_completed':
-        return Icons.task_alt;
+        return Iconsax.task_square;
       case 'payment_received':
-        return Icons.payments;
+        return Iconsax.card;
       case 'request_cancelled':
-        return Icons.cancel;
+        return Iconsax.close_square;
       case 'chat_message':
-        return Icons.chat;
+        return Iconsax.message;
       case 'rating_received':
-        return Icons.star;
+        return Iconsax.star;
       case 'verification_approved':
-        return Icons.verified;
+        return Iconsax.verify;
       case 'verification_rejected':
-        return Icons.warning;
+        return Iconsax.warning_2;
       case 'promotional':
-        return Icons.card_giftcard;
+        return Iconsax.gift;
       default:
-        return Icons.notifications;
+        return Iconsax.notification;
     }
   }
 

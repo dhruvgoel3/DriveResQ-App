@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -153,7 +154,7 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Iconsax.arrow_left, color: Colors.black),
           onPressed: () => Get.back(),
         ),
       ),
@@ -209,8 +210,8 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
                           ),
                           child: Icon(
                             _hasError
-                                ? Icons.error_outline
-                                : Icons.phone_android,
+                                ? Iconsax.close_circle
+                                : Iconsax.mobile,
                             size: 48.w,
                             color: _hasError ? _red : _primary,
                           ),
@@ -272,7 +273,7 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Icon(
-                                          Icons.error_outline,
+                                          Iconsax.close_circle,
                                           color: _red,
                                           size: 16.w,
                                         ),

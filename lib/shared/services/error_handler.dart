@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -35,7 +36,7 @@ class ErrorHandler {
       return _ParsedError(
         title: 'Connection Lost',
         message: 'Please check your internet connection and try again.',
-        icon: Icons.wifi_off_rounded,
+        icon: Iconsax.wifi,
         color: AppColors.warning,
       );
     }
@@ -46,7 +47,7 @@ class ErrorHandler {
         title: 'Access Denied',
         message:
             "You don't have permission to do this. Please contact support.",
-        icon: Icons.lock_outline,
+        icon: Iconsax.lock,
         color: AppColors.error,
       );
     }
@@ -56,7 +57,7 @@ class ErrorHandler {
       return _ParsedError(
         title: 'Not Found',
         message: "The information you're looking for doesn't exist.",
-        icon: Icons.search_off_rounded,
+        icon: Iconsax.search_normal,
         color: AppColors.info,
       );
     }
@@ -66,7 +67,7 @@ class ErrorHandler {
       return _ParsedError(
         title: 'Configuration Issue',
         message: 'There is a temporary issue. Please try again.',
-        icon: Icons.settings_outlined,
+        icon: Iconsax.setting_2,
         color: AppColors.warning,
       );
     }
@@ -76,7 +77,7 @@ class ErrorHandler {
       return _ParsedError(
         title: 'Location Required',
         message: 'Please enable location services to continue.',
-        icon: Icons.location_off_rounded,
+        icon: Iconsax.location_slash,
         color: AppColors.secondary,
       );
     }
@@ -87,7 +88,7 @@ class ErrorHandler {
         title: 'Upload Failed',
         message:
             "Couldn't upload the file. Check your connection and try again.",
-        icon: Icons.cloud_off_rounded,
+        icon: Iconsax.cloud_cross,
         color: AppColors.error,
       );
     }
@@ -97,7 +98,7 @@ class ErrorHandler {
       return _ParsedError(
         title: 'Too Many Requests',
         message: 'Please wait a moment before trying again.',
-        icon: Icons.front_hand_outlined,
+        icon: Iconsax.info_circle,
         color: AppColors.warning,
       );
     }
@@ -109,7 +110,7 @@ class ErrorHandler {
       return _ParsedError(
         title: 'Session Expired',
         message: 'Please log in again to continue.',
-        icon: Icons.lock_clock_outlined,
+        icon: Iconsax.lock,
         color: AppColors.info,
       );
     }
@@ -118,7 +119,7 @@ class ErrorHandler {
     return _ParsedError(
       title: 'Something Went Wrong',
       message: 'An unexpected error occurred. Please try again.',
-      icon: Icons.error_outline_rounded,
+      icon: Iconsax.close_circle,
       color: AppColors.error,
     );
   }
@@ -136,7 +137,7 @@ class ErrorHandler {
       backgroundColor: isError ? AppColors.error : AppColors.info,
       colorText: Colors.white,
       icon: Icon(
-        isError ? Icons.error_outline : Icons.info_outline,
+        isError ? Iconsax.close_circle : Iconsax.info_circle,
         color: Colors.white,
       ),
       margin: EdgeInsets.all(12.w),
@@ -168,7 +169,7 @@ class ErrorHandler {
       snackPosition: SnackPosition.BOTTOM,
       backgroundColor: AppColors.success,
       colorText: Colors.white,
-      icon: Icon(Icons.check_circle_outline, color: Colors.white),
+      icon: Icon(Iconsax.tick_circle, color: Colors.white),
       margin: EdgeInsets.all(12.w),
       borderRadius: AppRadius.medium,
       duration: Duration(seconds: 3),
@@ -343,7 +344,7 @@ class ErrorStateWidget extends StatelessWidget {
     super.key,
     this.title = 'Something Went Wrong',
     this.message = 'An unexpected error occurred.',
-    this.icon = Icons.error_outline_rounded,
+    this.icon = Iconsax.close_circle,
     this.color = AppColors.error,
     this.onRetry,
   });
@@ -388,7 +389,7 @@ class ErrorStateWidget extends StatelessWidget {
               SizedBox(height: 20.h),
               ElevatedButton.icon(
                 onPressed: onRetry,
-                icon: Icon(Icons.refresh, size: 18.w),
+                icon: Icon(Iconsax.refresh, size: 18.w),
                 label: Text(
                   'Try Again',
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w600),

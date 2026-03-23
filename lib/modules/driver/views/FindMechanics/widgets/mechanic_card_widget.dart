@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -129,7 +130,7 @@ class MechanicCardWidget extends StatelessWidget {
                         const SizedBox(width: 8),
                         Row(
                           children: [
-                            const Icon(Icons.star_rounded, color: Colors.amber, size: 18),
+                            const Icon(Iconsax.star, color: Colors.amber, size: 18),
                             const SizedBox(width: 4),
                             Text(
                               rating.toStringAsFixed(1),
@@ -161,7 +162,7 @@ class MechanicCardWidget extends StatelessWidget {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(Icons.location_on_rounded, color: _accent, size: 14),
+                        Icon(Iconsax.location, color: _accent, size: 14),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
@@ -188,7 +189,7 @@ class MechanicCardWidget extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.build_rounded, color: Colors.grey.shade400, size: 18),
+                Icon(Iconsax.setting_2, color: Colors.grey.shade400, size: 18),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Wrap(
@@ -245,7 +246,7 @@ class MechanicCardWidget extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(Icons.currency_rupee_rounded, color: Colors.green.shade700, size: 16),
+                Icon(Iconsax.money, color: Colors.green.shade700, size: 16),
                 const SizedBox(width: 6),
                 Text(
                   "Base: ₹$baseCharge  |  Per KM: ₹$perKm",
@@ -265,11 +266,11 @@ class MechanicCardWidget extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                if (isVerified) _buildBadge(Icons.check_circle_rounded, "Verified", Colors.lightGreen),
+                if (isVerified) _buildBadge(Iconsax.tick_circle, "Verified", Colors.lightGreen),
                 const SizedBox(width: 8),
-                if (isOnline) _buildBadge(Icons.access_time_rounded, "Available Now", Colors.green),
+                if (isOnline) _buildBadge(Iconsax.clock, "Available Now", Colors.green),
                 const SizedBox(width: 8),
-                _buildBadge(Icons.bolt_rounded, "Quick Response", Colors.orange),
+                _buildBadge(Iconsax.flash, "Quick Response", Colors.orange),
               ],
             ),
           ),
@@ -283,7 +284,7 @@ class MechanicCardWidget extends StatelessWidget {
                 flex: 3,
                 child: OutlinedButton.icon(
                   onPressed: () => _callMechanic(mechanic['phone'] ?? ''),
-                  icon: const Icon(Icons.phone_rounded, size: 18),
+                  icon: const Icon(Iconsax.call, size: 18),
                   label: const Text("Call"),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: _accent,
@@ -329,7 +330,7 @@ class MechanicCardWidget extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                        isFav ? Iconsax.heart : Iconsax.heart,
                         color: isFav ? Colors.redAccent : Colors.grey.shade400,
                         size: 20,
                       ),

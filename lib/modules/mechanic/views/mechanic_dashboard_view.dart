@@ -1,37 +1,36 @@
 import 'package:iconsax/iconsax.dart';
-import 'package:driveresq_app/modules/chat/views/chat_list_view.dart';
-import 'package:driveresq_app/modules/driver/views/ProfilePage/driver_profile_view.dart';
+import 'package:driveresq_app/modules/mechanic/views/ProfilePage/mechanic_profile_view.dart';
 import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:driveresq_app/theme/app_text_styles.dart';
-import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
-import '../controllers/driver_controller.dart';
-import 'FindMechanics/find_mechanics_view.dart';
-import 'HomePage/driver_home_view.dart';
+import '../controller/mechanic_controller.dart';
+import '../../chat/views/chat_list_view.dart';
+import 'HomePage/current_request_view.dart';
 
-class DriverDashboardView extends StatelessWidget {
-  const DriverDashboardView({super.key});
+class MechanicDashboardView extends StatelessWidget {
+  const MechanicDashboardView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<DriverController>();
+    final controller = Get.find<MechanicController>();
 
-    // Pre-build tab pages once (not rebuilt on tab switch)
+    // Pre-build tab pages once
     final pages = [
-      DriverHomeView(),
-      FindMechanicsView(),
-      const ChatListView(),
-      const DriverProfileView(),
+      CurrentRequestView(),
+      ChatListView(),
+      MechanicProfileView(),
     ];
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Obx(
-        () => IndexedStack(index: controller.currentIndex.value, children: pages),
-      ),
+      body: Obx(() => IndexedStack(
+            index: controller.currentIndex.value,
+            children: pages,
+          )),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: AppColors.surface,
@@ -52,7 +51,7 @@ class DriverDashboardView extends StatelessWidget {
                 gap: 8,
                 activeColor: AppColors.primary,
                 iconSize: 24,
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
                 duration: const Duration(milliseconds: 400),
                 tabBackgroundColor: AppColors.primary.withOpacity(0.1),
                 color: AppColors.textHint,
@@ -66,10 +65,6 @@ class DriverDashboardView extends StatelessWidget {
                   GButton(
                     icon: Iconsax.home,
                     text: 'Home',
-                  ),
-                  GButton(
-                    icon: Iconsax.search_normal,
-                    text: 'Find',
                   ),
                   GButton(
                     icon: Iconsax.message,

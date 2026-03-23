@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -257,7 +258,7 @@ class MechanicOnboardingController extends GetxController {
                   ),
                 ),
                 ListTile(
-                  leading: Icon(Icons.camera_alt, color: Color(0xFFFF9800)),
+                  leading: Icon(Iconsax.camera, color: Color(0xFFFF9800)),
                   title: Text('Take Photo'),
                   onTap: () async {
                     Get.back();
@@ -270,7 +271,7 @@ class MechanicOnboardingController extends GetxController {
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.photo_library, color: Color(0xFFFF9800)),
+                  leading: Icon(Iconsax.gallery, color: Color(0xFFFF9800)),
                   title: Text('Choose from Gallery'),
                   onTap: () async {
                     Get.back();

@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -61,7 +62,7 @@ class ApprovedMechanicsView extends StatelessWidget {
                           child: Column(
                             children: [
                               Icon(
-                                Icons.people_outline,
+                                Iconsax.people,
                                 size: 60,
                                 color: Colors.grey.shade300,
                               ),

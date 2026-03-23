@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:iconsax/iconsax.dart';
 
 class VerificationPendingView extends StatelessWidget {
   const VerificationPendingView({super.key});
@@ -71,11 +72,7 @@ class VerificationPendingView extends StatelessWidget {
                     color: Color(0xFFFF9800).withOpacity(0.15),
                   ),
                 ),
-                Icon(
-                  Icons.hourglass_top_rounded,
-                  size: 56.w,
-                  color: Color(0xFFFF9800),
-                ),
+                Icon(Iconsax.timer, size: 56.w, color: Color(0xFFFF9800)),
               ],
             ),
           ),
@@ -122,7 +119,7 @@ class VerificationPendingView extends StatelessWidget {
             child: Row(
               children: [
                 Icon(
-                  Icons.info_outline,
+                  Iconsax.info_circle,
                   color: Colors.blue.shade700,
                   size: 22.w,
                 ),
@@ -149,7 +146,7 @@ class VerificationPendingView extends StatelessWidget {
               Get.deleteAll(force: true);
               Get.offAllNamed('/role');
             },
-            icon: Icon(Icons.logout, color: Colors.grey, size: 20.w),
+            icon: Icon(Iconsax.logout, color: Colors.grey, size: 20.w),
             label: Text(
               'Sign Out',
               style: GoogleFonts.poppins(
@@ -182,7 +179,7 @@ class VerificationPendingView extends StatelessWidget {
                   ),
                 ),
                 child: completed
-                    ? Icon(Icons.check, size: 16.w, color: Colors.white)
+                    ? Icon(Iconsax.tick_circle, size: 16.w, color: Colors.white)
                     : null,
               ),
               Container(
@@ -233,7 +230,7 @@ class VerificationPendingView extends StatelessWidget {
               color: Colors.red.shade50,
             ),
             child: Icon(
-              Icons.error_outline,
+              Iconsax.close_circle,
               size: 64.w,
               color: Colors.red.shade400,
             ),
@@ -339,7 +336,7 @@ class VerificationPendingView extends StatelessWidget {
               Get.deleteAll(force: true);
               Get.offAllNamed('/role');
             },
-            icon: Icon(Icons.logout, color: Colors.grey, size: 20.w),
+            icon: Icon(Iconsax.logout, color: Colors.grey, size: 20.w),
             label: Text(
               'Sign Out',
               style: GoogleFonts.poppins(

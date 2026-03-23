@@ -1,8 +1,10 @@
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
+
 import '../../notifications/services/notification_sender.dart';
 import '../models/message_model.dart';
 
@@ -62,8 +64,7 @@ class ChatService {
       }
 
       if (finalMechanicName == 'Mechanic' || finalMechanicName.isEmpty) {
-        final mDoc =
-            await _firestore.collection('users').doc(mechanicId).get();
+        final mDoc = await _firestore.collection('users').doc(mechanicId).get();
         if (mDoc.exists) {
           final data = mDoc.data()!;
           finalMechanicName = data['fullName'] ?? data['name'] ?? 'Mechanic';
@@ -240,9 +241,12 @@ class ChatService {
     }
 
     // Upload audio file
-    final uploadTask = ref.putFile(file, SettableMetadata(contentType: 'audio/m4a'));
+    final uploadTask = ref.putFile(
+      file,
+      SettableMetadata(contentType: 'audio/m4a'),
+    );
     final snapshot = await uploadTask;
-    
+
     if (snapshot.state != TaskState.success) {
       throw Exception('Failed to upload voice message');
     }
@@ -498,6 +502,7 @@ class XFileHelper {
 
 class _XFileLite {
   final String path;
+
   _XFileLite(this.path);
 
   Future<Uint8List> readAsBytes() async {

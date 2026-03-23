@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:driveresq_app/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -29,21 +30,21 @@ class ProfileStats extends StatelessWidget {
           _statItem(
             'Requests',
             controller.totalRequests.value.toString(),
-            Icons.send,
+            Iconsax.send_1,
             AppColors.info,
           ),
           _divider(),
           _statItem(
             'Completed',
             controller.completedRequests.value.toString(),
-            Icons.check_circle,
+            Iconsax.tick_circle,
             AppColors.success,
           ),
           _divider(),
           _statItem(
             'Spent',
             '₹${controller.totalSpent.value.toStringAsFixed(0)}',
-            Icons.account_balance_wallet,
+            Iconsax.wallet,
             AppColors.secondary,
           ),
         ],

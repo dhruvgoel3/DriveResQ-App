@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -160,7 +161,7 @@ class _OnboardingViewState extends State<OnboardingView>
                   color: Colors.grey.shade100,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(Icons.arrow_back, size: 20.w),
+                child: Icon(Iconsax.arrow_left, size: 20.w),
               ),
             )
           else
@@ -203,7 +204,7 @@ class _OnboardingViewState extends State<OnboardingView>
                   ),
                 ],
               ),
-              child: Icon(Icons.arrow_forward, color: Colors.white, size: 22.w),
+              child: Icon(Iconsax.arrow_right, color: Colors.white, size: 22.w),
             ),
           ),
         ],
@@ -231,7 +232,7 @@ class _OnboardingViewState extends State<OnboardingView>
               Spacer(flex: 2),
               // Animated illustration
               _animatedIcon(
-                Icons.car_repair,
+                Iconsax.car,
                 120,
                 Colors.white,
                 bgColor: Colors.white.withOpacity(0.15),
@@ -283,14 +284,14 @@ class _OnboardingViewState extends State<OnboardingView>
     return FadeTransition(
       opacity: _fadeAnimations[1],
       child: _whiteSlide(
-        icon: Icons.location_on,
+        icon: Iconsax.location,
         iconColor: Color(0xFF2196F3),
         title: 'Stuck on the Road?',
         subtitle: 'Create a request and find nearby mechanics instantly',
         features: [
-          _Feature(Icons.flash_on, 'Quick request creation'),
-          _Feature(Icons.my_location, 'Real-time mechanic tracking'),
-          _Feature(Icons.chat_bubble, 'In-app chat with mechanic'),
+          _Feature(Iconsax.flash, 'Quick request creation'),
+          _Feature(Iconsax.gps, 'Real-time mechanic tracking'),
+          _Feature(Iconsax.message, 'In-app chat with mechanic'),
         ],
       ),
     );
@@ -303,14 +304,14 @@ class _OnboardingViewState extends State<OnboardingView>
     return FadeTransition(
       opacity: _fadeAnimations[2],
       child: _whiteSlide(
-        icon: Icons.build,
+        icon: Iconsax.setting_2,
         iconColor: Color(0xFFFF9800),
         title: 'Grow Your Business',
         subtitle: 'Get instant job requests in your area',
         features: [
-          _Feature(Icons.verified_user, 'Get verified customers'),
-          _Feature(Icons.account_balance_wallet, 'Track your earnings'),
-          _Feature(Icons.star, 'Build your reputation'),
+          _Feature(Iconsax.verify, 'Get verified customers'),
+          _Feature(Iconsax.wallet, 'Track your earnings'),
+          _Feature(Iconsax.star, 'Build your reputation'),
         ],
       ),
     );
@@ -323,14 +324,14 @@ class _OnboardingViewState extends State<OnboardingView>
     return FadeTransition(
       opacity: _fadeAnimations[3],
       child: _whiteSlide(
-        icon: Icons.shield,
+        icon: Iconsax.shield,
         iconColor: Color(0xFF4CAF50),
         title: 'Safe & Secure',
         subtitle: 'Verified mechanics, secure payments, 24/7 support',
         features: [
-          _Feature(Icons.verified, 'Verified professionals'),
-          _Feature(Icons.star_rate, 'Ratings & reviews'),
-          _Feature(Icons.support_agent, 'Emergency support'),
+          _Feature(Iconsax.verify, 'Verified professionals'),
+          _Feature(Iconsax.star, 'Ratings & reviews'),
+          _Feature(Iconsax.support, 'Emergency support'),
         ],
       ),
     );
@@ -370,7 +371,7 @@ class _OnboardingViewState extends State<OnboardingView>
 
                 // Driver card
                 _roleCard(
-                  icon: Icons.directions_car,
+                  icon: Iconsax.car,
                   title: 'I need help',
                   subtitle: 'Find a mechanic near you',
                   color: Color(0xFF2196F3),
@@ -380,7 +381,7 @@ class _OnboardingViewState extends State<OnboardingView>
 
                 // Mechanic card
                 _roleCard(
-                  icon: Icons.build,
+                  icon: Iconsax.setting_2,
                   title: "I'm a mechanic",
                   subtitle: 'Help drivers & earn money',
                   color: Color(0xFFFF9800),
@@ -475,7 +476,7 @@ class _OnboardingViewState extends State<OnboardingView>
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios, color: color, size: 18.w),
+            Icon(Iconsax.arrow_right_3, color: color, size: 18.w),
           ],
         ),
       ),

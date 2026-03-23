@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -305,7 +306,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
         builder: (_, __) => Transform.translate(
           offset: Offset(_carPos.value * sz.width * 0.5, 0),
           child: Icon(
-            Icons.directions_car,
+            Iconsax.car,
             size: 22.w,
             color: Colors.white.withValues(alpha: 0.25),
           ),
@@ -344,7 +345,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
               alignment: Alignment.center,
               children: [
                 Icon(
-                  Icons.directions_car,
+                  Iconsax.car,
                   size: 40.w,
                   color: Color(0xFF6C63FF),
                 ),
@@ -354,7 +355,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                   child: Transform.rotate(
                     angle: -0.4,
                     child: Icon(
-                      Icons.build,
+                      Iconsax.setting_2,
                       size: 22.w,
                       color: Color(0xFFFF9800).withValues(alpha: 0.9),
                     ),

@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -53,7 +54,7 @@ class Step1PersonalDetails extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios_new, color: Colors.black87, size: 20.w),
+        icon: Icon(Iconsax.arrow_left_2, color: Colors.black87, size: 20.w),
         onPressed: () => Get.back(),
       ),
       title: Text(
@@ -159,7 +160,7 @@ class Step1PersonalDetails extends StatelessWidget {
                       : null,
                 ),
                 child: c.profilePhoto.value == null
-                    ? Icon(Icons.person, size: 50.w, color: Color(0xFFFF9800))
+                    ? Icon(Iconsax.user, size: 50.w, color: Color(0xFFFF9800))
                     : null,
               ),
               Positioned(
@@ -172,7 +173,7 @@ class Step1PersonalDetails extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    Icons.camera_alt,
+                    Iconsax.camera,
                     size: 18.w,
                     color: Colors.white,
                   ),
@@ -190,7 +191,7 @@ class Step1PersonalDetails extends StatelessWidget {
       controller: c.nameController,
       label: 'Full Name *',
       hint: 'Enter your full name',
-      icon: Icons.person_outline,
+      icon: Iconsax.user,
     );
   }
 
@@ -208,7 +209,7 @@ class Step1PersonalDetails extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(Icons.calendar_today, color: Color(0xFFFF9800), size: 22.w),
+              Icon(Iconsax.calendar, color: Color(0xFFFF9800), size: 22.w),
               SizedBox(width: 14.w),
               Expanded(
                 child: Text(
@@ -221,7 +222,7 @@ class Step1PersonalDetails extends StatelessWidget {
                   ),
                 ),
               ),
-              Icon(Icons.arrow_drop_down, color: Colors.grey.shade400),
+              Icon(Iconsax.arrow_down_1, color: Colors.grey.shade400),
             ],
           ),
         ),
@@ -240,7 +241,7 @@ class Step1PersonalDetails extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(Icons.wc, color: Color(0xFFFF9800), size: 22.w),
+            Icon(Iconsax.profile_2user, color: Color(0xFFFF9800), size: 22.w),
             SizedBox(width: 14.w),
             Expanded(
               child: DropdownButtonHideUnderline(
@@ -276,7 +277,7 @@ class Step1PersonalDetails extends StatelessWidget {
       controller: c.emailController,
       label: 'Email (Optional)',
       hint: 'Enter your email address',
-      icon: Icons.email_outlined,
+      icon: Iconsax.sms,
       type: TextInputType.emailAddress,
     );
   }

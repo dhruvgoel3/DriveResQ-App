@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:driveresq_app/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -107,7 +108,7 @@ class OnboardingShared {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      Icons.check_circle,
+                      Iconsax.tick_circle,
                       color: AppColors.success,
                       size: 22.w,
                     ),
@@ -131,7 +132,7 @@ class OnboardingShared {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.add_a_photo,
+                    Iconsax.camera,
                     size: 32.w,
                     color: AppColors.textHint,
                   ),

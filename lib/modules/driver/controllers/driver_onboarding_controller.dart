@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -116,7 +117,7 @@ class DriverOnboardingController extends GetxController {
               leading: CircleAvatar(
                 backgroundColor: const Color(0xFF6C63FF).withOpacity(0.1),
                 radius: 20.r,
-                child: Icon(Icons.camera_alt_rounded, color: const Color(0xFF6C63FF), size: 20.w),
+                child: Icon(Iconsax.camera, color: const Color(0xFF6C63FF), size: 20.w),
               ),
               title: Text(
                 'Take a Photo',
@@ -134,7 +135,7 @@ class DriverOnboardingController extends GetxController {
               leading: CircleAvatar(
                 backgroundColor: const Color(0xFF6C63FF).withOpacity(0.1),
                 radius: 20.r,
-                child: Icon(Icons.photo_library_rounded, color: const Color(0xFF6C63FF), size: 20.w),
+                child: Icon(Iconsax.gallery, color: const Color(0xFF6C63FF), size: 20.w),
               ),
               title: Text(
                 'Choose from Gallery',

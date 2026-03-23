@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:driveresq_app/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class ProfileLogoutButton extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton.icon(
         onPressed: controller.logout,
-        icon: const Icon(Icons.logout, color: AppColors.surface),
+        icon: const Icon(Iconsax.logout, color: AppColors.surface),
         label: Text(
           'Logout',
           style: AppTextStyles.button.copyWith(color: AppColors.surface),

@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,7 +21,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black87),
+          icon: Icon(Iconsax.arrow_left, color: Colors.black87),
           onPressed: () => Get.back(),
         ),
         title: Text(
@@ -41,7 +42,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  Icons.assignment_outlined,
+                  Iconsax.clipboard,
                   size: 80.w,
                   color: Colors.grey.shade300,
                 ),
@@ -108,7 +109,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
 
                     // Vehicle Type
                     _buildDetailRow(
-                      icon: Icons.directions_car_rounded,
+                      icon: Iconsax.car,
                       label: "Vehicle Type",
                       value: job['vehicleType'] ?? 'Not specified',
                       color: Colors.blue,
@@ -161,7 +162,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
               color: Colors.white.withOpacity(0.2),
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.build_circle, color: Colors.white, size: 32.w),
+            child: Icon(Iconsax.setting_2, color: Colors.white, size: 32.w),
           ),
           SizedBox(height: 10.h),
           Text(
@@ -215,7 +216,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.near_me, color: Colors.white, size: 24.w),
+            Icon(Iconsax.location, color: Colors.white, size: 24.w),
             SizedBox(width: 10.w),
             Text(
               "${job['distance']} km",
@@ -260,7 +261,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                     color: primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12.r),
                   ),
-                  child: Icon(Icons.location_on, color: primary, size: 24.w),
+                  child: Icon(Iconsax.location, color: primary, size: 24.w),
                 ),
                 SizedBox(width: 12.w),
                 Expanded(
@@ -300,7 +301,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.place, size: 18.w, color: Colors.grey.shade600),
+                    Icon(Iconsax.location, size: 18.w, color: Colors.grey.shade600),
                     SizedBox(width: 8.w),
                     Expanded(
                       child: Text(
@@ -379,7 +380,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
             Row(
               children: [
                 Icon(
-                  Icons.notes_rounded,
+                  Iconsax.document_text,
                   color: Colors.blue.shade700,
                   size: 20.w,
                 ),
@@ -433,7 +434,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Icon(
-                    Icons.warning_rounded,
+                    Iconsax.warning_2,
                     color: Colors.red,
                     size: 24.w,
                   ),
@@ -480,7 +481,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
             children: [
               Expanded(
                 child: _actionButton(
-                  icon: Icons.phone_rounded,
+                  icon: Iconsax.call,
                   label: "Call Driver",
                   color: primary,
                   onPressed: () => _callDriver(job),
@@ -489,7 +490,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
               SizedBox(width: 12.w),
               Expanded(
                 child: _actionButton(
-                  icon: Icons.navigation_rounded,
+                  icon: Iconsax.location,
                   label: "Navigate",
                   color: Colors.blue,
                   onPressed: () => _navigateToDriver(job),
@@ -506,7 +507,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => _showCancelDialog(controller),
-                  icon: Icon(Icons.cancel_outlined, size: 20.w),
+                  icon: Icon(Iconsax.close_square, size: 20.w),
                   label: Text(
                     "Cancel Job",
                     style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
@@ -525,7 +526,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
               Expanded(
                 child: ElevatedButton.icon(
                   onPressed: () => _showCompleteDialog(controller),
-                  icon: Icon(Icons.check_circle, size: 20.w),
+                  icon: Icon(Iconsax.tick_circle, size: 20.w),
                   label: Text(
                     "Complete",
                     style: GoogleFonts.poppins(fontWeight: FontWeight.w600),

@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -49,7 +50,7 @@ class MechanicProfileDetailView extends StatelessWidget {
             backgroundColor: _accent,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              icon: const Icon(Iconsax.arrow_left, color: Colors.white),
               onPressed: () => Get.back(),
             ),
             actions: [
@@ -57,14 +58,14 @@ class MechanicProfileDetailView extends StatelessWidget {
                 final isFav = favController.isFavorited(mechanicId);
                 return IconButton(
                   icon: Icon(
-                    isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                    isFav ? Iconsax.heart : Iconsax.heart,
                     color: isFav ? Colors.redAccent : Colors.white,
                   ),
                   onPressed: () => favController.toggleFavorite(mechanicId),
                 );
               }),
               IconButton(
-                icon: const Icon(Icons.more_vert, color: Colors.white),
+                icon: const Icon(Iconsax.more, color: Colors.white),
                 onPressed: () {
                   // Show more actions: Report, Share
                 },
@@ -81,7 +82,7 @@ class MechanicProfileDetailView extends StatelessWidget {
                   : Container(
                       color: _accent,
                       child: Center(
-                        child: Icon(Icons.build_circle_rounded, size: 80, color: Colors.white.withOpacity(0.5)),
+                        child: Icon(Iconsax.setting_2, size: 80, color: Colors.white.withOpacity(0.5)),
                       ),
                     ),
             ),
@@ -130,7 +131,7 @@ class MechanicProfileDetailView extends StatelessWidget {
                                   color: Colors.green.shade50,
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Icon(Icons.verified_rounded, color: Colors.green, size: 24),
+                                child: const Icon(Iconsax.verify, color: Colors.green, size: 24),
                               ),
                           ],
                         ),
@@ -150,7 +151,7 @@ class MechanicProfileDetailView extends StatelessWidget {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(Icons.star_rounded, color: Colors.amber, size: 16),
+                                  const Icon(Iconsax.star, color: Colors.amber, size: 16),
                                   const SizedBox(width: 4),
                                   Text(
                                     rating.toStringAsFixed(1),
@@ -182,7 +183,7 @@ class MechanicProfileDetailView extends StatelessWidget {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(Icons.work_history_rounded, color: _accent, size: 16),
+                                  Icon(Iconsax.clock, color: _accent, size: 16),
                                   const SizedBox(width: 6),
                                   Text(
                                     "$exp Years Exp.",
@@ -217,13 +218,13 @@ class MechanicProfileDetailView extends StatelessWidget {
                     title: "CONTACT INFORMATION",
                     child: Column(
                       children: [
-                        _buildContactRow(Icons.phone_rounded, phone, "Call", () => _callMechanic(phone)),
+                        _buildContactRow(Iconsax.call, phone, "Call", () => _callMechanic(phone)),
                         const Divider(height: 24),
-                        _buildContactRow(Icons.location_on_rounded, area, "Drive", () => _navigateMechanic(area)),
+                        _buildContactRow(Iconsax.location, area, "Drive", () => _navigateMechanic(area)),
                         const Divider(height: 24),
                         Row(
                           children: [
-                            Icon(Icons.directions_car_rounded, color: Colors.grey.shade500, size: 20),
+                            Icon(Iconsax.car, color: Colors.grey.shade500, size: 20),
                             const SizedBox(width: 16),
                             Text(
                               "${distance.toStringAsFixed(1)} km from your location",
@@ -313,7 +314,7 @@ class MechanicProfileDetailView extends StatelessWidget {
               flex: 1,
               child: ElevatedButton.icon(
                 onPressed: () => _callMechanic(phone),
-                icon: const Icon(Icons.phone_rounded, size: 20),
+                icon: const Icon(Iconsax.call, size: 20),
                 label: const Text("Call"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green.shade600,
@@ -337,7 +338,7 @@ class MechanicProfileDetailView extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.car_repair_rounded, size: 20),
+                    const Icon(Iconsax.car, size: 20),
                     const SizedBox(width: 8),
                     Text(
                       "Request Service",

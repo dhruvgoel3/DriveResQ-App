@@ -5,7 +5,7 @@ import 'package:driveresq_app/modules/jobs/controllers/job_completion_controller
 import 'package:driveresq_app/modules/jobs/views/job_completion_page.dart';
 import 'package:driveresq_app/modules/mechanic/bindings/mechanic_binding.dart';
 import 'package:driveresq_app/modules/mechanic/controllers/onboarding_controller.dart';
-import 'package:driveresq_app/modules/mechanic/views/HomePage/mechanic_dashboard_view.dart';
+import 'package:driveresq_app/modules/mechanic/views/mechanic_dashboard_view.dart';
 import 'package:driveresq_app/modules/mechanic/views/onboarding/step1_personal_details.dart';
 import 'package:driveresq_app/modules/mechanic/views/verification_pending_view.dart';
 import 'package:get/get.dart';

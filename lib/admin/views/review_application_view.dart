@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -50,7 +51,7 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
                 children: [
                   const SizedBox(height: 20),
                   IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    icon: const Icon(Iconsax.arrow_left, color: Colors.white),
                     onPressed: () => Get.back(),
                   ),
                 ],
@@ -130,7 +131,7 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
                 Row(
                   children: [
                     if (phone.isNotEmpty) ...[
-                      Icon(Icons.phone, size: 14, color: Colors.grey.shade500),
+                      Icon(Iconsax.call, size: 14, color: Colors.grey.shade500),
                       const SizedBox(width: 4),
                       Text(
                         phone,
@@ -142,7 +143,7 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
                       const SizedBox(width: 20),
                     ],
                     if (email.isNotEmpty) ...[
-                      Icon(Icons.email, size: 14, color: Colors.grey.shade500),
+                      Icon(Iconsax.sms, size: 14, color: Colors.grey.shade500),
                       const SizedBox(width: 4),
                       Text(
                         email,
@@ -178,7 +179,7 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
                       m['uid'] ?? '',
                       m['fullName'] ?? 'Unknown',
                     ),
-                    icon: const Icon(Icons.check_circle, size: 18),
+                    icon: const Icon(Iconsax.tick_circle, size: 18),
                     label: Text(
                       'Approve',
                       style: GoogleFonts.poppins(
@@ -206,7 +207,7 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
                       m['uid'] ?? '',
                       m['fullName'] ?? 'Unknown',
                     ),
-                    icon: const Icon(Icons.cancel, size: 18),
+                    icon: const Icon(Iconsax.close_square, size: 18),
                     label: Text(
                       'Reject',
                       style: GoogleFonts.poppins(
@@ -437,7 +438,7 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
                 height: 180,
                 color: Colors.grey.shade100,
                 child: const Center(
-                  child: Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                  child: Icon(Iconsax.image, size: 40, color: Colors.grey),
                 ),
               ),
             ),
@@ -478,7 +479,7 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close),
+                      icon: const Icon(Iconsax.close_square),
                       onPressed: () => Get.back(),
                     ),
                   ],
@@ -653,7 +654,7 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
                 height: 54,
                 child: ElevatedButton.icon(
                   onPressed: () => _showApproveDialog(c, uid, name),
-                  icon: const Icon(Icons.check_circle, size: 22),
+                  icon: const Icon(Iconsax.tick_circle, size: 22),
                   label: Text(
                     'Approve Application',
                     style: GoogleFonts.poppins(
@@ -678,7 +679,7 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
                 height: 54,
                 child: ElevatedButton.icon(
                   onPressed: () => _showRejectDialog(c, uid, name),
-                  icon: const Icon(Icons.cancel, size: 22),
+                  icon: const Icon(Iconsax.close_square, size: 22),
                   label: Text(
                     'Reject Application',
                     style: GoogleFonts.poppins(
@@ -711,7 +712,7 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
-            const Icon(Icons.check_circle, color: Color(0xFF4CAF50), size: 28),
+            const Icon(Iconsax.tick_circle, color: Color(0xFF4CAF50), size: 28),
             const SizedBox(width: 12),
             Text(
               'Approve $name?',
@@ -800,7 +801,7 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
             ),
             title: Row(
               children: [
-                const Icon(Icons.cancel, color: Color(0xFFF44336), size: 28),
+                const Icon(Iconsax.close_square, color: Color(0xFFF44336), size: 28),
                 const SizedBox(width: 12),
                 Text(
                   'Reject $name?',

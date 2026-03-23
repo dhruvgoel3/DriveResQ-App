@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -197,7 +198,7 @@ class DriverProfileController extends GetxController {
           ),
           title: Row(
             children: [
-              Icon(Icons.logout, color: Colors.red),
+              Icon(Iconsax.logout, color: Colors.red),
               SizedBox(width: 8.w),
               Text('Logout'),
             ],

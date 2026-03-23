@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -46,7 +47,7 @@ class Step6Terms extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios_new, color: Colors.black87, size: 20.w),
+        icon: Icon(Iconsax.arrow_left_2, color: Colors.black87, size: 20.w),
         onPressed: () {
           c.currentStep.value = 5;
           Get.back();
@@ -255,7 +256,7 @@ DriveResQ reserves the right to modify these terms at any time. Continued use of
                 ),
               ),
               child: value
-                  ? Icon(Icons.check, size: 16.w, color: Colors.white)
+                  ? Icon(Iconsax.tick_circle, size: 16.w, color: Colors.white)
                   : null,
             ),
             SizedBox(width: 14.w),

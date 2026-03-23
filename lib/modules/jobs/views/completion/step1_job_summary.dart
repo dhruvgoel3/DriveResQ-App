@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -22,7 +23,7 @@ class JobSummaryView extends StatelessWidget {
           SizedBox(height: 20.h),
 
           // Services Performed
-          _sectionTitle('Services Performed', Icons.build_circle),
+          _sectionTitle('Services Performed', Iconsax.setting_2),
           SizedBox(height: 12.h),
           Obx(
             () => Wrap(
@@ -53,7 +54,7 @@ class JobSummaryView extends StatelessWidget {
           SizedBox(height: 24.h),
 
           // Parts Replaced
-          _sectionTitle('Parts Replaced (Optional)', Icons.settings),
+          _sectionTitle('Parts Replaced (Optional)', Iconsax.setting_2),
           SizedBox(height: 12.h),
           Obx(
             () => Column(
@@ -62,7 +63,7 @@ class JobSummaryView extends StatelessWidget {
                 SizedBox(height: 8.h),
                 OutlinedButton.icon(
                   onPressed: () => c.addPart(),
-                  icon: Icon(Icons.add, size: 18.w),
+                  icon: Icon(Iconsax.add, size: 18.w),
                   label: Text(
                     'Add Part',
                     style: GoogleFonts.poppins(fontSize: 13.sp),
@@ -82,7 +83,7 @@ class JobSummaryView extends StatelessWidget {
           SizedBox(height: 24.h),
 
           // Labor Charges
-          _sectionTitle('Labor Charges', Icons.engineering),
+          _sectionTitle('Labor Charges', Iconsax.setting_2),
           SizedBox(height: 12.h),
           _currencyField(
             c.laborChargesController,
@@ -93,7 +94,7 @@ class JobSummaryView extends StatelessWidget {
           SizedBox(height: 24.h),
 
           // Notes
-          _sectionTitle('Additional Notes', Icons.notes),
+          _sectionTitle('Additional Notes', Iconsax.document_text),
           SizedBox(height: 12.h),
           TextField(
             controller: c.notesController,
@@ -105,12 +106,12 @@ class JobSummaryView extends StatelessWidget {
           SizedBox(height: 24.h),
 
           // Photos
-          _sectionTitle('Before Photos', Icons.camera_alt),
+          _sectionTitle('Before Photos', Iconsax.camera),
           SizedBox(height: 8.h),
           _photoGrid(c, true),
 
           SizedBox(height: 16.h),
-          _sectionTitle('After Photos', Icons.camera_alt_outlined),
+          _sectionTitle('After Photos', Iconsax.camera),
           SizedBox(height: 8.h),
           _photoGrid(c, false),
 
@@ -228,10 +229,10 @@ class JobSummaryView extends StatelessWidget {
             ],
           ),
           SizedBox(height: 12.h),
-          _infoRow(Icons.directions_car, 'Vehicle', job['vehicleType'] ?? '—'),
-          _infoRow(Icons.warning_rounded, 'Problem', job['problem'] ?? '—'),
-          _infoRow(Icons.location_on, 'Location', job['locationName'] ?? '—'),
-          _infoRow(Icons.timer, 'Duration', c.formattedDuration),
+          _infoRow(Iconsax.car, 'Vehicle', job['vehicleType'] ?? '—'),
+          _infoRow(Iconsax.warning_2, 'Problem', job['problem'] ?? '—'),
+          _infoRow(Iconsax.location, 'Location', job['locationName'] ?? '—'),
+          _infoRow(Iconsax.timer, 'Duration', c.formattedDuration),
         ],
       ),
     );
@@ -309,7 +310,7 @@ class JobSummaryView extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.remove_circle, color: Colors.red, size: 22.w),
+                icon: Icon(Iconsax.minus, color: Colors.red, size: 22.w),
                 onPressed: () => c.removePart(i),
               ),
             ],
@@ -363,7 +364,7 @@ class JobSummaryView extends StatelessWidget {
                         color: Colors.red,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(Icons.close, color: Colors.white, size: 14.w),
+                      child: Icon(Iconsax.close_square, color: Colors.white, size: 14.w),
                     ),
                   ),
                 ),
@@ -384,7 +385,7 @@ class JobSummaryView extends StatelessWidget {
                 ),
               ),
               child: Icon(
-                Icons.add_a_photo,
+                Iconsax.camera,
                 color: Colors.grey.shade400,
                 size: 28.w,
               ),

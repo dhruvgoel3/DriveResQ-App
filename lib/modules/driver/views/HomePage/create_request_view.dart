@@ -1,3 +1,4 @@
+import 'package:iconsax/iconsax.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -33,7 +34,7 @@ class CreateRequestView extends StatelessWidget {
         elevation: 0,
         surfaceTintColor: Colors.white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Iconsax.arrow_left, color: Colors.black),
           onPressed: () => Get.back(),
         ),
         title: Text(
@@ -100,7 +101,7 @@ class CreateRequestView extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: Icon(
-                          Icons.my_location,
+                          Iconsax.gps,
                           color: _accent,
                           size: 22.w,
                         ),
@@ -140,7 +141,7 @@ class CreateRequestView extends StatelessWidget {
                           ],
                         ),
                       ),
-                      Icon(Icons.edit, color: _accent, size: 20.w),
+                      Icon(Iconsax.edit_2, color: _accent, size: 20.w),
                     ],
                   ),
                 ),
@@ -154,7 +155,7 @@ class CreateRequestView extends StatelessWidget {
               _buildTextField(
                 controller: controller.landmarkController,
                 hint: "e.g. Near SBI Bank, Main Road",
-                icon: Icons.location_on_outlined,
+                icon: Iconsax.location,
               ),
 
               SizedBox(height: 20.h),
@@ -198,7 +199,7 @@ class CreateRequestView extends StatelessWidget {
                   },
                   decoration: InputDecoration(
                     prefixIcon: Icon(
-                      Icons.directions_car,
+                      Iconsax.car,
                       color: _accent,
                       size: 22.w,
                     ),
@@ -221,7 +222,7 @@ class CreateRequestView extends StatelessWidget {
               _buildTextField(
                 controller: controller.problemController,
                 hint: "e.g. Flat tyre, Engine won't start, Battery dead",
-                icon: Icons.report_problem_outlined,
+                icon: Iconsax.warning_2,
               ),
 
               SizedBox(height: 20.h),
@@ -232,7 +233,7 @@ class CreateRequestView extends StatelessWidget {
               _buildTextField(
                 controller: controller.descriptionController,
                 hint: "Any extra info for the mechanic...",
-                icon: Icons.notes_outlined,
+                icon: Iconsax.document_text,
                 maxLines: 3,
               ),
 
@@ -262,8 +263,8 @@ class CreateRequestView extends StatelessWidget {
                       children: [
                         Icon(
                           controller.imageFile.value != null
-                              ? Icons.check_circle
-                              : Icons.camera_alt_outlined,
+                              ? Iconsax.tick_circle
+                              : Iconsax.camera,
                           color: controller.imageFile.value != null
                               ? Colors.green
                               : Colors.grey.shade400,
@@ -308,7 +309,7 @@ class CreateRequestView extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.send_rounded, size: 20.w),
+                      Icon(Iconsax.send, size: 20.w),
                       SizedBox(width: 8.w),
                       Text(
                         "Submit Request",
