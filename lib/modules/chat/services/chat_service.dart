@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -11,6 +12,25 @@ class ChatService {
   static final _auth = FirebaseAuth.instance;
 
   static String get _uid => _auth.currentUser?.uid ?? '';
+
+  // ─── Resolve sender name from the chat document ───
+  static Future<String> _resolveSenderName(
+    String chatId,
+    String senderRole,
+  ) async {
+    try {
+      final doc = await _firestore.collection('chats').doc(chatId).get();
+      if (doc.exists) {
+        final data = doc.data()!;
+        if (senderRole == 'driver') {
+          return data['driverName'] ?? 'Driver';
+        } else {
+          return data['mechanicName'] ?? 'Mechanic';
+        }
+      }
+    } catch (_) {}
+    return senderRole == 'driver' ? 'Driver' : 'Mechanic';
+  }
 
   // ─── Create or get chat for a request ───
   static Future<void> createChat({
@@ -36,16 +56,19 @@ class ChatService {
         if (dDoc.exists) {
           final data = dDoc.data()!;
           finalDriverName = data['fullName'] ?? data['name'] ?? 'Driver';
-          finalDriverPhoto = data['profilePhotoUrl'] ?? data['photoUrl'] ?? finalDriverPhoto;
+          finalDriverPhoto =
+              data['profilePhotoUrl'] ?? data['photoUrl'] ?? finalDriverPhoto;
         }
       }
-      
+
       if (finalMechanicName == 'Mechanic' || finalMechanicName.isEmpty) {
-        final mDoc = await _firestore.collection('users').doc(mechanicId).get();
+        final mDoc =
+            await _firestore.collection('users').doc(mechanicId).get();
         if (mDoc.exists) {
           final data = mDoc.data()!;
           finalMechanicName = data['fullName'] ?? data['name'] ?? 'Mechanic';
-          finalMechanicPhoto = data['profilePhotoUrl'] ?? data['photoUrl'] ?? finalMechanicPhoto;
+          finalMechanicPhoto =
+              data['profilePhotoUrl'] ?? data['photoUrl'] ?? finalMechanicPhoto;
         }
       }
     } catch (e) {
@@ -80,8 +103,11 @@ class ChatService {
     required String content,
     required String senderRole,
   }) async {
+    final senderName = await _resolveSenderName(chatId, senderRole);
+
     final msg = {
       'senderId': _uid,
+      'senderName': senderName,
       'senderRole': senderRole,
       'type': 'text',
       'content': content,
@@ -123,6 +149,7 @@ class ChatService {
         .collection('messages')
         .add({
           'senderId': 'system',
+          'senderName': 'System',
           'senderRole': 'system',
           'type': 'system',
           'content': content,
@@ -138,25 +165,24 @@ class ChatService {
     }, SetOptions(merge: true));
   }
 
-  // ─── Send image message (web-compatible via XFile path) ───
+  // ─── Send image message ───
   static Future<void> sendImageFromPath({
     required String chatId,
     required String imagePath,
     required String senderRole,
     String caption = '',
   }) async {
+    final senderName = await _resolveSenderName(chatId, senderRole);
     final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
     final ref = _storage.ref('chats/$chatId/images/$fileName');
 
-    // Web-compatible: use putData with XFile
+    // Upload
     if (kIsWeb) {
-      // On web, read bytes from path
       final bytes = await XFileHelper.readBytes(imagePath);
       if (bytes != null) {
         await ref.putData(bytes, SettableMetadata(contentType: 'image/jpeg'));
       }
     } else {
-      // On mobile, use dart:io File via dynamic import trick
       await _uploadFileNative(ref, imagePath);
     }
 
@@ -168,6 +194,7 @@ class ChatService {
         .collection('messages')
         .add({
           'senderId': _uid,
+          'senderName': senderName,
           'senderRole': senderRole,
           'type': 'image',
           'content': caption,
@@ -195,9 +222,69 @@ class ChatService {
     );
   }
 
+  // ─── Send voice message ───
+  static Future<void> sendVoiceMessage({
+    required String chatId,
+    required String audioPath,
+    required String senderRole,
+    required int durationSeconds,
+  }) async {
+    final senderName = await _resolveSenderName(chatId, senderRole);
+    final fileName = '${DateTime.now().millisecondsSinceEpoch}.m4a';
+    final ref = _storage.ref('chats/$chatId/voice/$fileName');
+
+    // Check local file
+    final file = File(audioPath);
+    if (!await file.exists()) {
+      throw Exception('Recording file not found locally: $audioPath');
+    }
+
+    // Upload audio file
+    final uploadTask = ref.putFile(file, SettableMetadata(contentType: 'audio/m4a'));
+    final snapshot = await uploadTask;
+    
+    if (snapshot.state != TaskState.success) {
+      throw Exception('Failed to upload voice message');
+    }
+
+    final url = await ref.getDownloadURL();
+
+    await _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .add({
+          'senderId': _uid,
+          'senderName': senderName,
+          'senderRole': senderRole,
+          'type': 'voice',
+          'content': '',
+          'audioUrl': url,
+          'audioDuration': durationSeconds,
+          'timestamp': FieldValue.serverTimestamp(),
+          'read': false,
+          'delivered': true,
+        });
+
+    final unreadField = senderRole == 'driver'
+        ? 'mechanicUnreadCount'
+        : 'driverUnreadCount';
+    await _firestore.collection('chats').doc(chatId).set({
+      'lastMessage': '🎤 Voice message',
+      'lastMessageTime': FieldValue.serverTimestamp(),
+      'lastMessageBy': _uid,
+      unreadField: FieldValue.increment(1),
+    }, SetOptions(merge: true));
+
+    // 🔔 Notify recipient
+    await _sendNotification(
+      chatId: chatId,
+      senderRole: senderRole,
+      content: '🎤 Voice message',
+    );
+  }
+
   static Future<void> _uploadFileNative(Reference ref, String path) async {
-    // This uses conditional import workaround for web safety
-    // On mobile, dart:io is available
     try {
       final file = await _createFile(path);
       if (file != null) {
@@ -210,7 +297,6 @@ class ChatService {
 
   static Future<Uint8List?> _createFile(String path) async {
     try {
-      // Use XFile which works on both web and mobile
       final xFile = XFileHelper.fromPath(path);
       return await xFile.readAsBytes();
     } catch (e) {
@@ -242,6 +328,7 @@ class ChatService {
         .collection('messages')
         .add({
           'senderId': _uid,
+          'senderName': await _resolveSenderName(chatId, 'mechanic'),
           'senderRole': 'mechanic',
           'type': 'price_quote',
           'content': 'Service Estimate',
@@ -353,7 +440,7 @@ class ChatService {
         );
   }
 
-  // ─── User's chats stream (no orderBy to avoid index requirement) ───
+  // ─── User's chats stream ───
   static Stream<QuerySnapshot> userChatsStream() {
     return _firestore
         .collection('chats')
@@ -404,28 +491,21 @@ class XFileHelper {
     }
   }
 
-  // We use image_picker's XFile which is cross-platform
   static dynamic fromPath(String path) {
-    // XFile from cross_file package (included with image_picker)
     return _XFileLite(path);
   }
 }
 
-// Minimal XFile wrapper that works on both web and mobile
 class _XFileLite {
   final String path;
   _XFileLite(this.path);
 
   Future<Uint8List> readAsBytes() async {
-    // On mobile, this will read from file system
-    // image_picker already handles the platform differences
-    // We use the cross_file XFile from image_picker
     final xFile = await _getXFile();
     return await xFile.readAsBytes();
   }
 
   Future<dynamic> _getXFile() async {
-    // image_picker's XFile handles cross-platform
-    return this; // placeholder - actual bytes come from image_picker
+    return this;
   }
 }

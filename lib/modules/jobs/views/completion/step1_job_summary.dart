@@ -121,6 +121,42 @@ class JobSummaryView extends StatelessWidget {
 
           SizedBox(height: 24.h),
 
+          // Cash Collected Confirmation
+          SizedBox(height: 8.h),
+          Container(
+            padding: EdgeInsets.all(16.w),
+            decoration: BoxDecoration(
+              color: Colors.green.shade50,
+              borderRadius: BorderRadius.circular(14.r),
+              border: Border.all(color: Colors.green.shade200),
+            ),
+            child: Obx(
+              () => CheckboxListTile(
+                value: c.cashCollected.value,
+                onChanged: (v) => c.cashCollected.value = v ?? false,
+                title: Text(
+                  'Cash collected from driver',
+                  style: GoogleFonts.poppins(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                subtitle: Text(
+                  'Or settle via UPI/cash directly with the driver',
+                  style: GoogleFonts.poppins(
+                    fontSize: 11.sp,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                activeColor: const Color(0xFF4CAF50),
+                controlAffinity: ListTileControlAffinity.leading,
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
+          ),
+
+          SizedBox(height: 24.h),
+
           // Next Button
           SizedBox(
             width: double.infinity,
@@ -128,7 +164,7 @@ class JobSummaryView extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () => c.nextStep(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF4CAF50),
+                backgroundColor: const Color(0xFF4CAF50),
                 foregroundColor: Colors.white,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
@@ -136,7 +172,7 @@ class JobSummaryView extends StatelessWidget {
                 ),
               ),
               child: Text(
-                'Continue to Payment',
+                'Continue to Rating',
                 style: GoogleFonts.poppins(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,

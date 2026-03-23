@@ -22,7 +22,7 @@ class JobCompletionModel {
   final double subtotal;
   final double gst;
   final double totalAmount;
-  final String paymentMethod;
+  final bool cashCollected;
   final String? transactionId;
   final String notes;
   final double mechanicRating;
@@ -54,7 +54,7 @@ class JobCompletionModel {
     required this.subtotal,
     required this.gst,
     required this.totalAmount,
-    required this.paymentMethod,
+    this.cashCollected = false,
     this.transactionId,
     this.notes = '',
     this.mechanicRating = 0,
@@ -87,7 +87,7 @@ class JobCompletionModel {
     'subtotal': subtotal,
     'gst': gst,
     'totalAmount': totalAmount,
-    'paymentMethod': paymentMethod,
+    'cashCollected': cashCollected,
     'transactionId': transactionId,
     'notes': notes,
     'mechanicRating': mechanicRating,

@@ -9,6 +9,8 @@ import 'package:image_picker/image_picker.dart';
 
 import '../services/location_service.dart';
 import '../../notifications/services/notification_sender.dart';
+import '../../../shared/services/connectivity_service.dart';
+import '../../../shared/services/error_handler.dart';
 
 class CreateRequestController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -106,6 +108,10 @@ class CreateRequestController extends GetxController {
 
     isLoading.value = true;
 
+    try {
+    // Check network before making any Firebase calls
+    await ConnectivityService.requireConnection();
+
     String? imageUrl;
 
     // 📤 Upload image if exists
@@ -162,7 +168,11 @@ class CreateRequestController extends GetxController {
 
     isLoading.value = false;
     Get.back();
-    Get.snackbar("Success", "Request created successfully");
+    Get.snackbar('Success', 'Request created successfully!');
+  } on Exception catch (e) {
+    isLoading.value = false;
+    ErrorHandler.handle(e, onRetry: submitRequest);
+  }
   }
 
   @override

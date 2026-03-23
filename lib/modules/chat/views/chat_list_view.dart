@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -195,7 +196,7 @@ class ChatListView extends StatelessWidget {
                       CircleAvatar(
                         radius: 26.r,
                         backgroundImage: otherPhoto.isNotEmpty
-                            ? NetworkImage(otherPhoto)
+                            ? CachedNetworkImageProvider(otherPhoto)
                             : null,
                         backgroundColor: _accent.withOpacity(0.1),
                         child: otherPhoto.isEmpty

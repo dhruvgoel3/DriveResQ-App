@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driveresq_app/modules/driver/services/location_service.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +28,9 @@ class FindMechanicsController extends GetxController {
   var hideOffline = false.obs;
   var sortBy = 'Distance'.obs; // "Distance", "Rating", "Jobs Done"
 
+  StreamSubscription? _mechanicsSubscription;
+  Worker? _searchDebounce;
+
   final List<String> availableServices = [
     'All',
     'Tire Services',
@@ -43,6 +48,20 @@ class FindMechanicsController extends GetxController {
   void onInit() {
     super.onInit();
     _fetchDriverLocationAndMechanics();
+
+    // Debounce search to avoid re-filtering on every keystroke
+    _searchDebounce = debounce(
+      searchQuery,
+      (_) {},  // filteredMechanics is a computed getter, debounce triggers Obx
+      time: const Duration(milliseconds: 300),
+    );
+  }
+
+  @override
+  void onClose() {
+    _mechanicsSubscription?.cancel();
+    _searchDebounce?.dispose();
+    super.onClose();
   }
 
   void toggleView() {
@@ -69,40 +88,47 @@ class FindMechanicsController extends GetxController {
   }
 
   void _listenToMechanics() {
-    _firestore
+    _mechanicsSubscription?.cancel();
+    _mechanicsSubscription = _firestore
         .collection('users')
         .where('role', isEqualTo: 'mechanic')
         .snapshots()
-        .listen((snapshot) {
-      List<Map<String, dynamic>> mechanics = [];
+        .listen(
+          (snapshot) {
+            List<Map<String, dynamic>> mechanics = [];
 
-      for (var doc in snapshot.docs) {
-        final data = doc.data();
-        final lat = data['latitude'];
-        final lng = data['longitude'];
-        double dist = 0.0;
+            for (var doc in snapshot.docs) {
+              final data = doc.data();
+              final lat = data['latitude'];
+              final lng = data['longitude'];
+              double dist = 0.0;
 
-        // Calculate distance
-        if (lat != null && lng != null && driverLat.value != 0.0) {
-          dist = Geolocator.distanceBetween(
-                driverLat.value,
-                driverLng.value,
-                lat,
-                lng,
-              ) /
-              1000; // in km
-        }
+              // Calculate distance
+              if (lat != null && lng != null && driverLat.value != 0.0) {
+                dist = Geolocator.distanceBetween(
+                      driverLat.value,
+                      driverLng.value,
+                      lat,
+                      lng,
+                    ) /
+                    1000; // in km
+              }
 
-        mechanics.add({
-          ...data,
-          'id': doc.id,
-          'distance': dist,
-        });
-      }
+              mechanics.add({
+                ...data,
+                'id': doc.id,
+                'distance': dist,
+              });
+            }
 
-      allMechanics.value = mechanics;
-      isLoading.value = false;
-    });
+            allMechanics.value = mechanics;
+            isLoading.value = false;
+          },
+          onError: (error) {
+            debugPrint('❌ Error listening to mechanics: $error');
+            isLoading.value = false;
+          },
+        );
   }
 
   List<Map<String, dynamic>> get filteredMechanics {

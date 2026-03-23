@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controllers/job_completion_controller.dart';
 import 'completion/step1_job_summary.dart';
-import 'completion/step2_payment.dart';
 import 'completion/step3_rating.dart';
 import 'completion/step4_completion_success.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
@@ -23,7 +22,7 @@ class JobCompletionPage extends StatelessWidget {
 
     return WillPopScope(
       onWillPop: () async {
-        if (c.currentStep.value > 0 && c.currentStep.value < 3) {
+        if (c.currentStep.value > 0 && c.currentStep.value < 2) {
           c.prevStep();
           return false;
         }
@@ -32,21 +31,19 @@ class JobCompletionPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100),
+          preferredSize: const Size.fromHeight(100),
           child: Obx(() => _buildAppBar(c)),
         ),
         body: Obx(() {
           switch (c.currentStep.value) {
             case 0:
-              return JobSummaryView();
+              return const JobSummaryView();
             case 1:
-              return PaymentView();
+              return const RatingView();
             case 2:
-              return RatingView();
-            case 3:
-              return CompletionSuccessView();
+              return const CompletionSuccessView();
             default:
-              return JobSummaryView();
+              return const JobSummaryView();
           }
         }),
       ),
@@ -54,7 +51,7 @@ class JobCompletionPage extends StatelessWidget {
   }
 
   Widget _buildAppBar(JobCompletionController c) {
-    final isSuccess = c.currentStep.value == 3;
+    final isSuccess = c.currentStep.value == 2;
     final step = c.currentStep.value;
 
     return Container(
@@ -65,7 +62,7 @@ class JobCompletionPage extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
             blurRadius: 8,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -79,7 +76,7 @@ class JobCompletionPage extends StatelessWidget {
               children: [
                 if (!isSuccess)
                   IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.black87),
+                    icon: const Icon(Icons.arrow_back, color: Colors.black87),
                     onPressed: () {
                       if (step > 0) {
                         c.prevStep();
@@ -106,12 +103,12 @@ class JobCompletionPage extends StatelessWidget {
             ),
           ),
 
-          // Progress Bar
+          // Progress Bar (2 segments: Summary → Rating)
           if (!isSuccess)
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
               child: Row(
-                children: List.generate(3, (i) {
+                children: List.generate(2, (i) {
                   final active = i <= step;
                   return Expanded(
                     child: Container(
@@ -119,7 +116,7 @@ class JobCompletionPage extends StatelessWidget {
                       margin: EdgeInsets.symmetric(horizontal: 3.w),
                       decoration: BoxDecoration(
                         color: active
-                            ? Color(0xFF4CAF50)
+                            ? const Color(0xFF4CAF50)
                             : Colors.grey.shade200,
                         borderRadius: BorderRadius.circular(2),
                       ),
@@ -139,8 +136,6 @@ class JobCompletionPage extends StatelessWidget {
       case 0:
         return 'Job Summary';
       case 1:
-        return 'Payment';
-      case 2:
         return 'Rate Customer';
       default:
         return '';

@@ -1,3 +1,4 @@
+import 'package:driveresq_app/modules/driver/views/widgets/driver_dashboard_shimmer.dart';
 import 'package:driveresq_app/modules/driver/views/widgets/driver_empty_state.dart';
 import 'package:driveresq_app/modules/driver/views/widgets/driver_safety_tips.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
@@ -87,7 +88,7 @@ class DriverHomeView extends StatelessWidget {
               ],
             ),
           Obx(() {
-            if (!controller.hasActiveRequest.value) return SizedBox();
+            if (controller.isLoadingRequest.value || !controller.hasActiveRequest.value) return SizedBox();
             return IconButton(
               icon: Icon(Icons.delete_outline, color: Colors.red.shade400, size: 22.w),
               onPressed: () {
@@ -108,6 +109,10 @@ class DriverHomeView extends StatelessWidget {
         ],
       ),
       body: Obx(() {
+        if (controller.isLoadingRequest.value) {
+          return const DriverDashboardShimmer();
+        }
+
         if (controller.hasActiveRequest.value) {
           final request = controller.requestData.value!;
 

@@ -12,42 +12,42 @@ class MechanicDashboardView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<MechanicController>();
 
-    return Obx(() {
-      return Scaffold(
-        body: IndexedStack(
-          index: controller.currentIndex.value,
-          children: [
-            CurrentRequestView(),
-            ChatListView(),
-            MechanicProfileView(),
-          ],
-        ),
+    // Pre-build tab pages once
+    final pages = [
+      CurrentRequestView(),
+      const ChatListView(),
+      MechanicProfileView(),
+    ];
 
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.white,
-          selectedItemColor: Color(0xFF6C63FF),
-          unselectedItemColor: Colors.grey.shade400,
-          selectedFontSize: 12,
-          unselectedFontSize: 12,
-          currentIndex: controller.currentIndex.value,
-          onTap: controller.changeTab,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_rounded),
-              label: "Home",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.chat_bubble_rounded),
-              label: "Chats",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_rounded),
-              label: "Profile",
-            ),
-          ],
-        ),
-      );
-    });
+    return Scaffold(
+      body: Obx(() => IndexedStack(
+            index: controller.currentIndex.value,
+            children: pages,
+          )),
+      bottomNavigationBar: Obx(() => BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.white,
+            selectedItemColor: const Color(0xFF6C63FF),
+            unselectedItemColor: Colors.grey.shade400,
+            selectedFontSize: 12,
+            unselectedFontSize: 12,
+            currentIndex: controller.currentIndex.value,
+            onTap: controller.changeTab,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home_rounded),
+                label: "Home",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.chat_bubble_rounded),
+                label: "Chats",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person_rounded),
+                label: "Profile",
+              ),
+            ],
+          )),
+    );
   }
 }

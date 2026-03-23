@@ -632,7 +632,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
     Get.defaultDialog(
       title: "Complete Job",
       middleText:
-          "Ready to complete this job? You'll fill in a summary, collect payment, and rate the customer.",
+          "Ready to complete this job? You'll fill in a summary, confirm cash collection, and rate the customer.",
       textConfirm: "Yes, Proceed",
       textCancel: "Not Yet",
       confirmTextColor: Colors.white,

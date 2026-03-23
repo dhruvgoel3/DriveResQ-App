@@ -311,6 +311,12 @@ class AuthController extends GetxController {
 
   // Sign out
   Future<void> signOut() async {
+    // Clear FCM token to prevent stale notifications
+    try {
+      await FCMService.clearFCMToken();
+    } catch (e) {
+      debugPrint('⚠️ Failed to clear FCM token: $e');
+    }
     await _auth.signOut();
     Get.deleteAll(force: true);
     Get.offAllNamed('/role');

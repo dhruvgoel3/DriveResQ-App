@@ -131,7 +131,7 @@ class InvoiceGenerator {
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
                         pw.Text(
-                          'PAYMENT INFO',
+                          'SETTLEMENT',
                           style: pw.TextStyle(
                             fontSize: 10,
                             fontWeight: pw.FontWeight.bold,
@@ -139,12 +139,8 @@ class InvoiceGenerator {
                           ),
                         ),
                         pw.SizedBox(height: 6),
-                        _detailRow('Method', c.paymentMethod.value),
-                        if (c.transactionIdController.text.isNotEmpty)
-                          _detailRow(
-                            'Transaction',
-                            c.transactionIdController.text,
-                          ),
+                        _detailRow('Method', 'Cash / Settle directly'),
+                        _detailRow('Status', c.cashCollected.value ? 'Collected' : 'Pending'),
                       ],
                     ),
                   ),

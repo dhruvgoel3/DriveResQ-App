@@ -63,7 +63,7 @@ class CompletionSuccessView extends StatelessWidget {
                 ),
                 SizedBox(height: 6.h),
                 Text(
-                  'Great work! Payment has been recorded.',
+                  'Great work! Job marked as complete.',
                   style: GoogleFonts.poppins(
                     fontSize: 14.sp,
                     color: Colors.grey.shade500,
@@ -100,8 +100,8 @@ class CompletionSuccessView extends StatelessWidget {
                 ),
                 Divider(color: Colors.grey.shade100, height: 24.h),
                 _summaryRow(
-                  'Payment Method',
-                  c.paymentMethod.value,
+                  'Settlement',
+                  c.cashCollected.value ? 'Cash Collected ✓' : 'Settle with driver',
                   Colors.blue.shade700,
                   false,
                 ),

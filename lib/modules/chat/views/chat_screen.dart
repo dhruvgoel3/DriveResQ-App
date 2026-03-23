@@ -87,8 +87,13 @@ class ChatScreen extends StatelessWidget {
                     replies: c.quickReplies,
                     onTap: c.sendQuickReply,
                   )
-                : SizedBox.shrink(),
+                : const SizedBox.shrink(),
           ),
+
+          // Recording overlay
+          Obx(() => c.isRecording.value
+              ? _buildRecordingOverlay(c)
+              : const SizedBox.shrink()),
 
           // Input bar
           _buildInputBar(c),
@@ -164,6 +169,103 @@ class ChatScreen extends StatelessWidget {
     );
   }
 
+  // ─── Recording overlay bar ───
+  Widget _buildRecordingOverlay(ChatController c) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        color: Colors.red.shade50,
+        border: Border(
+          top: BorderSide(color: Colors.red.shade100, width: 1),
+        ),
+      ),
+      child: Row(
+        children: [
+          // Pulsing red dot
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0.3, end: 1.0),
+            duration: const Duration(milliseconds: 800),
+            builder: (_, value, child) {
+              return Opacity(opacity: value, child: child);
+            },
+            child: Container(
+              width: 12.w,
+              height: 12.w,
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          SizedBox(width: 10.w),
+
+          // Recording label + duration
+          Text(
+            'Recording',
+            style: GoogleFonts.poppins(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.red.shade700,
+            ),
+          ),
+          SizedBox(width: 8.w),
+          Obx(() => Text(
+                c.formatRecordingDuration(),
+                style: GoogleFonts.poppins(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.red.shade400,
+                ),
+              )),
+
+          const Spacer(),
+
+          // Cancel button
+          GestureDetector(
+            onTap: c.cancelRecording,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+              decoration: BoxDecoration(
+                color: Colors.red.shade100,
+                borderRadius: BorderRadius.circular(20.r),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.delete_outline, size: 16.w, color: Colors.red),
+                  SizedBox(width: 4.w),
+                  Text(
+                    'Cancel',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(width: 8.w),
+
+          // Send button
+          GestureDetector(
+            onTap: c.stopAndSendRecording,
+            child: Container(
+              width: 40.w,
+              height: 40.w,
+              decoration: const BoxDecoration(
+                color: _accent,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.send, color: Colors.white, size: 20.w),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildInputBar(ChatController c) {
     return Container(
       padding: EdgeInsets.only(
@@ -178,96 +280,136 @@ class ChatScreen extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 8,
-            offset: Offset(0, -2),
+            offset: const Offset(0, -2),
           ),
         ],
       ),
-      child: Row(
-        children: [
-          // Attach
-          IconButton(
-            icon: Icon(
-              Icons.add_circle_outline,
-              color: Colors.grey.shade500,
-              size: 24.w,
-            ),
-            onPressed: () => _showAttachMenu(c),
-          ),
+      child: Obx(() {
+        // Hide input bar while recording
+        if (c.isRecording.value) return const SizedBox.shrink();
 
-          // Quick replies toggle
-          Obx(
-            () => IconButton(
+        return Row(
+          children: [
+            // Attach
+            IconButton(
               icon: Icon(
-                Icons.flash_on,
-                color: c.showQuickReplies.value
-                    ? _accent
-                    : Colors.grey.shade500,
+                Icons.add_circle_outline,
+                color: Colors.grey.shade500,
                 size: 24.w,
               ),
-              onPressed: () =>
-                  c.showQuickReplies.value = !c.showQuickReplies.value,
+              onPressed: () => _showAttachMenu(c),
             ),
-          ),
 
-          // Text field
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(24.r),
-              ),
-              child: TextField(
-                controller: c.textController,
-                style: GoogleFonts.poppins(
-                  fontSize: 14.sp,
-                  color: Colors.black87,
+            // Quick replies toggle
+            Obx(
+              () => IconButton(
+                icon: Icon(
+                  Icons.flash_on,
+                  color: c.showQuickReplies.value
+                      ? _accent
+                      : Colors.grey.shade500,
+                  size: 24.w,
                 ),
-                maxLines: 4,
-                minLines: 1,
-                textCapitalization: TextCapitalization.sentences,
-                decoration: InputDecoration(
-                  hintText: 'Type a message...',
-                  hintStyle: GoogleFonts.poppins(
+                onPressed: () =>
+                    c.showQuickReplies.value = !c.showQuickReplies.value,
+              ),
+            ),
+
+            // Text field
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(24.r),
+                ),
+                child: TextField(
+                  controller: c.textController,
+                  style: GoogleFonts.poppins(
                     fontSize: 14.sp,
-                    color: Colors.grey.shade400,
+                    color: Colors.black87,
                   ),
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 16.w,
-                    vertical: 10.h,
+                  maxLines: 4,
+                  minLines: 1,
+                  textCapitalization: TextCapitalization.sentences,
+                  decoration: InputDecoration(
+                    hintText: 'Type a message...',
+                    hintStyle: GoogleFonts.poppins(
+                      fontSize: 14.sp,
+                      color: Colors.grey.shade400,
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 10.h,
+                    ),
+                    border: InputBorder.none,
                   ),
-                  border: InputBorder.none,
+
                 ),
               ),
             ),
+
+            SizedBox(width: 6.w),
+
+            // Dynamic mic / send button
+            _buildSendOrMicButton(c),
+          ],
+        );
+      }),
+    );
+  }
+
+  Widget _buildSendOrMicButton(ChatController c) {
+    return Obx(() {
+      final hasText = c.hasText.value;
+      final sending = c.isSending.value;
+
+      if (sending) {
+        // Show loading indicator
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.grey.shade300,
+            shape: BoxShape.circle,
           ),
-
-          SizedBox(width: 6.w),
-
-          // Send
-          Obx(
-            () => Container(
-              decoration: BoxDecoration(
-                color: c.isSending.value ? Colors.grey.shade300 : _accent,
-                shape: BoxShape.circle,
-              ),
-              child: IconButton(
-                icon: c.isSending.value
-                    ? SizedBox(
-                        width: 20.w,
-                        height: 20.h,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : Icon(Icons.send, color: Colors.white, size: 20.w),
-                onPressed: c.isSending.value ? null : c.sendMessage,
+          child: IconButton(
+            icon: SizedBox(
+              width: 20.w,
+              height: 20.h,
+              child: const CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 2,
               ),
             ),
+            onPressed: null,
           ),
-        ],
-      ),
-    );
+        );
+      }
+
+      if (hasText) {
+        // Send text button
+        return Container(
+          decoration: const BoxDecoration(
+            color: _accent,
+            shape: BoxShape.circle,
+          ),
+          child: IconButton(
+            icon: Icon(Icons.send, color: Colors.white, size: 20.w),
+            onPressed: c.sendMessage,
+          ),
+        );
+      }
+
+      // Mic button (tap to start, tap again to send)
+      return Container(
+        decoration: const BoxDecoration(
+          color: _accent,
+          shape: BoxShape.circle,
+        ),
+        child: IconButton(
+          icon: Icon(Icons.mic, color: Colors.white, size: 22.w),
+          onPressed: c.startRecording,
+        ),
+      );
+    });
   }
 
   void _showAttachMenu(ChatController c) {
@@ -454,7 +596,7 @@ class ChatScreen extends StatelessWidget {
                           : null,
                     );
                   },
-                  icon: Icon(Icons.send),
+                  icon: const Icon(Icons.send),
                   label: Text(
                     'Send Estimate',
                     style: GoogleFonts.poppins(fontWeight: FontWeight.w600),

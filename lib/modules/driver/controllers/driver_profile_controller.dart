@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class DriverProfileController extends GetxController {
   final _auth = FirebaseAuth.instance;
@@ -232,17 +232,64 @@ class DriverProfileController extends GetxController {
           canPop: false,
           child: Center(
             child: Container(
-              padding: EdgeInsets.all(20.w),
+              width: 260.w,
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 28.h),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12.r),
+                borderRadius: BorderRadius.circular(20.r),
+                gradient: LinearGradient(
+                  colors: [Color(0xFFFFFFFF), Color(0xFFF8F9FF)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 20,
+                    spreadRadius: 2,
+                    offset: Offset(0, 10),
+                  ),
+                ],
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator(color: Color(0xFF6C63FF)),
-                  SizedBox(height: 16.h),
-                  Text('Logging out...', style: TextStyle(fontSize: 16.sp)),
+                  // Animated Loader Container
+                  Container(
+                    padding: EdgeInsets.all(16.w),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0xFF6C63FF).withOpacity(0.1),
+                    ),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 3,
+                      color: Color(0xFF6C63FF),
+                    ),
+                  ),
+
+                  SizedBox(height: 20.h),
+
+                  // Title
+                  Text(
+                    'Logging Out',
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
+                  ),
+
+                  SizedBox(height: 8.h),
+
+                  // Subtitle
+                  Text(
+                    'Please wait while we securely log you out...',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      color: Colors.grey[600],
+                      height: 1.4,
+                    ),
+                  ),
                 ],
               ),
             ),

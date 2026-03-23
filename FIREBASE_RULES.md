@@ -92,3 +92,50 @@ service cloud.firestore {
 | Job completion "permission denied" | Rules blocked status updates on `requests` | Authenticated users can update |
 | Notifications not created | Rules blocked writes to `notifications` | Authenticated users can create |
 | FCM token not saved | Rules blocked writes to `users` | Owner can update their own doc |
+
+---
+
+# Firebase Storage Rules
+
+**Copy the rules below and paste them into:**
+Firebase Console → Storage → Rules → Replace all → Publish
+
+```javascript
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Default: Authenticated users can read anything, nobody can write
+    match /{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // ─── CHAT MEDIA (Images & Voice Messages) ───
+    // Allow authenticated users to upload chat images and voice messages
+    match /chats/{chatId}/{mediaType}/{fileName} {
+      allow read: if request.auth != null;
+      // You can add stricter validation here, but for now we allow any authenticated user to send chat media.
+      allow create: if request.auth != null
+                    // Ensure the file is reasonably sized (e.g., under 10MB)
+                    && request.resource.size < 10 * 1024 * 1024;
+      allow delete: if false; // Prevention from accidental deletes
+    }
+    
+    // ─── USER PROFILE PHOTOS ───
+    match /users/{userId}/profile_photos/{fileName} {
+      allow read: if true; // Profile photos usually need to be public or at least for all auth users
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+```
+
+## How to Apply Storage Rules
+
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Select your **driveresq-app** project
+3. Click **Storage** in the left sidebar
+4. Click the **Rules** tab at the top
+5. **Replace ALL existing rules** with the rules above
+6. Click **Publish**

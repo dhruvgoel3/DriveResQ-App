@@ -13,7 +13,7 @@ class JobCompletionController extends GetxController {
 
   // Step tracking
   var currentStep = 0.obs;
-  static const totalSteps = 4; // Summary → Payment → Rating → Success
+  static const totalSteps = 3; // Summary → Rating → Success
   var isLoading = false.obs;
 
   // Job data
@@ -37,10 +37,8 @@ class JobCompletionController extends GetxController {
   var gstAmount = 0.0.obs;
   var totalAmount = 0.0.obs;
 
-  // Step 2: Payment
-  var paymentMethod = 'Cash'.obs;
-  var paymentCollected = false.obs;
-  final transactionIdController = TextEditingController();
+  // Payment (cash only — settled directly between driver & mechanic)
+  var cashCollected = false.obs;
 
   // Step 3: Rating
   var mechanicRating = 0.0.obs;
@@ -76,7 +74,6 @@ class JobCompletionController extends GetxController {
   void onClose() {
     laborChargesController.dispose();
     notesController.dispose();
-    transactionIdController.dispose();
     reviewController.dispose();
     super.onClose();
   }
@@ -185,32 +182,8 @@ class JobCompletionController extends GetxController {
     return true;
   }
 
-  bool validateStep2() {
-    if (paymentMethod.value == 'Cash' && !paymentCollected.value) {
-      Get.snackbar(
-        'Required',
-        'Please confirm cash payment collected',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red,
-      );
-      return false;
-    }
-    if (paymentMethod.value == 'UPI' &&
-        transactionIdController.text.trim().isEmpty) {
-      Get.snackbar(
-        'Required',
-        'Please enter UPI transaction ID',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red,
-      );
-      return false;
-    }
-    return true;
-  }
-
   void nextStep() {
     if (currentStep.value == 0 && !validateStep1()) return;
-    if (currentStep.value == 1 && !validateStep2()) return;
     if (currentStep.value < totalSteps - 1) {
       currentStep.value++;
     }
@@ -266,8 +239,8 @@ class JobCompletionController extends GetxController {
         'subtotal': subtotal.value,
         'gst': gstAmount.value,
         'totalAmount': totalAmount.value,
-        'paymentMethod': paymentMethod.value,
-        'transactionId': transactionIdController.text.trim(),
+        'paymentMethod': 'Cash (settled directly)',
+        'cashCollected': cashCollected.value,
         'notes': notesController.text.trim(),
         'driverRating': mechanicRating.value, // Mechanic rates the driver
         'driverReview': reviewController.text.trim(),
@@ -288,7 +261,7 @@ class JobCompletionController extends GetxController {
         'status': 'completed',
         'completedAt': FieldValue.serverTimestamp(),
         'totalAmount': totalAmount.value,
-        'paymentMethod': paymentMethod.value,
+        'paymentMethod': 'Cash (settled directly)',
         'invoiceNumber': invoiceNumber.value,
       });
 
@@ -312,7 +285,7 @@ class JobCompletionController extends GetxController {
       }
 
       isLoading.value = false;
-      currentStep.value = 3; // Go to success screen
+      currentStep.value = 2; // Go to success screen
     } catch (e) {
       isLoading.value = false;
       debugPrint('❌ Completion error: $e');

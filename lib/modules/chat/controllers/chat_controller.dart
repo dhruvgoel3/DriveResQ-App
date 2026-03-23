@@ -1,10 +1,15 @@
 import 'dart:async';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:record/record.dart';
 import '../models/message_model.dart';
 import '../services/chat_service.dart';
+import '../../../shared/services/error_handler.dart';
 
 class ChatController extends GetxController {
   final String chatId;
@@ -29,6 +34,18 @@ class ChatController extends GetxController {
   var isLoading = false.obs;
   var isSending = false.obs;
   var showQuickReplies = false.obs;
+  var hasText = false.obs;
+
+  // ─── Voice recording state ───
+  final _recorder = AudioRecorder();
+  final audioPlayer = AudioPlayer();
+  var isRecording = false.obs;
+  var recordingDuration = 0.obs;
+  var isPlaying = false.obs;
+  var currentlyPlayingId = ''.obs;
+  var playbackProgress = 0.0.obs;
+  Timer? _recordingTimer;
+  String? _recordingPath;
 
   StreamSubscription? _msgSub;
 
@@ -63,6 +80,10 @@ class ChatController extends GetxController {
     super.onInit();
     _listenMessages();
     ChatService.markAsRead(chatId, myRole);
+    _setupAudioPlayerListeners();
+    textController.addListener(() {
+      hasText.value = textController.text.trim().isNotEmpty;
+    });
   }
 
   @override
@@ -70,7 +91,27 @@ class ChatController extends GetxController {
     _msgSub?.cancel();
     textController.dispose();
     scrollController.dispose();
+    _recordingTimer?.cancel();
+    _recorder.dispose();
+    audioPlayer.dispose();
     super.onClose();
+  }
+
+  void _setupAudioPlayerListeners() {
+    audioPlayer.onPlayerComplete.listen((_) {
+      isPlaying.value = false;
+      currentlyPlayingId.value = '';
+      playbackProgress.value = 0.0;
+    });
+
+    audioPlayer.onPositionChanged.listen((pos) {
+      audioPlayer.getDuration().then((dur) {
+        if (dur != null && dur.inMilliseconds > 0) {
+          playbackProgress.value =
+              pos.inMilliseconds / dur.inMilliseconds;
+        }
+      });
+    });
   }
 
   void _listenMessages() {
@@ -96,7 +137,7 @@ class ChatController extends GetxController {
       );
     } catch (e) {
       debugPrint('❌ Send error: $e');
-      Get.snackbar('Error', 'Failed to send message');
+      ErrorHandler.handle(e);
     }
 
     isSending.value = false;
@@ -125,9 +166,125 @@ class ChatController extends GetxController {
       );
     } catch (e) {
       debugPrint('❌ Image send error: $e');
-      Get.snackbar('Error', 'Failed to send image');
+      ErrorHandler.handle(e);
     }
     isSending.value = false;
+  }
+
+  // ─── Voice recording ───
+  Future<void> startRecording() async {
+    try {
+      // Request microphone permission
+      final status = await Permission.microphone.request();
+      if (!status.isGranted) {
+        Get.snackbar(
+          'Permission Required',
+          'Microphone permission is needed to send voice messages',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        return;
+      }
+
+      // Get temp directory for recording
+      final dir = await getTemporaryDirectory();
+      _recordingPath =
+          '${dir.path}/voice_${DateTime.now().millisecondsSinceEpoch}.m4a';
+
+      // Start recording
+      if (await _recorder.hasPermission()) {
+        await _recorder.start(
+          const RecordConfig(
+            encoder: AudioEncoder.aacLc,
+            bitRate: 128000,
+            sampleRate: 44100,
+          ),
+          path: _recordingPath!,
+        );
+
+        isRecording.value = true;
+        recordingDuration.value = 0;
+
+        // Start a timer to track duration
+        _recordingTimer = Timer.periodic(
+          const Duration(seconds: 1),
+          (_) => recordingDuration.value++,
+        );
+      }
+    } catch (e) {
+      debugPrint('❌ Recording error: $e');
+      Get.snackbar('Error', 'Could not start recording');
+    }
+  }
+
+  Future<void> stopAndSendRecording() async {
+    if (!isRecording.value) return;
+
+    _recordingTimer?.cancel();
+    isRecording.value = false;
+
+    try {
+      final path = await _recorder.stop();
+      if (path == null || recordingDuration.value < 1) {
+        // Too short, discard
+        Get.snackbar(
+          'Too Short',
+          'Hold longer to record a voice message',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        return;
+      }
+
+      isSending.value = true;
+      await ChatService.sendVoiceMessage(
+        chatId: chatId,
+        audioPath: path,
+        senderRole: myRole,
+        durationSeconds: recordingDuration.value,
+      );
+    } catch (e) {
+      debugPrint('❌ Voice send error: $e');
+      ErrorHandler.handle(e);
+    }
+
+    isSending.value = false;
+    recordingDuration.value = 0;
+  }
+
+  Future<void> cancelRecording() async {
+    if (!isRecording.value) return;
+
+    _recordingTimer?.cancel();
+    isRecording.value = false;
+    recordingDuration.value = 0;
+
+    try {
+      await _recorder.stop();
+    } catch (_) {}
+  }
+
+  // ─── Voice playback ───
+  Future<void> playVoice(String messageId, String url) async {
+    try {
+      if (isPlaying.value && currentlyPlayingId.value == messageId) {
+        // Pause if same message
+        await audioPlayer.pause();
+        isPlaying.value = false;
+        return;
+      }
+
+      // Stop any current playback
+      await audioPlayer.stop();
+      playbackProgress.value = 0.0;
+
+      // Play the new one
+      currentlyPlayingId.value = messageId;
+      isPlaying.value = true;
+      await audioPlayer.play(UrlSource(url));
+    } catch (e) {
+      debugPrint('❌ Playback error: $e');
+      isPlaying.value = false;
+      currentlyPlayingId.value = '';
+    }
   }
 
   // ─── Send price estimate (mechanic only) ───
@@ -176,4 +333,10 @@ class ChatController extends GetxController {
   }
 
   bool isMe(MessageModel msg) => msg.senderId == _uid;
+
+  String formatRecordingDuration() {
+    final mins = recordingDuration.value ~/ 60;
+    final secs = recordingDuration.value % 60;
+    return '${mins.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
+  }
 }

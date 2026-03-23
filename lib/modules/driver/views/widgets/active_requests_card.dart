@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -27,6 +29,7 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
   double? mechanicLat;
   double? mechanicLng;
   final Set<Marker> _markers = {};
+  StreamSubscription? _locationSubscription;
 
   @override
   void initState() {
@@ -38,6 +41,7 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
 
   @override
   void dispose() {
+    _locationSubscription?.cancel();
     _mapController?.dispose();
     super.dispose();
   }
@@ -47,7 +51,8 @@ class _ActiveRequestCardState extends State<ActiveRequestCard> {
     final mechanicId = widget.request['mechanicId'];
     if (mechanicId == null) return;
 
-    DriverService.getMechanicLocationStream(mechanicId)
+    _locationSubscription?.cancel();
+    _locationSubscription = DriverService.getMechanicLocationStream(mechanicId)
         .listen((snapshot) {
           if (!snapshot.exists || !mounted) return;
 

@@ -3,10 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class MessageModel {
   final String id;
   final String senderId;
+  final String senderName;
   final String senderRole; // 'driver' or 'mechanic'
-  final String type; // 'text', 'image', 'price_quote', 'system'
+  final String type; // 'text', 'image', 'voice', 'price_quote', 'system'
   final String content;
   final String? imageUrl;
+  final String? audioUrl;
+  final int? audioDuration; // seconds
   final Map<String, dynamic>? priceData;
   final Timestamp timestamp;
   final bool read;
@@ -15,10 +18,13 @@ class MessageModel {
   MessageModel({
     required this.id,
     required this.senderId,
+    this.senderName = '',
     required this.senderRole,
     required this.type,
     required this.content,
     this.imageUrl,
+    this.audioUrl,
+    this.audioDuration,
     this.priceData,
     required this.timestamp,
     this.read = false,
@@ -29,10 +35,13 @@ class MessageModel {
     return MessageModel(
       id: docId,
       senderId: map['senderId'] ?? '',
+      senderName: map['senderName'] ?? '',
       senderRole: map['senderRole'] ?? '',
       type: map['type'] ?? 'text',
       content: map['content'] ?? '',
       imageUrl: map['imageUrl'],
+      audioUrl: map['audioUrl'],
+      audioDuration: map['audioDuration'],
       priceData: map['priceData'],
       timestamp: map['timestamp'] ?? Timestamp.now(),
       read: map['read'] ?? false,
@@ -43,10 +52,13 @@ class MessageModel {
   Map<String, dynamic> toMap() {
     return {
       'senderId': senderId,
+      'senderName': senderName,
       'senderRole': senderRole,
       'type': type,
       'content': content,
       'imageUrl': imageUrl,
+      'audioUrl': audioUrl,
+      'audioDuration': audioDuration,
       'priceData': priceData,
       'timestamp': timestamp,
       'read': read,

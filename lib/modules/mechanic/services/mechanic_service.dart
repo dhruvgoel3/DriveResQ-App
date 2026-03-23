@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../chat/services/chat_service.dart';
 import '../../notifications/services/notification_sender.dart';
+import '../../../shared/services/connectivity_service.dart';
 
 class MechanicService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -13,6 +14,9 @@ class MechanicService {
   // ✅ Accept a request with validation
   static Future<void> acceptRequest(
       String requestId, bool hasActiveJob) async {
+    // Check network before accepting
+    await ConnectivityService.requireConnection();
+
     // Validation 1: Check if user is authenticated
     if (_auth.currentUser == null) {
       throw Exception("User not authenticated");

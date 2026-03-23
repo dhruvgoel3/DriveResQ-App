@@ -4,6 +4,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <!-- 🎤 MICROPHONE (Voice Messages) -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
     <!-- 📞 OPTIONAL (not required for dialer, but OK to keep) -->
     <uses-permission android:name="android.permission.CALL_PHONE"/>
 
