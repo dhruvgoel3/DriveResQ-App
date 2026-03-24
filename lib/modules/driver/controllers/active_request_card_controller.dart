@@ -20,19 +20,42 @@ class ActiveRequestCardController extends GetxController {
   var mechanicLng = Rxn<double>();
   var markers = <Marker>{}.obs;
 
+  StreamSubscription? _requestStatusSubscription;
   StreamSubscription? _locationSubscription;
   GoogleMapController? mapController;
 
   @override
   void onInit() {
     super.onInit();
-    if (request['status'] == 'accepted') {
+    final status = request['status'];
+    if (status == 'accepted') {
       _listenToMechanicLocation();
+    } else {
+      // Watch the request document for status changes (e.g. mechanic_accepted -> accepted)
+      _watchForStatusChange();
     }
+  }
+
+  void _watchForStatusChange() {
+    final requestId = request['id'];
+    if (requestId == null) return;
+
+    _requestStatusSubscription = DriverService.getRequestStream(requestId).listen((snapshot) {
+      if (!snapshot.exists) return;
+      final data = snapshot.data()!;
+      if (data['status'] == 'accepted' && mechanicLat.value == null) {
+        // Status just changed to accepted — start tracking
+        request['mechanicId'] = data['mechanicId'];
+        request['status'] = 'accepted';
+        _listenToMechanicLocation();
+        _requestStatusSubscription?.cancel();
+      }
+    });
   }
 
   @override
   void onClose() {
+    _requestStatusSubscription?.cancel();
     _locationSubscription?.cancel();
     mapController?.dispose();
     super.onClose();

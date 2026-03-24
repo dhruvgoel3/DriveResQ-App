@@ -250,35 +250,42 @@ class Step3Documents extends StatelessWidget {
           ),
         ),
         SizedBox(height: 8.h),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.grey.shade50,
-            borderRadius: BorderRadius.circular(14.r),
-            border: Border.all(color: Colors.grey.shade200, width: 1.5),
-          ),
-          child: TextField(
-            controller: c.aadhaarNumberController,
-            keyboardType: TextInputType.number,
-            maxLength: 12,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            style: GoogleFonts.poppins(fontSize: 15.sp, letterSpacing: 2),
-            decoration: InputDecoration(
-              hintText: 'XXXX XXXX XXXX',
-              hintStyle: GoogleFonts.poppins(
-                color: Colors.grey.shade400,
-                letterSpacing: 2,
-              ),
-              prefixIcon: Icon(
-                Iconsax.finger_scan,
-                color: Color(0xFFFF9800),
-                size: 22.w,
-              ),
-              border: InputBorder.none,
-              counterText: '',
-              contentPadding: EdgeInsets.symmetric(
-                vertical: 16.h,
-                horizontal: 16.w,
-              ),
+        TextField(
+          controller: c.aadhaarNumberController,
+          keyboardType: TextInputType.number,
+          maxLength: 12,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          cursorColor: const Color(0xFFFF9800),
+          style: GoogleFonts.poppins(fontSize: 15.sp, letterSpacing: 2, color: Colors.black87),
+          decoration: InputDecoration(
+            hintText: 'XXXX XXXX XXXX',
+            hintStyle: GoogleFonts.poppins(
+              color: Colors.grey.shade400,
+              letterSpacing: 2,
+            ),
+            prefixIcon: Icon(
+              Iconsax.finger_scan,
+              color: const Color(0xFFFF9800),
+              size: 22.w,
+            ),
+            filled: true,
+            fillColor: Colors.grey.shade50,
+            counterText: '',
+            contentPadding: EdgeInsets.symmetric(
+              vertical: 16.h,
+              horizontal: 16.w,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14.r),
+              borderSide: BorderSide(color: Colors.grey.shade200, width: 1.5),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14.r),
+              borderSide: BorderSide(color: Colors.grey.shade200, width: 1.5),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14.r),
+              borderSide: const BorderSide(color: Color(0xFFFF9800), width: 1.5),
             ),
           ),
         ),

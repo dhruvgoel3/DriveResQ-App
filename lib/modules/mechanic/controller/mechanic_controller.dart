@@ -153,7 +153,7 @@ class MechanicController extends GetxController {
     _activeJobSubscription = _firestore
         .collection('requests')
         .where('mechanicId', isEqualTo: uid)
-        .where('status', whereIn: ['accepted', 'verified'])
+        .where('status', whereIn: ['mechanic_accepted', 'accepted', 'verified'])
         .limit(1)
         .snapshots()
         .listen(

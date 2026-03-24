@@ -66,7 +66,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
           child: Column(
             children: [
               // Status Header
-              _buildStatusHeader(),
+              _buildStatusHeader(job),
 
               SizedBox(height: 20.h),
 
@@ -145,13 +145,16 @@ class ActiveRequestDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusHeader() {
+  Widget _buildStatusHeader(Map<String, dynamic> job) {
+    bool isWaiting = job['status'] == 'mechanic_accepted';
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(vertical: 16.h),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.green.shade400, Colors.green.shade600],
+          colors: isWaiting
+              ? [Colors.orange.shade400, Colors.orange.shade600]
+              : [Colors.green.shade400, Colors.green.shade600],
         ),
       ),
       child: Column(
@@ -162,11 +165,11 @@ class ActiveRequestDetailsPage extends StatelessWidget {
               color: Colors.white.withOpacity(0.2),
               shape: BoxShape.circle,
             ),
-            child: Icon(Iconsax.setting_2, color: Colors.white, size: 32.w),
+            child: Icon(isWaiting ? Iconsax.clock : Iconsax.setting_2, color: Colors.white, size: 32.w),
           ),
           SizedBox(height: 10.h),
           Text(
-            "MISSION IN PROGRESS",
+            isWaiting ? "WAITING FOR APPROVAL" : "MISSION IN PROGRESS",
             style: GoogleFonts.poppins(
               fontSize: 16.sp,
               fontWeight: FontWeight.bold,
@@ -182,7 +185,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Text(
-              "ACTIVE",
+              isWaiting ? "PENDING" : "ACTIVE",
               style: GoogleFonts.poppins(
                 fontSize: 11.sp,
                 fontWeight: FontWeight.bold,
@@ -476,6 +479,55 @@ class ActiveRequestDetailsPage extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Column(
         children: [
+          if (job['status'] == 'mechanic_accepted') ...[
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                color: Colors.orange.shade50,
+                borderRadius: BorderRadius.circular(16.r),
+                border: Border.all(color: Colors.orange.shade200),
+              ),
+              child: Column(
+                children: [
+                  Icon(Iconsax.info_circle, color: Colors.orange.shade700, size: 28.w),
+                  SizedBox(height: 8.h),
+                  Text(
+                    "Waiting for Driver",
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.orange.shade800,
+                      fontSize: 15.sp,
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    "The driver has been notified of your offer. The job will officially start once they approve.",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      color: Colors.orange.shade700,
+                      fontSize: 12.sp,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 16.h),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () => _showCancelDialog(controller),
+                icon: Icon(Iconsax.close_square, size: 20.w),
+                label: Text("Cancel Offer", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.red,
+                  side: BorderSide(color: Colors.red, width: 2),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                ),
+              ),
+            ),
+          ] else ...[
           // Primary Actions
           Row(
             children: [
@@ -544,6 +596,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
               ),
             ],
           ),
+          ],
         ],
       ),
     );

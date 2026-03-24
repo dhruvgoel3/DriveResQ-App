@@ -20,16 +20,18 @@ class VerificationPendingView extends StatelessWidget {
               .doc(FirebaseAuth.instance.currentUser?.uid)
               .snapshots(),
           builder: (context, snapshot) {
-            if (snapshot.hasData && snapshot.data != null) {
+            if (snapshot.hasData && snapshot.data != null && snapshot.data!.exists) {
               final data = snapshot.data!.data() as Map<String, dynamic>?;
               final status = data?['verificationStatus'] ?? 'pending';
 
               if (status == 'approved') {
-                // Auto-navigate to dashboard
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  Get.offAllNamed('/mechanic');
+                // Auto-navigate to dashboard with a tiny delay to ensure stability
+                Future.delayed(const Duration(milliseconds: 500), () {
+                  if (Get.currentRoute == '/mechanic-verification') {
+                    Get.offAllNamed('/mechanic');
+                  }
                 });
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(color: Color(0xFFFF9800)),
                 );
               }
@@ -41,14 +43,52 @@ class VerificationPendingView extends StatelessWidget {
               }
             }
 
-            return _buildPendingView();
+            String currentStatus = 'loading';
+            if (snapshot.hasData && snapshot.data != null && snapshot.data!.exists) {
+              final data = snapshot.data!.data() as Map<String, dynamic>?;
+              currentStatus = data?['verificationStatus'] ?? 'pending';
+            }
+
+            return _buildPendingView(
+              status: currentStatus,
+              snapshot: snapshot,
+            );
           },
         ),
       ),
     );
   }
 
-  Widget _buildPendingView() {
+  Future<void> _checkStatusManually() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) return;
+
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (doc.exists) {
+        final status = doc.data()?['verificationStatus'];
+        if (status == 'approved') {
+          Get.offAllNamed('/mechanic');
+        } else {
+          Get.snackbar(
+            'Status: $status',
+            'Your account is still being reviewed. Please wait or contact support.',
+            backgroundColor: Colors.white,
+            colorText: Colors.black87,
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('Error manually checking status: $e');
+    }
+  }
+
+  Widget _buildPendingView({required String status, required AsyncSnapshot<DocumentSnapshot> snapshot}) {
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 48.h),
       child: Column(
@@ -59,7 +99,7 @@ class VerificationPendingView extends StatelessWidget {
             height: 140.h,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFFFF9800).withOpacity(0.1),
+              color: const Color(0xFFFF9800).withOpacity(0.1),
             ),
             child: Stack(
               alignment: Alignment.center,
@@ -69,10 +109,10 @@ class VerificationPendingView extends StatelessWidget {
                   height: 100.h,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Color(0xFFFF9800).withOpacity(0.15),
+                    color: const Color(0xFFFF9800).withOpacity(0.15),
                   ),
                 ),
-                Icon(Iconsax.timer, size: 56.w, color: Color(0xFFFF9800)),
+                Icon(Iconsax.timer, size: 56.w, color: const Color(0xFFFF9800)),
               ],
             ),
           ),
@@ -91,7 +131,7 @@ class VerificationPendingView extends StatelessWidget {
           SizedBox(height: 12.h),
 
           Text(
-            'Your application has been submitted successfully. Our team is reviewing your documents and will verify your account within 24-48 hours.',
+            'Your application has been submitted successfully. Our team is reviewing your documents and will verify your account shortly.',
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
               fontSize: 14.sp,
@@ -109,35 +149,55 @@ class VerificationPendingView extends StatelessWidget {
 
           SizedBox(height: 28.h),
 
-          // Info card
-          Container(
-            padding: EdgeInsets.all(16.w),
-            decoration: BoxDecoration(
-              color: Colors.blue.shade50,
-              borderRadius: BorderRadius.circular(16.r),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Iconsax.info_circle,
-                  color: Colors.blue.shade700,
-                  size: 22.w,
+          // Action Buttons
+          SizedBox(
+            width: double.infinity,
+            height: 54.h,
+            child: ElevatedButton(
+              onPressed: _checkStatusManually,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFF9800),
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r),
                 ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: Text(
-                    "You'll receive a notification once your verification is complete.",
-                    style: GoogleFonts.poppins(
-                      fontSize: 13.sp,
-                      color: Colors.blue.shade700,
-                    ),
-                  ),
+              ),
+              child: Text(
+                'Refresh My Status',
+                style: GoogleFonts.poppins(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
                 ),
-              ],
+              ),
             ),
           ),
 
-          SizedBox(height: 20.h),
+          SizedBox(height: 32.h),
+
+          // Debug section (collapsed by default)
+          ExpansionTile(
+            title: Text(
+              'View Debug Info',
+              style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey.shade400),
+            ),
+            children: [
+              Container(
+                padding: EdgeInsets.all(12.w),
+                color: Colors.grey.shade50,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _debugRow('Your UID:', FirebaseAuth.instance.currentUser?.uid ?? 'No User'),
+                    _debugRow('Status:', status),
+                    _debugRow('Exists:', (snapshot.hasData && snapshot.data != null) ? snapshot.data!.exists.toString() : 'N/A'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 16.h),
 
           // Logout button
           TextButton.icon(
@@ -155,6 +215,19 @@ class VerificationPendingView extends StatelessWidget {
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _debugRow(String label, String value) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 4.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold)),
+          Text(value, style: GoogleFonts.poppins(fontSize: 11, color: Colors.blue)),
         ],
       ),
     );

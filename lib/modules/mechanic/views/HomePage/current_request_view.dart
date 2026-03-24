@@ -1,13 +1,15 @@
-import 'package:iconsax/iconsax.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax/iconsax.dart';
+
 import '../../../../shared/widgets/notification_bell_icon.dart';
+import '../../controller/mechanic_controller.dart';
 import '../widgets/accept_request_indicator_card.dart';
 import '../widgets/mechanic_active_job_card.dart';
 import '../widgets/mechanic_empty_state.dart';
-import '../../controller/mechanic_controller.dart';
-import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import '../widgets/open_request_card.dart';
 
 class CurrentRequestView extends StatefulWidget {
   const CurrentRequestView({super.key});
@@ -179,18 +181,31 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
       // Success state
       return Container(
         color: Colors.green.shade50,
-        padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
+        padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
         child: Row(
           children: [
-            Icon(Iconsax.location, color: Colors.green, size: 16.w),
+            Container(
+              width: 8.w,
+              height: 8.h,
+              decoration: BoxDecoration(
+                color: Colors.green,
+                shape: BoxShape.circle,
+              ),
+            ),
             SizedBox(width: 8.w),
-            Expanded(
-              child: Text(
-                "Location active • Showing requests within 20 km",
-                style: GoogleFonts.poppins(
-                  fontSize: 13.sp,
-                  color: Colors.green.shade800,
-                ),
+            Text(
+              "Location active",
+              style: GoogleFonts.poppins(
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.green.shade700,
+              ),
+            ),
+            Text(
+              " • Requests within 20 km",
+              style: GoogleFonts.poppins(
+                fontSize: 12.sp,
+                color: Colors.green.shade600,
               ),
             ),
           ],
@@ -269,7 +284,11 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Iconsax.search_normal, size: 80.w, color: Colors.grey.shade300),
+              Icon(
+                Iconsax.search_normal,
+                size: 80.w,
+                color: Colors.grey.shade300,
+              ),
               SizedBox(height: 16.h),
               Text(
                 "No nearby requests",
@@ -337,11 +356,10 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
                 ),
               ),
 
-            // List with stagger animation index
+            // Compact request cards
             ...openRequestsList.asMap().entries.map(
-              (entry) => MechanicActiveJobCard(
+              (entry) => OpenRequestCard(
                 job: entry.value,
-                isActive: false,
                 animationIndex: entry.key,
                 onAccept: () =>
                     _showAcceptDialog(controller, entry.value['id']),
@@ -371,35 +389,191 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
     });
   }
 
-  // 🎯 Show Accept Dialog
+  // Accept Dialog — styled bottom sheet
   void _showAcceptDialog(MechanicController controller, String requestId) {
-    Get.defaultDialog(
-      title: "Accept Request",
-      middleText: "Do you want to accept this request?",
-      textConfirm: "Accept",
-      textCancel: "Cancel",
-      confirmTextColor: Colors.white,
-      buttonColor: Color(0xFF6C63FF),
-      onConfirm: () {
-        Get.back();
-        controller.acceptRequest(requestId);
-      },
+    Get.bottomSheet(
+      Container(
+        padding: EdgeInsets.all(24.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+            SizedBox(height: 24.h),
+            Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                color: const Color(0xFF6C63FF).withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Iconsax.tick_circle, color: const Color(0xFF6C63FF), size: 40.w),
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              "Accept This Request?",
+              style: GoogleFonts.poppins(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w700,
+                color: Colors.black87,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              "You will be assigned to this driver and can start navigating to their location.",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 14.sp,
+                color: Colors.grey.shade600,
+                height: 1.4,
+              ),
+            ),
+            SizedBox(height: 24.h),
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 50.h,
+                    child: OutlinedButton(
+                      onPressed: () => Get.back(),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.grey.shade700,
+                        side: BorderSide(color: Colors.grey.shade300),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+                      ),
+                      child: Text("Cancel", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: SizedBox(
+                    height: 50.h,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Get.back();
+                        controller.acceptRequest(requestId);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF6C63FF),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+                      ),
+                      child: Text("Accept", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 8.h),
+          ],
+        ),
+      ),
+      isScrollControlled: true,
     );
   }
 
-  // ❌ Show Cancel Dialog
+  // Cancel Dialog — styled bottom sheet
   void _showCancelDialog(MechanicController controller) {
-    Get.defaultDialog(
-      title: "Cancel Job",
-      middleText: "Are you sure you want to cancel this job?",
-      textConfirm: "Yes",
-      textCancel: "No",
-      confirmTextColor: Colors.white,
-      buttonColor: Colors.red,
-      onConfirm: () {
-        Get.back();
-        controller.cancelActiveJob();
-      },
+    Get.bottomSheet(
+      Container(
+        padding: EdgeInsets.all(24.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+            SizedBox(height: 24.h),
+            Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Iconsax.close_circle, color: Colors.red, size: 40.w),
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              "Cancel This Job?",
+              style: GoogleFonts.poppins(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w700,
+                color: Colors.black87,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              "The driver will be notified and the request will go back to the open queue.",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 14.sp,
+                color: Colors.grey.shade600,
+                height: 1.4,
+              ),
+            ),
+            SizedBox(height: 24.h),
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 50.h,
+                    child: OutlinedButton(
+                      onPressed: () => Get.back(),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.grey.shade700,
+                        side: BorderSide(color: Colors.grey.shade300),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+                      ),
+                      child: Text("Keep Job", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: SizedBox(
+                    height: 50.h,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Get.back();
+                        controller.cancelActiveJob();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+                      ),
+                      child: Text("Yes, Cancel", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 8.h),
+          ],
+        ),
+      ),
+      isScrollControlled: true,
     );
   }
 }

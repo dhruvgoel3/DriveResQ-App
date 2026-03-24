@@ -99,7 +99,7 @@ class JobSummaryView extends StatelessWidget {
           TextField(
             controller: c.notesController,
             maxLines: 3,
-            style: GoogleFonts.poppins(fontSize: 14.sp),
+            style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black87),
             decoration: _inputDecor('Describe the work done...'),
           ),
 
@@ -281,7 +281,7 @@ class JobSummaryView extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: TextField(
-                  style: GoogleFonts.poppins(fontSize: 13.sp),
+                  style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black87),
                   decoration: _inputDecor('Part name'),
                   onChanged: (v) => c.updatePart(i, 'name', v),
                 ),
@@ -290,7 +290,7 @@ class JobSummaryView extends StatelessWidget {
               SizedBox(
                 width: 50.w,
                 child: TextField(
-                  style: GoogleFonts.poppins(fontSize: 13.sp),
+                  style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black87),
                   decoration: _inputDecor('Qty'),
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -302,7 +302,7 @@ class JobSummaryView extends StatelessWidget {
               SizedBox(
                 width: 80.w,
                 child: TextField(
-                  style: GoogleFonts.poppins(fontSize: 13.sp),
+                  style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black87),
                   decoration: _inputDecor('₹ Cost'),
                   keyboardType: TextInputType.number,
                   onChanged: (v) =>
@@ -422,9 +422,6 @@ class JobSummaryView extends StatelessWidget {
             _costRow('Parts Cost', c.partsTotal.value),
             _costRow('Travel Cost', c.travelCost.value),
             Divider(color: Colors.grey.shade300, height: 24.h),
-            _costRow('Subtotal', c.subtotal.value),
-            _costRow('GST (18%)', c.gstAmount.value),
-            Divider(color: Colors.grey.shade300, height: 24.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -502,7 +499,7 @@ class JobSummaryView extends StatelessWidget {
     return TextField(
       controller: controller,
       keyboardType: TextInputType.number,
-      style: GoogleFonts.poppins(fontSize: 14.sp),
+      style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black87),
       onChanged: onChanged,
       decoration: InputDecoration(
         hintText: hint,

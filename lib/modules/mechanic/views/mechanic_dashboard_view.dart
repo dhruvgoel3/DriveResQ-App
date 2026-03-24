@@ -1,14 +1,14 @@
-import 'package:iconsax/iconsax.dart';
 import 'package:driveresq_app/modules/mechanic/views/ProfilePage/mechanic_profile_view.dart';
 import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:driveresq_app/theme/app_text_styles.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:iconsax/iconsax.dart';
 
-import '../controller/mechanic_controller.dart';
 import '../../chat/views/chat_list_view.dart';
+import '../controller/mechanic_controller.dart';
 import 'HomePage/current_request_view.dart';
 
 class MechanicDashboardView extends StatelessWidget {
@@ -19,26 +19,19 @@ class MechanicDashboardView extends StatelessWidget {
     final controller = Get.find<MechanicController>();
 
     // Pre-build tab pages once
-    final pages = [
-      CurrentRequestView(),
-      ChatListView(),
-      MechanicProfileView(),
-    ];
+    final pages = [CurrentRequestView(), ChatListView(), MechanicProfileView()];
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Obx(() => IndexedStack(
-            index: controller.currentIndex.value,
-            children: pages,
-          )),
+      body: Obx(
+        () =>
+            IndexedStack(index: controller.currentIndex.value, children: pages),
+      ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: AppColors.surface,
           boxShadow: [
-            BoxShadow(
-              blurRadius: 20,
-              color: Colors.black.withOpacity(.1),
-            )
+            BoxShadow(blurRadius: 20, color: Colors.black.withOpacity(.1)),
           ],
         ),
         child: SafeArea(
@@ -62,18 +55,9 @@ class MechanicDashboardView extends StatelessWidget {
                 selectedIndex: controller.currentIndex.value,
                 onTabChange: controller.changeTab,
                 tabs: const [
-                  GButton(
-                    icon: Iconsax.home,
-                    text: 'Home',
-                  ),
-                  GButton(
-                    icon: Iconsax.message,
-                    text: 'Chats',
-                  ),
-                  GButton(
-                    icon: Iconsax.profile_circle,
-                    text: 'Profile',
-                  ),
+                  GButton(icon: Iconsax.home, text: 'Home'),
+                  GButton(icon: Iconsax.message, text: 'Chats'),
+                  GButton(icon: Iconsax.profile_circle, text: 'Profile'),
                 ],
               ),
             ),

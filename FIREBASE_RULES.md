@@ -7,6 +7,13 @@ Firebase Console → Firestore Database → Rules → Replace all → Publish
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    
+    // Helper function to check if user is an admin
+    function isAdmin() {
+      return request.auth != null && 
+        (exists(/databases/$(database)/documents/admin/$(request.auth.uid)) || 
+         exists(/databases/$(database)/documents/adminUsers/$(request.auth.uid)));
+    }
 
     // ─── USERS ───
     // Anyone authenticated can read user profiles (needed for chats, names, FCM tokens)
@@ -14,7 +21,7 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if request.auth != null;
       allow create: if request.auth != null && request.auth.uid == userId;
-      allow update: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && (request.auth.uid == userId || isAdmin());
       allow delete: if false;
     }
 
@@ -22,6 +29,14 @@ service cloud.firestore {
     // Drivers create requests; both drivers and mechanics can read
     // Mechanics can update status (accept/complete); drivers can update (cancel)
     match /requests/{requestId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if false;
+    }
+
+    // ─── COMPLETED JOBS ───
+    match /completedJobs/{jobId} {
       allow create: if request.auth != null;
       allow read: if request.auth != null;
       allow update: if request.auth != null;
@@ -61,6 +76,21 @@ service cloud.firestore {
     // ─── ADMIN ───
     match /admin/{document=**} {
       allow read, write: if request.auth != null;
+    }
+    match /adminUsers/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+    match /adminSettings/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+
+    match /adminActions/{document=**} {
+      allow read, write: if isAdmin();
+    }
+
+    match /mail/{document=**} {
+      allow create: if request.auth != null;
+      allow read: if isAdmin();
     }
 
     // ─── MECHANIC APPLICATIONS / ONBOARDING ───

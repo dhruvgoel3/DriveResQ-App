@@ -55,18 +55,12 @@ class MechanicService {
       throw Exception("Request has incomplete information");
     }
 
-    // Generate verification code
-    final verificationCode = _generateVerificationCode();
-
-    // Accept the request
+    // Accept the request (pending driver approval)
     await _firestore.collection('requests').doc(requestId).update({
-      'status': 'accepted',
+      'status': 'mechanic_accepted',
       'mechanicId': uid,
       'mechanicPhone': mechanicPhone,
       'acceptedAt': FieldValue.serverTimestamp(),
-      'verificationCode': verificationCode,
-      'verificationAttempts': 0,
-      'codeGeneratedAt': FieldValue.serverTimestamp(),
     });
 
     // 💬 Create chat for this request

@@ -1,9 +1,10 @@
-import 'package:iconsax/iconsax.dart';
+import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax/iconsax.dart';
+
 import '../../controller/mechanic_profile_controller.dart';
-import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class MechanicProfileView extends StatelessWidget {
   static const _accent = Color(0xFF6C63FF);
@@ -276,17 +277,9 @@ class MechanicProfileView extends StatelessWidget {
             Divider(height: 20.h),
             isEdit
                 ? _editField('Email', c.emailController, Iconsax.sms)
-                : _infoRow(
-                    Iconsax.sms,
-                    'Email',
-                    data['email'] ?? 'Not added',
-                  ),
+                : _infoRow(Iconsax.sms, 'Email', data['email'] ?? 'Not added'),
             Divider(height: 20.h),
-            _infoRow(
-              Iconsax.box,
-              'Date of Birth',
-              _formatDob(data['dob']),
-            ),
+            _infoRow(Iconsax.box, 'Date of Birth', _formatDob(data['dob'])),
             Divider(height: 20.h),
             _infoRow(Iconsax.user, 'Gender', data['gender'] ?? '—'),
             if (isEdit) ...[SizedBox(height: 16.h), _saveButton(c)],
@@ -306,16 +299,8 @@ class MechanicProfileView extends StatelessWidget {
         child: Column(
           children: [
             isEdit
-                ? _editField(
-                    'Shop Name',
-                    c.shopNameController,
-                    Iconsax.shop,
-                  )
-                : _infoRow(
-                    Iconsax.shop,
-                    'Shop Name',
-                    data['shopName'] ?? '—',
-                  ),
+                ? _editField('Shop Name', c.shopNameController, Iconsax.shop)
+                : _infoRow(Iconsax.shop, 'Shop Name', data['shopName'] ?? '—'),
             Divider(height: 20.h),
             isEdit
                 ? _editField(
@@ -507,7 +492,11 @@ class MechanicProfileView extends StatelessWidget {
                   ),
             Divider(height: 20.h),
             isEdit
-                ? _editField('Per Km (₹)', c.perKmChargeController, Iconsax.routing)
+                ? _editField(
+                    'Per Km (₹)',
+                    c.perKmChargeController,
+                    Iconsax.routing,
+                  )
                 : _infoRow(
                     Iconsax.routing,
                     'Per Km Charge',

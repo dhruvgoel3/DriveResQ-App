@@ -98,6 +98,28 @@ class AdminLoginView extends StatelessWidget {
                     ),
                   ),
                 ),
+                const SizedBox(height: 8),
+
+                // Forgot Password
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () => c.sendPasswordReset(),
+                    style: TextButton.styleFrom(
+                      foregroundColor: const Color(0xFFFF9800),
+                      padding: EdgeInsets.zero,
+                      minimumSize: const Size(0, 0),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Text(
+                      'Forgot Password?',
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 16),
 
                 // Remember me
@@ -153,7 +175,7 @@ class AdminLoginView extends StatelessWidget {
                               ),
                             )
                           : Text(
-                              'Sign In',
+                              c.isFirstSetup.value ? 'Setup Admin Account' : 'Sign In',
                               style: GoogleFonts.poppins(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,

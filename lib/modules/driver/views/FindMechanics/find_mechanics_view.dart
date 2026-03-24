@@ -202,8 +202,22 @@ class FindMechanicsView extends StatelessWidget {
                 // Show Map View
                 return Container(
                   height: 500,
-                  margin: const EdgeInsets.only(top: 16),
-                  child: const MechanicsMapView(),
+                  margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.grey.shade300, width: 1.5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.06),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(18),
+                    child: const MechanicsMapView(),
+                  ),
                 );
               }
 

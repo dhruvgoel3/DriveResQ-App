@@ -16,6 +16,7 @@ import '../../../../utils/role_change/dev_config.dart';
 import '../../../../utils/role_change/dev_role_container.dart';
 import '../../controllers/driver_controller.dart';
 import '../widgets/active_requests_card.dart';
+import '../widgets/job_receipt_view.dart';
 import 'create_request_view.dart';
 
 class DriverHomeView extends StatelessWidget {
@@ -84,6 +85,9 @@ class DriverHomeView extends StatelessWidget {
             ),
           Obx(() {
             if (controller.isLoadingRequest.value || !controller.hasActiveRequest.value) return const SizedBox();
+            final req = controller.requestData.value!;
+            if (req['status'] == 'verified' || req['status'] == 'completed') return const SizedBox();
+            
             return IconButton(
               icon: Icon(Iconsax.trash, color: AppColors.error, size: 22.w),
               onPressed: () {
@@ -115,7 +119,10 @@ class DriverHomeView extends StatelessWidget {
             padding: EdgeInsets.all(16.w),
             child: Column(
               children: [
-                ActiveRequestCard(request: request),
+                if (request['status'] == 'completed')
+                  JobReceiptView(request: request)
+                else
+                  ActiveRequestCard(request: request),
                 SizedBox(height: 12.h),
                 const SafetyTipsSection(),
               ],

@@ -150,7 +150,7 @@ class RatingView extends StatelessWidget {
             controller: c.reviewController,
             maxLines: 3,
             maxLength: 500,
-            style: GoogleFonts.poppins(fontSize: 14.sp),
+            style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black87),
             decoration: InputDecoration(
               hintText: 'Write a review (optional)',
               hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400),

@@ -145,8 +145,7 @@ class JobCompletionController extends GetxController {
         laborCharges.value +
         partsTotal.value +
         travelCost.value;
-    gstAmount.value = subtotal.value * 0.18;
-    totalAmount.value = subtotal.value + gstAmount.value;
+    totalAmount.value = subtotal.value;
   }
 
   Future<void> pickPhotos(bool isBefore) async {
@@ -237,7 +236,6 @@ class JobCompletionController extends GetxController {
         'partsTotal': partsTotal.value,
         'baseCharge': baseCharge.value,
         'subtotal': subtotal.value,
-        'gst': gstAmount.value,
         'totalAmount': totalAmount.value,
         'paymentMethod': 'Cash (settled directly)',
         'cashCollected': cashCollected.value,

@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
@@ -259,7 +260,7 @@ class MechanicOnboardingController extends GetxController {
                 ),
                 ListTile(
                   leading: Icon(Iconsax.camera, color: Color(0xFFFF9800)),
-                  title: Text('Take Photo'),
+                  title: Text('Take Photo', style: GoogleFonts.poppins(color: Colors.black87)),
                   onTap: () async {
                     Get.back();
                     final picked = await _picker.pickImage(
@@ -272,7 +273,7 @@ class MechanicOnboardingController extends GetxController {
                 ),
                 ListTile(
                   leading: Icon(Iconsax.gallery, color: Color(0xFFFF9800)),
-                  title: Text('Choose from Gallery'),
+                  title: Text('Choose from Gallery', style: GoogleFonts.poppins(color: Colors.black87)),
                   onTap: () async {
                     Get.back();
                     final picked = await _picker.pickImage(
@@ -500,6 +501,35 @@ class MechanicOnboardingController extends GetxController {
         'verificationStatus': 'pending',
         'onboardingSubmittedAt': FieldValue.serverTimestamp(),
       });
+
+      // ── Trigger Email to Admin ──
+      try {
+        final settingsDoc = await _firestore.collection('adminSettings').doc('general').get();
+        if (settingsDoc.exists) {
+          final adminEmail = settingsDoc.data()?['notificationEmail'] as String?;
+          if (adminEmail != null && adminEmail.isNotEmpty) {
+            await _firestore.collection('mail').add({
+              'to': adminEmail,
+              'message': {
+                'subject': 'New Mechanic Registration Pending Approval',
+                'html': '''
+                  <h2>New Mechanic Needs Approval</h2>
+                  <p>A new mechanic <b>${nameController.text.trim()}</b> has completed onboarding and is waiting for your review.</p>
+                  <p><b>Shop name:</b> ${shopNameController.text.trim()}</p>
+                  <br/>
+                  <p>Please log in to the admin dashboard to review their documents and approve them.</p>
+                  <p><a href="https://driveresq-admin.vercel.app/admin" style="padding: 10px 20px; background-color: #FF9800; color: white; text-decoration: none; border-radius: 5px;">Go to Admin Dashboard</a></p>
+                ''',
+              },
+              'createdAt': FieldValue.serverTimestamp(),
+            });
+            debugPrint('✅ Triggered admin email notification to $adminEmail');
+          }
+        }
+      } catch (mailError) {
+        debugPrint('⚠️ Failed to trigger admin email: $mailError');
+        // Do not block onboarding on email failure
+      }
 
       isLoading.value = false;
 

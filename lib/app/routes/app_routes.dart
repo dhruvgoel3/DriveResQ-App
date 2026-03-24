@@ -19,6 +19,8 @@ import '../../admin/views/approved_mechanics_view.dart';
 import '../../admin/views/pending_verifications_view.dart';
 import '../../admin/views/rejected_applications_view.dart';
 import '../../admin/views/review_application_view.dart';
+import '../../admin/views/admin_settings_view.dart';
+import '../../admin/controllers/admin_settings_controller.dart';
 import '../../modules/auth/views/enter_phone_number_view.dart';
 import '../../modules/auth/views/otp_verification_view.dart';
 import '../../modules/auth/views/role_selection_view.dart';
@@ -178,6 +180,17 @@ class AppPages {
         if (!Get.isRegistered<VerificationController>()) {
           Get.lazyPut<VerificationController>(() => VerificationController());
         }
+      }),
+    ),
+
+    GetPage(
+      name: Routes.ADMIN_SETTINGS,
+      page: () => const AdminSettingsView(),
+      binding: BindingsBuilder(() {
+        if (!Get.isRegistered<AdminAuthController>()) {
+          Get.put(AdminAuthController());
+        }
+        Get.lazyPut<AdminSettingsController>(() => AdminSettingsController());
       }),
     ),
 

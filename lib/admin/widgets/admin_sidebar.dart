@@ -147,6 +147,9 @@ class AdminSidebar extends StatelessWidget {
             ),
           ),
 
+          _menuItem(Iconsax.setting, 'Settings', '/admin/settings'),
+          const SizedBox(height: 8),
+
           // Logout
           _menuItem(Iconsax.logout, 'Logout', 'logout'),
           const SizedBox(height: 16),

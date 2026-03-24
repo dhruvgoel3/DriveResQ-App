@@ -9,6 +9,7 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 import '../../../tracking/views/live_tracking_view.dart';
 import '../../controllers/active_request_card_controller.dart';
+import '../../controllers/driver_controller.dart';
 
 class ActiveRequestCard extends StatelessWidget {
   final Map<String, dynamic> request;
@@ -81,8 +82,12 @@ class ActiveRequestCard extends StatelessWidget {
           SizedBox(height: 18.h),
 
           // 🎬 ACTION BUTTONS
-          if (status == 'accepted') 
+          if (status == 'mechanic_accepted')
+            _MechanicAcceptedMessage()
+          else if (status == 'accepted') 
             _ActionButtons(controller: controller, request: request)
+          else if (status == 'verified')
+            _VerifiedMessage()
           else
             _WaitingMessage(),
         ],
@@ -123,9 +128,17 @@ class _StatusChip extends StatelessWidget {
     String text;
 
     switch (status) {
+      case 'mechanic_accepted':
+        color = AppColors.warning;
+        text = "Approval Needed";
+        break;
       case 'accepted':
         color = AppColors.success;
         text = "Accepted";
+        break;
+      case 'verified':
+        color = AppColors.primary;
+        text = "In Progress";
         break;
       case 'open':
         color = AppColors.secondary;
@@ -320,11 +333,18 @@ class _InfoTile extends StatelessWidget {
   }
 }
 
-class _VerificationCode extends StatelessWidget {
+class _VerificationCode extends StatefulWidget {
   final ActiveRequestCardController controller;
   final String code;
 
   const _VerificationCode({required this.controller, required this.code});
+
+  @override
+  State<_VerificationCode> createState() => _VerificationCodeState();
+}
+
+class _VerificationCodeState extends State<_VerificationCode> {
+  bool _isRevealed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -365,7 +385,7 @@ class _VerificationCode extends StatelessWidget {
           SizedBox(height: 14.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: code.split('').map((digit) {
+            children: widget.code.split('').map((digit) {
               return Flexible(
                 child: Container(
                   width: 40.w,
@@ -385,7 +405,7 @@ class _VerificationCode extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      digit,
+                      _isRevealed ? digit : "•",
                       style: AppTextStyles.h3.copyWith(
                         fontWeight: FontWeight.w800,
                         color: AppColors.primary,
@@ -401,9 +421,17 @@ class _VerificationCode extends StatelessWidget {
             children: [
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () => controller.copyVerificationCode(code),
-                  icon: Icon(Iconsax.copy, size: 16.w),
-                  label: Text("Copy", style: AppTextStyles.button.copyWith(color: AppColors.primary)),
+                  onPressed: () {
+                    setState(() => _isRevealed = !_isRevealed);
+                  },
+                  icon: Icon(
+                    _isRevealed ? Iconsax.eye_slash : Iconsax.eye,
+                    size: 16.w,
+                  ),
+                  label: Text(
+                    _isRevealed ? "Hide" : "View Code",
+                    style: AppTextStyles.button.copyWith(color: AppColors.primary),
+                  ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.primary,
                     side: const BorderSide(color: AppColors.primary),
@@ -415,7 +443,7 @@ class _VerificationCode extends StatelessWidget {
               SizedBox(width: 10.w),
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () => controller.shareVerificationCode(code),
+                  onPressed: () => widget.controller.shareVerificationCode(widget.code),
                   icon: Icon(Iconsax.share, size: 16.w),
                   label: Text("Share", style: AppTextStyles.button.copyWith(color: AppColors.primary)),
                   style: OutlinedButton.styleFrom(
@@ -525,6 +553,143 @@ class _WaitingMessage extends StatelessWidget {
               "Waiting for a mechanic to accept your request...",
               style: AppTextStyles.body2.copyWith(color: AppColors.secondaryDark),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _VerifiedMessage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+      ),
+      child: Column(
+        children: [
+          Icon(Iconsax.setting_2, color: AppColors.primary, size: 36.w),
+          SizedBox(height: 12.h),
+          Text(
+            "Mechanic is working on your vehicle",
+            style: AppTextStyles.h4.copyWith(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w600,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 6.h),
+          Text(
+            "Please wait securely. Your mechanic is diagnosing and fixing the issue.",
+            style: AppTextStyles.body2.copyWith(
+              color: AppColors.textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MechanicAcceptedMessage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.find<DriverController>();
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColors.success.withOpacity(0.08),
+            AppColors.success.withOpacity(0.04),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: AppColors.success.withOpacity(0.3)),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(12.w),
+            decoration: BoxDecoration(
+              color: AppColors.success.withOpacity(0.12),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Iconsax.verify, color: AppColors.success, size: 32.w),
+          ),
+          SizedBox(height: 12.h),
+          Text(
+            "A Mechanic Has Accepted!",
+            style: AppTextStyles.h4.copyWith(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w700,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 6.h),
+          Text(
+            "Do you want this mechanic to help you? Accept to generate a verification code.",
+            style: AppTextStyles.body2.copyWith(
+              color: AppColors.textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20.h),
+          Row(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  height: 48.h,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      Get.defaultDialog(
+                        title: "Decline Mechanic?",
+                        middleText: "This will open your request to other mechanics.",
+                        textConfirm: "Yes, Decline",
+                        textCancel: "No",
+                        confirmTextColor: AppColors.surface,
+                        buttonColor: AppColors.error,
+                        onConfirm: () {
+                          Get.back();
+                          controller.declineMechanic();
+                        },
+                      );
+                    },
+                    icon: Icon(Iconsax.close_circle, size: 18.w),
+                    label: Text("Decline", style: AppTextStyles.button.copyWith(color: AppColors.error)),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.error,
+                      side: const BorderSide(color: AppColors.error),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: SizedBox(
+                  height: 48.h,
+                  child: ElevatedButton.icon(
+                    onPressed: () => controller.approveMechanic(),
+                    icon: Icon(Iconsax.tick_circle, size: 18.w, color: AppColors.surface),
+                    label: Text("Accept", style: AppTextStyles.button.copyWith(color: AppColors.surface)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.success,
+                      foregroundColor: AppColors.surface,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

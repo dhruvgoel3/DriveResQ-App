@@ -28,6 +28,7 @@ class CreateRequestController extends GetxController {
   final landmarkController = TextEditingController();
   final problemController = TextEditingController();
   final descriptionController = TextEditingController();
+  final vehicleNumberController = TextEditingController();
 
   @override
   void onInit() {
@@ -153,7 +154,8 @@ class CreateRequestController extends GetxController {
       'driverLat': driverLat,
       'driverLng': driverLng,
       'createdAt': FieldValue.serverTimestamp(),
-      'imageUrl': imageUrl, // ✅ ADDED - Store image URL
+      'imageUrl': imageUrl,
+      'vehicleNumber': vehicleNumberController.text.trim(),
     });
 
     // 🔔 Send notification to nearby mechanics
@@ -180,6 +182,7 @@ class CreateRequestController extends GetxController {
     landmarkController.dispose();
     problemController.dispose();
     descriptionController.dispose();
+    vehicleNumberController.dispose();
     super.onClose();
   }
 }
