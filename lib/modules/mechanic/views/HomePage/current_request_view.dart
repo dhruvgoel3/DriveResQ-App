@@ -33,7 +33,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
           _pageController.page?.round() != index) {
         _pageController.animateToPage(
           index,
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
         );
       }
@@ -51,10 +51,14 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
     final controller = Get.find<MechanicController>();
 
     return Scaffold(
-      backgroundColor: Color(0xFFF6F7FB),
+      backgroundColor: const Color(0xFFF6F7FB),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Iconsax.menu_1, color: Color(0xFF212121)),
+          onPressed: () => controller.scaffoldKey?.currentState?.openDrawer(),
+        ),
         title: Row(
           children: [
             Image.asset(
@@ -68,7 +72,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
               style: GoogleFonts.poppins(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF6C63FF),
+                color: const Color(0xFF6C63FF),
               ),
             ),
           ],
@@ -76,7 +80,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
         actions: [
           const NotificationBellIcon(),
           IconButton(
-            icon: Icon(Iconsax.refresh),
+            icon: const Icon(Iconsax.refresh,color: Colors.black),
             onPressed: () => controller.refreshLocation(),
             tooltip: "Refresh Location",
           ),
@@ -166,7 +170,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
               SizedBox(
                 width: 16.w,
                 height: 16.h,
-                child: CircularProgressIndicator(strokeWidth: 2),
+                child: const CircularProgressIndicator(strokeWidth: 2),
               ),
               SizedBox(width: 12.w),
               Text(
@@ -187,7 +191,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
             Container(
               width: 8.w,
               height: 8.h,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.green,
                 shape: BoxShape.circle,
               ),
@@ -236,13 +240,13 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
       child: GestureDetector(
         onTap: () => controller.changeInnerTab(index),
         child: AnimatedContainer(
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
           padding: EdgeInsets.symmetric(vertical: 14.h),
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
-                color: isActive ? Color(0xFF6C63FF) : Colors.transparent,
+                color: isActive ? const Color(0xFF6C63FF) : Colors.transparent,
                 width: 3.w,
               ),
             ),
@@ -251,7 +255,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
             child: Text(
               text,
               style: GoogleFonts.poppins(
-                color: isActive ? Color(0xFF6C63FF) : Colors.grey,
+                color: isActive ? const Color(0xFF6C63FF) : Colors.grey,
                 fontWeight: FontWeight.w600,
                 fontSize: 15.sp,
               ),
@@ -384,7 +388,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
           ),
         );
       } else {
-        return MechanicEmptyState();
+        return const MechanicEmptyState();
       }
     });
   }

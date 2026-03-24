@@ -27,4 +27,8 @@ abstract class Routes {
 
   // Notifications
   static const NOTIFICATIONS = '/notifications';
+
+  // History
+  static const DRIVER_HISTORY = '/driver/history';
+  static const MECHANIC_HISTORY = '/mechanic/history';
 }

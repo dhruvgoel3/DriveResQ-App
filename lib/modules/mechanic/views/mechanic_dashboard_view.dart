@@ -7,22 +7,36 @@ import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:iconsax/iconsax.dart';
 
+import '../../../shared/widgets/history_drawer.dart';
 import '../../chat/views/chat_list_view.dart';
 import '../controller/mechanic_controller.dart';
+import 'History/mechanic_history_view.dart';
 import 'HomePage/current_request_view.dart';
 
 class MechanicDashboardView extends StatelessWidget {
-  const MechanicDashboardView({super.key});
+  MechanicDashboardView({super.key});
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<MechanicController>();
+    // Store the scaffold key so child views can access it
+    controller.scaffoldKey = _scaffoldKey;
 
     // Pre-build tab pages once
     final pages = [CurrentRequestView(), ChatListView(), MechanicProfileView()];
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: AppColors.background,
+      drawer: HistoryDrawer(
+        userRole: 'mechanic',
+        onHistoryTap: () => Get.to(
+          () => const MechanicHistoryView(),
+          transition: Transition.rightToLeft,
+        ),
+      ),
       body: Obx(
         () =>
             IndexedStack(index: controller.currentIndex.value, children: pages),
@@ -67,3 +81,4 @@ class MechanicDashboardView extends StatelessWidget {
     );
   }
 }
+

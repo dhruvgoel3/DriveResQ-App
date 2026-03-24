@@ -17,6 +17,9 @@ class MechanicController extends GetxController {
   // Bottom navigation management
   var currentIndex = 0.obs;
 
+  /// Scaffold key for opening the drawer from child views.
+  GlobalKey<ScaffoldState>? scaffoldKey;
+
   // Tab management (0 = All Requests, 1 = Accepted Requests)
   var selectedTab = 0.obs;
 

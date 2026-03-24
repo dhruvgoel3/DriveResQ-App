@@ -9,6 +9,9 @@ import '../services/driver_service.dart';
 class DriverController extends GetxController {
   var currentIndex = 0.obs;
 
+  /// Scaffold key for opening the drawer from child views.
+  GlobalKey<ScaffoldState>? scaffoldKey;
+
   StreamSubscription? _requestSubscription;
 
   void changeTab(int index) {

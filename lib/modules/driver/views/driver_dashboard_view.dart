@@ -8,16 +8,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
+import '../../../shared/widgets/history_drawer.dart';
 import '../controllers/driver_controller.dart';
 import 'FindMechanics/find_mechanics_view.dart';
+import 'History/driver_history_view.dart';
 import 'HomePage/driver_home_view.dart';
 
 class DriverDashboardView extends StatelessWidget {
-  const DriverDashboardView({super.key});
+  DriverDashboardView({super.key});
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<DriverController>();
+    // Store the scaffold key so child views can access it
+    controller.scaffoldKey = _scaffoldKey;
 
     // Pre-build tab pages once (not rebuilt on tab switch)
     final pages = [
@@ -28,7 +34,15 @@ class DriverDashboardView extends StatelessWidget {
     ];
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: AppColors.background,
+      drawer: HistoryDrawer(
+        userRole: 'driver',
+        onHistoryTap: () => Get.to(
+          () => const DriverHistoryView(),
+          transition: Transition.rightToLeft,
+        ),
+      ),
       body: Obx(
         () => IndexedStack(index: controller.currentIndex.value, children: pages),
       ),

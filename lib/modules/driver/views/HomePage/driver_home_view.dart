@@ -33,6 +33,10 @@ class DriverHomeView extends StatelessWidget {
         backgroundColor: AppColors.surface,
         elevation: 0,
         surfaceTintColor: AppColors.surface,
+        leading: IconButton(
+          icon: const Icon(Iconsax.menu_1, color: AppColors.textPrimary),
+          onPressed: () => controller.scaffoldKey?.currentState?.openDrawer(),
+        ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

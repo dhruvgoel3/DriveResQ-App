@@ -1,10 +1,14 @@
 import 'package:driveresq_app/modules/driver/bindings/driver_binding.dart';
+import 'package:driveresq_app/modules/driver/controllers/driver_history_controller.dart';
 import 'package:driveresq_app/modules/driver/views/driver_dashboard_view.dart';
+import 'package:driveresq_app/modules/driver/views/History/driver_history_view.dart';
 import 'package:driveresq_app/modules/driver/views/onboarding/driver_onboarding_view.dart';
 import 'package:driveresq_app/modules/jobs/controllers/job_completion_controller.dart';
 import 'package:driveresq_app/modules/jobs/views/job_completion_page.dart';
 import 'package:driveresq_app/modules/mechanic/bindings/mechanic_binding.dart';
+import 'package:driveresq_app/modules/mechanic/controllers/mechanic_history_controller.dart';
 import 'package:driveresq_app/modules/mechanic/controllers/onboarding_controller.dart';
+import 'package:driveresq_app/modules/mechanic/views/History/mechanic_history_view.dart';
 import 'package:driveresq_app/modules/mechanic/views/mechanic_dashboard_view.dart';
 import 'package:driveresq_app/modules/mechanic/views/onboarding/step1_personal_details.dart';
 import 'package:driveresq_app/modules/mechanic/views/verification_pending_view.dart';
@@ -209,6 +213,26 @@ class AppPages {
       page: () => const NotificationsView(),
       transition: Transition.rightToLeft,
       transitionDuration: _dur,
+    ),
+
+    // History
+    GetPage(
+      name: Routes.DRIVER_HISTORY,
+      page: () => const DriverHistoryView(),
+      transition: Transition.rightToLeft,
+      transitionDuration: _dur,
+      binding: BindingsBuilder(() {
+        Get.lazyPut<DriverHistoryController>(() => DriverHistoryController());
+      }),
+    ),
+    GetPage(
+      name: Routes.MECHANIC_HISTORY,
+      page: () => const MechanicHistoryView(),
+      transition: Transition.rightToLeft,
+      transitionDuration: _dur,
+      binding: BindingsBuilder(() {
+        Get.lazyPut<MechanicHistoryController>(() => MechanicHistoryController());
+      }),
     ),
   ];
 }
