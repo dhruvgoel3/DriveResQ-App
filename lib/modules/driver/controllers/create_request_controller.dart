@@ -60,8 +60,10 @@ class CreateRequestController extends GetxController {
         title: const Text("Edit Location"),
         content: TextField(
           controller: editController,
+          style: const TextStyle(color: Colors.black),
           decoration: const InputDecoration(
             hintText: "Enter location manually",
+            hintStyle: TextStyle(color: Colors.black54),
             border: OutlineInputBorder(),
           ),
         ),

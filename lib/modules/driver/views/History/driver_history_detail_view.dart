@@ -273,7 +273,9 @@ class DriverHistoryDetailView extends StatelessWidget {
                       children: [
                         Text(name,
                             style: GoogleFonts.poppins(
-                                fontSize: 15.sp, fontWeight: FontWeight.w600)),
+                                fontSize: 15.sp, 
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textPrimary)),
                         if (rating > 0) ...[
                           SizedBox(width: 8.w),
                           Container(
@@ -370,7 +372,9 @@ class DriverHistoryDetailView extends StatelessWidget {
             children: [
               Text('Total Amount',
                   style: GoogleFonts.poppins(
-                      fontSize: 16.sp, fontWeight: FontWeight.bold)),
+                      fontSize: 16.sp, 
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary)),
               Text('₹${totalAmount.toStringAsFixed(0)}',
                   style: GoogleFonts.poppins(
                       fontSize: 20.sp,
@@ -490,7 +494,9 @@ class _InfoRow extends StatelessWidget {
           Expanded(
             child: Text(value,
                 style: GoogleFonts.poppins(
-                    fontSize: 13.sp, fontWeight: FontWeight.w500)),
+                    fontSize: 13.sp, 
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textPrimary)),
           ),
         ],
       ),
@@ -554,7 +560,9 @@ class _TimelineStep extends StatelessWidget {
                 children: [
                   Text(label,
                       style: GoogleFonts.poppins(
-                          fontSize: 14.sp, fontWeight: FontWeight.w500)),
+                          fontSize: 14.sp, 
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textPrimary)),
                   if (time.isNotEmpty)
                     Text(time,
                         style: GoogleFonts.poppins(
@@ -588,7 +596,9 @@ class _CostRow extends StatelessWidget {
                   fontSize: 13.sp, color: AppColors.textSecondary)),
           Text('₹${amount.toStringAsFixed(0)}',
               style: GoogleFonts.poppins(
-                  fontSize: 14.sp, fontWeight: FontWeight.w500)),
+                  fontSize: 14.sp, 
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textPrimary)),
         ],
       ),
     );
