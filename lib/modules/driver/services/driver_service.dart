@@ -1,16 +1,27 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
+import '../../notifications/services/notification_sender.dart';
 class DriverService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   /// Cancels an active request
   static Future<void> cancelActiveRequest(String requestId) async {
+    final doc = await _firestore.collection('requests').doc(requestId).get();
+    final mechanicId = doc.data()?['mechanicId'];
+
     await _firestore.collection('requests').doc(requestId).update({
       'status': 'cancelled',
       'cancelledAt': FieldValue.serverTimestamp(),
     });
+
+    if (mechanicId != null) {
+      await NotificationSender.notifyRequestCancelled(
+        requestId: requestId,
+        recipientId: mechanicId,
+        reason: 'Driver cancelled the request',
+      );
+    }
   }
 
   /// Returns a stream of the mechanic's location
@@ -43,12 +54,23 @@ class DriverService {
 
   /// Driver declines the mechanic — resets request to 'open'
   static Future<void> declineMechanic(String requestId) async {
+    final doc = await _firestore.collection('requests').doc(requestId).get();
+    final mechanicId = doc.data()?['mechanicId'];
+
     await _firestore.collection('requests').doc(requestId).update({
       'status': 'open',
       'mechanicId': FieldValue.delete(),
       'mechanicPhone': FieldValue.delete(),
       'acceptedAt': FieldValue.delete(),
     });
+
+    if (mechanicId != null) {
+      await NotificationSender.notifyRequestCancelled(
+        requestId: requestId,
+        recipientId: mechanicId,
+        reason: 'Driver declined the assignment',
+      );
+    }
   }
 
   /// Generate a random 6-digit verification code

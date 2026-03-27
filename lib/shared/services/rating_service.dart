@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../../modules/notifications/services/notification_sender.dart';
+
 class RatingService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -43,6 +45,13 @@ class RatingService {
           'createdAt': FieldValue.serverTimestamp(),
         });
       });
+
+      // Notify the user about the new rating
+      await NotificationSender.notifyRatingReceived(
+        mechanicId: targetUserId,
+        rating: newRating,
+        review: reviewText,
+      );
     } catch (e) {
       debugPrint("Error submitting rating: $e");
       rethrow;

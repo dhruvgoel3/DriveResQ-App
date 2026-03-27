@@ -2,7 +2,7 @@
   "name": "driveresq-functions",
   "description": "Cloud Functions for DriveResQ (FCM notifications, cleanup)",
   "engines": {
-    "node": "18"
+    "node": "22"
   },
   "main": "index.js",
   "scripts": {
