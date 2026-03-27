@@ -163,6 +163,12 @@ class FCMService {
             color: const Color(0xFF6C63FF),
             importance: Importance.max,
             priority: Priority.high,
+            autoCancel: true,
+            ongoing: false,
+            styleInformation: BigTextStyleInformation(
+              message.notification?.body ?? '',
+              contentTitle: message.notification?.title,
+            ),
           ),
           iOS: const DarwinNotificationDetails(
             presentAlert: true,

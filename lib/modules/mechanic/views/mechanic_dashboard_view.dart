@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../shared/widgets/history_drawer.dart';
 import '../../chat/views/chat_list_view.dart';
 import '../controller/mechanic_controller.dart';
 import 'History/mechanic_history_view.dart';
@@ -25,18 +24,16 @@ class MechanicDashboardView extends StatelessWidget {
     controller.scaffoldKey = _scaffoldKey;
 
     // Pre-build tab pages once
-    final pages = [CurrentRequestView(), ChatListView(), MechanicProfileView()];
+    final pages = [
+      CurrentRequestView(),
+      const MechanicHistoryView(),
+      ChatListView(),
+      MechanicProfileView()
+    ];
 
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: AppColors.background,
-      drawer: HistoryDrawer(
-        userRole: 'mechanic',
-        onHistoryTap: () => Get.to(
-          () => const MechanicHistoryView(),
-          transition: Transition.rightToLeft,
-        ),
-      ),
       body: Obx(
         () =>
             IndexedStack(index: controller.currentIndex.value, children: pages),
@@ -70,6 +67,7 @@ class MechanicDashboardView extends StatelessWidget {
                 onTabChange: controller.changeTab,
                 tabs: const [
                   GButton(icon: Iconsax.home, text: 'Home'),
+                  GButton(icon: Iconsax.clock, text: 'History'),
                   GButton(icon: Iconsax.message, text: 'Chats'),
                   GButton(icon: Iconsax.profile_circle, text: 'Profile'),
                 ],

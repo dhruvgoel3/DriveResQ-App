@@ -216,7 +216,7 @@ class _ChatTile extends StatelessWidget {
                         backgroundColor: AppColors.primary.withOpacity(0.1),
                         child: otherPhoto.isEmpty
                             ? Icon(
-                                isDriver ? Iconsax.setting_2 : Iconsax.car,
+                                Iconsax.user,
                                 color: AppColors.primary,
                                 size: 22.w,
                               )

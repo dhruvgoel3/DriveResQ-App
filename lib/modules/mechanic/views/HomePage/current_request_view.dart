@@ -55,10 +55,6 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Iconsax.menu_1, color: Color(0xFF212121)),
-          onPressed: () => controller.scaffoldKey?.currentState?.openDrawer(),
-        ),
         title: Row(
           children: [
             Image.asset(

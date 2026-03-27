@@ -74,13 +74,13 @@ class LocationService {
 
         return addressParts.isNotEmpty
             ? addressParts.join(', ')
-            : 'Unknown Location';
+            : 'Current Location';
       }
 
-      return 'Unknown Location';
+      return 'Current Location';
     } catch (e) {
       debugPrint("Geocoding Error: $e");
-      return 'Location: $lat, $lng';
+      return 'Current Location';
     }
   }
 

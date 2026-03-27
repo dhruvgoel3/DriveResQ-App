@@ -1,0 +1,26 @@
+
+[1m[37m===[39m Deploying to 'driveresq-app'...[22m
+
+[36m[1mi [22m[39m deploying [1mfunctions[22m
+[36m[1mi  functions:[22m[39m preparing codebase [1mdefault[22m for deployment
+[36m[1mi  functions:[22m[39m ensuring required API [1mcloudfunctions.googleapis.com[22m is enabled...
+[36m[1mi  functions:[22m[39m ensuring required API [1mcloudbuild.googleapis.com[22m is enabled...
+[36m[1mi  artifactregistry:[22m[39m ensuring required API [1martifactregistry.googleapis.com[22m is enabled...
+[33m[1m! [22m[39m [1m[33mfunctions: [39m[22mpackage.json indicates an outdated version of firebase-functions. Please upgrade using [1mnpm install --save firebase-functions@latest[22m in your functions directory.
+[33m[1m! [22m[39m [1m[33mfunctions: [39m[22mPlease note that there will be breaking changes when you upgrade.
+[36m[1mi  functions:[22m[39m Loading and analyzing source code for codebase default to determine what to deploy
+[36m[1mi  functions:[22m[39m You are using a version of firebase-functions SDK (4.9.0) that does not have support for the newest Firebase Extensions features. Please update firebase-functions SDK to >=5.1.0 to use them correctly
+Serving at port 8683
+
+[36m[1mi  functions:[22m[39m preparing [1mfunctions[22m directory for uploading...
+[36m[1mi [22m[39m [36m[1mfunctions:[22m[39m packaged [1mD:\Complete Flutter\driveresq_app\functions[22m (40.77 KB) for uploading
+[36m[1mi  functions:[22m[39m ensuring required API [1mcloudscheduler.googleapis.com[22m is enabled...
+[32m[1m+ [22m[39m [32m[1mfunctions:[22m[39m [1mfunctions[22m folder uploaded successfully
+[36m[1mi  functions:[22m[39m updating Node.js 22 (1st Gen) function [1mprocessNotification(us-central1)[22m...
+[36m[1mi  functions:[22m[39m updating Node.js 22 (1st Gen) function [1mcleanupOldNotifications(us-central1)[22m...
+[32m[1m+ [22m[39m [1m[32mfunctions[processNotification(us-central1)][39m[22m Successful update operation.
+[32m[1m+ [22m[39m [1m[32mfunctions[cleanupOldNotifications(us-central1)][39m[22m Successful update operation.
+
+[32m[1m+ [22m[39m [1m[4mDeploy complete![24m[22m
+
+[1mProject Console:[22m https://console.firebase.google.com/project/driveresq-app/overview

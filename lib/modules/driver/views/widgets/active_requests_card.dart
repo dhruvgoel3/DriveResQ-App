@@ -80,9 +80,9 @@ class ActiveRequestCard extends StatelessWidget {
             ),
 
           // 🔐 VERIFICATION CODE
-          if (status == 'accepted' && request['verificationCode'] != null)
+          if ((status == 'accepted' || status == 'verified') && request['verificationCode'] != null)
             _VerificationCode(controller: controller, code: request['verificationCode']),
-          if (status == 'accepted' && request['verificationCode'] != null)
+          if ((status == 'accepted' || status == 'verified') && request['verificationCode'] != null)
             SizedBox(height: 14.h),
 
           SizedBox(height: 18.h),
