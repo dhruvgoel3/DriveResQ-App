@@ -251,6 +251,7 @@ class DriverHistoryDetailView extends StatelessWidget {
               requestData['mechanicPhone'] ??
               '';
           final photo = mech['profilePhotoUrl'] ?? '';
+          final rating = (mech['averageRating'] ?? 0.0).toDouble();
 
           return Row(
             children: [
@@ -268,9 +269,36 @@ class DriverHistoryDetailView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(name,
-                        style: GoogleFonts.poppins(
-                            fontSize: 15.sp, fontWeight: FontWeight.w600)),
+                    Row(
+                      children: [
+                        Text(name,
+                            style: GoogleFonts.poppins(
+                                fontSize: 15.sp, fontWeight: FontWeight.w600)),
+                        if (rating > 0) ...[
+                          SizedBox(width: 8.w),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                            decoration: BoxDecoration(
+                              color: AppColors.warning.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Iconsax.star1, color: AppColors.warning, size: 12.sp),
+                                SizedBox(width: 4.w),
+                                Text(
+                                  rating.toStringAsFixed(1),
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 11.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.warning),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ]
+                      ],
+                    ),
                     if (phone.isNotEmpty)
                       Text(phone,
                           style: GoogleFonts.poppins(

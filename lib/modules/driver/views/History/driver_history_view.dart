@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 
+import '../../../../shared/widgets/history_invoice_viewer.dart';
 import '../../controllers/driver_history_controller.dart';
 import 'driver_history_detail_view.dart';
 
@@ -334,22 +335,38 @@ class _HistoryItemCard extends StatelessWidget {
               ),
             ],
 
-            SizedBox(height: 8.h),
-
-            // Tap indicator
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text('View Details',
-                    style: GoogleFonts.poppins(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.primary)),
-                SizedBox(width: 4.w),
-                Icon(Iconsax.arrow_right_3,
-                    size: 14.w, color: AppColors.primary),
-              ],
-            ),
+            // Tap indicator and Invoice
+            if (isCompleted && data['completionData'] != null) ...[
+              SizedBox(height: 12.h),
+              SizedBox(
+                width: double.infinity,
+                height: 48.h,
+                child: OutlinedButton.icon(
+                  onPressed: () => HistoryInvoiceViewer.viewAndShare(data['completionData'], context),
+                  icon: Icon(Iconsax.document_download, size: 18.sp),
+                  label: Text('View Invoice', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.primary,
+                    side: BorderSide(color: AppColors.primary.withOpacity(0.5)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                  ),
+                ),
+              ),
+            ] else ...[
+               Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text('View Details',
+                      style: GoogleFonts.poppins(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.primary)),
+                  SizedBox(width: 4.w),
+                  Icon(Iconsax.arrow_right_3,
+                      size: 14.w, color: AppColors.primary),
+                ],
+              ),
+            ],
           ],
         ),
       ),

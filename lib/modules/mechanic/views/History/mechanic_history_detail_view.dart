@@ -186,41 +186,90 @@ class MechanicHistoryDetailView extends StatelessWidget {
   }
 
   Widget _buildDriverCard() {
-    final driverName = requestData['driverName'] ?? 'Driver';
-    final driverPhone = requestData['driverPhone'] ?? '';
-    final driverPhoto = requestData['driverPhoto'] ?? '';
+    final driverId = requestData['driverId'] as String?;
+    if (driverId == null) return const SizedBox.shrink();
 
     return _CardWrapper(
       title: 'Driver',
       icon: Iconsax.personalcard,
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 24.r,
-            backgroundColor: AppColors.primary.withOpacity(0.15),
-            backgroundImage:
-                driverPhoto.isNotEmpty ? NetworkImage(driverPhoto) : null,
-            child: driverPhoto.isEmpty
-                ? Icon(Iconsax.user, color: AppColors.primary)
-                : null,
-          ),
-          SizedBox(width: 14.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(driverName,
-                    style: GoogleFonts.poppins(
-                        fontSize: 15.sp, fontWeight: FontWeight.w600)),
-                if (driverPhone.isNotEmpty)
-                  Text(driverPhone,
-                      style: GoogleFonts.poppins(
-                          fontSize: 13.sp,
-                          color: AppColors.textSecondary)),
-              ],
-            ),
-          ),
-        ],
+      child: FutureBuilder<DocumentSnapshot>(
+        future: FirebaseFirestore.instance
+            .collection('users')
+            .doc(driverId)
+            .get(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData || !snapshot.data!.exists) {
+             return Padding(
+              padding: EdgeInsets.all(8.w),
+              child: Text('Driver details unavailable',
+                  style: AppTextStyles.body2
+                      .copyWith(color: AppColors.textSecondary)),
+            );
+          }
+
+          final driver = snapshot.data!.data() as Map<String, dynamic>;
+          final name = driver['fullName'] ?? driver['name'] ?? 'Driver';
+          final phone = driver['phone'] ?? requestData['driverPhone'] ?? '';
+          final photo = driver['profilePhotoUrl'] ?? '';
+          final rating = (driver['averageRating'] ?? 0.0).toDouble();
+
+          return Row(
+            children: [
+              CircleAvatar(
+                radius: 24.r,
+                backgroundColor: AppColors.primary.withOpacity(0.15),
+                backgroundImage:
+                    photo.isNotEmpty ? NetworkImage(photo) : null,
+                child: photo.isEmpty
+                    ? Icon(Iconsax.user, color: AppColors.primary)
+                    : null,
+              ),
+              SizedBox(width: 14.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(name,
+                            style: GoogleFonts.poppins(
+                                fontSize: 15.sp, fontWeight: FontWeight.w600)),
+                        if (rating > 0) ...[
+                          SizedBox(width: 8.w),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                            decoration: BoxDecoration(
+                              color: AppColors.warning.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Iconsax.star1, color: AppColors.warning, size: 12.sp),
+                                SizedBox(width: 4.w),
+                                Text(
+                                  rating.toStringAsFixed(1),
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 11.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.warning),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ]
+                      ],
+                    ),
+                    if (phone.isNotEmpty)
+                      Text(phone,
+                          style: GoogleFonts.poppins(
+                              fontSize: 13.sp,
+                              color: AppColors.textSecondary)),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

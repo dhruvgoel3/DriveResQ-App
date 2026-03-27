@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import '../../../chat/controllers/chat_controller.dart';
 import '../../../chat/views/chat_screen.dart';
 import 'complete_job_verification_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class MechanicActiveJobCard extends StatefulWidget {
@@ -345,47 +346,91 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
 
   // ─── DRIVER INFO ──────────────────────────────────────────
   Widget _buildDriverInfo() {
-    return Row(
-      children: [
-        Icon(Iconsax.user, color: _orange, size: 20.w),
-        SizedBox(width: 8.w),
-        Expanded(
-          child: Text(
-            widget.job['driverName'] ?? 'Driver',
-            style: GoogleFonts.poppins(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
-          ),
-        ),
-        if (widget.job['driverPhone'] != null)
-          GestureDetector(
-            onTap: _callDriver,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-              decoration: BoxDecoration(
-                color: _primary.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(10.r),
-              ),
+    final driverId = widget.job['driverId'] as String?;
+    
+    return FutureBuilder<DocumentSnapshot?>(
+      future: driverId != null
+          ? FirebaseFirestore.instance.collection('users').doc(driverId).get()
+          : Future.value(null),
+      builder: (context, snapshot) {
+        final driverName = widget.job['driverName'] ?? 'Driver';
+        double rating = 0.0;
+        
+        if (snapshot.hasData && snapshot.data != null && snapshot.data!.exists) {
+          final data = snapshot.data!.data() as Map<String, dynamic>;
+          rating = (data['averageRating'] ?? 0.0).toDouble();
+        }
+
+        return Row(
+          children: [
+            Icon(Iconsax.user, color: _orange, size: 20.w),
+            SizedBox(width: 8.w),
+            Expanded(
               child: Row(
-                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Iconsax.call, color: _primary, size: 16.w),
-                  SizedBox(width: 6.w),
                   Text(
-                    "Call",
+                    driverName,
                     style: GoogleFonts.poppins(
-                      fontSize: 12.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
-                      color: _primary,
+                      color: Colors.black87,
                     ),
                   ),
+                  if (rating > 0) ...[
+                    SizedBox(width: 8.w),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                      decoration: BoxDecoration(
+                        color: _orange.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Iconsax.star1, color: _orange, size: 12.sp),
+                          SizedBox(width: 4.w),
+                          Text(
+                            rating.toStringAsFixed(1),
+                            style: GoogleFonts.poppins(
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.bold,
+                                color: _orange),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
-          ),
-      ],
+            if (widget.job['driverPhone'] != null)
+              GestureDetector(
+                onTap: _callDriver,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                  decoration: BoxDecoration(
+                    color: _primary.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Iconsax.call, color: _primary, size: 16.w),
+                      SizedBox(width: 6.w),
+                      Text(
+                        "Call",
+                        style: GoogleFonts.poppins(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
+                          color: _primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 

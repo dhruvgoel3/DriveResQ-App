@@ -151,6 +151,15 @@ service firebase.storage {
                     && request.resource.size < 10 * 1024 * 1024;
       allow delete: if false; // Prevention from accidental deletes
     }
+
+    // ─── REQUEST IMAGES ───
+    // Allow authenticated users to upload an image when creating a request
+    match /requests/{fileName} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+                    && request.resource.size < 10 * 1024 * 1024;
+      allow delete: if false;
+    }
     
     // ─── USER PROFILE PHOTOS ───
     match /users/{userId}/profile_photos/{fileName} {

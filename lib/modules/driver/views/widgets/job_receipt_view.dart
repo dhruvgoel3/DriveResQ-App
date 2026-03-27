@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get/get.dart';
+
+import '../../../../shared/widgets/rating_dialog.dart';
+import '../../../../shared/services/rating_service.dart';
 import '../../../../theme/app_colors.dart';
 import '../../../../theme/app_text_styles.dart';
 import '../../../../utils/helpers/responsive_helper.dart';
@@ -197,7 +201,7 @@ class JobReceiptView extends StatelessWidget {
 
               SizedBox(height: 32.h),
 
-              // ACTION BUTTON
+              // ACTION BUTTONS
               SizedBox(
                 width: double.infinity,
                 height: 54.h,
@@ -217,10 +221,78 @@ class JobReceiptView extends StatelessWidget {
                   ),
                 ),
               ),
+
+              SizedBox(height: 12.h),
+
+              // RATE MECHANIC BUTTON
+              if (request['mechanicId'] != null)
+                SizedBox(
+                  width: double.infinity,
+                  height: 54.h,
+                  child: OutlinedButton(
+                    onPressed: () => _showRatingDialog(context, request['mechanicId'], request['mechanicName'] ?? 'Mechanic'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.primary,
+                      side: BorderSide(color: AppColors.primary, width: 1.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.r),
+                      ),
+                    ),
+                    child: Text(
+                      "Review Mechanic",
+                      style: GoogleFonts.poppins(fontSize: 16.sp, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
             ],
           ),
         );
       },
+    );
+  }
+
+  void _showRatingDialog(BuildContext context, String mechanicId, String mechanicName) {
+    showDialog(
+      context: context,
+      builder: (context) => RatingDialog(
+        title: 'Rate Mechanic',
+        entityName: mechanicName,
+        onSubmit: (rating, review) async {
+          Get.back(); // close dialog
+          Get.snackbar(
+            'Submitting...',
+            'Saving your review',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          
+          try {
+            final currentUser = FirebaseAuth.instance.currentUser;
+            if (currentUser != null) {
+              await RatingService.submitRating(
+                targetUserId: mechanicId,
+                newRating: rating,
+                reviewerId: currentUser.uid,
+                reviewText: review,
+              );
+              Get.snackbar(
+                'Success',
+                'Thank you for your feedback!',
+                backgroundColor: AppColors.success.withOpacity(0.1),
+                colorText: AppColors.success,
+                snackPosition: SnackPosition.BOTTOM,
+              );
+            }
+          } catch (e) {
+            Get.snackbar(
+              'Error',
+              'Failed to submit review',
+              backgroundColor: AppColors.error.withOpacity(0.1),
+              colorText: AppColors.error,
+              snackPosition: SnackPosition.BOTTOM,
+            );
+          }
+        },
+      ),
     );
   }
 

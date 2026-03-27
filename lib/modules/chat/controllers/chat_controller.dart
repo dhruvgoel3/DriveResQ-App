@@ -154,21 +154,33 @@ class ChatController extends GetxController {
   Future<void> pickAndSendImage({
     ImageSource source = ImageSource.gallery,
   }) async {
-    final picked = await _picker.pickImage(source: source, imageQuality: 60);
-    if (picked == null) return;
-
-    isSending.value = true;
     try {
-      await ChatService.sendImageFromPath(
-        chatId: chatId,
-        imagePath: picked.path,
-        senderRole: myRole,
+      final picked = await _picker.pickImage(
+        source: source,
+        imageQuality: 50,
+        maxWidth: 1200,
+        maxHeight: 1200,
       );
+      if (picked == null) return;
+
+      isSending.value = true;
+      try {
+        await ChatService.sendImageFromPath(
+          chatId: chatId,
+          imagePath: picked.path,
+          senderRole: myRole,
+        );
+      } catch (e) {
+        debugPrint('❌ Image send error: $e');
+        ErrorHandler.handle(e);
+      } finally {
+        isSending.value = false;
+      }
     } catch (e) {
-      debugPrint('❌ Image send error: $e');
+      debugPrint('❌ Image picker error: $e');
       ErrorHandler.handle(e);
+      isSending.value = false;
     }
-    isSending.value = false;
   }
 
   // ─── Voice recording ───

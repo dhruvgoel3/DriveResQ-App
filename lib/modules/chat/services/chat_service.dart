@@ -184,7 +184,18 @@ class ChatService {
         await ref.putData(bytes, SettableMetadata(contentType: 'image/jpeg'));
       }
     } else {
-      await _uploadFileNative(ref, imagePath);
+      final file = File(imagePath);
+      if (!await file.exists()) {
+        throw Exception('Image file not found locally: $imagePath');
+      }
+      final uploadTask = ref.putFile(
+        file,
+        SettableMetadata(contentType: 'image/jpeg'),
+      );
+      final snapshot = await uploadTask;
+      if (snapshot.state != TaskState.success) {
+        throw Exception('Failed to upload image');
+      }
     }
 
     final url = await ref.getDownloadURL();
@@ -288,25 +299,6 @@ class ChatService {
     );
   }
 
-  static Future<void> _uploadFileNative(Reference ref, String path) async {
-    try {
-      final file = await _createFile(path);
-      if (file != null) {
-        await ref.putData(file);
-      }
-    } catch (e) {
-      debugPrint('Upload error: $e');
-    }
-  }
-
-  static Future<Uint8List?> _createFile(String path) async {
-    try {
-      final xFile = XFileHelper.fromPath(path);
-      return await xFile.readAsBytes();
-    } catch (e) {
-      return null;
-    }
-  }
 
   // ─── Send price quote ───
   static Future<void> sendPriceQuote({

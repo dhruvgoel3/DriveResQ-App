@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../notifications/services/notification_sender.dart';
+import '../../../shared/services/rating_service.dart';
 
 class JobCompletionController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -268,6 +269,20 @@ class JobCompletionController extends GetxController {
         'totalEarnings': FieldValue.increment(totalAmount.value),
         'totalJobsCompleted': FieldValue.increment(1),
       });
+
+      // Submit Rating for the driver
+      if (mechanicRating.value > 0 && job['driverId'] != null) {
+        try {
+          await RatingService.submitRating(
+            targetUserId: job['driverId'],
+            newRating: mechanicRating.value,
+            reviewerId: uid,
+            reviewText: reviewController.text.trim(),
+          );
+        } catch (e) {
+          debugPrint('Failed to submit driver rating: $e');
+        }
+      }
 
       // 🔔 Send Push Notification to Driver
       final mechanicDoc = await _firestore.collection('users').doc(uid).get();

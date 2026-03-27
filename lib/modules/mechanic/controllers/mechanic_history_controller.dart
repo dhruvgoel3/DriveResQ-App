@@ -40,7 +40,6 @@ class MechanicHistoryController extends GetxController {
           .collection('requests')
           .where('mechanicId', isEqualTo: uid)
           .where('status', whereIn: ['completed', 'cancelled'])
-          .orderBy('createdAt', descending: true)
           .get();
 
       List<Map<String, dynamic>> items = [];
@@ -79,6 +78,13 @@ class MechanicHistoryController extends GetxController {
 
         items.add(data);
       }
+
+      // Sort locally to bypass Firestore composite index requirement
+      items.sort((a, b) {
+        final aTime = (a['createdAt'] as Timestamp?)?.toDate() ?? DateTime.fromMillisecondsSinceEpoch(0);
+        final bTime = (b['createdAt'] as Timestamp?)?.toDate() ?? DateTime.fromMillisecondsSinceEpoch(0);
+        return bTime.compareTo(aTime);
+      });
 
       historyList.value = items;
       totalJobs.value = items.length;

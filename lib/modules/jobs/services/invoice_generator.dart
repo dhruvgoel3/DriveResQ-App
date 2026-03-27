@@ -28,233 +28,311 @@ class InvoiceGenerator {
     final job = c.jobData.value ?? {};
     final pdf = pw.Document();
 
+    final primaryColor = PdfColor.fromHex('#F57C00');
+    final secondaryColor = PdfColor.fromHex('#424242');
+    final surfaceColor = PdfColor.fromHex('#FAFAFA');
+
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
-        margin: pw.EdgeInsets.all(40),
+        margin: const pw.EdgeInsets.all(32),
         build: (context) {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              // Header
-              pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                children: [
-                  pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: [
-                      pw.Text(
-                        'DriveResQ',
-                        style: pw.TextStyle(
-                          fontSize: 28,
-                          fontWeight: pw.FontWeight.bold,
-                          color: PdfColor.fromHex('#FF9800'),
-                        ),
-                      ),
-                      pw.SizedBox(height: 4),
-                      pw.Text(
-                        'Roadside Assistance',
-                        style: pw.TextStyle(
-                          fontSize: 12,
-                          color: PdfColors.grey600,
-                        ),
-                      ),
-                    ],
+              // ─── Header ───
+              pw.Container(
+                padding: const pw.EdgeInsets.only(bottom: 20),
+                decoration: pw.BoxDecoration(
+                  border: pw.Border(
+                    bottom: pw.BorderSide(color: primaryColor, width: 2),
                   ),
-                  pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.end,
-                    children: [
-                      pw.Text(
-                        'INVOICE',
-                        style: pw.TextStyle(
-                          fontSize: 20,
-                          fontWeight: pw.FontWeight.bold,
+                ),
+                child: pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    // Brand Info
+                    pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text(
+                          'DriveResQ',
+                          style: pw.TextStyle(
+                            fontSize: 32,
+                            fontWeight: pw.FontWeight.bold,
+                            color: primaryColor,
+                          ),
                         ),
-                      ),
-                      pw.SizedBox(height: 4),
-                      pw.Text(
-                        c.invoiceNumber.value,
-                        style: pw.TextStyle(
-                          fontSize: 12,
-                          color: PdfColors.grey700,
+                        pw.SizedBox(height: 4),
+                        pw.Text(
+                          'Professional Roadside Assistance',
+                          style: pw.TextStyle(
+                            fontSize: 12,
+                            color: secondaryColor,
+                            fontStyle: pw.FontStyle.italic,
+                          ),
                         ),
-                      ),
-                      pw.SizedBox(height: 2),
-                      pw.Text(
-                        _formatDate(DateTime.now()),
-                        style: pw.TextStyle(
-                          fontSize: 10,
-                          color: PdfColors.grey500,
+                      ],
+                    ),
+                    // Invoice Details
+                    pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.end,
+                      children: [
+                        pw.Text(
+                          'TAX INVOICE',
+                          style: pw.TextStyle(
+                            fontSize: 24,
+                            fontWeight: pw.FontWeight.bold,
+                            color: secondaryColor,
+                            letterSpacing: 2,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        pw.SizedBox(height: 8),
+                        _buildInvoiceDetailRow('Invoice No.', c.invoiceNumber.value),
+                        _buildInvoiceDetailRow('Date', _formatDate(DateTime.now())),
+                        _buildInvoiceDetailRow(
+                            'Job ID',
+                            c.jobId.value.length > 8
+                                ? c.jobId.value.substring(0, 8).toUpperCase()
+                                : c.jobId.value.toUpperCase()),
+                      ],
+                    ),
+                  ],
+                ),
               ),
 
-              pw.Divider(thickness: 2, color: PdfColor.fromHex('#FF9800')),
-              pw.SizedBox(height: 16),
+              pw.SizedBox(height: 24),
 
-              // Job Details
+              // ─── Customer & Job Info ───
               pw.Row(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
                   pw.Expanded(
-                    child: pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    child: _buildInfoSection(
+                      title: 'Billed To (Customer Info)',
+                      color: primaryColor,
                       children: [
-                        pw.Text(
-                          'JOB DETAILS',
-                          style: pw.TextStyle(
-                            fontSize: 10,
-                            fontWeight: pw.FontWeight.bold,
-                            color: PdfColors.grey700,
-                          ),
-                        ),
-                        pw.SizedBox(height: 6),
-                        _detailRow(
-                          'Job ID',
-                          c.jobId.value.length >= 12
-                              ? c.jobId.value.substring(0, 12).toUpperCase()
-                              : c.jobId.value.toUpperCase(),
-                        ),
-                        _detailRow('Vehicle', job['vehicleType'] ?? '-'),
-                        _detailRow('Problem', job['problem'] ?? '-'),
-                        _detailRow('Location', job['locationName'] ?? '-'),
-                        _detailRow('Duration', c.formattedDuration),
+                        _buildInfoText('Name: ${job['driverName'] ?? 'Customer'}'),
+                        _buildInfoText('Phone: ${job['driverPhone'] ?? '-'}'),
+                        _buildInfoText('Location: ${job['locationName'] ?? '-'}'),
                       ],
                     ),
                   ),
-                  pw.SizedBox(width: 40),
+                  pw.SizedBox(width: 24),
                   pw.Expanded(
-                    child: pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    child: _buildInfoSection(
+                      title: 'Vehicle & Job Details',
+                      color: primaryColor,
                       children: [
-                        pw.Text(
-                          'SETTLEMENT',
-                          style: pw.TextStyle(
-                            fontSize: 10,
-                            fontWeight: pw.FontWeight.bold,
-                            color: PdfColors.grey700,
-                          ),
-                        ),
-                        pw.SizedBox(height: 6),
-                        _detailRow('Method', 'Cash / Settle directly'),
-                        _detailRow('Status', c.cashCollected.value ? 'Collected' : 'Pending'),
+                        _buildInfoText('Vehicle: ${job['vehicleType'] ?? '-'}'),
+                        _buildInfoText('Reg No: ${job['vehicleNumber'] ?? '-'}'),
+                        _buildInfoText('Reported Problem: ${job['problem'] ?? '-'}'),
+                        _buildInfoText('Duration: ${c.formattedDuration}'),
                       ],
                     ),
                   ),
                 ],
               ),
 
-              pw.SizedBox(height: 20),
+              pw.SizedBox(height: 32),
 
-              // Services
+              // ─── Services Table ───
               pw.Text(
-                'SERVICES PERFORMED',
+                'Services Performed',
                 style: pw.TextStyle(
-                  fontSize: 10,
+                  fontSize: 14,
                   fontWeight: pw.FontWeight.bold,
-                  color: PdfColors.grey700,
-                ),
-              ),
-              pw.SizedBox(height: 6),
-              pw.Wrap(
-                spacing: 8,
-                children: c.selectedServices
-                    .map(
-                      (s) => pw.Container(
-                        padding: pw.EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 3,
-                        ),
-                        margin: pw.EdgeInsets.only(bottom: 4),
-                        decoration: pw.BoxDecoration(
-                          color: PdfColor.fromHex('#FFF3E0'),
-                          borderRadius: pw.BorderRadius.circular(4),
-                        ),
-                        child: pw.Text(s, style: pw.TextStyle(fontSize: 9)),
-                      ),
-                    )
-                    .toList(),
-              ),
-
-              pw.SizedBox(height: 20),
-
-              // Cost Table
-              pw.Text(
-                'COST BREAKDOWN',
-                style: pw.TextStyle(
-                  fontSize: 10,
-                  fontWeight: pw.FontWeight.bold,
-                  color: PdfColors.grey700,
+                  color: primaryColor,
                 ),
               ),
               pw.SizedBox(height: 8),
-
-              // Parts table (if any)
-              if (c.partsReplaced.isNotEmpty) ...[
-                pw.Table(
-                  border: pw.TableBorder.all(
-                    color: PdfColors.grey300,
-                    width: 0.5,
+              if (c.selectedServices.isNotEmpty)
+                pw.Container(
+                  padding: const pw.EdgeInsets.all(8),
+                  decoration: pw.BoxDecoration(
+                    color: surfaceColor,
+                    borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+                    border: pw.Border.all(color: PdfColors.grey300),
                   ),
+                  child: pw.Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: c.selectedServices
+                        .map((s) => pw.Container(
+                              padding: const pw.EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              decoration: pw.BoxDecoration(
+                                color: PdfColors.grey200,
+                                borderRadius: pw.BorderRadius.circular(4),
+                              ),
+                              child: pw.Row(
+                                mainAxisSize: pw.MainAxisSize.min,
+                                children: [
+                                  pw.Container(
+                                    width: 4,
+                                    height: 4,
+                                    decoration: const pw.BoxDecoration(
+                                      color: PdfColors.grey600,
+                                      shape: pw.BoxShape.circle,
+                                    ),
+                                  ),
+                                  pw.SizedBox(width: 6),
+                                  pw.Text(s, style: const pw.TextStyle(fontSize: 10)),
+                                ],
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                )
+              else
+                pw.Text('No specific services listed.',
+                    style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey600)),
+
+              pw.SizedBox(height: 24),
+
+              // ─── Charges Breakup Table ───
+              pw.Container(
+                decoration: pw.BoxDecoration(
+                  border: pw.Border.all(color: PdfColors.grey300),
+                  borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+                ),
+                child: pw.Table(
+                  columnWidths: {
+                    0: const pw.FlexColumnWidth(3),
+                    1: const pw.FlexColumnWidth(1),
+                    2: const pw.FlexColumnWidth(1),
+                    3: const pw.FlexColumnWidth(1.5),
+                  },
                   children: [
+                    // Table Header
                     pw.TableRow(
-                      decoration: pw.BoxDecoration(
-                        color: PdfColor.fromHex('#F5F5F5'),
-                      ),
+                      decoration: pw.BoxDecoration(color: PdfColor.fromHex('#FFE0B2')),
                       children: [
-                        _tableHeader('Part Name'),
-                        _tableHeader('Qty'),
-                        _tableHeader('Rate'),
-                        _tableHeader('Total'),
+                        _buildTableHeader('Description'),
+                        _buildTableHeader('Qty', align: pw.TextAlign.center),
+                        _buildTableHeader('Rate', align: pw.TextAlign.right),
+                        _buildTableHeader('Amount', align: pw.TextAlign.right),
                       ],
                     ),
-                    ...c.partsReplaced.map(
-                      (p) => pw.TableRow(
-                        children: [
-                          _tableCell(p['name'] ?? '-'),
-                          _tableCell('${p['quantity']}'),
-                          _tableCell(
-                            '₹${(p['costPerUnit'] as double? ?? 0).toStringAsFixed(0)}',
+
+                    // Base Charge
+                    _buildTableRow('Base Service Charge', '-', '-', c.baseCharge.value),
+                    
+                    // Labor Charges
+                    if (c.laborCharges.value > 0)
+                      _buildTableRow('Labor Charges', '-', '-', c.laborCharges.value),
+
+                    // Travel Cost
+                    if (c.travelCost.value > 0)
+                      _buildTableRow('Travel Cost / Distance Fee', '-', '-', c.travelCost.value),
+
+                    // Parts Replaced
+                    if (c.partsReplaced.isNotEmpty)
+                      ...c.partsReplaced.map(
+                        (p) => _buildTableRow(
+                          'Part: ${p['name'] ?? '-'}',
+                          '${p['quantity'] ?? 1}',
+                          '₹${(p['costPerUnit'] as double? ?? 0).toStringAsFixed(2)}',
+                          p['total'] as double? ?? 0,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+
+              pw.SizedBox(height: 16),
+
+              // ─── Totals Section ───
+              pw.Row(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Expanded(
+                    flex: 5,
+                    child: pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text(
+                          'Payment Terms & Notes',
+                          style: pw.TextStyle(
+                            fontSize: 12,
+                            fontWeight: pw.FontWeight.bold,
+                            color: secondaryColor,
                           ),
-                          _tableCell(
-                            '₹${(p['total'] as double? ?? 0).toStringAsFixed(0)}',
+                        ),
+                        pw.SizedBox(height: 4),
+                        pw.Text(
+                          '1. All prices are in INR (₹).',
+                          style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
+                        ),
+                        pw.Text(
+                          '2. Payment to be settled directly with the mechanic.',
+                          style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
+                        ),
+                        pw.SizedBox(height: 12),
+                        // Watermark / Status Stamp
+                        pw.Container(
+                          padding: const pw.EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          decoration: pw.BoxDecoration(
+                            border: pw.Border.all(
+                                color: c.cashCollected.value
+                                    ? PdfColors.green
+                                    : PdfColors.orange,
+                                width: 2),
+                            borderRadius: pw.BorderRadius.circular(4),
+                          ),
+                          child: pw.Text(
+                            c.cashCollected.value ? 'PAYMENT RECEIVED' : 'PAYMENT PENDING',
+                            style: pw.TextStyle(
+                              color: c.cashCollected.value
+                                  ? PdfColors.green
+                                  : PdfColors.orange,
+                              fontWeight: pw.FontWeight.bold,
+                              fontSize: 14,
+                              letterSpacing: 2,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  pw.Expanded(
+                    flex: 4,
+                    child: pw.Container(
+                      padding: const pw.EdgeInsets.all(12),
+                      decoration: pw.BoxDecoration(
+                        color: surfaceColor,
+                        borderRadius: pw.BorderRadius.circular(6),
+                      ),
+                      child: pw.Column(
+                        children: [
+                          _buildSummaryRow('Subtotal', c.subtotal.value),
+                          _buildSummaryRow('GST (18%)', c.gstAmount.value),
+                          pw.Divider(color: PdfColors.grey300),
+                          pw.SizedBox(height: 4),
+                          pw.Row(
+                            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                            children: [
+                              pw.Text(
+                                'Grand Total',
+                                style: pw.TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: pw.FontWeight.bold,
+                                  color: secondaryColor,
+                                ),
+                              ),
+                              pw.Text(
+                                '₹${c.totalAmount.value.toStringAsFixed(2)}',
+                                style: pw.TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: pw.FontWeight.bold,
+                                  color: primaryColor,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-                pw.SizedBox(height: 12),
-              ],
-
-              // Summary
-              _summaryRow('Base Service Charge', c.baseCharge.value),
-              _summaryRow('Labor Charges', c.laborCharges.value),
-              _summaryRow('Parts Cost', c.partsTotal.value),
-              _summaryRow('Travel Cost', c.travelCost.value),
-              pw.Divider(color: PdfColors.grey300),
-              _summaryRow('Subtotal', c.subtotal.value),
-              _summaryRow('GST (18%)', c.gstAmount.value),
-              pw.Divider(color: PdfColors.grey700, thickness: 1.5),
-              pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                children: [
-                  pw.Text(
-                    'TOTAL AMOUNT',
-                    style: pw.TextStyle(
-                      fontSize: 14,
-                      fontWeight: pw.FontWeight.bold,
-                    ),
-                  ),
-                  pw.Text(
-                    '₹${c.totalAmount.value.toStringAsFixed(0)}',
-                    style: pw.TextStyle(
-                      fontSize: 18,
-                      fontWeight: pw.FontWeight.bold,
-                      color: PdfColor.fromHex('#4CAF50'),
                     ),
                   ),
                 ],
@@ -262,13 +340,29 @@ class InvoiceGenerator {
 
               pw.Spacer(),
 
-              // Footer
-              pw.Divider(color: PdfColors.grey300),
-              pw.SizedBox(height: 8),
+              // ─── Footer ───
               pw.Center(
-                child: pw.Text(
-                  'Powered by DriveResQ • Roadside Assistance',
-                  style: pw.TextStyle(fontSize: 9, color: PdfColors.grey500),
+                child: pw.Column(
+                  children: [
+                    pw.Divider(color: PdfColors.grey300),
+                    pw.SizedBox(height: 8),
+                    pw.Text(
+                      'Thank you for trusting DriveResQ!',
+                      style: pw.TextStyle(
+                        fontSize: 12,
+                        fontWeight: pw.FontWeight.bold,
+                        color: secondaryColor,
+                      ),
+                    ),
+                    pw.SizedBox(height: 2),
+                    pw.Text(
+                      'If you have any questions about this invoice, please contact support.',
+                      style: const pw.TextStyle(
+                        fontSize: 9,
+                        color: PdfColors.grey500,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -280,39 +374,18 @@ class InvoiceGenerator {
     return pdf;
   }
 
-  static pw.Widget _detailRow(String label, String value) {
+  static pw.Widget _buildInvoiceDetailRow(String label, String value) {
     return pw.Padding(
-      padding: pw.EdgeInsets.only(bottom: 3),
+      padding: const pw.EdgeInsets.only(bottom: 2),
       child: pw.Row(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        mainAxisSize: pw.MainAxisSize.min,
         children: [
-          pw.SizedBox(
-            width: 70,
-            child: pw.Text(
-              '$label:',
-              style: pw.TextStyle(fontSize: 9, color: PdfColors.grey600),
-            ),
-          ),
-          pw.Expanded(
-            child: pw.Text(
-              value,
-              style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  static pw.Widget _summaryRow(String label, double amount) {
-    return pw.Padding(
-      padding: pw.EdgeInsets.symmetric(vertical: 3),
-      child: pw.Row(
-        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-        children: [
-          pw.Text(label, style: pw.TextStyle(fontSize: 10)),
           pw.Text(
-            '₹${amount.toStringAsFixed(0)}',
+            '$label: ',
+            style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey600),
+          ),
+          pw.Text(
+            value,
             style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold),
           ),
         ],
@@ -320,24 +393,122 @@ class InvoiceGenerator {
     );
   }
 
-  static pw.Widget _tableHeader(String text) {
+  static pw.Widget _buildInfoSection({
+    required String title,
+    required PdfColor color,
+    required List<pw.Widget> children,
+  }) {
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Text(
+          title.toUpperCase(),
+          style: pw.TextStyle(
+            fontSize: 10,
+            fontWeight: pw.FontWeight.bold,
+            color: color,
+            letterSpacing: 1,
+          ),
+        ),
+        pw.SizedBox(height: 6),
+        pw.Container(
+          width: double.infinity,
+          padding: const pw.EdgeInsets.all(10),
+          decoration: pw.BoxDecoration(
+            color: PdfColors.grey100,
+            borderRadius: pw.BorderRadius.circular(4),
+          ),
+          child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: children,
+          ),
+        ),
+      ],
+    );
+  }
+
+  static pw.Widget _buildInfoText(String text) {
     return pw.Padding(
-      padding: pw.EdgeInsets.all(6),
+      padding: const pw.EdgeInsets.only(bottom: 4),
       child: pw.Text(
         text,
-        style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold),
+        style: pw.TextStyle(
+          fontSize: 10,
+          color: PdfColor.fromHex('#424242'),
+        ),
       ),
     );
   }
 
-  static pw.Widget _tableCell(String text) {
+  static pw.Widget _buildTableHeader(String text, {pw.TextAlign align = pw.TextAlign.left}) {
     return pw.Padding(
-      padding: pw.EdgeInsets.all(6),
-      child: pw.Text(text, style: pw.TextStyle(fontSize: 9)),
+      padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: pw.Text(
+        text,
+        textAlign: align,
+        style: pw.TextStyle(
+          fontSize: 10,
+          fontWeight: pw.FontWeight.bold,
+          color: PdfColor.fromHex('#424242'),
+        ),
+      ),
+    );
+  }
+
+  static pw.TableRow _buildTableRow(String desc, String qty, String rate, double amount) {
+    return pw.TableRow(
+      decoration: const pw.BoxDecoration(
+        border: pw.Border(bottom: pw.BorderSide(color: PdfColors.grey200, width: 0.5)),
+      ),
+      children: [
+        pw.Padding(
+          padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: pw.Text(desc, style: const pw.TextStyle(fontSize: 10)),
+        ),
+        pw.Padding(
+          padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: pw.Text(qty,
+              textAlign: pw.TextAlign.center, style: const pw.TextStyle(fontSize: 10)),
+        ),
+        pw.Padding(
+          padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: pw.Text(rate,
+              textAlign: pw.TextAlign.right, style: const pw.TextStyle(fontSize: 10)),
+        ),
+        pw.Padding(
+          padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: pw.Text('₹${amount.toStringAsFixed(2)}',
+              textAlign: pw.TextAlign.right,
+              style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold)),
+        ),
+      ],
+    );
+  }
+
+  static pw.Widget _buildSummaryRow(String label, double amount) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 4),
+      child: pw.Row(
+        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        children: [
+          pw.Text(
+            label,
+            style: const pw.TextStyle(fontSize: 11, color: PdfColors.grey700),
+          ),
+          pw.Text(
+            '₹${amount.toStringAsFixed(2)}',
+            style: pw.TextStyle(
+              fontSize: 11,
+              fontWeight: pw.FontWeight.bold,
+              color: PdfColor.fromHex('#424242'),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   static String _formatDate(DateTime d) {
-    return '${d.day}/${d.month}/${d.year} ${d.hour}:${d.minute.toString().padLeft(2, '0')}';
+    return '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
   }
 }
