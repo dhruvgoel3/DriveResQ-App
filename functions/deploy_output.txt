@@ -1,0 +1,10 @@
+
+[1m[37m===[39m Deploying to 'driveresq-app'...[22m
+
+[36m[1mi [22m[39m deploying [1mfunctions[22m
+[36m[1mi  functions:[22m[39m preparing codebase [1mdefault[22m for deployment
+[36m[1mi  functions:[22m[39m ensuring required API [1mcloudfunctions.googleapis.com[22m is enabled...
+[36m[1mi  functions:[22m[39m ensuring required API [1mcloudbuild.googleapis.com[22m is enabled...
+[36m[1mi  artifactregistry:[22m[39m ensuring required API [1martifactregistry.googleapis.com[22m is enabled...
+
+[1m[31mError:[39m[22m Runtime Node.js 18 was decommissioned on 2025-10-30. To deploy you must first upgrade your runtime version.
