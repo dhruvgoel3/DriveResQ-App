@@ -10,6 +10,7 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import '../../../tracking/views/live_tracking_view.dart';
 import '../../controllers/active_request_card_controller.dart';
 import '../../controllers/driver_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ActiveRequestCard extends StatelessWidget {
   final Map<String, dynamic> request;
@@ -49,6 +50,11 @@ class ActiveRequestCard extends StatelessWidget {
           // 🗺️ MAP PREVIEW
           if (status == 'accepted') _MapPreview(controller: controller, request: request),
           if (status == 'accepted') SizedBox(height: 14.h),
+
+          // 🧑‍🔧 MECHANIC INFO
+          if (request['mechanicId'] != null && status != 'open')
+             _MechanicInfoTile(mechanicId: request['mechanicId'], mechanicName: request['mechanicName'] ?? 'Mechanic'),
+          if (request['mechanicId'] != null && status != 'open') SizedBox(height: 14.h),
 
           // 📍 INFO TILES
           _InfoTile(
@@ -693,6 +699,84 @@ class _MechanicAcceptedMessage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _MechanicInfoTile extends StatelessWidget {
+  final String mechanicId;
+  final String mechanicName;
+
+  const _MechanicInfoTile({required this.mechanicId, required this.mechanicName});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<DocumentSnapshot?>(
+      future: FirebaseFirestore.instance.collection('users').doc(mechanicId).get(),
+      builder: (context, snapshot) {
+        double rating = 0.0;
+        if (snapshot.hasData && snapshot.data != null && snapshot.data!.exists) {
+          final data = snapshot.data!.data() as Map<String, dynamic>;
+          rating = (data['averageRating'] ?? 0.0).toDouble();
+        }
+
+        return Container(
+          padding: EdgeInsets.all(12.w),
+          decoration: BoxDecoration(
+            color: AppColors.primary.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(color: AppColors.primary.withOpacity(0.15)),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 42.w,
+                height: 42.h,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Iconsax.user, color: AppColors.primary, size: 20.w),
+              ),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      mechanicName,
+                      style: AppTextStyles.body2.copyWith(fontWeight: FontWeight.w700),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Text(
+                          "Assigned Mechanic",
+                          style: AppTextStyles.caption.copyWith(color: AppColors.primary),
+                        ),
+                        if (rating > 0) ...[
+                          SizedBox(width: 8.w),
+                          Icon(Iconsax.star1, color: AppColors.warning, size: 14.sp),
+                          SizedBox(width: 4.w),
+                          Text(
+                            rating.toStringAsFixed(1),
+                            style: AppTextStyles.caption.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.warning,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

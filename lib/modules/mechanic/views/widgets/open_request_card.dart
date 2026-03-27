@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Compact request card for the "All Requests" tab on the mechanic dashboard.
 /// Tapping opens a detailed bottom sheet with full info and Accept button.
@@ -312,7 +313,72 @@ class OpenRequestCard extends StatelessWidget {
             SizedBox(height: 16.h),
 
             // Info rows
-            _detailRow(Iconsax.user, "Driver", job['driverName'] ?? 'Unknown'),
+            Builder(
+              builder: (context) {
+                final driverId = job['driverId'] as String?;
+                return FutureBuilder<DocumentSnapshot?>(
+                  future: driverId != null
+                      ? FirebaseFirestore.instance.collection('users').doc(driverId).get()
+                      : Future.value(null),
+                  builder: (context, snapshot) {
+                     double rating = 0.0;
+                     if (snapshot.hasData && snapshot.data != null && snapshot.data!.exists) {
+                       final data = snapshot.data!.data() as Map<String, dynamic>;
+                       rating = (data['averageRating'] ?? 0.0).toDouble();
+                     }
+                     return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Iconsax.user, color: _primary, size: 18.w),
+                          SizedBox(width: 10.w),
+                          SizedBox(
+                            width: 75.w,
+                            child: Text(
+                              "Driver",
+                              style: GoogleFonts.poppins(
+                                fontSize: 13.sp,
+                                color: Colors.grey.shade500,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    job['driverName'] ?? 'Unknown',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 13.sp,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                if (rating > 0) ...[
+                                  SizedBox(width: 8.w),
+                                  Icon(Iconsax.star1, color: _orange, size: 14.sp),
+                                  SizedBox(width: 4.w),
+                                  Text(
+                                    rating.toStringAsFixed(1),
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: _orange,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ],
+                     );
+                  }
+                );
+              }
+            ),
             SizedBox(height: 12.h),
             _detailRow(
               Iconsax.location,
