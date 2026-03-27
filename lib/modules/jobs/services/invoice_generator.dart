@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -7,364 +7,126 @@ import 'package:share_plus/share_plus.dart';
 
 import '../controllers/job_completion_controller.dart';
 
+/// A professional utility service for generating and managing PDF invoices.
+/// 
+/// This service handles the creation of tax-compliant invoice documents
+/// based on job completion data, including labor costs, parts, and travel fees.
 class InvoiceGenerator {
+  
+  /// Generates a PDF invoice and saves it to the application's local documents directory.
+  /// 
+  /// Returns the [File] object pointing to the generated PDF.
   static Future<File> generateAndSave(JobCompletionController c) async {
-    final pdf = _buildPdf(c);
-    final bytes = await pdf.save();
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/invoice_${c.invoiceNumber.value}.pdf');
-    await file.writeAsBytes(bytes);
-    return file;
+    try {
+      final pdf = _buildPdf(c);
+      final bytes = await pdf.save();
+      
+      final dir = await getApplicationDocumentsDirectory();
+      final fileName = 'invoice_${c.invoiceNumber.value}_${DateTime.now().millisecondsSinceEpoch}.pdf';
+      final file = File('${dir.path}/$fileName');
+      
+      await file.writeAsBytes(bytes);
+      debugPrint('InvoiceGenerator: Saved invoice to ${file.path}');
+      return file;
+    } catch (e) {
+      debugPrint('InvoiceGenerator Error (Save): $e');
+      rethrow;
+    }
   }
 
+  /// Generates a PDF invoice and triggers a system share dialog.
   static Future<void> generateAndShare(JobCompletionController c) async {
-    final file = await generateAndSave(c);
-    await Share.shareXFiles([
-      XFile(file.path),
-    ], text: 'DriveResQ Invoice ${c.invoiceNumber.value}');
+    try {
+      final file = await generateAndSave(c);
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text: 'DriveResQ Service Invoice - #${c.invoiceNumber.value}',
+      );
+    } catch (e) {
+      debugPrint('InvoiceGenerator Error (Share): $e');
+    }
   }
+
+  // ---------------------------------------------------------------------------
+  // 📄 PDF CONSTRUCTION ENGINE
+  // ---------------------------------------------------------------------------
 
   static pw.Document _buildPdf(JobCompletionController c) {
     final job = c.jobData.value ?? {};
-    final pdf = pw.Document();
+    final pdf = pw.Document(
+      author: 'DriveResQ',
+      title: 'Invoice ${c.invoiceNumber.value}',
+    );
 
-    final primaryColor = PdfColor.fromHex('#F57C00');
-    final secondaryColor = PdfColor.fromHex('#424242');
+    // Dynamic Color Palette
+    final primaryColor = PdfColor.fromHex('#F57C00'); // DriveResQ Orange
+    final secondaryColor = PdfColor.fromHex('#263238'); // Deep Blue Grey
+    final lightGrey = PdfColors.grey200;
     final surfaceColor = PdfColor.fromHex('#FAFAFA');
 
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
-        margin: const pw.EdgeInsets.all(32),
+        margin: const pw.EdgeInsets.all(36),
         build: (context) {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              // ─── Header ───
-              pw.Container(
-                padding: const pw.EdgeInsets.only(bottom: 20),
-                decoration: pw.BoxDecoration(
-                  border: pw.Border(
-                    bottom: pw.BorderSide(color: primaryColor, width: 2),
-                  ),
-                ),
-                child: pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
-                    // Brand Info
-                    pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.start,
-                      children: [
-                        pw.Text(
-                          'DriveResQ',
-                          style: pw.TextStyle(
-                            fontSize: 32,
-                            fontWeight: pw.FontWeight.bold,
-                            color: primaryColor,
-                          ),
-                        ),
-                        pw.SizedBox(height: 4),
-                        pw.Text(
-                          'Professional Roadside Assistance',
-                          style: pw.TextStyle(
-                            fontSize: 12,
-                            color: secondaryColor,
-                            fontStyle: pw.FontStyle.italic,
-                          ),
-                        ),
-                      ],
-                    ),
-                    // Invoice Details
-                    pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.end,
-                      children: [
-                        pw.Text(
-                          'TAX INVOICE',
-                          style: pw.TextStyle(
-                            fontSize: 24,
-                            fontWeight: pw.FontWeight.bold,
-                            color: secondaryColor,
-                            letterSpacing: 2,
-                          ),
-                        ),
-                        pw.SizedBox(height: 8),
-                        _buildInvoiceDetailRow('Invoice No.', c.invoiceNumber.value),
-                        _buildInvoiceDetailRow('Date', _formatDate(DateTime.now())),
-                        _buildInvoiceDetailRow(
-                            'Job ID',
-                            c.jobId.value.length > 8
-                                ? c.jobId.value.substring(0, 8).toUpperCase()
-                                : c.jobId.value.toUpperCase()),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+              // ─── BRANDING HEADER ───
+              _buildHeader(primaryColor, secondaryColor, c),
+              pw.SizedBox(height: 30),
 
-              pw.SizedBox(height: 24),
-
-              // ─── Customer & Job Info ───
+              // ─── BILLING & VEHICLE INFO ───
               pw.Row(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
                   pw.Expanded(
-                    child: _buildInfoSection(
-                      title: 'Billed To (Customer Info)',
-                      color: primaryColor,
-                      children: [
-                        _buildInfoText('Name: ${job['driverName'] ?? 'Customer'}'),
-                        _buildInfoText('Phone: ${job['driverPhone'] ?? '-'}'),
-                        _buildInfoText('Location: ${job['locationName'] ?? '-'}'),
+                    child: _buildInfoBox(
+                      title: 'Customer Details',
+                      themeColor: primaryColor,
+                      details: [
+                        'Name: ${job['driverName'] ?? 'Valued Customer'}',
+                        'Phone: ${job['driverPhone'] ?? 'N/A'}',
+                        'Location: ${job['locationName'] ?? 'Point of Breakdown'}',
                       ],
                     ),
                   ),
-                  pw.SizedBox(width: 24),
+                  pw.SizedBox(width: 20),
                   pw.Expanded(
-                    child: _buildInfoSection(
-                      title: 'Vehicle & Job Details',
-                      color: primaryColor,
-                      children: [
-                        _buildInfoText('Vehicle: ${job['vehicleType'] ?? '-'}'),
-                        _buildInfoText('Reg No: ${job['vehicleNumber'] ?? '-'}'),
-                        _buildInfoText('Reported Problem: ${job['problem'] ?? '-'}'),
-                        _buildInfoText('Duration: ${c.formattedDuration}'),
+                    child: _buildInfoBox(
+                      title: 'Service Summary',
+                      themeColor: primaryColor,
+                      details: [
+                        'Vehicle Type: ${job['vehicleType'] ?? 'N/A'}',
+                        'Reg Number: ${job['vehicleNumber'] ?? 'N/A'}',
+                        'Problem: ${job['problem'] ?? 'Standard Repair'}',
+                        'Time Taken: ${c.formattedDuration}',
                       ],
                     ),
                   ),
                 ],
               ),
+              pw.SizedBox(height: 30),
 
-              pw.SizedBox(height: 32),
+              // ─── SERVICES LIST ───
+              _buildSectionTitle('Services Performed', primaryColor),
+              pw.SizedBox(height: 10),
+              _buildServicesGrid(c, lightGrey, surfaceColor),
+              pw.SizedBox(height: 30),
 
-              // ─── Services Table ───
-              pw.Text(
-                'Services Performed',
-                style: pw.TextStyle(
-                  fontSize: 14,
-                  fontWeight: pw.FontWeight.bold,
-                  color: primaryColor,
-                ),
-              ),
-              pw.SizedBox(height: 8),
-              if (c.selectedServices.isNotEmpty)
-                pw.Container(
-                  padding: const pw.EdgeInsets.all(8),
-                  decoration: pw.BoxDecoration(
-                    color: surfaceColor,
-                    borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
-                    border: pw.Border.all(color: PdfColors.grey300),
-                  ),
-                  child: pw.Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: c.selectedServices
-                        .map((s) => pw.Container(
-                              padding: const pw.EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 4),
-                              decoration: pw.BoxDecoration(
-                                color: PdfColors.grey200,
-                                borderRadius: pw.BorderRadius.circular(4),
-                              ),
-                              child: pw.Row(
-                                mainAxisSize: pw.MainAxisSize.min,
-                                children: [
-                                  pw.Container(
-                                    width: 4,
-                                    height: 4,
-                                    decoration: const pw.BoxDecoration(
-                                      color: PdfColors.grey600,
-                                      shape: pw.BoxShape.circle,
-                                    ),
-                                  ),
-                                  pw.SizedBox(width: 6),
-                                  pw.Text(s, style: const pw.TextStyle(fontSize: 10)),
-                                ],
-                              ),
-                            ))
-                        .toList(),
-                  ),
-                )
-              else
-                pw.Text('No specific services listed.',
-                    style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey600)),
+              // ─── FINANCIAL BREAKDOWN ───
+              _buildSectionTitle('Charges Details', primaryColor),
+              pw.SizedBox(height: 10),
+              _buildChargesTable(c, primaryColor, lightGrey),
+              pw.SizedBox(height: 20),
 
-              pw.SizedBox(height: 24),
-
-              // ─── Charges Breakup Table ───
-              pw.Container(
-                decoration: pw.BoxDecoration(
-                  border: pw.Border.all(color: PdfColors.grey300),
-                  borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
-                ),
-                child: pw.Table(
-                  columnWidths: {
-                    0: const pw.FlexColumnWidth(3),
-                    1: const pw.FlexColumnWidth(1),
-                    2: const pw.FlexColumnWidth(1),
-                    3: const pw.FlexColumnWidth(1.5),
-                  },
-                  children: [
-                    // Table Header
-                    pw.TableRow(
-                      decoration: pw.BoxDecoration(color: PdfColor.fromHex('#FFE0B2')),
-                      children: [
-                        _buildTableHeader('Description'),
-                        _buildTableHeader('Qty', align: pw.TextAlign.center),
-                        _buildTableHeader('Rate', align: pw.TextAlign.right),
-                        _buildTableHeader('Amount', align: pw.TextAlign.right),
-                      ],
-                    ),
-
-                    // Base Charge
-                    _buildTableRow('Base Service Charge', '-', '-', c.baseCharge.value),
-                    
-                    // Labor Charges
-                    if (c.laborCharges.value > 0)
-                      _buildTableRow('Labor Charges', '-', '-', c.laborCharges.value),
-
-                    // Travel Cost
-                    if (c.travelCost.value > 0)
-                      _buildTableRow('Travel Cost / Distance Fee', '-', '-', c.travelCost.value),
-
-                    // Parts Replaced
-                    if (c.partsReplaced.isNotEmpty)
-                      ...c.partsReplaced.map(
-                        (p) => _buildTableRow(
-                          'Part: ${p['name'] ?? '-'}',
-                          '${p['quantity'] ?? 1}',
-                          '₹${(p['costPerUnit'] as double? ?? 0).toStringAsFixed(2)}',
-                          p['total'] as double? ?? 0,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-
-              pw.SizedBox(height: 16),
-
-              // ─── Totals Section ───
-              pw.Row(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  pw.Expanded(
-                    flex: 5,
-                    child: pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.start,
-                      children: [
-                        pw.Text(
-                          'Payment Terms & Notes',
-                          style: pw.TextStyle(
-                            fontSize: 12,
-                            fontWeight: pw.FontWeight.bold,
-                            color: secondaryColor,
-                          ),
-                        ),
-                        pw.SizedBox(height: 4),
-                        pw.Text(
-                          '1. All prices are in INR (₹).',
-                          style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
-                        ),
-                        pw.Text(
-                          '2. Payment to be settled directly with the mechanic.',
-                          style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
-                        ),
-                        pw.SizedBox(height: 12),
-                        // Watermark / Status Stamp
-                        pw.Container(
-                          padding: const pw.EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          decoration: pw.BoxDecoration(
-                            border: pw.Border.all(
-                                color: c.cashCollected.value
-                                    ? PdfColors.green
-                                    : PdfColors.orange,
-                                width: 2),
-                            borderRadius: pw.BorderRadius.circular(4),
-                          ),
-                          child: pw.Text(
-                            c.cashCollected.value ? 'PAYMENT RECEIVED' : 'PAYMENT PENDING',
-                            style: pw.TextStyle(
-                              color: c.cashCollected.value
-                                  ? PdfColors.green
-                                  : PdfColors.orange,
-                              fontWeight: pw.FontWeight.bold,
-                              fontSize: 14,
-                              letterSpacing: 2,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  pw.Expanded(
-                    flex: 4,
-                    child: pw.Container(
-                      padding: const pw.EdgeInsets.all(12),
-                      decoration: pw.BoxDecoration(
-                        color: surfaceColor,
-                        borderRadius: pw.BorderRadius.circular(6),
-                      ),
-                      child: pw.Column(
-                        children: [
-                          _buildSummaryRow('Subtotal', c.subtotal.value),
-                          _buildSummaryRow('GST (18%)', c.gstAmount.value),
-                          pw.Divider(color: PdfColors.grey300),
-                          pw.SizedBox(height: 4),
-                          pw.Row(
-                            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                            children: [
-                              pw.Text(
-                                'Grand Total',
-                                style: pw.TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: pw.FontWeight.bold,
-                                  color: secondaryColor,
-                                ),
-                              ),
-                              pw.Text(
-                                '₹${c.totalAmount.value.toStringAsFixed(2)}',
-                                style: pw.TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: pw.FontWeight.bold,
-                                  color: primaryColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
+              // ─── PAYMENT STATUS & TOTALS ───
+              _buildTotalsSection(c, primaryColor, secondaryColor, surfaceColor),
+              
               pw.Spacer(),
 
-              // ─── Footer ───
-              pw.Center(
-                child: pw.Column(
-                  children: [
-                    pw.Divider(color: PdfColors.grey300),
-                    pw.SizedBox(height: 8),
-                    pw.Text(
-                      'Thank you for trusting DriveResQ!',
-                      style: pw.TextStyle(
-                        fontSize: 12,
-                        fontWeight: pw.FontWeight.bold,
-                        color: secondaryColor,
-                      ),
-                    ),
-                    pw.SizedBox(height: 2),
-                    pw.Text(
-                      'If you have any questions about this invoice, please contact support.',
-                      style: const pw.TextStyle(
-                        fontSize: 9,
-                        color: PdfColors.grey500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // ─── FOOTER ───
+              _buildFooter(secondaryColor),
             ],
           );
         },
@@ -374,135 +136,222 @@ class InvoiceGenerator {
     return pdf;
   }
 
-  static pw.Widget _buildInvoiceDetailRow(String label, String value) {
-    return pw.Padding(
-      padding: const pw.EdgeInsets.only(bottom: 2),
+  // ---------------------------------------------------------------------------
+  // 🧩 COMPONENT BUILDERS
+  // ---------------------------------------------------------------------------
+
+  static pw.Widget _buildHeader(PdfColor primary, PdfColor secondary, JobCompletionController c) {
+    return pw.Container(
+      decoration: pw.BoxDecoration(
+        border: pw.Border(bottom: pw.BorderSide(color: primary, width: 2.5)),
+      ),
+      padding: const pw.EdgeInsets.only(bottom: 15),
       child: pw.Row(
-        mainAxisSize: pw.MainAxisSize.min,
+        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: [
-          pw.Text(
-            '$label: ',
-            style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey600),
+          pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text('DriveResQ', style: pw.TextStyle(fontSize: 28, fontWeight: pw.FontWeight.bold, color: primary)),
+              pw.Text('ROADSIDE ASSISTANCE NETWORK', style: pw.TextStyle(fontSize: 9, color: secondary, letterSpacing: 1.2)),
+            ],
           ),
-          pw.Text(
-            value,
-            style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold),
+          pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.end,
+            children: [
+              pw.Text('INVOICE', style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold, color: secondary)),
+              pw.SizedBox(height: 4),
+              _buildSmallLabelValue('Number', '#${c.invoiceNumber.value}'),
+              _buildSmallLabelValue('Date', _formatDate(DateTime.now())),
+              _buildSmallLabelValue('Ref ID', c.jobId.value.substring(0, 8).toUpperCase()),
+            ],
           ),
         ],
       ),
     );
   }
 
-  static pw.Widget _buildInfoSection({
-    required String title,
-    required PdfColor color,
-    required List<pw.Widget> children,
-  }) {
+  static pw.Widget _buildInfoBox({required String title, required PdfColor themeColor, required List<String> details}) {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text(
-          title.toUpperCase(),
-          style: pw.TextStyle(
-            fontSize: 10,
-            fontWeight: pw.FontWeight.bold,
-            color: color,
-            letterSpacing: 1,
-          ),
-        ),
-        pw.SizedBox(height: 6),
+        pw.Text(title.toUpperCase(), style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold, color: themeColor)),
+        pw.SizedBox(height: 5),
         pw.Container(
           width: double.infinity,
           padding: const pw.EdgeInsets.all(10),
-          decoration: pw.BoxDecoration(
-            color: PdfColors.grey100,
-            borderRadius: pw.BorderRadius.circular(4),
-          ),
+          decoration: pw.BoxDecoration(color: PdfColors.grey50, border: pw.Border.all(color: PdfColors.grey200), borderRadius: pw.BorderRadius.circular(4)),
           child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: children,
+            children: details.map((d) => pw.Padding(
+              padding: const pw.EdgeInsets.only(bottom: 2),
+              child: pw.Text(d, style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey800)),
+            )).toList(),
           ),
         ),
       ],
     );
   }
 
-  static pw.Widget _buildInfoText(String text) {
-    return pw.Padding(
-      padding: const pw.EdgeInsets.only(bottom: 4),
-      child: pw.Text(
-        text,
-        style: pw.TextStyle(
-          fontSize: 10,
-          color: PdfColor.fromHex('#424242'),
-        ),
+  static pw.Widget _buildServicesGrid(JobCompletionController c, PdfColor border, PdfColor bg) {
+    if (c.selectedServices.isEmpty) {
+      return pw.Text('No specific service sub-types selected.', style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey600));
+    }
+    return pw.Container(
+      width: double.infinity,
+      padding: const pw.EdgeInsets.all(8),
+      decoration: pw.BoxDecoration(color: bg, border: pw.Border.all(color: border), borderRadius: pw.BorderRadius.circular(4)),
+      child: pw.Wrap(
+        spacing: 12,
+        runSpacing: 6,
+        children: c.selectedServices.map((s) => pw.Row(
+          mainAxisSize: pw.MainAxisSize.min,
+          children: [
+            pw.Container(width: 3, height: 3, decoration: const pw.BoxDecoration(color: PdfColors.orange, shape: pw.BoxShape.circle)),
+            pw.SizedBox(width: 5),
+            pw.Text(s, style: const pw.TextStyle(fontSize: 8.5)),
+          ],
+        )).toList(),
       ),
     );
   }
 
-  static pw.Widget _buildTableHeader(String text, {pw.TextAlign align = pw.TextAlign.left}) {
-    return pw.Padding(
-      padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: pw.Text(
-        text,
-        textAlign: align,
-        style: pw.TextStyle(
-          fontSize: 10,
-          fontWeight: pw.FontWeight.bold,
-          color: PdfColor.fromHex('#424242'),
-        ),
-      ),
-    );
-  }
-
-  static pw.TableRow _buildTableRow(String desc, String qty, String rate, double amount) {
-    return pw.TableRow(
-      decoration: const pw.BoxDecoration(
-        border: pw.Border(bottom: pw.BorderSide(color: PdfColors.grey200, width: 0.5)),
-      ),
+  static pw.Widget _buildChargesTable(JobCompletionController c, PdfColor primary, PdfColor border) {
+    return pw.Table(
+      border: pw.TableBorder.all(color: border, width: 0.5),
+      columnWidths: {0: const pw.FlexColumnWidth(4), 1: const pw.FlexColumnWidth(1), 2: const pw.FlexColumnWidth(1.5)},
       children: [
-        pw.Padding(
-          padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: pw.Text(desc, style: const pw.TextStyle(fontSize: 10)),
+        pw.TableRow(
+          decoration: const pw.BoxDecoration(color: PdfColors.orange50),
+          children: [
+            _buildCell('Description', isHeader: true),
+            _buildCell('Qty', isHeader: true, align: pw.TextAlign.center),
+            _buildCell('Amount', isHeader: true, align: pw.TextAlign.right),
+          ],
         ),
-        pw.Padding(
-          padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: pw.Text(qty,
-              textAlign: pw.TextAlign.center, style: const pw.TextStyle(fontSize: 10)),
+        _buildDataRow('Standard Base Service Fee', '1', c.baseCharge.value),
+        if (c.laborCharges.value > 0) _buildDataRow('Professional Labor/Technical Work', '1', c.laborCharges.value),
+        if (c.travelCost.value > 0) _buildDataRow('Travel & Dispatch Fee', '1', c.travelCost.value),
+        ...c.partsReplaced.map((p) => _buildDataRow(
+          'Part: ${p['name'] ?? 'Generic Part'}',
+          '${p['quantity'] ?? 1}',
+          p['total'] as double? ?? 0.0,
+        )),
+      ],
+    );
+  }
+
+  static pw.Widget _buildTotalsSection(JobCompletionController c, PdfColor primary, PdfColor secondary, PdfColor bg) {
+    return pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.end,
+      children: [
+        pw.Expanded(
+          flex: 3,
+          child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Container(
+                padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: pw.BoxDecoration(
+                  border: pw.Border.all(color: c.cashCollected.value ? PdfColors.green700 : PdfColors.orange700, width: 1.5),
+                  borderRadius: pw.BorderRadius.circular(3),
+                ),
+                child: pw.Text(
+                  c.cashCollected.value ? 'PAYMENT RECEIVED' : 'PAYMENT PENDING',
+                  style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold, color: c.cashCollected.value ? PdfColors.green700 : PdfColors.orange700, letterSpacing: 1.5),
+                ),
+              ),
+              pw.SizedBox(height: 10),
+              pw.Text('• All values are calculated in Indian Rupees (INR).', style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey600)),
+              pw.Text('• This is a computer-generated document.', style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey600)),
+            ],
+          ),
         ),
-        pw.Padding(
-          padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: pw.Text(rate,
-              textAlign: pw.TextAlign.right, style: const pw.TextStyle(fontSize: 10)),
-        ),
-        pw.Padding(
-          padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: pw.Text('₹${amount.toStringAsFixed(2)}',
-              textAlign: pw.TextAlign.right,
-              style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold)),
+        pw.Expanded(
+          flex: 2,
+          child: pw.Container(
+            padding: const pw.EdgeInsets.all(12),
+            decoration: pw.BoxDecoration(color: bg, borderRadius: pw.BorderRadius.circular(4)),
+            child: pw.Column(
+              children: [
+                _buildSummaryLine('Sub-Total', c.subtotal.value),
+                _buildSummaryLine('Taxes (GST 18%)', c.gstAmount.value),
+                pw.Divider(color: PdfColors.grey400, thickness: 0.5),
+                pw.SizedBox(height: 5),
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text('Total Payable', style: pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold, color: secondary)),
+                    pw.Text('₹${c.totalAmount.value.toStringAsFixed(2)}', style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold, color: primary)),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );
   }
 
-  static pw.Widget _buildSummaryRow(String label, double amount) {
+  static pw.Widget _buildFooter(PdfColor color) {
+    return pw.Column(
+      children: [
+        pw.Divider(color: PdfColors.grey300),
+        pw.SizedBox(height: 10),
+        pw.Center(child: pw.Text('THANK YOU FOR USING DRIVERESQ', style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold, color: color))),
+        pw.SizedBox(height: 4),
+        pw.Center(child: pw.Text('Reliable Support, Every Mile of the Way.', style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey500))),
+      ],
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // 🛠 HELPERS
+  // ---------------------------------------------------------------------------
+
+  static pw.Widget _buildSectionTitle(String title, PdfColor color) {
+    return pw.Text(title.toUpperCase(), style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold, color: color, letterSpacing: 1));
+  }
+
+  static pw.Widget _buildSmallLabelValue(String label, String value) {
+    return pw.Row(
+      mainAxisSize: pw.MainAxisSize.min,
+      children: [
+        pw.Text('$label: ', style: const pw.TextStyle(fontSize: 8.5, color: PdfColors.grey600)),
+        pw.Text(value, style: pw.TextStyle(fontSize: 8.5, fontWeight: pw.FontWeight.bold)),
+      ],
+    );
+  }
+
+  static pw.Widget _buildCell(String content, {bool isHeader = false, pw.TextAlign align = pw.TextAlign.left}) {
     return pw.Padding(
-      padding: const pw.EdgeInsets.symmetric(vertical: 4),
+      padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      child: pw.Text(
+        content,
+        textAlign: align,
+        style: pw.TextStyle(fontSize: 9, fontWeight: isHeader ? pw.FontWeight.bold : pw.FontWeight.normal, color: isHeader ? PdfColors.black : PdfColors.grey800),
+      ),
+    );
+  }
+
+  static pw.TableRow _buildDataRow(String desc, String qty, double amount) {
+    return pw.TableRow(
+      children: [
+        _buildCell(desc),
+        _buildCell(qty, align: pw.TextAlign.center),
+        _buildCell('₹${amount.toStringAsFixed(2)}', align: pw.TextAlign.right),
+      ],
+    );
+  }
+
+  static pw.Widget _buildSummaryLine(String label, double amount) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 4),
       child: pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: [
-          pw.Text(
-            label,
-            style: const pw.TextStyle(fontSize: 11, color: PdfColors.grey700),
-          ),
-          pw.Text(
-            '₹${amount.toStringAsFixed(2)}',
-            style: pw.TextStyle(
-              fontSize: 11,
-              fontWeight: pw.FontWeight.bold,
-              color: PdfColor.fromHex('#424242'),
-            ),
-          ),
+          pw.Text(label, style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700)),
+          pw.Text('₹${amount.toStringAsFixed(2)}', style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold)),
         ],
       ),
     );

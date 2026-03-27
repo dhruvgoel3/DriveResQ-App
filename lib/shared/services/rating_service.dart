@@ -3,11 +3,17 @@ import 'package:flutter/material.dart';
 
 import '../../modules/notifications/services/notification_sender.dart';
 
+/// A service dedicated to managing user ratings and reviews.
+/// 
+/// This service handles the atomic update of a user's average rating
+/// while storing their review history in a sub-collection.
 class RatingService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  /// Submit a rating for a specific user (can be driver or mechanic)
-  /// This will update their global average rating using a transaction.
+  /// Submits a rating for a specific [targetUserId].
+  /// 
+  /// Uses a Firestore [Transaction] to ensure the average calculation remains
+  /// consistent even when multiple reviews are submitted simultaneously.
   static Future<void> submitRating({
     required String targetUserId,
     required double newRating,
@@ -15,24 +21,25 @@ class RatingService {
     String reviewText = '',
   }) async {
     final userRef = _firestore.collection('users').doc(targetUserId);
-    final reviewsRef = userRef.collection('reviews').doc(); // Save individual review
+    final reviewsRef = userRef.collection('reviews').doc(); 
 
     try {
       await _firestore.runTransaction((transaction) async {
         final userSnapshot = await transaction.get(userRef);
 
         if (!userSnapshot.exists) {
-          throw Exception("User does not exist");
+          throw Exception("Service failure: Target user record does not exist.");
         }
 
         final data = userSnapshot.data()!;
         final currentCount = (data['ratingCount'] ?? 0) as int;
         final currentAvg = (data['averageRating'] ?? 0.0) as double;
 
-        // Calculate new average
+        // Atomic calculation of the new cumulative average
         final newCount = currentCount + 1;
         final newAvg = ((currentAvg * currentCount) + newRating) / newCount;
 
+        // Apply updates
         transaction.update(userRef, {
           'ratingCount': newCount,
           'averageRating': newAvg,
@@ -41,19 +48,20 @@ class RatingService {
         transaction.set(reviewsRef, {
           'reviewerId': reviewerId,
           'rating': newRating,
-          'reviewText': reviewText,
+          'reviewText': reviewText.trim(),
           'createdAt': FieldValue.serverTimestamp(),
         });
       });
 
-      // Notify the user about the new rating
-      await NotificationSender.notifyRatingReceived(
+      // Notify the recipient about the new rating (Fire and Forget)
+      NotificationSender.notifyRatingReceived(
         mechanicId: targetUserId,
         rating: newRating,
         review: reviewText,
-      );
+      ).catchError((e) => debugPrint('⚠️ Rating Notification Failed: $e'));
+
     } catch (e) {
-      debugPrint("Error submitting rating: $e");
+      debugPrint("RatingService Error: $e");
       rethrow;
     }
   }

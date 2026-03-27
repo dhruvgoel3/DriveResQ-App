@@ -1,14 +1,25 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../../notifications/services/notification_sender.dart';
+
+/// A service that manages all driver-side operations and interactions with mechanics.
+/// 
+/// This class handles request lifecycle events such as cancellations, mechanic 
+/// approvals, and real-time data streaming for live tracking and status updates.
 class DriverService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  /// Cancels an active request
+  // ---------------------------------------------------------------------------
+  // 📋 REQUEST MANAGEMENT
+  // ---------------------------------------------------------------------------
+
+  /// Cancels an active request and notifies the assigned mechanic if any.
+  /// 
+  /// The status is set to 'cancelled', and a cancellation timestamp is recorded.
   static Future<void> cancelActiveRequest(String requestId) async {
-    final doc = await _firestore.collection('requests').doc(requestId).get();
-    final mechanicId = doc.data()?['mechanicId'];
+    final snapshot = await _firestore.collection('requests').doc(requestId).get();
+    final data = snapshot.data();
+    final mechanicId = data?['mechanicId'];
 
     await _firestore.collection('requests').doc(requestId).update({
       'status': 'cancelled',
@@ -19,43 +30,33 @@ class DriverService {
       await NotificationSender.notifyRequestCancelled(
         requestId: requestId,
         recipientId: mechanicId,
-        reason: 'Driver cancelled the request',
+        reason: 'The driver cancelled the rescue request.',
       );
     }
   }
 
-  /// Returns a stream of the mechanic's location
-  static Stream<DocumentSnapshot<Map<String, dynamic>>> getMechanicLocationStream(String mechanicId) {
-    return _firestore
-        .collection('mechanic_locations')
-        .doc(mechanicId)
-        .snapshots();
-  }
-
-  /// Returns a stream of a request document for real-time status tracking
-  static Stream<DocumentSnapshot<Map<String, dynamic>>> getRequestStream(String requestId) {
-    return _firestore
-        .collection('requests')
-        .doc(requestId)
-        .snapshots();
-  }
-
-  /// Driver approves the mechanic — generates OTP and moves to 'accepted'
+  /// Finalizes the choice of a mechanic by generating a verification OTP.
+  /// 
+  /// This moves the request status to 'accepted', which triggers the mechanic's 
+  /// navigation to the driver's location.
   static Future<void> approveMechanic(String requestId) async {
-    final code = _generateVerificationCode();
+    final otpCode = _generateSecureOtp();
+    
     await _firestore.collection('requests').doc(requestId).update({
       'status': 'accepted',
       'driverApprovedAt': FieldValue.serverTimestamp(),
-      'verificationCode': code,
+      'verificationCode': otpCode,
       'verificationAttempts': 0,
       'codeGeneratedAt': FieldValue.serverTimestamp(),
     });
   }
 
-  /// Driver declines the mechanic — resets request to 'open'
+  /// Declines an assigned mechanic and releases the request back to 'open' status.
+  /// 
+  /// This allows other nearby mechanics to see and accept the request again.
   static Future<void> declineMechanic(String requestId) async {
-    final doc = await _firestore.collection('requests').doc(requestId).get();
-    final mechanicId = doc.data()?['mechanicId'];
+    final snapshot = await _firestore.collection('requests').doc(requestId).get();
+    final mechanicId = snapshot.data()?['mechanicId'];
 
     await _firestore.collection('requests').doc(requestId).update({
       'status': 'open',
@@ -68,14 +69,39 @@ class DriverService {
       await NotificationSender.notifyRequestCancelled(
         requestId: requestId,
         recipientId: mechanicId,
-        reason: 'Driver declined the assignment',
+        reason: 'The driver chose not to proceed with this assignment.',
       );
     }
   }
 
-  /// Generate a random 6-digit verification code
-  static String _generateVerificationCode() {
-    final random = Random();
-    return (100000 + random.nextInt(900000)).toString();
+  // ---------------------------------------------------------------------------
+  // 🛰️ REAL-TIME STREAMS
+  // ---------------------------------------------------------------------------
+
+  /// Subscribes to the live location updates of an assigned mechanic.
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> getMechanicLocationStream(String mechanicId) {
+    return _firestore
+        .collection('mechanic_locations')
+        .doc(mechanicId)
+        .snapshots();
+  }
+
+  /// Subscribes to the state changes of a specific request.
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> getRequestStream(String requestId) {
+    return _firestore
+        .collection('requests')
+        .doc(requestId)
+        .snapshots();
+  }
+
+  // ---------------------------------------------------------------------------
+  // ⚙️ UTILITIES
+  // ---------------------------------------------------------------------------
+
+  /// Generates a random 6-digit one-time password (OTP).
+  static String _generateSecureOtp() {
+    final random = Random.secure();
+    final code = 100000 + random.nextInt(900000);
+    return code.toString();
   }
 }

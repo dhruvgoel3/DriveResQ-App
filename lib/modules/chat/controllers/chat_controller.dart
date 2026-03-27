@@ -115,7 +115,7 @@ class ChatController extends GetxController {
   }
 
   void _listenMessages() {
-    _msgSub = ChatService.messagesStream(chatId).listen((list) {
+    _msgSub = ChatService.getMessages(chatId).listen((list) {
       messages.value = list;
       ChatService.markAsRead(chatId, myRole);
     });
@@ -165,9 +165,9 @@ class ChatController extends GetxController {
 
       isSending.value = true;
       try {
-        await ChatService.sendImageFromPath(
+        await ChatService.sendImage(
           chatId: chatId,
-          imagePath: picked.path,
+          localPath: picked.path,
           senderRole: myRole,
         );
       } catch (e) {
@@ -332,10 +332,10 @@ class ChatController extends GetxController {
     String? reason,
   }) async {
     try {
-      await ChatService.respondToPriceQuote(
+      await ChatService.respondToQuote(
         chatId: chatId,
         messageId: messageId,
-        response: response,
+        responseStatus: response,
         counterOffer: counterOffer,
         reason: reason,
       );
@@ -343,6 +343,7 @@ class ChatController extends GetxController {
       debugPrint('❌ Quote response error: $e');
     }
   }
+
 
   bool isMe(MessageModel msg) => msg.senderId == _uid;
 

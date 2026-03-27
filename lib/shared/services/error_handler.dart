@@ -7,8 +7,15 @@ import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:driveresq_app/theme/app_spacing.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
-/// Centralized error handler — parse errors and show friendly messages.
+/// A centralized Error Handler to parse and display user-friendly error messages.
+/// 
+/// This service maps technical exceptions (Firebase, Network, etc.) to 
+/// human-readable titles and descriptions, displaying them via Snackbars or BottomSheets.
 class ErrorHandler {
+  
+  /// Main entry point to handle any [error].
+  /// 
+  /// Optionally takes an [onRetry] callback to allow users to attempt the action again.
   static void handle(
     dynamic error, {
     VoidCallback? onRetry,
@@ -24,101 +31,84 @@ class ErrorHandler {
     );
   }
 
+  /// Categorizes the raw [error] into a [_ParsedError] object.
   static _ParsedError _parse(dynamic error) {
     final msg = error.toString().toLowerCase();
 
-    // Network
-    if (msg.contains('network') ||
-        msg.contains('socket') ||
-        msg.contains('connection') ||
-        msg.contains('timeout') ||
-        msg.contains('handshake')) {
+    // 🌐 Network & Connectivity
+    if (RegExp(r'network|socket|connection|timeout|handshake').hasMatch(msg)) {
       return _ParsedError(
-        title: 'Connection Lost',
-        message: 'Please check your internet connection and try again.',
+        title: 'Connection Issue',
+        message: 'We couldn\'t reach our servers. Please check your internet connection.',
         icon: Iconsax.wifi,
         color: AppColors.warning,
       );
     }
 
-    // Firebase permission
-    if (msg.contains('permission-denied') || msg.contains('unauthorized')) {
+    // 🔒 Permissions & Auth
+    if (RegExp(r'permission-denied|unauthorized|forbidden').hasMatch(msg)) {
       return _ParsedError(
         title: 'Access Denied',
-        message:
-            "You don't have permission to do this. Please contact support.",
+        message: 'You don\'t have the necessary permissions to perform this action.',
         icon: Iconsax.lock,
         color: AppColors.error,
       );
     }
 
-    // Firebase not found
-    if (msg.contains('not-found') || msg.contains('no document')) {
+    // 🔎 Resource Not Found
+    if (RegExp(r'not-found|no document').hasMatch(msg)) {
       return _ParsedError(
         title: 'Not Found',
-        message: "The information you're looking for doesn't exist.",
+        message: 'The requested information is missing or has been removed.',
         icon: Iconsax.search_normal,
         color: AppColors.info,
       );
     }
 
-    // Firebase index / precondition
-    if (msg.contains('failed-precondition') || msg.contains('index')) {
-      return _ParsedError(
-        title: 'Configuration Issue',
-        message: 'There is a temporary issue. Please try again.',
-        icon: Iconsax.setting_2,
-        color: AppColors.warning,
-      );
-    }
-
-    // Location
-    if (msg.contains('location') || msg.contains('gps')) {
+    // 📍 Location Services
+    if (RegExp(r'location|gps|geolocator').hasMatch(msg)) {
       return _ParsedError(
         title: 'Location Required',
-        message: 'Please enable location services to continue.',
+        message: 'Please enable GPS and grant location permissions to continue.',
         icon: Iconsax.location_slash,
         color: AppColors.secondary,
       );
     }
 
-    // Image / upload
-    if (msg.contains('file too large') || msg.contains('upload')) {
+    // ☁️ Storage & Uploads
+    if (RegExp(r'upload|storage|file too large').hasMatch(msg)) {
       return _ParsedError(
         title: 'Upload Failed',
-        message:
-            "Couldn't upload the file. Check your connection and try again.",
+        message: 'Could not upload files. Ensure you have a stable connection.',
         icon: Iconsax.cloud_cross,
         color: AppColors.error,
       );
     }
 
-    // Rate limit
-    if (msg.contains('too-many-requests') || msg.contains('rate')) {
+    // ⏳ Rate Limiting
+    if (RegExp(r'too-many-requests|rate-limit').hasMatch(msg)) {
       return _ParsedError(
-        title: 'Too Many Requests',
-        message: 'Please wait a moment before trying again.',
+        title: 'Slow Down',
+        message: 'Too many attempts. Please wait a few moments and try again.',
         icon: Iconsax.info_circle,
         color: AppColors.warning,
       );
     }
 
-    // Session / auth
-    if (msg.contains('unauthenticated') ||
-        msg.contains('session') ||
-        msg.contains('token')) {
+    // 🔑 Session Management
+    if (RegExp(r'unauthenticated|session|token|auth').hasMatch(msg)) {
       return _ParsedError(
         title: 'Session Expired',
-        message: 'Please log in again to continue.',
+        message: 'Your login session has expired. Please log in again.',
         icon: Iconsax.lock,
         color: AppColors.info,
       );
     }
 
-    // Generic fallback
+    // 🔧 Default Fallback
     return _ParsedError(
-      title: 'Something Went Wrong',
-      message: 'An unexpected error occurred. Please try again.',
+      title: 'Unexpected Error',
+      message: 'Something went wrong on our end. Please try again soon.',
       icon: Iconsax.close_circle,
       color: AppColors.error,
     );

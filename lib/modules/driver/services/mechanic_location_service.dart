@@ -4,88 +4,85 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 
+/// A background service responsible for tracking and broadcasting the 
+/// mechanic's live coordinates to Firestore during an active job.
 class MechanicLocationService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  static StreamSubscription<Position>? _positionStream;
-  static bool _isTracking = false;
+  static StreamSubscription<Position>? _positionSubscription;
+  static bool _isTrackingActive = false;
 
-  /// Start tracking mechanic's location and updating to Firestore
+  /// Starts high-accuracy location tracking for the currently logged-in mechanic.
+  /// 
+  /// Updates are pushed to the 'mechanic_locations' collection whenever the 
+  /// mechanic moves by at least 10 meters.
   static Future<void> startTracking() async {
-    if (_isTracking) {
-      debugPrint("Already tracking location");
+    if (_isTrackingActive) {
+      debugPrint('Location Tracking: Already active.');
       return;
     }
 
-    final uid = _auth.currentUser?.uid;
-    if (uid == null) {
-      debugPrint("No user logged in");
-      return;
-    }
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) return;
 
     try {
-      // Check permissions
+      // 1. Permission verification
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
       }
 
-      if (permission == LocationPermission.deniedForever ||
-          permission == LocationPermission.denied) {
-        debugPrint("Location permission denied");
+      if (permission == LocationPermission.denied || 
+          permission == LocationPermission.deniedForever) {
+        debugPrint('Location Tracking: Permission denied.');
         return;
       }
 
-      // Start listening to location updates
-      const locationSettings = LocationSettings(
+      // 2. Configure tracking parameters
+      const settings = LocationSettings(
         accuracy: LocationAccuracy.high,
-        distanceFilter: 10, // Update every 10 meters
+        distanceFilter: 10, // Update threshold in meters
       );
 
-      _positionStream =
-          Geolocator.getPositionStream(
-            locationSettings: locationSettings,
-          ).listen((Position position) {
-            _updateLocationToFirestore(uid, position);
-          });
+      // 3. Start listener
+      _positionSubscription = Geolocator.getPositionStream(
+        locationSettings: settings,
+      ).listen((Position position) {
+        _syncPositionToCloud(currentUser.uid, position);
+      });
 
-      _isTracking = true;
-      debugPrint("Started tracking mechanic location");
+      _isTrackingActive = true;
+      debugPrint('Location Tracking: Synchronizing live coordinates for ${currentUser.uid}');
     } catch (e) {
-      debugPrint("Error starting location tracking: $e");
+      debugPrint('Location Tracking Error: $e');
     }
   }
 
-  /// Update location to Firestore
-  static Future<void> _updateLocationToFirestore(
-    String uid,
-    Position position,
-  ) async {
+  /// Syncs the current [position] to the mechanic's location document in Firestore.
+  static Future<void> _syncPositionToCloud(String uid, Position position) async {
     try {
       await _firestore.collection('mechanic_locations').doc(uid).set({
         'latitude': position.latitude,
         'longitude': position.longitude,
         'timestamp': FieldValue.serverTimestamp(),
         'accuracy': position.accuracy,
+        'heading': position.heading,
+        'speed': position.speed,
       });
-
-      debugPrint(
-        "Location updated: ${position.latitude}, ${position.longitude}",
-      );
     } catch (e) {
-      debugPrint("Error updating location: $e");
+      debugPrint('Failed to sync coordinates to cloud: $e');
     }
   }
 
-  /// Stop tracking location
+  /// Ceases all background location tracking and releases resources.
   static void stopTracking() {
-    _positionStream?.cancel();
-    _positionStream = null;
-    _isTracking = false;
-    debugPrint("Stopped tracking location");
+    _positionSubscription?.cancel();
+    _positionSubscription = null;
+    _isTrackingActive = false;
+    debugPrint('Location Tracking: Deactivated.');
   }
 
-  /// Check if currently tracking
-  static bool get isTracking => _isTracking;
+  /// Indicates whether the tracking service is currently running.
+  static bool get isTracking => _isTrackingActive;
 }

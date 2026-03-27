@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -8,33 +7,28 @@ import 'package:flutter/foundation.dart';
 import '../../notifications/services/notification_sender.dart';
 import '../models/message_model.dart';
 
+/// A comprehensive service for managing real-time chat between Drivers and Mechanics.
+/// 
+/// Handles:
+/// - Chat room initialization.
+/// - Text, image, voice, and system message dispatch.
+/// - Automated push notifications for new messages.
+/// - Quote negotiation and agreement tracking.
 class ChatService {
-  static final _firestore = FirebaseFirestore.instance;
-  static final _storage = FirebaseStorage.instance;
-  static final _auth = FirebaseAuth.instance;
+  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  static final FirebaseStorage _storage = FirebaseStorage.instance;
+  static final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  static String get _uid => _auth.currentUser?.uid ?? '';
+  static String get _currentUid => _auth.currentUser?.uid ?? '';
 
-  // ─── Resolve sender name from the chat document ───
-  static Future<String> _resolveSenderName(
-    String chatId,
-    String senderRole,
-  ) async {
-    try {
-      final doc = await _firestore.collection('chats').doc(chatId).get();
-      if (doc.exists) {
-        final data = doc.data()!;
-        if (senderRole == 'driver') {
-          return data['driverName'] ?? 'Driver';
-        } else {
-          return data['mechanicName'] ?? 'Mechanic';
-        }
-      }
-    } catch (_) {}
-    return senderRole == 'driver' ? 'Driver' : 'Mechanic';
-  }
+  // ---------------------------------------------------------------------------
+  // 💬 CHAT INITIALIZATION
+  // ---------------------------------------------------------------------------
 
-  // ─── Create or get chat for a request ───
+  /// Creates a persistent chat room for a specific request.
+  /// 
+  /// Automatically resolves participant names and profile photos from Firestore 
+  /// if they are missing or hold generic placeholders.
   static Future<void> createChat({
     required String requestId,
     required String driverId,
@@ -46,59 +40,60 @@ class ChatService {
   }) async {
     final chatRef = _firestore.collection('chats').doc(requestId);
 
-    // Attempt to resolve real names if generic or missing
-    String finalDriverName = driverName ?? 'Driver';
-    String finalMechanicName = mechanicName ?? 'Mechanic';
-    String finalDriverPhoto = driverPhoto ?? '';
-    String finalMechanicPhoto = mechanicPhoto ?? '';
+    String resolvedDriverName = driverName ?? 'Driver';
+    String resolvedMechanicName = mechanicName ?? 'Mechanic';
+    String resolvedDriverPhoto = driverPhoto ?? '';
+    String resolvedMechanicPhoto = mechanicPhoto ?? '';
 
+    // Enforce name resolution from DB if defaults are provided
     try {
-      if (finalDriverName == 'Driver' || finalDriverName.isEmpty) {
-        final dDoc = await _firestore.collection('users').doc(driverId).get();
-        if (dDoc.exists) {
-          final data = dDoc.data()!;
-          finalDriverName = data['fullName'] ?? data['name'] ?? 'Driver';
-          finalDriverPhoto =
-              data['profilePhotoUrl'] ?? data['photoUrl'] ?? finalDriverPhoto;
+      if (resolvedDriverName == 'Driver' || resolvedDriverName.isEmpty) {
+        final doc = await _firestore.collection('users').doc(driverId).get();
+        if (doc.exists) {
+          final data = doc.data()!;
+          resolvedDriverName = data['fullName'] ?? data['name'] ?? 'Driver';
+          resolvedDriverPhoto = data['profilePhotoUrl'] ?? data['photoUrl'] ?? '';
         }
       }
 
-      if (finalMechanicName == 'Mechanic' || finalMechanicName.isEmpty) {
-        final mDoc = await _firestore.collection('users').doc(mechanicId).get();
-        if (mDoc.exists) {
-          final data = mDoc.data()!;
-          finalMechanicName = data['fullName'] ?? data['name'] ?? 'Mechanic';
-          finalMechanicPhoto =
-              data['profilePhotoUrl'] ?? data['photoUrl'] ?? finalMechanicPhoto;
+      if (resolvedMechanicName == 'Mechanic' || resolvedMechanicName.isEmpty) {
+        final doc = await _firestore.collection('users').doc(mechanicId).get();
+        if (doc.exists) {
+          final data = doc.data()!;
+          resolvedMechanicName = data['fullName'] ?? data['name'] ?? 'Mechanic';
+          resolvedMechanicPhoto = data['profilePhotoUrl'] ?? data['photoUrl'] ?? '';
         }
       }
     } catch (e) {
-      // Ignore errors, fallback to whatever was passed
+      debugPrint('ChatService: Metadata resolution failed, using fallbacks. ($e)');
     }
 
     await chatRef.set({
       'participants': FieldValue.arrayUnion([driverId, mechanicId]),
       'driverId': driverId,
       'mechanicId': mechanicId,
-      'driverName': finalDriverName,
-      'mechanicName': finalMechanicName,
-      'driverPhoto': finalDriverPhoto,
-      'mechanicPhoto': finalMechanicPhoto,
-      'lastMessage': 'Chat started',
+      'driverName': resolvedDriverName,
+      'mechanicName': resolvedMechanicName,
+      'driverPhoto': resolvedDriverPhoto,
+      'mechanicPhoto': resolvedMechanicPhoto,
+      'lastMessage': 'Conversations started...',
       'lastMessageTime': FieldValue.serverTimestamp(),
-      'lastMessageBy': '',
+      'lastMessageBy': 'system',
       'status': 'active',
       'createdAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
 
-    // Send a system message
     await sendSystemMessage(
       requestId,
-      '🤝 Chat started! You can discuss the service details here.',
+      '🤝 Welcome! Contact details and location are shared. Discuss service details here.',
     );
   }
 
-  // ─── Send text message ───
+  // ---------------------------------------------------------------------------
+  // ✉️ MESSAGE DISPATCH
+  // ---------------------------------------------------------------------------
+
+  /// Sends a plain text message to the chat.
   static Future<void> sendMessage({
     required String chatId,
     required String content,
@@ -106,11 +101,36 @@ class ChatService {
   }) async {
     final senderName = await _resolveSenderName(chatId, senderRole);
 
-    final msg = {
-      'senderId': _uid,
+    final messageData = {
+      'senderId': _currentUid,
       'senderName': senderName,
       'senderRole': senderRole,
       'type': 'text',
+      'content': content.trim(),
+      'timestamp': FieldValue.serverTimestamp(),
+      'read': false,
+      'delivered': true,
+    };
+
+    await _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .add(messageData);
+
+    await _updateChatPulse(chatId, content, senderRole);
+
+    // Trigger external notification
+    _dispatchNotification(chatId, senderRole, content, senderName);
+  }
+
+  /// Sends an automated system notice to the chat participants.
+  static Future<void> sendSystemMessage(String chatId, String content) async {
+    final messageData = {
+      'senderId': 'system',
+      'senderName': 'System',
+      'senderRole': 'system',
+      'type': 'system',
       'content': content,
       'timestamp': FieldValue.serverTimestamp(),
       'read': false,
@@ -121,43 +141,7 @@ class ChatService {
         .collection('chats')
         .doc(chatId)
         .collection('messages')
-        .add(msg);
-
-    // Update chat doc
-    final unreadField = senderRole == 'driver'
-        ? 'mechanicUnreadCount'
-        : 'driverUnreadCount';
-    await _firestore.collection('chats').doc(chatId).set({
-      'lastMessage': content,
-      'lastMessageTime': FieldValue.serverTimestamp(),
-      'lastMessageBy': _uid,
-      unreadField: FieldValue.increment(1),
-    }, SetOptions(merge: true));
-
-    // 🔔 Notify recipient
-    await _sendNotification(
-      chatId: chatId,
-      senderRole: senderRole,
-      content: content,
-    );
-  }
-
-  // ─── Send system message ───
-  static Future<void> sendSystemMessage(String chatId, String content) async {
-    await _firestore
-        .collection('chats')
-        .doc(chatId)
-        .collection('messages')
-        .add({
-          'senderId': 'system',
-          'senderName': 'System',
-          'senderRole': 'system',
-          'type': 'system',
-          'content': content,
-          'timestamp': FieldValue.serverTimestamp(),
-          'read': false,
-          'delivered': true,
-        });
+        .add(messageData);
 
     await _firestore.collection('chats').doc(chatId).set({
       'lastMessage': content,
@@ -166,75 +150,47 @@ class ChatService {
     }, SetOptions(merge: true));
   }
 
-  // ─── Send image message ───
-  static Future<void> sendImageFromPath({
+  /// Uploads and sends an image file.
+  static Future<void> sendImage({
     required String chatId,
-    required String imagePath,
+    required String localPath,
     required String senderRole,
     String caption = '',
   }) async {
     final senderName = await _resolveSenderName(chatId, senderRole);
     final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
-    final ref = _storage.ref('chats/$chatId/images/$fileName');
+    final storageRef = _storage.ref('chats/$chatId/images/$fileName');
 
-    // Upload
-    if (kIsWeb) {
-      final bytes = await XFileHelper.readBytes(imagePath);
-      if (bytes != null) {
-        await ref.putData(bytes, SettableMetadata(contentType: 'image/jpeg'));
-      }
-    } else {
-      final file = File(imagePath);
-      if (!await file.exists()) {
-        throw Exception('Image file not found locally: $imagePath');
-      }
-      final uploadTask = ref.putFile(
-        file,
-        SettableMetadata(contentType: 'image/jpeg'),
-      );
-      final snapshot = await uploadTask;
-      if (snapshot.state != TaskState.success) {
-        throw Exception('Failed to upload image');
-      }
-    }
+    // 1. Upload to Storage
+    final file = File(localPath);
+    if (!await file.exists()) throw Exception('Image source not found.');
 
-    final url = await ref.getDownloadURL();
+    final uploadTask = storageRef.putFile(file, SettableMetadata(contentType: 'image/jpeg'));
+    final snapshot = await uploadTask;
+    final downloadUrl = await snapshot.ref.getDownloadURL();
 
+    // 2. Add to Firestore
     await _firestore
         .collection('chats')
         .doc(chatId)
         .collection('messages')
         .add({
-          'senderId': _uid,
+          'senderId': _currentUid,
           'senderName': senderName,
           'senderRole': senderRole,
           'type': 'image',
-          'content': caption,
-          'imageUrl': url,
+          'content': caption.trim(),
+          'imageUrl': downloadUrl,
           'timestamp': FieldValue.serverTimestamp(),
           'read': false,
           'delivered': true,
         });
 
-    final unreadField = senderRole == 'driver'
-        ? 'mechanicUnreadCount'
-        : 'driverUnreadCount';
-    await _firestore.collection('chats').doc(chatId).set({
-      'lastMessage': '📷 Photo',
-      'lastMessageTime': FieldValue.serverTimestamp(),
-      'lastMessageBy': _uid,
-      unreadField: FieldValue.increment(1),
-    }, SetOptions(merge: true));
-
-    // 🔔 Notify recipient
-    await _sendNotification(
-      chatId: chatId,
-      senderRole: senderRole,
-      content: '📷 Photo',
-    );
+    await _updateChatPulse(chatId, '📷 Photo', senderRole);
+    _dispatchNotification(chatId, senderRole, '📷 Photo', senderName);
   }
 
-  // ─── Send voice message ───
+  /// Uploads and sends a voice recording.
   static Future<void> sendVoiceMessage({
     required String chatId,
     required String audioPath,
@@ -243,64 +199,41 @@ class ChatService {
   }) async {
     final senderName = await _resolveSenderName(chatId, senderRole);
     final fileName = '${DateTime.now().millisecondsSinceEpoch}.m4a';
-    final ref = _storage.ref('chats/$chatId/voice/$fileName');
+    final storageRef = _storage.ref('chats/$chatId/voice/$fileName');
 
-    // Check local file
     final file = File(audioPath);
-    if (!await file.exists()) {
-      throw Exception('Recording file not found locally: $audioPath');
-    }
+    if (!await file.exists()) throw Exception('Recording source not found.');
 
-    // Upload audio file
-    final uploadTask = ref.putFile(
-      file,
-      SettableMetadata(contentType: 'audio/m4a'),
-    );
+    final uploadTask = storageRef.putFile(file, SettableMetadata(contentType: 'audio/m4a'));
     final snapshot = await uploadTask;
-
-    if (snapshot.state != TaskState.success) {
-      throw Exception('Failed to upload voice message');
-    }
-
-    final url = await ref.getDownloadURL();
+    final downloadUrl = await snapshot.ref.getDownloadURL();
 
     await _firestore
         .collection('chats')
         .doc(chatId)
         .collection('messages')
         .add({
-          'senderId': _uid,
+          'senderId': _currentUid,
           'senderName': senderName,
           'senderRole': senderRole,
           'type': 'voice',
           'content': '',
-          'audioUrl': url,
+          'audioUrl': downloadUrl,
           'audioDuration': durationSeconds,
           'timestamp': FieldValue.serverTimestamp(),
           'read': false,
           'delivered': true,
         });
 
-    final unreadField = senderRole == 'driver'
-        ? 'mechanicUnreadCount'
-        : 'driverUnreadCount';
-    await _firestore.collection('chats').doc(chatId).set({
-      'lastMessage': '🎤 Voice message',
-      'lastMessageTime': FieldValue.serverTimestamp(),
-      'lastMessageBy': _uid,
-      unreadField: FieldValue.increment(1),
-    }, SetOptions(merge: true));
-
-    // 🔔 Notify recipient
-    await _sendNotification(
-      chatId: chatId,
-      senderRole: senderRole,
-      content: '🎤 Voice message',
-    );
+    await _updateChatPulse(chatId, '🎤 Voice Message', senderRole);
+    _dispatchNotification(chatId, senderRole, '🎤 Voice Message', senderName);
   }
 
+  // ---------------------------------------------------------------------------
+  // 💰 PRICE NEGOTIATION
+  // ---------------------------------------------------------------------------
 
-  // ─── Send price quote ───
+  /// Dispatches a structured price estimate to the driver.
   static Future<void> sendPriceQuote({
     required String chatId,
     required String service,
@@ -309,6 +242,9 @@ class ChatService {
     String? notes,
     List<String>? parts,
   }) async {
+    final senderName = await _resolveSenderName(chatId, 'mechanic');
+    final formattedPrice = '₹${estimatedCost.toStringAsFixed(0)}';
+
     final priceData = {
       'service': service,
       'estimatedCost': estimatedCost,
@@ -323,186 +259,148 @@ class ChatService {
         .doc(chatId)
         .collection('messages')
         .add({
-          'senderId': _uid,
-          'senderName': await _resolveSenderName(chatId, 'mechanic'),
+          'senderId': _currentUid,
+          'senderName': senderName,
           'senderRole': 'mechanic',
           'type': 'price_quote',
-          'content': 'Service Estimate',
+          'content': 'Service Estimate: $formattedPrice',
           'priceData': priceData,
           'timestamp': FieldValue.serverTimestamp(),
           'read': false,
           'delivered': true,
         });
 
-    await _firestore.collection('chats').doc(chatId).set({
-      'lastMessage':
-          '💰 Sent an estimate: ₹${estimatedCost.toStringAsFixed(0)}',
-      'lastMessageTime': FieldValue.serverTimestamp(),
-      'lastMessageBy': _uid,
-      'driverUnreadCount': FieldValue.increment(1),
-    }, SetOptions(merge: true));
-
-    // 🔔 Notify recipient
-    await _sendNotification(
-      chatId: chatId,
-      senderRole: 'mechanic',
-      content: '💰 Sent an estimate: ₹${estimatedCost.toStringAsFixed(0)}',
-    );
+    await _updateChatPulse(chatId, '💰 Estimate: $formattedPrice', 'mechanic');
+    _dispatchNotification(chatId, 'mechanic', '💰 Estimate: $formattedPrice', senderName);
   }
 
-  // ─── Respond to price quote ───
-  static Future<void> respondToPriceQuote({
+  /// Updates the status of a specific price quote based on driver interaction.
+  static Future<void> respondToQuote({
     required String chatId,
     required String messageId,
-    required String response,
+    required String responseStatus, // 'accepted', 'rejected', 'negotiated'
     double? counterOffer,
     String? reason,
   }) async {
-    final msgRef = _firestore
-        .collection('chats')
-        .doc(chatId)
-        .collection('messages')
-        .doc(messageId);
+    final msgRef = _firestore.collection('chats').doc(chatId).collection('messages').doc(messageId);
+    
+    final snapshot = await msgRef.get();
+    if (!snapshot.exists) return;
 
-    final doc = await msgRef.get();
-    if (!doc.exists) return;
-    final data = doc.data()!;
+    final data = snapshot.data()!;
     final priceData = Map<String, dynamic>.from(data['priceData'] ?? {});
-    priceData['status'] = response;
+    
+    priceData['status'] = responseStatus;
     if (counterOffer != null) priceData['counterOffer'] = counterOffer;
     if (reason != null) priceData['reason'] = reason;
 
     await msgRef.update({'priceData': priceData});
 
-    if (response == 'accepted') {
+    // Send visual confirmation in chat
+    if (responseStatus == 'accepted') {
       final cost = priceData['estimatedCost'] ?? 0;
-      await _firestore.collection('chats').doc(chatId).set({
-        'priceAgreed': cost,
-      }, SetOptions(merge: true));
-      await sendSystemMessage(
-        chatId,
-        '✅ Price agreed: ₹${(cost as num).toStringAsFixed(0)}',
-      );
-    } else if (response == 'rejected') {
-      await sendSystemMessage(
-        chatId,
-        '❌ Estimate declined${reason != null ? ': $reason' : ''}',
-      );
-    } else if (response == 'negotiated') {
-      await sendSystemMessage(
-        chatId,
-        '💬 Counter offer: ₹${counterOffer?.toStringAsFixed(0) ?? '—'}${reason != null ? ' — $reason' : ''}',
-      );
+      await _firestore.collection('chats').doc(chatId).update({'priceAgreed': cost});
+      await sendSystemMessage(chatId, '✅ Price agreed: ₹${(cost as num).toStringAsFixed(0)}');
+    } else if (responseStatus == 'rejected') {
+      await sendSystemMessage(chatId, '❌ Estimate declined${reason != null ? ': $reason' : ''}');
     }
   }
 
-  // ─── Mark messages as read ───
-  static Future<void> markAsRead(String chatId, String role) async {
-    final unreadField = role == 'driver'
-        ? 'driverUnreadCount'
-        : 'mechanicUnreadCount';
+  // ---------------------------------------------------------------------------
+  // 🛰️ DATA STREAMS & READ LOGIC
+  // ---------------------------------------------------------------------------
 
-    await _firestore.collection('chats').doc(chatId).update({unreadField: 0});
-
-    // Mark individual messages
-    final unread = await _firestore
-        .collection('chats')
-        .doc(chatId)
-        .collection('messages')
-        .where('read', isEqualTo: false)
-        .where('senderId', isNotEqualTo: _uid)
-        .get();
-
-    final batch = _firestore.batch();
-    for (var doc in unread.docs) {
-      batch.update(doc.reference, {'read': true});
-    }
-    await batch.commit();
-  }
-
-  // ─── Messages stream ───
-  static Stream<List<MessageModel>> messagesStream(String chatId) {
+  /// Stream of messages for a specific chat, ordered by recent first.
+  static Stream<List<MessageModel>> getMessages(String chatId) {
     return _firestore
         .collection('chats')
         .doc(chatId)
         .collection('messages')
         .orderBy('timestamp', descending: true)
-        .limit(100)
         .snapshots()
-        .map(
-          (snap) => snap.docs
-              .map((d) => MessageModel.fromMap(d.data(), d.id))
-              .toList(),
-        );
+        .map((snap) => snap.docs.map((d) => MessageModel.fromMap(d.data(), d.id)).toList());
   }
 
-  // ─── User's chats stream ───
-  static Stream<QuerySnapshot> userChatsStream() {
+  /// Stream of all active chats for the current user.
+  static Stream<QuerySnapshot> getActiveChats() {
     return _firestore
         .collection('chats')
-        .where('participants', arrayContains: _uid)
+        .where('participants', arrayContains: _currentUid)
+        .where('status', isEqualTo: 'active')
         .snapshots();
   }
 
-  // ─── Helper for Notifications ───
-  static Future<void> _sendNotification({
-    required String chatId,
-    required String senderRole,
-    required String content,
-  }) async {
+  /// Marks all unread messages as read for the given [chatId].
+  static Future<void> markAsRead(String chatId, String role) async {
+    final unreadField = (role == 'driver') ? 'driverUnreadCount' : 'mechanicUnreadCount';
+    await _firestore.collection('chats').doc(chatId).update({unreadField: 0});
+
+    final unreadMessages = await _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .where('read', isEqualTo: false)
+        .where('senderId', isNotEqualTo: _currentUid)
+        .get();
+
+    if (unreadMessages.docs.isEmpty) return;
+
+    final batch = _firestore.batch();
+    for (var doc in unreadMessages.docs) {
+      batch.update(doc.reference, {'read': true});
+    }
+    await batch.commit();
+  }
+
+  // ---------------------------------------------------------------------------
+  // ⚙️ PRIVATE HELPERS
+  // ---------------------------------------------------------------------------
+
+  /// Updates the main chat document meta-data (last message, timestamp, unread counters).
+  static Future<void> _updateChatPulse(String chatId, String lastMsg, String senderRole) async {
+    final unreadField = (senderRole == 'driver') ? 'mechanicUnreadCount' : 'driverUnreadCount';
+    
+    await _firestore.collection('chats').doc(chatId).update({
+      'lastMessage': lastMsg,
+      'lastMessageBy': _currentUid,
+      'lastMessageTime': FieldValue.serverTimestamp(),
+      unreadField: FieldValue.increment(1),
+    });
+  }
+
+  /// Resolves the sender's name from the chat participant metadata.
+  static Future<String> _resolveSenderName(String chatId, String role) async {
     try {
       final doc = await _firestore.collection('chats').doc(chatId).get();
-      if (doc.exists) {
-        final chatData = doc.data()!;
-        final recipientId = senderRole == 'driver'
-            ? chatData['mechanicId']
-            : chatData['driverId'];
-        final senderName = senderRole == 'driver'
-            ? (chatData['driverName'] ?? 'Driver')
-            : (chatData['mechanicName'] ?? 'Mechanic');
+      if (!doc.exists) return (role == 'driver') ? 'Driver' : 'Mechanic';
+      
+      final data = doc.data()!;
+      return (role == 'driver') 
+          ? (data['driverName'] ?? 'Driver') 
+          : (data['mechanicName'] ?? 'Mechanic');
+    } catch (_) {
+      return (role == 'driver') ? 'Driver' : 'Mechanic';
+    }
+  }
 
-        if (recipientId != null && recipientId.toString().isNotEmpty) {
-          await NotificationSender.notifyChatMessage(
-            chatId: chatId,
-            recipientId: recipientId,
-            senderName: senderName,
-            message: content,
-          );
-        }
+  /// Attempts to notify the recipient via mobile push notification.
+  static void _dispatchNotification(String chatId, String role, String content, String senderName) async {
+    try {
+      final doc = await _firestore.collection('chats').doc(chatId).get();
+      final data = doc.data() ?? {};
+      final recipientId = (role == 'driver') ? data['mechanicId'] : data['driverId'];
+
+      if (recipientId != null) {
+        NotificationSender.notifyChatMessage(
+          chatId: chatId,
+          recipientId: recipientId,
+          senderName: senderName,
+          message: content,
+        ).catchError((e) => debugPrint('⚠️ Chat Notification Failed: $e'));
       }
     } catch (e) {
-      debugPrint('Error sending chat notification: $e');
+      debugPrint('ChatService: Notification dispatch failure. ($e)');
     }
   }
 }
 
-// Helper class for cross-platform file handling
-class XFileHelper {
-  static Future<Uint8List?> readBytes(String path) async {
-    try {
-      final xFile = fromPath(path);
-      return await xFile.readAsBytes();
-    } catch (e) {
-      return null;
-    }
-  }
-
-  static dynamic fromPath(String path) {
-    return _XFileLite(path);
-  }
-}
-
-class _XFileLite {
-  final String path;
-
-  _XFileLite(this.path);
-
-  Future<Uint8List> readAsBytes() async {
-    final xFile = await _getXFile();
-    return await xFile.readAsBytes();
-  }
-
-  Future<dynamic> _getXFile() async {
-    return this;
-  }
-}

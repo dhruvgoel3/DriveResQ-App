@@ -2,36 +2,42 @@ import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
+/// A high-level service for managing device location and reverse geocoding.
+/// 
+/// This service provides streamlined methods to fetch precise coordinates
+/// and convert them into human-readable addresses for display on maps and cards.
 class LocationService {
-  /// Get current location with name, latitude, and longitude
+  
+  /// Fetches the current device location with both coordinates and a readable name.
+  /// 
+  /// Throws an [Exception] if location services are disabled or permissions are denied.
   static Future<Map<String, dynamic>> getLocationData() async {
     try {
-      // Check if location services are enabled
+      // 1. Permission and service checks
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        throw Exception('Location services are disabled');
+        throw Exception('Location services are currently disabled on your device.');
       }
 
-      // Check location permissions
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          throw Exception('Location permission denied');
+          throw Exception('Location permissions were denied.');
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        throw Exception('Location permissions are permanently denied');
+        throw Exception('Location permissions are permanently denied. Please enable them in settings.');
       }
 
-      // Get current position
-      Position position = await Geolocator.getCurrentPosition(
+      // 2. Fetch precise position
+      final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
 
-      // Get location name from coordinates (reverse geocoding)
-      String locationName = await _getLocationName(
+      // 3. Convert to human-readable address
+      final locationName = await _getAddressFromCoordinates(
         position.latitude,
         position.longitude,
       );
@@ -42,61 +48,55 @@ class LocationService {
         'lng': position.longitude,
       };
     } catch (e) {
-      debugPrint("LocationService Error: $e");
+      debugPrint("LocationService Critical Error: $e");
       rethrow;
     }
   }
 
-  /// Convert coordinates to human-readable address
-  static Future<String> _getLocationName(double lat, double lng) async {
+  /// Performs reverse geocoding to turn [lat] and [lng] into a formatted address string.
+  /// 
+  /// If geocoding fails, returns "Current Location" as a safe fallback.
+  static Future<String> _getAddressFromCoordinates(double lat, double lng) async {
     try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+      final List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
 
       if (placemarks.isNotEmpty) {
-        Placemark place = placemarks.first;
+        final place = placemarks.first;
+        final parts = <String>[];
 
-        // Build address string
-        List<String> addressParts = [];
-
-        if (place.street != null && place.street!.isNotEmpty) {
-          addressParts.add(place.street!);
+        // Intelligently build the address based on available fields
+        if (place.street != null && place.street!.isNotEmpty && place.street != place.locality) {
+          parts.add(place.street!);
         }
         if (place.subLocality != null && place.subLocality!.isNotEmpty) {
-          addressParts.add(place.subLocality!);
+          parts.add(place.subLocality!);
         }
         if (place.locality != null && place.locality!.isNotEmpty) {
-          addressParts.add(place.locality!);
+          parts.add(place.locality!);
         }
-        if (place.administrativeArea != null &&
-            place.administrativeArea!.isNotEmpty) {
-          addressParts.add(place.administrativeArea!);
+        if (place.administrativeArea != null && place.administrativeArea!.isNotEmpty) {
+          parts.add(place.administrativeArea!);
         }
 
-        return addressParts.isNotEmpty
-            ? addressParts.join(', ')
-            : 'Current Location';
+        return parts.isNotEmpty ? parts.join(', ') : 'Current Location';
       }
 
       return 'Current Location';
     } catch (e) {
-      debugPrint("Geocoding Error: $e");
+      debugPrint("Reverse Geocoding Failed: $e");
       return 'Current Location';
     }
   }
 
-  /// Get only current position (without address)
+  /// Simple utility to fetch the raw [Position] without geocoding metadata.
   static Future<Position> getCurrentPosition() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      throw Exception('Location services are disabled');
-    }
+    if (!serviceEnabled) throw Exception('Location services are disabled.');
 
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        throw Exception('Location permission denied');
-      }
+      if (permission == LocationPermission.denied) throw Exception('Permission denied.');
     }
 
     return await Geolocator.getCurrentPosition(
