@@ -40,7 +40,7 @@ class DriverController extends GetxController {
   void listenToActiveRequest() {
     final uid = _auth.currentUser?.uid;
     if (uid == null) {
-      debugPrint('⚠️ No authenticated user — skipping request listener');
+      debugPrint('No authenticated user - skipping request listener');
       isLoadingRequest.value = false;
       return;
     }
@@ -69,7 +69,7 @@ class DriverController extends GetxController {
           },
           onError: (error) {
             isLoadingRequest.value = false;
-            debugPrint('❌ Error listening to active request: $error');
+            debugPrint('Error listening to active request: $error');
           },
         );
   }
@@ -84,14 +84,14 @@ class DriverController extends GetxController {
         return;
       }
 
-      debugPrint('🚫 Cancelling request: $requestId');
+      debugPrint('Cancelling request: $requestId');
 
       await DriverService.cancelActiveRequest(requestId);
 
-      debugPrint('✅ Request cancelled successfully');
+      debugPrint('Request cancelled successfully');
       Get.snackbar('Cancelled', 'Your request has been cancelled.');
     } catch (e) {
-      debugPrint('❌ Error cancelling request: $e');
+      debugPrint('Error cancelling request: $e');
       Get.snackbar('Error', 'Failed to cancel request. Please try again.');
     }
   }
@@ -110,7 +110,7 @@ class DriverController extends GetxController {
           backgroundColor: const Color(0xFF4CAF50).withOpacity(0.9),
           colorText: const Color(0xFFFFFFFF));
     } catch (e) {
-      debugPrint('❌ Error approving mechanic: $e');
+      debugPrint('Error approving mechanic: $e');
       Get.snackbar('Error', 'Failed to approve. Please try again.');
     }
   }
@@ -129,7 +129,7 @@ class DriverController extends GetxController {
           backgroundColor: const Color(0xFFFF9800).withOpacity(0.9),
           colorText: const Color(0xFFFFFFFF));
     } catch (e) {
-      debugPrint('❌ Error declining mechanic: $e');
+      debugPrint('Error declining mechanic: $e');
       Get.snackbar('Error', 'Failed to decline. Please try again.');
     }
   }

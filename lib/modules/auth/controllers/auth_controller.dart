@@ -80,18 +80,18 @@ class AuthController extends GetxController {
       isLoading.value = true;
 
       final phone = '+91$sanitized';
-      debugPrint("📞 Sending OTP to: $phone");
+      debugPrint("Sending OTP to: $phone");
 
       await _auth.verifyPhoneNumber(
         phoneNumber: phone,
         timeout: Duration(seconds: 60),
         verificationCompleted: (PhoneAuthCredential credential) async {
-          debugPrint("✅ Auto-verification completed");
+          debugPrint("Auto-verification completed");
           await _signInWithCredential(credential);
         },
         verificationFailed: (FirebaseAuthException e) {
           isLoading.value = false;
-          debugPrint("❌ Verification failed: ${e.code} - ${e.message}");
+          debugPrint("Verification failed: ${e.code} - ${e.message}");
           String errorMsg;
           switch (e.code) {
             case 'invalid-phone-number':
@@ -118,7 +118,7 @@ class AuthController extends GetxController {
         codeSent: (String verId, int? resendToken) {
           isLoading.value = false;
           verificationId = verId;
-          debugPrint("📨 OTP code sent, verificationId: $verId");
+          debugPrint("OTP code sent, verificationId: $verId");
 
           Get.snackbar(
             "Success",
@@ -135,7 +135,7 @@ class AuthController extends GetxController {
       );
     } catch (e) {
       isLoading.value = false;
-      debugPrint("❌ Exception in sendOTP: $e");
+      debugPrint("Exception in sendOTP: $e");
       Get.snackbar(
         "Error",
         "Failed to send OTP. Please check your internet connection and try again.",
@@ -171,7 +171,7 @@ class AuthController extends GetxController {
       isLoading.value = true;
 
       debugPrint(
-        "🔐 Verifying OTP: ${otpController.text.trim()} with verificationId: $verificationId",
+        "Verifying OTP for verificationId: $verificationId",
       );
 
       final credential = PhoneAuthProvider.credential(
@@ -183,7 +183,7 @@ class AuthController extends GetxController {
     } on FirebaseAuthException catch (e) {
       isLoading.value = false;
       debugPrint(
-        "❌ OTP verification FirebaseAuthException: ${e.code} - ${e.message}",
+        "OTP verification FirebaseAuthException: ${e.code} - ${e.message}",
       );
       String errorMsg;
       switch (e.code) {
@@ -209,7 +209,7 @@ class AuthController extends GetxController {
       );
     } catch (e) {
       isLoading.value = false;
-      debugPrint("❌ OTP verification error: $e");
+      debugPrint("OTP verification error: $e");
       Get.snackbar(
         "Error",
         "Verification failed: $e",
@@ -315,7 +315,7 @@ class AuthController extends GetxController {
     try {
       await FCMService.clearFCMToken();
     } catch (e) {
-      debugPrint('⚠️ Failed to clear FCM token: $e');
+      debugPrint('Failed to clear FCM token: $e');
     }
     await _auth.signOut();
     Get.deleteAll(force: true);
