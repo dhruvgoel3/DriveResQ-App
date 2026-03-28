@@ -344,11 +344,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Icon(
-                  Iconsax.car,
-                  size: 40.w,
-                  color: Color(0xFF6C63FF),
-                ),
+                Icon(Iconsax.car, size: 40.w, color: Color(0xFF6C63FF)),
                 Positioned(
                   right: 22.w,
                   bottom: 24.h,

@@ -28,11 +28,9 @@ class HistoryInvoiceViewer {
       );
 
       final file = await _generatePdf(completionData);
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        text:
-            'DriveResQ Invoice ${completionData['invoiceNumber'] ?? ''}',
-      );
+      await Share.shareXFiles([
+        XFile(file.path),
+      ], text: 'DriveResQ Invoice ${completionData['invoiceNumber'] ?? ''}');
     } catch (e) {
       debugPrint('❌ Invoice generation error: $e');
       Get.snackbar(
@@ -47,10 +45,8 @@ class HistoryInvoiceViewer {
   static Future<File> _generatePdf(Map<String, dynamic> data) async {
     final pdf = pw.Document();
     final invoiceNumber = data['invoiceNumber'] ?? 'N/A';
-    final services =
-        List<String>.from(data['servicesPerformed'] ?? []);
-    final parts =
-        List<Map<String, dynamic>>.from(data['partsReplaced'] ?? []);
+    final services = List<String>.from(data['servicesPerformed'] ?? []);
+    final parts = List<Map<String, dynamic>>.from(data['partsReplaced'] ?? []);
     final baseCharge = (data['baseCharge'] ?? 0).toDouble();
     final laborCharges = (data['laborCharges'] ?? 0).toDouble();
     final travelCost = (data['travelCost'] ?? 0).toDouble();
@@ -83,34 +79,47 @@ class HistoryInvoiceViewer {
                   pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
-                      pw.Text('DriveResQ',
-                          style: pw.TextStyle(
-                              fontSize: 28,
-                              fontWeight: pw.FontWeight.bold,
-                              color: PdfColor.fromHex('#6C63FF'))),
+                      pw.Text(
+                        'DriveResQ',
+                        style: pw.TextStyle(
+                          fontSize: 28,
+                          fontWeight: pw.FontWeight.bold,
+                          color: PdfColor.fromHex('#6C63FF'),
+                        ),
+                      ),
                       pw.SizedBox(height: 4),
-                      pw.Text('Roadside Assistance',
-                          style: pw.TextStyle(
-                              fontSize: 12, color: PdfColors.grey600)),
+                      pw.Text(
+                        'Roadside Assistance',
+                        style: pw.TextStyle(
+                          fontSize: 12,
+                          color: PdfColors.grey600,
+                        ),
+                      ),
                     ],
                   ),
                   pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.end,
                     children: [
-                      pw.Text('INVOICE',
-                          style: pw.TextStyle(
-                              fontSize: 20,
-                              fontWeight: pw.FontWeight.bold)),
+                      pw.Text(
+                        'INVOICE',
+                        style: pw.TextStyle(
+                          fontSize: 20,
+                          fontWeight: pw.FontWeight.bold,
+                        ),
+                      ),
                       pw.SizedBox(height: 4),
-                      pw.Text(invoiceNumber,
-                          style: pw.TextStyle(
-                              fontSize: 12, color: PdfColors.grey700)),
+                      pw.Text(
+                        invoiceNumber,
+                        style: pw.TextStyle(
+                          fontSize: 12,
+                          color: PdfColors.grey700,
+                        ),
+                      ),
                     ],
                   ),
                 ],
               ),
-              pw.Divider(
-                  thickness: 2, color: PdfColor.fromHex('#6C63FF')),
+              pw.Divider(thickness: 2, color: PdfColor.fromHex('#6C63FF')),
               pw.SizedBox(height: 16),
 
               // Job details
@@ -123,21 +132,18 @@ class HistoryInvoiceViewer {
                       children: [
                         _sectionTitle('JOB DETAILS'),
                         pw.SizedBox(height: 6),
-                        _detailRow('Job ID',
-                            (data['jobId'] ?? '').toString().length >= 12
-                                ? (data['jobId'] ?? '')
+                        _detailRow(
+                          'Job ID',
+                          (data['jobId'] ?? '').toString().length >= 12
+                              ? (data['jobId'] ?? '')
                                     .toString()
                                     .substring(0, 12)
                                     .toUpperCase()
-                                : (data['jobId'] ?? '')
-                                    .toString()
-                                    .toUpperCase()),
-                        _detailRow(
-                            'Vehicle', data['vehicleType'] ?? '-'),
-                        _detailRow(
-                            'Problem', data['problem'] ?? '-'),
-                        _detailRow(
-                            'Location', data['locationName'] ?? '-'),
+                              : (data['jobId'] ?? '').toString().toUpperCase(),
+                        ),
+                        _detailRow('Vehicle', data['vehicleType'] ?? '-'),
+                        _detailRow('Problem', data['problem'] ?? '-'),
+                        _detailRow('Location', data['locationName'] ?? '-'),
                         _detailRow('Duration', duration),
                       ],
                     ),
@@ -149,10 +155,11 @@ class HistoryInvoiceViewer {
                       children: [
                         _sectionTitle('SETTLEMENT'),
                         pw.SizedBox(height: 6),
+                        _detailRow('Method', 'Cash / Settle directly'),
                         _detailRow(
-                            'Method', 'Cash / Settle directly'),
-                        _detailRow('Status',
-                            cashCollected ? 'Collected' : 'Pending'),
+                          'Status',
+                          cashCollected ? 'Collected' : 'Pending',
+                        ),
                       ],
                     ),
                   ),
@@ -166,18 +173,23 @@ class HistoryInvoiceViewer {
               pw.Wrap(
                 spacing: 8,
                 children: services
-                    .map((s) => pw.Container(
-                          padding: const pw.EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 3),
-                          margin: const pw.EdgeInsets.only(bottom: 4),
-                          decoration: pw.BoxDecoration(
-                            color: PdfColor.fromHex('#EDE7F6'),
-                            borderRadius:
-                                pw.BorderRadius.circular(4),
-                          ),
-                          child: pw.Text(s,
-                              style: const pw.TextStyle(fontSize: 9)),
-                        ))
+                    .map(
+                      (s) => pw.Container(
+                        padding: const pw.EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
+                        margin: const pw.EdgeInsets.only(bottom: 4),
+                        decoration: pw.BoxDecoration(
+                          color: PdfColor.fromHex('#EDE7F6'),
+                          borderRadius: pw.BorderRadius.circular(4),
+                        ),
+                        child: pw.Text(
+                          s,
+                          style: const pw.TextStyle(fontSize: 9),
+                        ),
+                      ),
+                    )
                     .toList(),
               ),
               pw.SizedBox(height: 20),
@@ -189,11 +201,14 @@ class HistoryInvoiceViewer {
               if (parts.isNotEmpty) ...[
                 pw.Table(
                   border: pw.TableBorder.all(
-                      color: PdfColors.grey300, width: 0.5),
+                    color: PdfColors.grey300,
+                    width: 0.5,
+                  ),
                   children: [
                     pw.TableRow(
                       decoration: pw.BoxDecoration(
-                          color: PdfColor.fromHex('#F5F5F5')),
+                        color: PdfColor.fromHex('#F5F5F5'),
+                      ),
                       children: [
                         _tableHeader('Part Name'),
                         _tableHeader('Qty'),
@@ -201,14 +216,20 @@ class HistoryInvoiceViewer {
                         _tableHeader('Total'),
                       ],
                     ),
-                    ...parts.map((p) => pw.TableRow(children: [
+                    ...parts.map(
+                      (p) => pw.TableRow(
+                        children: [
                           _tableCell(p['name'] ?? '-'),
                           _tableCell('${p['quantity']}'),
                           _tableCell(
-                              '₹${(p['costPerUnit'] as double? ?? 0).toStringAsFixed(0)}'),
+                            '₹${(p['costPerUnit'] as double? ?? 0).toStringAsFixed(0)}',
+                          ),
                           _tableCell(
-                              '₹${(p['total'] as double? ?? 0).toStringAsFixed(0)}'),
-                        ])),
+                            '₹${(p['total'] as double? ?? 0).toStringAsFixed(0)}',
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
                 pw.SizedBox(height: 12),
@@ -224,15 +245,21 @@ class HistoryInvoiceViewer {
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('TOTAL AMOUNT',
-                      style: pw.TextStyle(
-                          fontSize: 14,
-                          fontWeight: pw.FontWeight.bold)),
-                  pw.Text('₹${totalAmount.toStringAsFixed(0)}',
-                      style: pw.TextStyle(
-                          fontSize: 18,
-                          fontWeight: pw.FontWeight.bold,
-                          color: PdfColor.fromHex('#4CAF50'))),
+                  pw.Text(
+                    'TOTAL AMOUNT',
+                    style: pw.TextStyle(
+                      fontSize: 14,
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                  ),
+                  pw.Text(
+                    '₹${totalAmount.toStringAsFixed(0)}',
+                    style: pw.TextStyle(
+                      fontSize: 18,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColor.fromHex('#4CAF50'),
+                    ),
+                  ),
                 ],
               ),
 
@@ -242,8 +269,7 @@ class HistoryInvoiceViewer {
               pw.Center(
                 child: pw.Text(
                   'Powered by DriveResQ • Roadside Assistance',
-                  style: pw.TextStyle(
-                      fontSize: 9, color: PdfColors.grey500),
+                  style: pw.TextStyle(fontSize: 9, color: PdfColors.grey500),
                 ),
               ),
             ],
@@ -260,11 +286,14 @@ class HistoryInvoiceViewer {
   }
 
   static pw.Widget _sectionTitle(String text) {
-    return pw.Text(text,
-        style: pw.TextStyle(
-            fontSize: 10,
-            fontWeight: pw.FontWeight.bold,
-            color: PdfColors.grey700));
+    return pw.Text(
+      text,
+      style: pw.TextStyle(
+        fontSize: 10,
+        fontWeight: pw.FontWeight.bold,
+        color: PdfColors.grey700,
+      ),
+    );
   }
 
   static pw.Widget _detailRow(String label, String value) {
@@ -274,15 +303,18 @@ class HistoryInvoiceViewer {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.SizedBox(
-              width: 70,
-              child: pw.Text('$label:',
-                  style: pw.TextStyle(
-                      fontSize: 9, color: PdfColors.grey600))),
+            width: 70,
+            child: pw.Text(
+              '$label:',
+              style: pw.TextStyle(fontSize: 9, color: PdfColors.grey600),
+            ),
+          ),
           pw.Expanded(
-              child: pw.Text(value,
-                  style: pw.TextStyle(
-                      fontSize: 9,
-                      fontWeight: pw.FontWeight.bold))),
+            child: pw.Text(
+              value,
+              style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold),
+            ),
+          ),
         ],
       ),
     );
@@ -295,9 +327,10 @@ class HistoryInvoiceViewer {
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: [
           pw.Text(label, style: const pw.TextStyle(fontSize: 10)),
-          pw.Text('₹${amount.toStringAsFixed(0)}',
-              style: pw.TextStyle(
-                  fontSize: 10, fontWeight: pw.FontWeight.bold)),
+          pw.Text(
+            '₹${amount.toStringAsFixed(0)}',
+            style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold),
+          ),
         ],
       ),
     );
@@ -306,9 +339,10 @@ class HistoryInvoiceViewer {
   static pw.Widget _tableHeader(String text) {
     return pw.Padding(
       padding: const pw.EdgeInsets.all(6),
-      child: pw.Text(text,
-          style: pw.TextStyle(
-              fontSize: 9, fontWeight: pw.FontWeight.bold)),
+      child: pw.Text(
+        text,
+        style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold),
+      ),
     );
   }
 

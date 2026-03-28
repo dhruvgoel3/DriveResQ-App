@@ -368,8 +368,6 @@ class MechanicController extends GetxController {
     return !hasActiveJob.value && isLocationLoaded.value;
   }
 
-
-
   /// Verify the code and complete the job
   /// Returns: null on success, error message on failure
   Future<String?> verifyAndCompleteJob(String code) async {
@@ -378,9 +376,12 @@ class MechanicController extends GetxController {
     }
 
     final jobId = activeJob.value!['id'];
-    
-    final errorMsg = await MechanicService.verifyAndCompleteJob(activeJob.value!, code);
-    
+
+    final errorMsg = await MechanicService.verifyAndCompleteJob(
+      activeJob.value!,
+      code,
+    );
+
     if (errorMsg == null) {
       Get.snackbar(
         'Verified!',

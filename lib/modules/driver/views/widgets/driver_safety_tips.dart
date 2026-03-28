@@ -38,7 +38,11 @@ class SafetyTipsSection extends StatelessWidget {
                   color: AppColors.warning.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
-                child: Icon(Iconsax.eye_slash, color: AppColors.secondary, size: 24.w),
+                child: Icon(
+                  Iconsax.eye_slash,
+                  color: AppColors.secondary,
+                  size: 24.w,
+                ),
               ),
               SizedBox(width: 12.w),
               Expanded(
@@ -70,7 +74,10 @@ class SafetyTipsSection extends StatelessWidget {
         SizedBox(height: 24.h),
 
         // ── SAFETY TIPS ──
-        Text("Safety Tips", style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w700)),
+        Text(
+          "Safety Tips",
+          style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w700),
+        ),
         SizedBox(height: 10.h),
         SizedBox(
           height: 120.h,
@@ -137,7 +144,11 @@ class SafetyTipsSection extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(Iconsax.info_circle, color: AppColors.primary, size: 20.w),
+                  Icon(
+                    Iconsax.info_circle,
+                    color: AppColors.primary,
+                    size: 20.w,
+                  ),
                   SizedBox(width: 8.w),
                   Text(
                     "How DriveResQ Works",
@@ -149,13 +160,22 @@ class SafetyTipsSection extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 16.h),
-              _StepRow(number: "1", text: "Create a help request with your issue"),
+              _StepRow(
+                number: "1",
+                text: "Create a help request with your issue",
+              ),
               SizedBox(height: 10.h),
-              _StepRow(number: "2", text: "Nearby verified mechanics get notified"),
+              _StepRow(
+                number: "2",
+                text: "Nearby verified mechanics get notified",
+              ),
               SizedBox(height: 10.h),
               _StepRow(number: "3", text: "Accept the mechanic and get an OTP"),
               SizedBox(height: 10.h),
-              _StepRow(number: "4", text: "Mechanic fixes your vehicle on-site"),
+              _StepRow(
+                number: "4",
+                text: "Mechanic fixes your vehicle on-site",
+              ),
             ],
           ),
         ),
@@ -188,7 +208,11 @@ class _SafetyTipCard extends StatelessWidget {
       width: 145.w,
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: gradient, begin: Alignment.topLeft, end: Alignment.bottomRight),
+        gradient: LinearGradient(
+          colors: gradient,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(14.r),
         boxShadow: [
           BoxShadow(
@@ -214,7 +238,10 @@ class _SafetyTipCard extends StatelessWidget {
           SizedBox(height: 8.h),
           Text(
             title,
-            style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.w700, fontSize: 12.sp),
+            style: AppTextStyles.caption.copyWith(
+              fontWeight: FontWeight.w700,
+              fontSize: 12.sp,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

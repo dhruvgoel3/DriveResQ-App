@@ -452,7 +452,10 @@ class Step2ProfessionalDetails extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14.r),
-              borderSide: const BorderSide(color: Color(0xFFFF9800), width: 1.5),
+              borderSide: const BorderSide(
+                color: Color(0xFFFF9800),
+                width: 1.5,
+              ),
             ),
           ),
         ),

@@ -44,16 +44,14 @@ class DriverDashboardView extends StatelessWidget {
         ),
       ),
       body: Obx(
-        () => IndexedStack(index: controller.currentIndex.value, children: pages),
+        () =>
+            IndexedStack(index: controller.currentIndex.value, children: pages),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: AppColors.surface,
           boxShadow: [
-            BoxShadow(
-              blurRadius: 20,
-              color: Colors.black.withOpacity(.1),
-            )
+            BoxShadow(blurRadius: 20, color: Colors.black.withOpacity(.1)),
           ],
         ),
         child: SafeArea(
@@ -77,22 +75,10 @@ class DriverDashboardView extends StatelessWidget {
                 selectedIndex: controller.currentIndex.value,
                 onTabChange: controller.changeTab,
                 tabs: const [
-                  GButton(
-                    icon: Iconsax.home,
-                    text: 'Home',
-                  ),
-                  GButton(
-                    icon: Iconsax.search_normal,
-                    text: 'Find',
-                  ),
-                  GButton(
-                    icon: Iconsax.message,
-                    text: 'Chats',
-                  ),
-                  GButton(
-                    icon: Iconsax.profile_circle,
-                    text: 'Profile',
-                  ),
+                  GButton(icon: Iconsax.home, text: 'Home'),
+                  GButton(icon: Iconsax.search_normal, text: 'Find'),
+                  GButton(icon: Iconsax.message, text: 'Chats'),
+                  GButton(icon: Iconsax.profile_circle, text: 'Profile'),
                 ],
               ),
             ),

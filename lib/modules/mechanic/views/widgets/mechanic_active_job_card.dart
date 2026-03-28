@@ -347,7 +347,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
   // ─── DRIVER INFO ──────────────────────────────────────────
   Widget _buildDriverInfo() {
     final driverId = widget.job['driverId'] as String?;
-    
+
     return FutureBuilder<DocumentSnapshot?>(
       future: driverId != null
           ? FirebaseFirestore.instance.collection('users').doc(driverId).get()
@@ -355,8 +355,10 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
       builder: (context, snapshot) {
         final driverName = widget.job['driverName'] ?? 'Driver';
         double rating = 0.0;
-        
-        if (snapshot.hasData && snapshot.data != null && snapshot.data!.exists) {
+
+        if (snapshot.hasData &&
+            snapshot.data != null &&
+            snapshot.data!.exists) {
           final data = snapshot.data!.data() as Map<String, dynamic>;
           rating = (data['averageRating'] ?? 0.0).toDouble();
         }
@@ -379,7 +381,10 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                   if (rating > 0) ...[
                     SizedBox(width: 8.w),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 6.w,
+                        vertical: 2.h,
+                      ),
                       decoration: BoxDecoration(
                         color: _orange.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(8.r),
@@ -391,9 +396,10 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                           Text(
                             rating.toStringAsFixed(1),
                             style: GoogleFonts.poppins(
-                                fontSize: 11.sp,
-                                fontWeight: FontWeight.bold,
-                                color: _orange),
+                              fontSize: 11.sp,
+                              fontWeight: FontWeight.bold,
+                              color: _orange,
+                            ),
                           ),
                         ],
                       ),
@@ -406,7 +412,10 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
               GestureDetector(
                 onTap: _callDriver,
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 6.h,
+                  ),
                   decoration: BoxDecoration(
                     color: _primary.withOpacity(0.08),
                     borderRadius: BorderRadius.circular(10.r),
@@ -492,12 +501,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
             ),
             SizedBox(width: 8.w),
             Expanded(
-              child: _miniAction(
-                Iconsax.message,
-                "Chat",
-                _primary,
-                _openChat,
-              ),
+              child: _miniAction(Iconsax.message, "Chat", _primary, _openChat),
             ),
             SizedBox(width: 8.w),
             Expanded(

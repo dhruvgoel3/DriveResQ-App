@@ -22,7 +22,9 @@ class ProfileHeader extends StatelessWidget {
         Obx(
           () => IconButton(
             icon: Icon(
-              controller.isEditMode.value ? Iconsax.close_square : Iconsax.edit_2,
+              controller.isEditMode.value
+                  ? Iconsax.close_square
+                  : Iconsax.edit_2,
               color: AppColors.surface,
             ),
             onPressed: controller.toggleEditMode,
@@ -31,9 +33,7 @@ class ProfileHeader extends StatelessWidget {
       ],
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: const BoxDecoration(
-            gradient: AppColors.primaryGradient,
-          ),
+          decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
           child: SafeArea(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -63,9 +63,7 @@ class ProfileHeader extends StatelessWidget {
                 SizedBox(height: 12.h),
                 Text(
                   controller.displayName,
-                  style: AppTextStyles.h2.copyWith(
-                    color: AppColors.surface,
-                  ),
+                  style: AppTextStyles.h2.copyWith(color: AppColors.surface),
                 ),
                 SizedBox(height: 4.h),
                 Text(
@@ -94,7 +92,9 @@ class ProfileHeader extends StatelessWidget {
                       ),
                       SizedBox(width: 6.w),
                       Text(
-                        controller.isOnboarded ? 'VERIFIED DRIVER' : 'SETUP PENDING',
+                        controller.isOnboarded
+                            ? 'VERIFIED DRIVER'
+                            : 'SETUP PENDING',
                         style: AppTextStyles.label.copyWith(
                           fontSize: 11.sp,
                           color: AppColors.surface,

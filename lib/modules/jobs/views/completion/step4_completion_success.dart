@@ -102,7 +102,9 @@ class CompletionSuccessView extends StatelessWidget {
                 Divider(color: Colors.grey.shade100, height: 24.h),
                 _summaryRow(
                   'Settlement',
-                  c.cashCollected.value ? 'Cash Collected ✓' : 'Settle with driver',
+                  c.cashCollected.value
+                      ? 'Cash Collected ✓'
+                      : 'Settle with driver',
                   Colors.blue.shade700,
                   false,
                 ),

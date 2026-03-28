@@ -65,18 +65,17 @@ class ProfileStats extends StatelessWidget {
               color: color,
             ),
           ),
-          Text(
-            label,
-            style: AppTextStyles.caption.copyWith(
-              fontSize: 11.sp,
-            ),
-          ),
+          Text(label, style: AppTextStyles.caption.copyWith(fontSize: 11.sp)),
         ],
       ),
     );
   }
 
   Widget _divider() {
-    return Container(width: 1, height: 40.h, color: AppColors.border.withOpacity(0.5));
+    return Container(
+      width: 1,
+      height: 40.h,
+      color: AppColors.border.withOpacity(0.5),
+    );
   }
 }

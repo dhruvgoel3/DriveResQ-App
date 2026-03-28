@@ -170,9 +170,7 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
 
-      debugPrint(
-        "Verifying OTP for verificationId: $verificationId",
-      );
+      debugPrint("Verifying OTP for verificationId: $verificationId");
 
       final credential = PhoneAuthProvider.credential(
         verificationId: verificationId!,

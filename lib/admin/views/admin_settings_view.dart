@@ -68,7 +68,10 @@ class AdminSettingsView extends StatelessWidget {
                                 color: const Color(0xFFFF9800).withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: const Icon(Iconsax.sms, color: Color(0xFFFF9800)),
+                              child: const Icon(
+                                Iconsax.sms,
+                                color: Color(0xFFFF9800),
+                              ),
                             ),
                             const SizedBox(width: 16),
                             Text(
@@ -99,7 +102,7 @@ class AdminSettingsView extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        
+
                         Obx(() {
                           if (c.isLoading.value) {
                             return const CircularProgressIndicator();
@@ -110,55 +113,85 @@ class AdminSettingsView extends StatelessWidget {
                             style: GoogleFonts.poppins(fontSize: 14),
                             decoration: InputDecoration(
                               hintText: 'e.g. admin@yourdomain.com',
-                              hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400),
-                              prefixIcon: Icon(Iconsax.direct_right, color: Colors.grey.shade400, size: 20),
+                              hintStyle: GoogleFonts.poppins(
+                                color: Colors.grey.shade400,
+                              ),
+                              prefixIcon: Icon(
+                                Iconsax.direct_right,
+                                color: Colors.grey.shade400,
+                                size: 20,
+                              ),
                               filled: true,
                               fillColor: Colors.grey.shade50,
-                              contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 16,
+                                horizontal: 16,
+                              ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(color: Colors.grey.shade200),
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade200,
+                                ),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(color: Colors.grey.shade200),
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade200,
+                                ),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide: const BorderSide(color: Color(0xFFFF9800), width: 1.5),
+                                borderSide: const BorderSide(
+                                  color: Color(0xFFFF9800),
+                                  width: 1.5,
+                                ),
                               ),
                             ),
                           );
                         }),
-                        
+
                         const SizedBox(height: 24),
-                        Obx(() => Align(
-                          alignment: Alignment.centerRight,
-                          child: ElevatedButton(
-                            onPressed: c.isSaving.value ? null : () => c.saveSettings(),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFFF9800),
-                              foregroundColor: Colors.white,
-                              elevation: 0,
-                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                        Obx(
+                          () => Align(
+                            alignment: Alignment.centerRight,
+                            child: ElevatedButton(
+                              onPressed: c.isSaving.value
+                                  ? null
+                                  : () => c.saveSettings(),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFFF9800),
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 14,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
-                            ),
-                            child: c.isSaving.value 
-                                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                                : Text(
-                              'Save Settings',
-                              style: GoogleFonts.poppins(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
+                              child: c.isSaving.value
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : Text(
+                                      'Save Settings',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
                             ),
                           ),
-                        )),
+                        ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

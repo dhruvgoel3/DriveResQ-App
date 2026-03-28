@@ -59,10 +59,7 @@ class DriverHomeView extends StatelessWidget {
                     final data = snapshot.data!.data() as Map<String, dynamic>;
                     name = data['fullName'] ?? data['name'] ?? 'Driver';
                   }
-                  return Text(
-                    "Hello, $name 👋",
-                    style: AppTextStyles.caption,
-                  );
+                  return Text("Hello, $name 👋", style: AppTextStyles.caption);
                 },
               ),
           ],
@@ -84,14 +81,20 @@ class DriverHomeView extends StatelessWidget {
               },
               itemBuilder: (context) => const [
                 PopupMenuItem(value: 'driver', child: Text('Switch to Driver')),
-                PopupMenuItem(value: 'mechanic', child: Text('Switch to Mechanic')),
+                PopupMenuItem(
+                  value: 'mechanic',
+                  child: Text('Switch to Mechanic'),
+                ),
               ],
             ),
           Obx(() {
-            if (controller.isLoadingRequest.value || !controller.hasActiveRequest.value) return const SizedBox();
+            if (controller.isLoadingRequest.value ||
+                !controller.hasActiveRequest.value)
+              return const SizedBox();
             final req = controller.requestData.value!;
-            if (req['status'] == 'verified' || req['status'] == 'completed') return const SizedBox();
-            
+            if (req['status'] == 'verified' || req['status'] == 'completed')
+              return const SizedBox();
+
             return IconButton(
               icon: Icon(Iconsax.trash, color: AppColors.error, size: 22.w),
               onPressed: () {

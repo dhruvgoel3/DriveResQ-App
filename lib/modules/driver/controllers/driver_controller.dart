@@ -50,7 +50,16 @@ class DriverController extends GetxController {
     _requestSubscription = _firestore
         .collection('requests')
         .where('driverId', isEqualTo: uid)
-        .where('status', whereIn: ['open', 'mechanic_accepted', 'accepted', 'verified', 'completed'])
+        .where(
+          'status',
+          whereIn: [
+            'open',
+            'mechanic_accepted',
+            'accepted',
+            'verified',
+            'completed',
+          ],
+        )
         .limit(1)
         .snapshots()
         .listen(
@@ -96,7 +105,7 @@ class DriverController extends GetxController {
     }
   }
 
-  /// Driver approves the mechanic who accepted 
+  /// Driver approves the mechanic who accepted
   Future<void> approveMechanic() async {
     try {
       final data = requestData.value;
@@ -106,9 +115,12 @@ class DriverController extends GetxController {
         return;
       }
       await DriverService.approveMechanic(requestId);
-      Get.snackbar('Approved!', 'Mechanic confirmed. OTP generated.',
-          backgroundColor: const Color(0xFF4CAF50).withOpacity(0.9),
-          colorText: const Color(0xFFFFFFFF));
+      Get.snackbar(
+        'Approved!',
+        'Mechanic confirmed. OTP generated.',
+        backgroundColor: const Color(0xFF4CAF50).withOpacity(0.9),
+        colorText: const Color(0xFFFFFFFF),
+      );
     } catch (e) {
       debugPrint('Error approving mechanic: $e');
       Get.snackbar('Error', 'Failed to approve. Please try again.');
@@ -125,9 +137,12 @@ class DriverController extends GetxController {
         return;
       }
       await DriverService.declineMechanic(requestId);
-      Get.snackbar('Declined', 'Request is open for other mechanics.',
-          backgroundColor: const Color(0xFFFF9800).withOpacity(0.9),
-          colorText: const Color(0xFFFFFFFF));
+      Get.snackbar(
+        'Declined',
+        'Request is open for other mechanics.',
+        backgroundColor: const Color(0xFFFF9800).withOpacity(0.9),
+        colorText: const Color(0xFFFFFFFF),
+      );
     } catch (e) {
       debugPrint('Error declining mechanic: $e');
       Get.snackbar('Error', 'Failed to decline. Please try again.');

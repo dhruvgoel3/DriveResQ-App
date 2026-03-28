@@ -40,7 +40,7 @@ class FavoritesController extends GetxController {
 
     try {
       await _firestore.collection('users').doc(currentUserId).update({
-        'favoriteMechanics': FieldValue.arrayUnion([mechanicId])
+        'favoriteMechanics': FieldValue.arrayUnion([mechanicId]),
       });
 
       Get.snackbar(
@@ -62,7 +62,7 @@ class FavoritesController extends GetxController {
 
     try {
       await _firestore.collection('users').doc(currentUserId).update({
-        'favoriteMechanics': FieldValue.arrayRemove([mechanicId])
+        'favoriteMechanics': FieldValue.arrayRemove([mechanicId]),
       });
     } catch (e) {
       debugPrint("Error removing favorite: $e");

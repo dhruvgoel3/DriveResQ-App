@@ -117,7 +117,11 @@ class DriverOnboardingController extends GetxController {
               leading: CircleAvatar(
                 backgroundColor: const Color(0xFF6C63FF).withOpacity(0.1),
                 radius: 20.r,
-                child: Icon(Iconsax.camera, color: const Color(0xFF6C63FF), size: 20.w),
+                child: Icon(
+                  Iconsax.camera,
+                  color: const Color(0xFF6C63FF),
+                  size: 20.w,
+                ),
               ),
               title: Text(
                 'Take a Photo',
@@ -135,7 +139,11 @@ class DriverOnboardingController extends GetxController {
               leading: CircleAvatar(
                 backgroundColor: const Color(0xFF6C63FF).withOpacity(0.1),
                 radius: 20.r,
-                child: Icon(Iconsax.gallery, color: const Color(0xFF6C63FF), size: 20.w),
+                child: Icon(
+                  Iconsax.gallery,
+                  color: const Color(0xFF6C63FF),
+                  size: 20.w,
+                ),
               ),
               title: Text(
                 'Choose from Gallery',
@@ -214,7 +222,7 @@ class DriverOnboardingController extends GetxController {
       );
     } catch (e) {
       isLoading.value = false;
-      debugPrint('❌ Driver onboarding error: $e');
+      debugPrint(' Driver onboarding error: $e');
       Get.snackbar(
         'Error',
         'Failed to submit. Please try again.',

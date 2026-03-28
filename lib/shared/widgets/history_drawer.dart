@@ -27,12 +27,12 @@ class HistoryDrawer extends StatelessWidget {
       _isMechanic ? AppColors.mechanicPrimary : AppColors.primary;
 
   LinearGradient get _headerGradient => LinearGradient(
-        colors: _isMechanic
-            ? [AppColors.mechanicPrimary, AppColors.mechanicAccent]
-            : [AppColors.primary, AppColors.primaryDark],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      );
+    colors: _isMechanic
+        ? [AppColors.mechanicPrimary, AppColors.mechanicAccent]
+        : [AppColors.primary, AppColors.primaryDark],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +73,11 @@ class HistoryDrawer extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
               child: Row(
                 children: [
-                  Icon(Iconsax.info_circle,
-                      size: 16.w, color: AppColors.textHint),
+                  Icon(
+                    Iconsax.info_circle,
+                    size: 16.w,
+                    color: AppColors.textHint,
+                  ),
                   SizedBox(width: 8.w),
                   Text(
                     'DriveResQ v1.0.0',
@@ -115,10 +118,10 @@ class HistoryDrawer extends StatelessWidget {
                 String photoUrl = '';
 
                 if (snapshot.hasData && snapshot.data!.exists) {
-                  final data =
-                      snapshot.data!.data() as Map<String, dynamic>;
+                  final data = snapshot.data!.data() as Map<String, dynamic>;
                   name = data['fullName'] ?? data['name'] ?? name;
-                  phone = data['phone'] ??
+                  phone =
+                      data['phone'] ??
                       FirebaseAuth.instance.currentUser?.phoneNumber ??
                       '';
                   photoUrl = data['profilePhotoUrl'] ?? '';
@@ -129,11 +132,11 @@ class HistoryDrawer extends StatelessWidget {
                     CircleAvatar(
                       radius: 28.r,
                       backgroundColor: Colors.white.withOpacity(0.25),
-                      backgroundImage:
-                          photoUrl.isNotEmpty ? NetworkImage(photoUrl) : null,
+                      backgroundImage: photoUrl.isNotEmpty
+                          ? NetworkImage(photoUrl)
+                          : null,
                       child: photoUrl.isEmpty
-                          ? Icon(Iconsax.user,
-                              size: 28.w, color: Colors.white)
+                          ? Icon(Iconsax.user, size: 28.w, color: Colors.white)
                           : null,
                     ),
                     SizedBox(width: 14.w),
@@ -162,7 +165,9 @@ class HistoryDrawer extends StatelessWidget {
                           SizedBox(height: 4.h),
                           Container(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 10.w, vertical: 3.h),
+                              horizontal: 10.w,
+                              vertical: 3.h,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.2),
                               borderRadius: BorderRadius.circular(20.r),
@@ -233,8 +238,11 @@ class _DrawerTile extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                Icon(Iconsax.arrow_right_3,
-                    size: 18.w, color: AppColors.textHint),
+                Icon(
+                  Iconsax.arrow_right_3,
+                  size: 18.w,
+                  color: AppColors.textHint,
+                ),
               ],
             ),
           ),

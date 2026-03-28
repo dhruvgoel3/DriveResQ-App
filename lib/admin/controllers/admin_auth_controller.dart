@@ -75,7 +75,7 @@ class AdminAuthController extends GetxController {
       }
       return false;
     } catch (e) {
-      debugPrint('❌ Admin role check error: $e');
+      debugPrint(' Admin role check error: $e');
       return false;
     }
   }
@@ -110,8 +110,13 @@ class AdminAuthController extends GetxController {
           isFirstSetup.value = false;
           isLoggedIn.value = true;
           isLoading.value = false;
-          
-          Get.snackbar('Setup Complete', 'Admin account created successfully!', backgroundColor: Colors.green.shade50, colorText: Colors.green.shade800);
+
+          Get.snackbar(
+            'Setup Complete',
+            'Admin account created successfully!',
+            backgroundColor: Colors.green.shade50,
+            colorText: Colors.green.shade800,
+          );
           Get.offAllNamed('/admin/dashboard');
           return;
         }
@@ -129,7 +134,12 @@ class AdminAuthController extends GetxController {
           if (!isAdmin) {
             await _auth.signOut();
             isLoading.value = false;
-            Get.snackbar('Access Denied', 'You do not have admin privileges', backgroundColor: Colors.red.shade50, colorText: Colors.red);
+            Get.snackbar(
+              'Access Denied',
+              'You do not have admin privileges',
+              backgroundColor: Colors.red.shade50,
+              colorText: Colors.red,
+            );
             return;
           }
 
@@ -146,15 +156,28 @@ class AdminAuthController extends GetxController {
       isLoading.value = false;
       String msg = e.message ?? 'Authentication failed';
       if (e.code == 'invalid-email') msg = 'Invalid email address';
-      if (e.code == 'invalid-credential' || e.code == 'user-not-found' || e.code == 'wrong-password') {
+      if (e.code == 'invalid-credential' ||
+          e.code == 'user-not-found' ||
+          e.code == 'wrong-password') {
         msg = 'Invalid email or password';
       }
-      if (e.code == 'email-already-in-use') msg = 'This email is already taken. Try signing in.';
-      
-      Get.snackbar('Error', msg, backgroundColor: Colors.red.shade50, colorText: Colors.red);
+      if (e.code == 'email-already-in-use')
+        msg = 'This email is already taken. Try signing in.';
+
+      Get.snackbar(
+        'Error',
+        msg,
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red,
+      );
     } catch (e) {
       isLoading.value = false;
-      Get.snackbar('Error', 'Action failed: $e', backgroundColor: Colors.red.shade50, colorText: Colors.red);
+      Get.snackbar(
+        'Error',
+        'Action failed: $e',
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red,
+      );
     }
   }
 
@@ -202,7 +225,6 @@ class AdminAuthController extends GetxController {
       );
     }
   }
-
 
   Future<void> logout() async {
     await _auth.signOut();

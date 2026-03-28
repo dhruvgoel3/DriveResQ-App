@@ -8,13 +8,12 @@ import 'package:driveresq_app/theme/app_spacing.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 /// A centralized Error Handler to parse and display user-friendly error messages.
-/// 
-/// This service maps technical exceptions (Firebase, Network, etc.) to 
+///
+/// This service maps technical exceptions (Firebase, Network, etc.) to
 /// human-readable titles and descriptions, displaying them via Snackbars or BottomSheets.
 class ErrorHandler {
-  
   /// Main entry point to handle any [error].
-  /// 
+  ///
   /// Optionally takes an [onRetry] callback to allow users to attempt the action again.
   static void handle(
     dynamic error, {
@@ -39,7 +38,8 @@ class ErrorHandler {
     if (RegExp(r'network|socket|connection|timeout|handshake').hasMatch(msg)) {
       return _ParsedError(
         title: 'Connection Issue',
-        message: 'We couldn\'t reach our servers. Please check your internet connection.',
+        message:
+            'We couldn\'t reach our servers. Please check your internet connection.',
         icon: Iconsax.wifi,
         color: AppColors.warning,
       );
@@ -49,7 +49,8 @@ class ErrorHandler {
     if (RegExp(r'permission-denied|unauthorized|forbidden').hasMatch(msg)) {
       return _ParsedError(
         title: 'Access Denied',
-        message: 'You don\'t have the necessary permissions to perform this action.',
+        message:
+            'You don\'t have the necessary permissions to perform this action.',
         icon: Iconsax.lock,
         color: AppColors.error,
       );
@@ -69,7 +70,8 @@ class ErrorHandler {
     if (RegExp(r'location|gps|geolocator').hasMatch(msg)) {
       return _ParsedError(
         title: 'Location Required',
-        message: 'Please enable GPS and grant location permissions to continue.',
+        message:
+            'Please enable GPS and grant location permissions to continue.',
         icon: Iconsax.location_slash,
         color: AppColors.secondary,
       );

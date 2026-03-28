@@ -76,7 +76,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
         actions: [
           const NotificationBellIcon(),
           IconButton(
-            icon: const Icon(Iconsax.refresh,color: Colors.black),
+            icon: const Icon(Iconsax.refresh, color: Colors.black),
             onPressed: () => controller.refreshLocation(),
             tooltip: "Refresh Location",
           ),
@@ -416,7 +416,11 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
                 color: const Color(0xFF6C63FF).withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(Iconsax.tick_circle, color: const Color(0xFF6C63FF), size: 40.w),
+              child: Icon(
+                Iconsax.tick_circle,
+                color: const Color(0xFF6C63FF),
+                size: 40.w,
+              ),
             ),
             SizedBox(height: 16.h),
             Text(
@@ -448,9 +452,14 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.grey.shade700,
                         side: BorderSide(color: Colors.grey.shade300),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.r),
+                        ),
                       ),
-                      child: Text("Cancel", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                      child: Text(
+                        "Cancel",
+                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                      ),
                     ),
                   ),
                 ),
@@ -467,9 +476,14 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
                         backgroundColor: const Color(0xFF6C63FF),
                         foregroundColor: Colors.white,
                         elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.r),
+                        ),
                       ),
-                      child: Text("Accept", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                      child: Text(
+                        "Accept",
+                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                      ),
                     ),
                   ),
                 ),
@@ -542,9 +556,14 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.grey.shade700,
                         side: BorderSide(color: Colors.grey.shade300),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.r),
+                        ),
                       ),
-                      child: Text("Keep Job", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                      child: Text(
+                        "Keep Job",
+                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                      ),
                     ),
                   ),
                 ),
@@ -561,9 +580,14 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
                         backgroundColor: Colors.red,
                         foregroundColor: Colors.white,
                         elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.r),
+                        ),
                       ),
-                      child: Text("Yes, Cancel", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                      child: Text(
+                        "Yes, Cancel",
+                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                      ),
                     ),
                   ),
                 ),

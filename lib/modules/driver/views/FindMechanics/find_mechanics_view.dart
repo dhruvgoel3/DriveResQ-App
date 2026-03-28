@@ -56,13 +56,15 @@ class FindMechanicsView extends StatelessWidget {
               );
             },
           ),
-          Obx(() => IconButton(
-                icon: Icon(
-                  controller.isListView.value ? Iconsax.map : Iconsax.task_square,
-                  color: _accent,
-                ),
-                onPressed: controller.toggleView,
-              )),
+          Obx(
+            () => IconButton(
+              icon: Icon(
+                controller.isListView.value ? Iconsax.map : Iconsax.task_square,
+                color: _accent,
+              ),
+              onPressed: controller.toggleView,
+            ),
+          ),
           const SizedBox(width: 8),
         ],
       ),
@@ -82,16 +84,18 @@ class FindMechanicsView extends StatelessWidget {
                       Icon(Iconsax.location, color: _accent, size: 20),
                       const SizedBox(width: 8),
                       Expanded(
-                        child: Obx(() => Text(
-                              "Your Location: ${controller.locationName.value}",
-                              style: GoogleFonts.poppins(
-                                fontSize: 13,
-                                color: Colors.grey.shade700,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            )),
+                        child: Obx(
+                          () => Text(
+                            "Your Location: ${controller.locationName.value}",
+                            style: GoogleFonts.poppins(
+                              fontSize: 13,
+                              color: Colors.grey.shade700,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ),
                       TextButton(
                         onPressed: () {
@@ -127,20 +131,33 @@ class FindMechanicsView extends StatelessWidget {
                       style: GoogleFonts.poppins(fontSize: 14),
                       decoration: InputDecoration(
                         hintText: "Search mechanics, services, areas...",
-                        hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400, fontSize: 13),
-                        prefixIcon: Icon(Iconsax.search_normal, color: Colors.grey.shade500),
+                        hintStyle: GoogleFonts.poppins(
+                          color: Colors.grey.shade400,
+                          fontSize: 13,
+                        ),
+                        prefixIcon: Icon(
+                          Iconsax.search_normal,
+                          color: Colors.grey.shade500,
+                        ),
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                        suffixIcon: Obx(() => controller.searchQuery.value.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(Iconsax.close_square, size: 18),
-                                onPressed: () {
-                                  controller.searchQuery.value = '';
-                                  // Hack to clear the textfield UI without losing cursor:
-                                  FocusScope.of(context).unfocus();
-                                },
-                              )
-                            : const SizedBox.shrink()),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 14,
+                        ),
+                        suffixIcon: Obx(
+                          () => controller.searchQuery.value.isNotEmpty
+                              ? IconButton(
+                                  icon: const Icon(
+                                    Iconsax.close_square,
+                                    size: 18,
+                                  ),
+                                  onPressed: () {
+                                    controller.searchQuery.value = '';
+                                    // Hack to clear the textfield UI without losing cursor:
+                                    FocusScope.of(context).unfocus();
+                                  },
+                                )
+                              : const SizedBox.shrink(),
+                        ),
                       ),
                     ),
                   ),
@@ -162,19 +179,29 @@ class FindMechanicsView extends StatelessWidget {
                               label: Text(service),
                               selected: isSelected,
                               onSelected: (val) {
-                                if (val) controller.selectedService.value = service;
+                                if (val)
+                                  controller.selectedService.value = service;
                               },
                               labelStyle: GoogleFonts.poppins(
                                 fontSize: 12,
-                                color: isSelected ? Colors.white : Colors.black87,
-                                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                                color: isSelected
+                                    ? Colors.white
+                                    : Colors.black87,
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.w400,
                               ),
                               selectedColor: _accent,
                               backgroundColor: Colors.white,
                               side: BorderSide(
-                                color: isSelected ? _accent : Colors.grey.shade300,
+                                color: isSelected
+                                    ? _accent
+                                    : Colors.grey.shade300,
                               ),
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
                             ),
                           );
                         }).toList(),
@@ -194,7 +221,9 @@ class FindMechanicsView extends StatelessWidget {
                 // Return a loading spinner (Replace with shimmer later)
                 return const Padding(
                   padding: EdgeInsets.only(top: 50),
-                  child: Center(child: CircularProgressIndicator(color: _accent)),
+                  child: Center(
+                    child: CircularProgressIndicator(color: _accent),
+                  ),
                 );
               }
 

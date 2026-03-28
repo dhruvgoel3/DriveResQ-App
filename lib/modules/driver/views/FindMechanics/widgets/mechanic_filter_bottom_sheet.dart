@@ -10,7 +10,8 @@ class MechanicFilterBottomSheet extends StatefulWidget {
   const MechanicFilterBottomSheet({super.key, required this.controller});
 
   @override
-  State<MechanicFilterBottomSheet> createState() => _MechanicFilterBottomSheetState();
+  State<MechanicFilterBottomSheet> createState() =>
+      _MechanicFilterBottomSheetState();
 }
 
 class _MechanicFilterBottomSheetState extends State<MechanicFilterBottomSheet> {
@@ -82,9 +83,22 @@ class _MechanicFilterBottomSheetState extends State<MechanicFilterBottomSheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("0 km", style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey)),
-              Text("${_distance.toInt()} km", style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold, color: _accent)),
-              Text("100 km", style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey)),
+              Text(
+                "0 km",
+                style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey),
+              ),
+              Text(
+                "${_distance.toInt()} km",
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: _accent,
+                ),
+              ),
+              Text(
+                "100 km",
+                style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey),
+              ),
             ],
           ),
           Slider(
@@ -124,7 +138,10 @@ class _MechanicFilterBottomSheetState extends State<MechanicFilterBottomSheet> {
           const SizedBox(height: 24),
           _buildFilterTitle("AVAILABILITY"),
           CheckboxListTile(
-            title: Text("Available Now (Online)", style: GoogleFonts.poppins(fontSize: 14)),
+            title: Text(
+              "Available Now (Online)",
+              style: GoogleFonts.poppins(fontSize: 14),
+            ),
             value: _availableNow,
             activeColor: _accent,
             contentPadding: EdgeInsets.zero,
@@ -174,7 +191,9 @@ class _MechanicFilterBottomSheetState extends State<MechanicFilterBottomSheet> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: _accent,
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               child: Text(
                 "Apply Filters",

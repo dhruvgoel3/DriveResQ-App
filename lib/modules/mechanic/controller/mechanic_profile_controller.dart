@@ -77,7 +77,7 @@ class MechanicProfileController extends GetxController {
         await _createBasicProfile(uid);
       }
     } catch (e) {
-      debugPrint("❌ Error fetching profile: $e");
+      debugPrint(" Error fetching profile: $e");
       Get.snackbar("Error", "Failed to load profile");
     }
   }
@@ -137,7 +137,7 @@ class MechanicProfileController extends GetxController {
         rating.value = ratingCount > 0 ? ratingSum / ratingCount : 0;
       }
     } catch (e) {
-      debugPrint("❌ Error fetching statistics: $e");
+      debugPrint(" Error fetching statistics: $e");
     }
   }
 
@@ -195,7 +195,7 @@ class MechanicProfileController extends GetxController {
       );
     } catch (e) {
       isLoading.value = false;
-      debugPrint("❌ Error saving profile: $e");
+      debugPrint(" Error saving profile: $e");
       Get.snackbar(
         "Error",
         "Failed to update profile",
@@ -344,7 +344,7 @@ class MechanicProfileController extends GetxController {
       if (Navigator.canPop(Get.context!)) {
         Navigator.pop(Get.context!);
       }
-      debugPrint("❌ Logout error: $e");
+      debugPrint(" Logout error: $e");
       Get.snackbar(
         "Error",
         "Logout failed. Please try again.",

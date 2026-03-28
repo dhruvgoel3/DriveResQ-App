@@ -91,5 +91,9 @@ class ProfileIdentityCard extends StatelessWidget {
     );
   }
 
-  Widget _sep() => Divider(height: 16.h, thickness: 0.5, color: AppColors.border.withOpacity(0.5));
+  Widget _sep() => Divider(
+    height: 16.h,
+    thickness: 0.5,
+    color: AppColors.border.withOpacity(0.5),
+  );
 }

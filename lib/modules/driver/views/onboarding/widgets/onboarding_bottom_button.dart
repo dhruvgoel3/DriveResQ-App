@@ -52,7 +52,9 @@ class OnboardingBottomButton extends StatelessWidget {
                     ),
                   )
                 : Text(
-                    controller.currentStep.value == 1 ? 'Complete Setup' : 'Continue',
+                    controller.currentStep.value == 1
+                        ? 'Complete Setup'
+                        : 'Continue',
                     style: AppTextStyles.button.copyWith(
                       color: AppColors.surface,
                     ),

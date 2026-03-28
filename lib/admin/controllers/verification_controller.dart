@@ -84,7 +84,7 @@ class VerificationController extends GetxController {
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      debugPrint('❌ Fetch mechanics error: $e');
+      debugPrint(' Fetch mechanics error: $e');
     }
   }
 
@@ -108,7 +108,7 @@ class VerificationController extends GetxController {
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      debugPrint('❌ Load mechanic details error: $e');
+      debugPrint(' Load mechanic details error: $e');
     }
   }
 
@@ -160,7 +160,7 @@ class VerificationController extends GetxController {
       fetchMechanics(currentFilter.value);
     } catch (e) {
       isLoading.value = false;
-      debugPrint('❌ Approve error: $e');
+      debugPrint(' Approve error: $e');
       Get.snackbar(
         'Error',
         'Failed to approve: $e',
@@ -226,7 +226,7 @@ class VerificationController extends GetxController {
       fetchMechanics(currentFilter.value);
     } catch (e) {
       isLoading.value = false;
-      debugPrint('❌ Reject error: $e');
+      debugPrint(' Reject error: $e');
       Get.snackbar(
         'Error',
         'Failed to reject: $e',
@@ -248,7 +248,7 @@ class VerificationController extends GetxController {
         colorText: Colors.blue,
       );
     } catch (e) {
-      debugPrint('❌ Save notes error: $e');
+      debugPrint(' Save notes error: $e');
     }
   }
 

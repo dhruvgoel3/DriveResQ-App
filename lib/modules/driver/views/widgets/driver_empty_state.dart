@@ -42,10 +42,13 @@ class _DriverEmptyStateState extends State<DriverEmptyState>
       duration: const Duration(seconds: 3),
     )..repeat(reverse: true);
 
-    _floatAnimation = Tween<Offset>(
-      begin: const Offset(0, -0.05),
-      end: const Offset(0, 0.05),
-    ).animate(CurvedAnimation(parent: _floatController, curve: Curves.easeInOut));
+    _floatAnimation =
+        Tween<Offset>(
+          begin: const Offset(0, -0.05),
+          end: const Offset(0, 0.05),
+        ).animate(
+          CurvedAnimation(parent: _floatController, curve: Curves.easeInOut),
+        );
   }
 
   @override
@@ -77,7 +80,7 @@ class _DriverEmptyStateState extends State<DriverEmptyState>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(height: 20.h),
-              
+
               // Animated Hero Graphic
               SlideTransition(
                 position: _floatAnimation,
@@ -128,19 +131,27 @@ class _DriverEmptyStateState extends State<DriverEmptyState>
                       Positioned(
                         top: 20.h,
                         right: 25.w,
-                        child: Icon(Iconsax.star1, size: 16.w, color: AppColors.warning),
+                        child: Icon(
+                          Iconsax.star1,
+                          size: 16.w,
+                          color: AppColors.warning,
+                        ),
                       ),
                       Positioned(
                         bottom: 30.h,
                         left: 20.w,
-                        child: Icon(Iconsax.flash_15, size: 14.w, color: AppColors.secondary),
+                        child: Icon(
+                          Iconsax.flash_15,
+                          size: 14.w,
+                          color: AppColors.secondary,
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
               SizedBox(height: 32.h),
-              
+
               // Typography
               Text(
                 'All Clear on the Road!',
@@ -161,11 +172,11 @@ class _DriverEmptyStateState extends State<DriverEmptyState>
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 48.h),
-              
+
               // Glassmorphic Feature Cards
               _buildFeatureRow(),
               SizedBox(height: 48.h),
-              
+
               // Call to Action Button
               ScaleTransition(
                 scale: _pulseAnimation,
@@ -209,7 +220,10 @@ class _DriverEmptyStateState extends State<DriverEmptyState>
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Iconsax.add_circle, color: AppColors.surface),
+                            const Icon(
+                              Iconsax.add_circle,
+                              color: AppColors.surface,
+                            ),
                             SizedBox(width: 8.w),
                             Text(
                               'Request Assistance Now',
@@ -252,11 +266,23 @@ class _DriverEmptyStateState extends State<DriverEmptyState>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildFeatureItem(Iconsax.timer_1, 'Fast\nResponse', AppColors.primary),
+          _buildFeatureItem(
+            Iconsax.timer_1,
+            'Fast\nResponse',
+            AppColors.primary,
+          ),
           Container(width: 1, height: 40.h, color: AppColors.border),
-          _buildFeatureItem(Iconsax.shield_tick, 'Verified\nMechanics', AppColors.success),
+          _buildFeatureItem(
+            Iconsax.shield_tick,
+            'Verified\nMechanics',
+            AppColors.success,
+          ),
           Container(width: 1, height: 40.h, color: AppColors.border),
-          _buildFeatureItem(Iconsax.map_1, 'Live\nTracking', AppColors.secondary),
+          _buildFeatureItem(
+            Iconsax.map_1,
+            'Live\nTracking',
+            AppColors.secondary,
+          ),
         ],
       ),
     );
@@ -288,5 +314,3 @@ class _DriverEmptyStateState extends State<DriverEmptyState>
     );
   }
 }
-
-

@@ -24,7 +24,10 @@ class AdminSettingsController extends GetxController {
   Future<void> fetchSettings() async {
     try {
       isLoading.value = true;
-      final doc = await _firestore.collection('adminSettings').doc('general').get();
+      final doc = await _firestore
+          .collection('adminSettings')
+          .doc('general')
+          .get();
       if (doc.exists) {
         emailController.text = doc.data()?['notificationEmail'] ?? '';
       }
@@ -38,8 +41,12 @@ class AdminSettingsController extends GetxController {
   Future<void> saveSettings() async {
     final email = emailController.text.trim();
     if (email.isEmpty) {
-      Get.snackbar('Required', 'Please enter a notification email address', 
-        backgroundColor: Colors.orange.shade50, colorText: Colors.orange.shade800);
+      Get.snackbar(
+        'Required',
+        'Please enter a notification email address',
+        backgroundColor: Colors.orange.shade50,
+        colorText: Colors.orange.shade800,
+      );
       return;
     }
 
@@ -51,12 +58,20 @@ class AdminSettingsController extends GetxController {
       }, SetOptions(merge: true));
 
       isSaving.value = false;
-      Get.snackbar('Success', 'Notification settings saved successfully!', 
-        backgroundColor: Colors.green.shade50, colorText: Colors.green.shade800);
+      Get.snackbar(
+        'Success',
+        'Notification settings saved successfully!',
+        backgroundColor: Colors.green.shade50,
+        colorText: Colors.green.shade800,
+      );
     } catch (e) {
       isSaving.value = false;
-      Get.snackbar('Error', 'Failed to save settings: $e', 
-        backgroundColor: Colors.red.shade50, colorText: Colors.red);
+      Get.snackbar(
+        'Error',
+        'Failed to save settings: $e',
+        backgroundColor: Colors.red.shade50,
+        colorText: Colors.red,
+      );
     }
   }
 }

@@ -19,13 +19,15 @@ class MechanicProfileDetailView extends StatelessWidget {
     final FavoritesController favController = Get.find<FavoritesController>();
 
     final String mechanicId = mechanicData['id'] ?? '';
-    final String shopName = mechanicData['shopName'] ?? mechanicData['name'] ?? 'Unknown Mechanic';
+    final String shopName =
+        mechanicData['shopName'] ?? mechanicData['name'] ?? 'Unknown Mechanic';
     final double rating = (mechanicData['rating'] ?? 0.0).toDouble();
     final int reviewCount = (mechanicData['reviewCount'] ?? 0).toInt();
     final double distance = (mechanicData['distance'] ?? 0.0).toDouble();
     final String area = mechanicData['address'] ?? 'Unknown Area';
     final int exp = (mechanicData['experienceYears'] ?? 0).toInt();
-    final String specialization = (mechanicData['specialization'] is List
+    final String specialization =
+        (mechanicData['specialization'] is List
             ? (mechanicData['specialization'] as List).join(', ')
             : mechanicData['specialization']) ??
         'General Repair';
@@ -35,7 +37,9 @@ class MechanicProfileDetailView extends StatelessWidget {
     final int baseCharge = (mechanicData['baseCharge'] ?? 0).toInt();
     final int perKm = (mechanicData['perKmCharge'] ?? 0).toInt();
 
-    final List<String> services = List<String>.from(mechanicData['servicesOffered'] ?? []);
+    final List<String> services = List<String>.from(
+      mechanicData['servicesOffered'] ?? [],
+    );
     final int jobsCompleted = (mechanicData['jobsCompleted'] ?? 0).toInt();
     final String phone = mechanicData['phone'] ?? '';
 
@@ -82,7 +86,11 @@ class MechanicProfileDetailView extends StatelessWidget {
                   : Container(
                       color: _accent,
                       child: Center(
-                        child: Icon(Iconsax.setting_2, size: 80, color: Colors.white.withOpacity(0.5)),
+                        child: Icon(
+                          Iconsax.setting_2,
+                          size: 80,
+                          color: Colors.white.withOpacity(0.5),
+                        ),
                       ),
                     ),
             ),
@@ -104,7 +112,10 @@ class MechanicProfileDetailView extends StatelessWidget {
                   // Identity Header
                   Container(
                     color: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 24,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -131,7 +142,11 @@ class MechanicProfileDetailView extends StatelessWidget {
                                   color: Colors.green.shade50,
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Icon(Iconsax.verify, color: Colors.green, size: 24),
+                                child: const Icon(
+                                  Iconsax.verify,
+                                  color: Colors.green,
+                                  size: 24,
+                                ),
                               ),
                           ],
                         ),
@@ -142,16 +157,25 @@ class MechanicProfileDetailView extends StatelessWidget {
                           children: [
                             // Rating Badge
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.amber.shade50,
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.amber.shade200),
+                                border: Border.all(
+                                  color: Colors.amber.shade200,
+                                ),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(Iconsax.star, color: Colors.amber, size: 16),
+                                  const Icon(
+                                    Iconsax.star,
+                                    color: Colors.amber,
+                                    size: 16,
+                                  ),
                                   const SizedBox(width: 4),
                                   Text(
                                     rating.toStringAsFixed(1),
@@ -174,11 +198,16 @@ class MechanicProfileDetailView extends StatelessWidget {
                             ),
                             // Experience Badge
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
                               decoration: BoxDecoration(
                                 color: _accent.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: _accent.withOpacity(0.3)),
+                                border: Border.all(
+                                  color: _accent.withOpacity(0.3),
+                                ),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -209,7 +238,11 @@ class MechanicProfileDetailView extends StatelessWidget {
                     child: Text(
                       mechanicData['bio'] ??
                           "Specializing in $specialization with $exp years of experience. We provide quality roadside assistance and repair services at your location.",
-                      style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey.shade700, height: 1.5),
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        color: Colors.grey.shade700,
+                        height: 1.5,
+                      ),
                     ),
                   ),
 
@@ -218,17 +251,34 @@ class MechanicProfileDetailView extends StatelessWidget {
                     title: "CONTACT INFORMATION",
                     child: Column(
                       children: [
-                        _buildContactRow(Iconsax.call, phone, "Call", () => _callMechanic(phone)),
+                        _buildContactRow(
+                          Iconsax.call,
+                          phone,
+                          "Call",
+                          () => _callMechanic(phone),
+                        ),
                         const Divider(height: 24),
-                        _buildContactRow(Iconsax.location, area, "Drive", () => _navigateMechanic(area)),
+                        _buildContactRow(
+                          Iconsax.location,
+                          area,
+                          "Drive",
+                          () => _navigateMechanic(area),
+                        ),
                         const Divider(height: 24),
                         Row(
                           children: [
-                            Icon(Iconsax.car, color: Colors.grey.shade500, size: 20),
+                            Icon(
+                              Iconsax.car,
+                              color: Colors.grey.shade500,
+                              size: 20,
+                            ),
                             const SizedBox(width: 16),
                             Text(
                               "${distance.toStringAsFixed(1)} km from your location",
-                              style: GoogleFonts.poppins(fontSize: 14, color: Colors.black87),
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                color: Colors.black87,
+                              ),
                             ),
                           ],
                         ),
@@ -245,11 +295,16 @@ class MechanicProfileDetailView extends StatelessWidget {
                         runSpacing: 8,
                         children: services.map((s) {
                           return Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
                               color: _accent.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: _accent.withOpacity(0.2)),
+                              border: Border.all(
+                                color: _accent.withOpacity(0.2),
+                              ),
                             ),
                             child: Text(
                               s,
@@ -293,7 +348,7 @@ class MechanicProfileDetailView extends StatelessWidget {
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
       bottomNavigationBar: Container(
@@ -305,7 +360,7 @@ class MechanicProfileDetailView extends StatelessWidget {
               color: Colors.black.withOpacity(0.05),
               blurRadius: 10,
               offset: const Offset(0, -5),
-            )
+            ),
           ],
         ),
         child: Row(
@@ -320,7 +375,9 @@ class MechanicProfileDetailView extends StatelessWidget {
                   backgroundColor: Colors.green.shade600,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
             ),
@@ -333,7 +390,9 @@ class MechanicProfileDetailView extends StatelessWidget {
                   backgroundColor: _accent,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -342,7 +401,10 @@ class MechanicProfileDetailView extends StatelessWidget {
                     const SizedBox(width: 8),
                     Text(
                       "Request Service",
-                      style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
@@ -354,7 +416,10 @@ class MechanicProfileDetailView extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionContainer({required String title, required Widget child}) {
+  Widget _buildSectionContainer({
+    required String title,
+    required Widget child,
+  }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       color: Colors.white,
@@ -379,7 +444,12 @@ class MechanicProfileDetailView extends StatelessWidget {
     );
   }
 
-  Widget _buildContactRow(IconData icon, String text, String btnText, VoidCallback onTap) {
+  Widget _buildContactRow(
+    IconData icon,
+    String text,
+    String btnText,
+    VoidCallback onTap,
+  ) {
     return Row(
       children: [
         Icon(icon, color: Colors.grey.shade600, size: 20),
@@ -441,10 +511,7 @@ class MechanicProfileDetailView extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           label,
-          style: GoogleFonts.poppins(
-            fontSize: 12,
-            color: Colors.grey.shade600,
-          ),
+          style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey.shade600),
         ),
       ],
     );
@@ -460,7 +527,9 @@ class MechanicProfileDetailView extends StatelessWidget {
 
   void _navigateMechanic(String area) async {
     final query = Uri.encodeComponent(area);
-    final url = Uri.parse('https://www.google.com/maps/search/?api=1&query=$query');
+    final url = Uri.parse(
+      'https://www.google.com/maps/search/?api=1&query=$query',
+    );
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
     }
@@ -470,10 +539,10 @@ class MechanicProfileDetailView extends StatelessWidget {
     // Navigate to create request page, we can pass optional mechId if user wants to direct request
     // Since normal CreateRequestView doesn't take args currently, we just navigate to it normally.
     try {
-       // Assuming finding the controller to reset first if it exists
-       if (Get.isRegistered<CreateRequestController>()) {
-         Get.delete<CreateRequestController>();
-       }
+      // Assuming finding the controller to reset first if it exists
+      if (Get.isRegistered<CreateRequestController>()) {
+        Get.delete<CreateRequestController>();
+      }
     } catch (_) {}
     Get.to(() => CreateRequestView());
     Get.snackbar(

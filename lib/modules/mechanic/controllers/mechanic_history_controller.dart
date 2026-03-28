@@ -48,10 +48,7 @@ class MechanicHistoryController extends GetxController {
       double distance = 0;
 
       for (var doc in snapshot.docs) {
-        final data = {
-          ...doc.data(),
-          'id': doc.id,
-        };
+        final data = {...doc.data(), 'id': doc.id};
 
         if (data['status'] == 'completed') {
           completed++;
@@ -67,12 +64,12 @@ class MechanicHistoryController extends GetxController {
               data['completionData'] = cData;
               earnings += (cData['totalAmount'] ?? 0).toDouble();
               distance += (cData['travelCost'] != null
-                  ? (cData['travelCost'] as num).toDouble() / 15.0 // ₹15/km
+                  ? (cData['travelCost'] as num).toDouble() /
+                        15.0 // ₹15/km
                   : 0);
             }
           } catch (e) {
-            debugPrint(
-                '⚠️ Failed to fetch completion data for ${doc.id}: $e');
+            debugPrint('⚠️ Failed to fetch completion data for ${doc.id}: $e');
           }
         }
 
@@ -81,8 +78,12 @@ class MechanicHistoryController extends GetxController {
 
       // Sort locally to bypass Firestore composite index requirement
       items.sort((a, b) {
-        final aTime = (a['createdAt'] as Timestamp?)?.toDate() ?? DateTime.fromMillisecondsSinceEpoch(0);
-        final bTime = (b['createdAt'] as Timestamp?)?.toDate() ?? DateTime.fromMillisecondsSinceEpoch(0);
+        final aTime =
+            (a['createdAt'] as Timestamp?)?.toDate() ??
+            DateTime.fromMillisecondsSinceEpoch(0);
+        final bTime =
+            (b['createdAt'] as Timestamp?)?.toDate() ??
+            DateTime.fromMillisecondsSinceEpoch(0);
         return bTime.compareTo(aTime);
       });
 
@@ -92,7 +93,7 @@ class MechanicHistoryController extends GetxController {
       totalEarnings.value = earnings;
       totalDistance.value = distance;
     } catch (e) {
-      debugPrint('❌ Error fetching mechanic history: $e');
+      debugPrint(' Error fetching mechanic history: $e');
       Get.snackbar('Error', 'Failed to load history');
     } finally {
       isLoading.value = false;

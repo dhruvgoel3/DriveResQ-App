@@ -490,4 +490,5 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
     }
   }
 }
+
 // this will the UI design

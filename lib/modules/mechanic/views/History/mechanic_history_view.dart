@@ -37,8 +37,7 @@ class MechanicHistoryView extends StatelessWidget {
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(
-            child: CircularProgressIndicator(
-                color: AppColors.mechanicPrimary),
+            child: CircularProgressIndicator(color: AppColors.mechanicPrimary),
           );
         }
 
@@ -56,19 +55,19 @@ class MechanicHistoryView extends StatelessWidget {
               SizedBox(height: 20.h),
               Text(
                 'Past Jobs',
-                style:
-                    AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600),
+                style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600),
               ),
               SizedBox(height: 12.h),
               ...controller.historyList
-                  .map((item) => _HistoryJobCard(
-                        data: item,
-                        onTap: () => Get.to(
-                          () => MechanicHistoryDetailView(
-                              requestData: item),
-                          transition: Transition.rightToLeft,
-                        ),
-                      ))
+                  .map(
+                    (item) => _HistoryJobCard(
+                      data: item,
+                      onTap: () => Get.to(
+                        () => MechanicHistoryDetailView(requestData: item),
+                        transition: Transition.rightToLeft,
+                      ),
+                    ),
+                  )
                   .toList(),
             ],
           ),
@@ -88,18 +87,21 @@ class MechanicHistoryView extends StatelessWidget {
               color: AppColors.mechanicPrimary.withOpacity(0.08),
               shape: BoxShape.circle,
             ),
-            child: Icon(Iconsax.clock,
-                size: 64.w, color: AppColors.mechanicPrimary),
+            child: Icon(
+              Iconsax.clock,
+              size: 64.w,
+              color: AppColors.mechanicPrimary,
+            ),
           ),
           SizedBox(height: 20.h),
-          Text('No History Yet',
-              style:
-                  AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600)),
+          Text(
+            'No History Yet',
+            style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600),
+          ),
           SizedBox(height: 8.h),
           Text(
             'Your completed jobs will appear here',
-            style: AppTextStyles.body2
-                .copyWith(color: AppColors.textSecondary),
+            style: AppTextStyles.body2.copyWith(color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -132,16 +134,14 @@ class MechanicHistoryView extends StatelessWidget {
             _StatCard(
               icon: Iconsax.wallet_2,
               label: 'Earnings',
-              value:
-                  '₹${controller.totalEarnings.value.toStringAsFixed(0)}',
+              value: '₹${controller.totalEarnings.value.toStringAsFixed(0)}',
               color: AppColors.info,
             ),
             SizedBox(width: 12.w),
             _StatCard(
               icon: Iconsax.routing,
               label: 'Distance',
-              value:
-                  '${controller.totalDistance.value.toStringAsFixed(1)} km',
+              value: '${controller.totalDistance.value.toStringAsFixed(1)} km',
               color: AppColors.accent,
             ),
           ],
@@ -169,8 +169,7 @@ class _StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding:
-            EdgeInsets.symmetric(vertical: 16.h, horizontal: 14.w),
+        padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 14.w),
         decoration: BoxDecoration(
           color: color.withOpacity(0.08),
           borderRadius: AppRadius.largeAll,
@@ -251,8 +250,7 @@ class _HistoryJobCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: AppRadius.largeAll,
-          border:
-              Border.all(color: AppColors.border.withOpacity(0.5)),
+          border: Border.all(color: AppColors.border.withOpacity(0.5)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.03),
@@ -270,7 +268,9 @@ class _HistoryJobCard extends StatelessWidget {
               children: [
                 Container(
                   padding: EdgeInsets.symmetric(
-                      horizontal: 10.w, vertical: 4.h),
+                    horizontal: 10.w,
+                    vertical: 4.h,
+                  ),
                   decoration: BoxDecoration(
                     color: isCompleted
                         ? AppColors.success.withOpacity(0.1)
@@ -304,22 +304,29 @@ class _HistoryJobCard extends StatelessWidget {
                   ),
                 ),
                 if (dateStr.isNotEmpty)
-                  Text(dateStr,
-                      style: GoogleFonts.poppins(
-                          fontSize: 11.sp, color: AppColors.textHint)),
+                  Text(
+                    dateStr,
+                    style: GoogleFonts.poppins(
+                      fontSize: 11.sp,
+                      color: AppColors.textHint,
+                    ),
+                  ),
               ],
             ),
 
             SizedBox(height: 12.h),
 
             // Problem + Driver name
-            Text(problem,
-                style: GoogleFonts.poppins(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis),
+            Text(
+              problem,
+              style: GoogleFonts.poppins(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
 
             SizedBox(height: 6.h),
 
@@ -328,10 +335,13 @@ class _HistoryJobCard extends StatelessWidget {
               children: [
                 Icon(Iconsax.user, size: 14.w, color: AppColors.textHint),
                 SizedBox(width: 4.w),
-                Text('Driver: $driverName',
-                    style: GoogleFonts.poppins(
-                        fontSize: 12.sp,
-                        color: AppColors.textSecondary)),
+                Text(
+                  'Driver: $driverName',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12.sp,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
               ],
             ),
 
@@ -341,26 +351,30 @@ class _HistoryJobCard extends StatelessWidget {
             Row(
               children: [
                 if (vehicleType.isNotEmpty) ...[
-                  Icon(Iconsax.car,
-                      size: 14.w, color: AppColors.textHint),
+                  Icon(Iconsax.car, size: 14.w, color: AppColors.textHint),
                   SizedBox(width: 4.w),
-                  Text(vehicleType,
-                      style: GoogleFonts.poppins(
-                          fontSize: 12.sp,
-                          color: AppColors.textSecondary)),
+                  Text(
+                    vehicleType,
+                    style: GoogleFonts.poppins(
+                      fontSize: 12.sp,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
                   SizedBox(width: 16.w),
                 ],
                 if (location.isNotEmpty) ...[
-                  Icon(Iconsax.location,
-                      size: 14.w, color: AppColors.textHint),
+                  Icon(Iconsax.location, size: 14.w, color: AppColors.textHint),
                   SizedBox(width: 4.w),
                   Expanded(
-                    child: Text(location,
-                        style: GoogleFonts.poppins(
-                            fontSize: 12.sp,
-                            color: AppColors.textSecondary),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
+                    child: Text(
+                      location,
+                      style: GoogleFonts.poppins(
+                        fontSize: 12.sp,
+                        color: AppColors.textSecondary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ],
@@ -372,10 +386,13 @@ class _HistoryJobCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Earned',
-                      style: GoogleFonts.poppins(
-                          fontSize: 12.sp,
-                          color: AppColors.textSecondary)),
+                  Text(
+                    'Earned',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12.sp,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
                   Text(
                     '₹${(totalAmount as num).toStringAsFixed(0)}',
                     style: GoogleFonts.poppins(
@@ -395,28 +412,44 @@ class _HistoryJobCard extends StatelessWidget {
                 width: double.infinity,
                 height: 48.h,
                 child: OutlinedButton.icon(
-                  onPressed: () => HistoryInvoiceViewer.viewAndShare(data['completionData'], context),
+                  onPressed: () => HistoryInvoiceViewer.viewAndShare(
+                    data['completionData'],
+                    context,
+                  ),
                   icon: Icon(Iconsax.document_download, size: 18.sp),
-                  label: Text('View Invoice', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                  label: Text(
+                    'View Invoice',
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                  ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.mechanicPrimary,
-                    side: BorderSide(color: AppColors.mechanicPrimary.withOpacity(0.5)),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                    side: BorderSide(
+                      color: AppColors.mechanicPrimary.withOpacity(0.5),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
                   ),
                 ),
               ),
             ] else ...[
-               Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text('View Details',
-                      style: GoogleFonts.poppins(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.mechanicPrimary)),
+                  Text(
+                    'View Details',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.mechanicPrimary,
+                    ),
+                  ),
                   SizedBox(width: 4.w),
-                  Icon(Iconsax.arrow_right_3,
-                      size: 14.w, color: AppColors.mechanicPrimary),
+                  Icon(
+                    Iconsax.arrow_right_3,
+                    size: 14.w,
+                    color: AppColors.mechanicPrimary,
+                  ),
                 ],
               ),
             ],

@@ -231,7 +231,9 @@ class AppPages {
       transition: Transition.rightToLeft,
       transitionDuration: _dur,
       binding: BindingsBuilder(() {
-        Get.lazyPut<MechanicHistoryController>(() => MechanicHistoryController());
+        Get.lazyPut<MechanicHistoryController>(
+          () => MechanicHistoryController(),
+        );
       }),
     ),
   ];

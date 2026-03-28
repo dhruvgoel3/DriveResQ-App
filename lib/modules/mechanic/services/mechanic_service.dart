@@ -7,7 +7,7 @@ import '../../notifications/services/notification_sender.dart';
 import '../../../shared/services/connectivity_service.dart';
 
 /// A comprehensive service handling all core logic for the Mechanic's operations.
-/// 
+///
 /// Responsibilities:
 /// - Accepting, cancelling, and completing service requests.
 /// - Handling job verifications via secure OTP.
@@ -21,8 +21,8 @@ class MechanicService {
   // ---------------------------------------------------------------------------
 
   /// Accepts a service request on behalf of the current mechanic.
-  /// 
-  /// Throws an [Exception] if the user is unauthorized, already has a job, 
+  ///
+  /// Throws an [Exception] if the user is unauthorized, already has a job,
   /// or if the request is invalid/taken.
   static Future<void> acceptRequest(String requestId, bool hasActiveJob) async {
     // 1. Pre-flight checks
@@ -38,27 +38,38 @@ class MechanicService {
 
     // Attempt to pull the phone from Auth. If absent, it will be pulled from Firestore.
     String? mechanicPhone = user.phoneNumber;
-    final mechanicDocContent = await _firestore.collection('users').doc(user.uid).get();
+    final mechanicDocContent = await _firestore
+        .collection('users')
+        .doc(user.uid)
+        .get();
     final mechanicData = mechanicDocContent.data() ?? {};
-    
+
     mechanicPhone ??= mechanicData['phone'];
     if (mechanicPhone == null || mechanicPhone.isEmpty) {
       throw Exception('Missing Data: Phone number is required to accept jobs.');
     }
 
     // 2. Request validation
-    final requestDoc = await _firestore.collection('requests').doc(requestId).get();
+    final requestDoc = await _firestore
+        .collection('requests')
+        .doc(requestId)
+        .get();
     if (!requestDoc.exists) {
       throw Exception('Not Found: This request no longer exists.');
     }
 
     final requestData = requestDoc.data();
     if (requestData == null || requestData['status'] != 'open') {
-      throw Exception('Too Late: This request has already been accepted or closed.');
+      throw Exception(
+        'Too Late: This request has already been accepted or closed.',
+      );
     }
 
-    if (requestData['driverLat'] == null || requestData['driverPhone'] == null) {
-      throw Exception('Data Error: The request has incomplete driver information.');
+    if (requestData['driverLat'] == null ||
+        requestData['driverPhone'] == null) {
+      throw Exception(
+        'Data Error: The request has incomplete driver information.',
+      );
     }
 
     // 3. Mark request as accepted
@@ -102,7 +113,8 @@ class MechanicService {
       await NotificationSender.notifyRequestCancelled(
         requestId: jobId,
         recipientId: driverId,
-        reason: 'Mechanic cancelled the request. You can wait for another mechanic.',
+        reason:
+            'Mechanic cancelled the request. You can wait for another mechanic.',
       );
     }
   }
@@ -139,7 +151,10 @@ class MechanicService {
 
   /// Finalizes the job phase by verifying the OTP given by the driver.
   /// Returns a user-friendly error string if verification fails, or null on success.
-  static Future<String?> verifyAndCompleteJob(Map<String, dynamic> activeJob, String code) async {
+  static Future<String?> verifyAndCompleteJob(
+    Map<String, dynamic> activeJob,
+    String code,
+  ) async {
     final jobId = activeJob['id'];
     if (jobId == null) return 'System Error: Job ID is missing.';
 
@@ -196,7 +211,8 @@ class MechanicService {
     try {
       final driverId = requestData['driverId'] ?? '';
       final driverName = requestData['driverName'] ?? 'Driver';
-      final mechanicName = mechanicData['fullName'] ?? mechanicData['name'] ?? 'Mechanic';
+      final mechanicName =
+          mechanicData['fullName'] ?? mechanicData['name'] ?? 'Mechanic';
 
       // Push Notification
       await NotificationSender.notifyDriverRequestAccepted(
@@ -222,4 +238,3 @@ class MechanicService {
     }
   }
 }
-

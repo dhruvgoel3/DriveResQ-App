@@ -239,11 +239,7 @@ class _ChatRecordingOverlay extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Iconsax.trash,
-                    size: 16.w,
-                    color: AppColors.error,
-                  ),
+                  Icon(Iconsax.trash, size: 16.w, color: AppColors.error),
                   SizedBox(width: 4.w),
                   Text(
                     'Cancel',
@@ -438,10 +434,15 @@ class _ChatInputBar extends StatelessWidget {
                   Get.back();
                   c.pickAndSendImage(source: ImageSource.camera);
                 }),
-                _attachOption(Iconsax.gallery, 'Gallery', AppColors.primary, () {
-                  Get.back();
-                  c.pickAndSendImage(source: ImageSource.gallery);
-                }),
+                _attachOption(
+                  Iconsax.gallery,
+                  'Gallery',
+                  AppColors.primary,
+                  () {
+                    Get.back();
+                    c.pickAndSendImage(source: ImageSource.gallery);
+                  },
+                ),
                 _attachOption(
                   Iconsax.location,
                   'Location',

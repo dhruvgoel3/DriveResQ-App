@@ -52,8 +52,9 @@ class CreateRequestController extends GetxController {
 
   // ✏️ Edit location manually
   void editLocationName() {
-    final TextEditingController editController =
-        TextEditingController(text: locationName.value);
+    final TextEditingController editController = TextEditingController(
+      text: locationName.value,
+    );
     Get.dialog(
       AlertDialog(
         backgroundColor: Colors.white,
@@ -68,10 +69,7 @@ class CreateRequestController extends GetxController {
           ),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text("Cancel"),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text("Cancel")),
           ElevatedButton(
             onPressed: () {
               if (editController.text.trim().isNotEmpty) {
@@ -112,71 +110,74 @@ class CreateRequestController extends GetxController {
     isLoading.value = true;
 
     try {
-    // Check network before making any Firebase calls
-    await ConnectivityService.requireConnection();
+      // Check network before making any Firebase calls
+      await ConnectivityService.requireConnection();
 
-    String? imageUrl;
+      String? imageUrl;
 
-    // 📤 Upload image if exists
-    if (imageFile.value != null) {
-      final ref = FirebaseStorage.instance.ref(
-        'requests/${DateTime.now().millisecondsSinceEpoch}.jpg',
+      // 📤 Upload image if exists
+      if (imageFile.value != null) {
+        final ref = FirebaseStorage.instance.ref(
+          'requests/${DateTime.now().millisecondsSinceEpoch}.jpg',
+        );
+
+        await ref.putFile(imageFile.value!);
+        imageUrl = await ref.getDownloadURL();
+      }
+
+      // 1️⃣ FETCH DRIVER DETAILS FOR CHAT display
+      String driverName = 'Driver';
+      String driverPhoto = '';
+      try {
+        final doc = await _firestore
+            .collection('users')
+            .doc(_auth.currentUser!.uid)
+            .get();
+        if (doc.exists) {
+          final data = doc.data()!;
+          driverName = data['fullName'] ?? data['name'] ?? 'Driver';
+          driverPhoto = data['profilePhotoUrl'] ?? data['photoUrl'] ?? '';
+        }
+      } catch (e) {
+        debugPrint('Error fetching driver details: $e');
+      }
+
+      // 🧠 SAVE REQUEST (WITH COORDINATES)
+      final requestRef = await _firestore.collection('requests').add({
+        'driverId': _auth.currentUser!.uid,
+        'driverName': driverName,
+        'driverPhoto': driverPhoto,
+        'driverPhone': _auth.currentUser!.phoneNumber,
+        'status': 'open',
+        'problem': problemController.text.trim(),
+        'vehicleType': selectedVehicle.value,
+        'locationName': locationName.value,
+        'landmark': landmarkController.text.trim(),
+        'description': descriptionController.text.trim(),
+        'driverLat': driverLat,
+        'driverLng': driverLng,
+        'createdAt': FieldValue.serverTimestamp(),
+        'imageUrl': imageUrl,
+        'vehicleNumber': vehicleNumberController.text.trim(),
+      });
+
+      // 🔔 Send notification to nearby mechanics
+      await NotificationSender.notifyNearbyMechanics(
+        requestId: requestRef.id,
+        driverId: _auth.currentUser!.uid,
+        driverLat: driverLat!,
+        driverLng: driverLng!,
+        problem: problemController.text.trim(),
+        location: locationName.value,
       );
 
-      await ref.putFile(imageFile.value!);
-      imageUrl = await ref.getDownloadURL();
+      isLoading.value = false;
+      Get.back();
+      Get.snackbar('Success', 'Request created successfully!');
+    } on Exception catch (e) {
+      isLoading.value = false;
+      ErrorHandler.handle(e, onRetry: submitRequest);
     }
-
-    // 1️⃣ FETCH DRIVER DETAILS FOR CHAT display
-    String driverName = 'Driver';
-    String driverPhoto = '';
-    try {
-      final doc = await _firestore.collection('users').doc(_auth.currentUser!.uid).get();
-      if (doc.exists) {
-        final data = doc.data()!;
-        driverName = data['fullName'] ?? data['name'] ?? 'Driver';
-        driverPhoto = data['profilePhotoUrl'] ?? data['photoUrl'] ?? '';
-      }
-    } catch (e) {
-      debugPrint('Error fetching driver details: $e');
-    }
-
-    // 🧠 SAVE REQUEST (WITH COORDINATES)
-    final requestRef = await _firestore.collection('requests').add({
-      'driverId': _auth.currentUser!.uid,
-      'driverName': driverName,
-      'driverPhoto': driverPhoto,
-      'driverPhone': _auth.currentUser!.phoneNumber,
-      'status': 'open',
-      'problem': problemController.text.trim(),
-      'vehicleType': selectedVehicle.value,
-      'locationName': locationName.value,
-      'landmark': landmarkController.text.trim(),
-      'description': descriptionController.text.trim(),
-      'driverLat': driverLat,
-      'driverLng': driverLng,
-      'createdAt': FieldValue.serverTimestamp(),
-      'imageUrl': imageUrl,
-      'vehicleNumber': vehicleNumberController.text.trim(),
-    });
-
-    // 🔔 Send notification to nearby mechanics
-    await NotificationSender.notifyNearbyMechanics(
-      requestId: requestRef.id,
-      driverId: _auth.currentUser!.uid,
-      driverLat: driverLat!,
-      driverLng: driverLng!,
-      problem: problemController.text.trim(),
-      location: locationName.value,
-    );
-
-    isLoading.value = false;
-    Get.back();
-    Get.snackbar('Success', 'Request created successfully!');
-  } on Exception catch (e) {
-    isLoading.value = false;
-    ErrorHandler.handle(e, onRetry: submitRequest);
-  }
   }
 
   @override

@@ -208,7 +208,11 @@ class RoleSelectionView extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(4.w),
                 decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-                child: Icon(Iconsax.tick_circle, color: Colors.white, size: 20.w),
+                child: Icon(
+                  Iconsax.tick_circle,
+                  color: Colors.white,
+                  size: 20.w,
+                ),
               ),
           ],
         ),

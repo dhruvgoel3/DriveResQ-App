@@ -13,7 +13,7 @@ import '../services/driver_service.dart';
 
 class ActiveRequestCardController extends GetxController {
   final Map<String, dynamic> request;
-  
+
   ActiveRequestCardController(this.request);
 
   var mechanicLat = Rxn<double>();
@@ -40,17 +40,18 @@ class ActiveRequestCardController extends GetxController {
     final requestId = request['id'];
     if (requestId == null) return;
 
-    _requestStatusSubscription = DriverService.getRequestStream(requestId).listen((snapshot) {
-      if (!snapshot.exists) return;
-      final data = snapshot.data()!;
-      if (data['status'] == 'accepted' && mechanicLat.value == null) {
-        // Status just changed to accepted — start tracking
-        request['mechanicId'] = data['mechanicId'];
-        request['status'] = 'accepted';
-        _listenToMechanicLocation();
-        _requestStatusSubscription?.cancel();
-      }
-    });
+    _requestStatusSubscription = DriverService.getRequestStream(requestId)
+        .listen((snapshot) {
+          if (!snapshot.exists) return;
+          final data = snapshot.data()!;
+          if (data['status'] == 'accepted' && mechanicLat.value == null) {
+            // Status just changed to accepted — start tracking
+            request['mechanicId'] = data['mechanicId'];
+            request['status'] = 'accepted';
+            _listenToMechanicLocation();
+            _requestStatusSubscription?.cancel();
+          }
+        });
   }
 
   @override
@@ -66,23 +67,24 @@ class ActiveRequestCardController extends GetxController {
     if (mechanicId == null) return;
 
     _locationSubscription?.cancel();
-    _locationSubscription = DriverService.getMechanicLocationStream(mechanicId).listen((snapshot) {
-      if (!snapshot.exists) return;
+    _locationSubscription = DriverService.getMechanicLocationStream(mechanicId)
+        .listen((snapshot) {
+          if (!snapshot.exists) return;
 
-      final data = snapshot.data()!;
-      final lat = data['latitude'];
-      final lng = data['longitude'];
+          final data = snapshot.data()!;
+          final lat = data['latitude'];
+          final lng = data['longitude'];
 
-      if (lat != null && lng != null) {
-        mechanicLat.value = lat;
-        mechanicLng.value = lng;
-        _updateMarkers();
+          if (lat != null && lng != null) {
+            mechanicLat.value = lat;
+            mechanicLng.value = lng;
+            _updateMarkers();
 
-        mapController?.animateCamera(
-          CameraUpdate.newLatLngZoom(LatLng(lat, lng), 14),
-        );
-      }
-    });
+            mapController?.animateCamera(
+              CameraUpdate.newLatLngZoom(LatLng(lat, lng), 14),
+            );
+          }
+        });
   }
 
   void _updateMarkers() {
@@ -124,7 +126,7 @@ class ActiveRequestCardController extends GetxController {
       Get.snackbar('Error', 'Chat not available yet');
       return;
     }
-    
+
     Get.delete<ChatController>(force: true);
     Get.put(
       ChatController(
@@ -134,7 +136,7 @@ class ActiveRequestCardController extends GetxController {
         myRole: 'driver',
       ),
     );
-    
+
     Get.to(
       () => const ChatScreen(),
       transition: Transition.rightToLeft,
@@ -157,7 +159,9 @@ class ActiveRequestCardController extends GetxController {
   void shareVerificationCode(String code) async {
     final mechanicPhone = request['mechanicPhone'];
     if (mechanicPhone != null) {
-      final uri = Uri.parse('sms:$mechanicPhone?body=Your DriveResQ verification code is: $code');
+      final uri = Uri.parse(
+        'sms:$mechanicPhone?body=Your DriveResQ verification code is: $code',
+      );
       launchUrl(uri);
     } else {
       // Legacy support for SharePlus syntax found in existing code

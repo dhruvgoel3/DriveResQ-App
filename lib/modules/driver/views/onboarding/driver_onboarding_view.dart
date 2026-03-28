@@ -31,7 +31,10 @@ class DriverOnboardingView extends StatelessWidget {
         leading: Obx(
           () => c.currentStep.value > 0
               ? IconButton(
-                  icon: const Icon(Iconsax.arrow_left, color: AppColors.textPrimary),
+                  icon: const Icon(
+                    Iconsax.arrow_left,
+                    color: AppColors.textPrimary,
+                  ),
                   onPressed: c.previousStep,
                 )
               : const SizedBox.shrink(),

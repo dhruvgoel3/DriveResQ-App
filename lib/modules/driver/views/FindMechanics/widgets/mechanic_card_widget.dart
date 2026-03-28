@@ -17,13 +17,15 @@ class MechanicCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final FavoritesController favController = Get.find<FavoritesController>();
     final String mechanicId = mechanic['id'] ?? '';
-    final String shopName = mechanic['shopName'] ?? mechanic['name'] ?? 'Unknown Mechanic';
+    final String shopName =
+        mechanic['shopName'] ?? mechanic['name'] ?? 'Unknown Mechanic';
     final double rating = (mechanic['rating'] ?? 0.0).toDouble();
     final int reviewCount = (mechanic['reviewCount'] ?? 0).toInt();
     final double distance = (mechanic['distance'] ?? 0.0).toDouble();
     final String area = mechanic['address'] ?? 'Unknown Area';
     final int exp = (mechanic['experienceYears'] ?? 0).toInt();
-    final String specialization = (mechanic['specialization'] is List
+    final String specialization =
+        (mechanic['specialization'] is List
             ? (mechanic['specialization'] as List).firstOrNull
             : mechanic['specialization']) ??
         'General';
@@ -35,7 +37,9 @@ class MechanicCardWidget extends StatelessWidget {
     final int baseCharge = (mechanic['baseCharge'] ?? 0).toInt();
     final int perKm = (mechanic['perKmCharge'] ?? 0).toInt();
 
-    final List<String> services = List<String>.from(mechanic['servicesOffered'] ?? []);
+    final List<String> services = List<String>.from(
+      mechanic['servicesOffered'] ?? [],
+    );
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -58,7 +62,7 @@ class MechanicCardWidget extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               // Profile Photo
+              // Profile Photo
               Stack(
                 children: [
                   Container(
@@ -81,7 +85,9 @@ class MechanicCardWidget extends StatelessWidget {
                     child: profilePhoto.isEmpty
                         ? Center(
                             child: Text(
-                              shopName.isNotEmpty ? shopName[0].toUpperCase() : 'M',
+                              shopName.isNotEmpty
+                                  ? shopName[0].toUpperCase()
+                                  : 'M',
                               style: GoogleFonts.poppins(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
@@ -130,7 +136,11 @@ class MechanicCardWidget extends StatelessWidget {
                         const SizedBox(width: 8),
                         Row(
                           children: [
-                            const Icon(Iconsax.star, color: Colors.amber, size: 18),
+                            const Icon(
+                              Iconsax.star,
+                              color: Colors.amber,
+                              size: 18,
+                            ),
                             const SizedBox(width: 4),
                             Text(
                               rating.toStringAsFixed(1),
@@ -195,42 +205,50 @@ class MechanicCardWidget extends StatelessWidget {
                   child: Wrap(
                     spacing: 6,
                     runSpacing: 6,
-                    children: services.take(3).map((s) {
-                      return Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: _accent.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          s,
-                          style: GoogleFonts.poppins(
-                            fontSize: 11,
-                            color: _accent,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      );
-                    }).toList()
-                      ..addAll(services.length > 3
-                          ? [
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade100,
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  "+${services.length - 3} more",
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 11,
-                                    color: Colors.grey.shade600,
-                                    fontWeight: FontWeight.w500,
+                    children:
+                        services.take(3).map((s) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: _accent.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              s,
+                              style: GoogleFonts.poppins(
+                                fontSize: 11,
+                                color: _accent,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          );
+                        }).toList()..addAll(
+                          services.length > 3
+                              ? [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade100,
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      "+${services.length - 3} more",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 11,
+                                        color: Colors.grey.shade600,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              )
-                            ]
-                          : []),
+                                ]
+                              : [],
+                        ),
                   ),
                 ),
               ],
@@ -266,9 +284,15 @@ class MechanicCardWidget extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                if (isVerified) _buildBadge(Iconsax.tick_circle, "Verified", Colors.lightGreen),
+                if (isVerified)
+                  _buildBadge(
+                    Iconsax.tick_circle,
+                    "Verified",
+                    Colors.lightGreen,
+                  ),
                 const SizedBox(width: 8),
-                if (isOnline) _buildBadge(Iconsax.clock, "Available Now", Colors.green),
+                if (isOnline)
+                  _buildBadge(Iconsax.clock, "Available Now", Colors.green),
                 const SizedBox(width: 8),
                 _buildBadge(Iconsax.flash, "Quick Response", Colors.orange),
               ],
@@ -290,7 +314,9 @@ class MechanicCardWidget extends StatelessWidget {
                     foregroundColor: _accent,
                     side: const BorderSide(color: _accent),
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                 ),
               ),
@@ -300,13 +326,17 @@ class MechanicCardWidget extends StatelessWidget {
                 flex: 4,
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.to(() => MechanicProfileDetailView(mechanicData: mechanic));
+                    Get.to(
+                      () => MechanicProfileDetailView(mechanicData: mechanic),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _accent,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     elevation: 0,
                   ),
                   child: const Text("View Profile"),
@@ -339,7 +369,9 @@ class MechanicCardWidget extends StatelessWidget {
                         isFav ? "Favorited" : "Add to Favorites",
                         style: GoogleFonts.poppins(
                           fontSize: 13,
-                          color: isFav ? Colors.redAccent : Colors.grey.shade600,
+                          color: isFav
+                              ? Colors.redAccent
+                              : Colors.grey.shade600,
                           fontWeight: FontWeight.w500,
                         ),
                       ),

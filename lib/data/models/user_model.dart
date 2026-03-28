@@ -57,11 +57,9 @@ class UserModel {
       uid: docId ?? map['uid'] as String? ?? '',
       phone: map['phone'] as String?,
       role: map['role'] as String? ?? '',
-      fullName: map['fullName'] as String? ??
-          map['name'] as String? ??
-          '',
-      profilePhotoUrl: map['profilePhotoUrl'] as String? ??
-          map['photoUrl'] as String?,
+      fullName: map['fullName'] as String? ?? map['name'] as String? ?? '',
+      profilePhotoUrl:
+          map['profilePhotoUrl'] as String? ?? map['photoUrl'] as String?,
       isActive: map['isActive'] as bool? ?? true,
       fcmToken: map['fcmToken'] as String?,
       createdAt: _parseTimestamp(map['createdAt']),
@@ -105,8 +103,7 @@ class UserModel {
   }
 
   /// Display-friendly name with fallback.
-  String get displayName =>
-      fullName.isNotEmpty ? fullName : (phone ?? 'User');
+  String get displayName => fullName.isNotEmpty ? fullName : (phone ?? 'User');
 
   static DateTime? _parseTimestamp(dynamic value) {
     if (value == null) return null;

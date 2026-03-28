@@ -59,13 +59,15 @@ class DriverHistoryView extends StatelessWidget {
               ),
               SizedBox(height: 12.h),
               ...controller.historyList
-                  .map((item) => _HistoryItemCard(
-                        data: item,
-                        onTap: () => Get.to(
-                          () => DriverHistoryDetailView(requestData: item),
-                          transition: Transition.rightToLeft,
-                        ),
-                      ))
+                  .map(
+                    (item) => _HistoryItemCard(
+                      data: item,
+                      onTap: () => Get.to(
+                        () => DriverHistoryDetailView(requestData: item),
+                        transition: Transition.rightToLeft,
+                      ),
+                    ),
+                  )
                   .toList(),
             ],
           ),
@@ -88,8 +90,10 @@ class DriverHistoryView extends StatelessWidget {
             child: Icon(Iconsax.clock, size: 64.w, color: AppColors.primary),
           ),
           SizedBox(height: 20.h),
-          Text('No History Yet',
-              style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600)),
+          Text(
+            'No History Yet',
+            style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600),
+          ),
           SizedBox(height: 8.h),
           Text(
             'Your past requests will appear here',
@@ -228,8 +232,10 @@ class _HistoryItemCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 4.h,
+                  ),
                   decoration: BoxDecoration(
                     color: isCompleted
                         ? AppColors.success.withOpacity(0.1)
@@ -240,10 +246,13 @@ class _HistoryItemCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        isCompleted ? Iconsax.tick_circle : Iconsax.close_circle,
+                        isCompleted
+                            ? Iconsax.tick_circle
+                            : Iconsax.close_circle,
                         size: 14.w,
-                        color:
-                            isCompleted ? AppColors.success : AppColors.error,
+                        color: isCompleted
+                            ? AppColors.success
+                            : AppColors.error,
                       ),
                       SizedBox(width: 4.w),
                       Text(
@@ -292,20 +301,25 @@ class _HistoryItemCard extends StatelessWidget {
                 if (vehicleType.isNotEmpty) ...[
                   Icon(Iconsax.car, size: 14.w, color: AppColors.textHint),
                   SizedBox(width: 4.w),
-                  Text(vehicleType,
-                      style: GoogleFonts.poppins(
-                          fontSize: 12.sp, color: AppColors.textSecondary)),
+                  Text(
+                    vehicleType,
+                    style: GoogleFonts.poppins(
+                      fontSize: 12.sp,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
                   SizedBox(width: 16.w),
                 ],
                 if (location.isNotEmpty) ...[
-                  Icon(Iconsax.location,
-                      size: 14.w, color: AppColors.textHint),
+                  Icon(Iconsax.location, size: 14.w, color: AppColors.textHint),
                   SizedBox(width: 4.w),
                   Expanded(
                     child: Text(
                       location,
                       style: GoogleFonts.poppins(
-                          fontSize: 12.sp, color: AppColors.textSecondary),
+                        fontSize: 12.sp,
+                        color: AppColors.textSecondary,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -320,9 +334,13 @@ class _HistoryItemCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Total Amount',
-                      style: GoogleFonts.poppins(
-                          fontSize: 12.sp, color: AppColors.textSecondary)),
+                  Text(
+                    'Total Amount',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12.sp,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
                   Text(
                     '₹${(totalAmount as num).toStringAsFixed(0)}',
                     style: GoogleFonts.poppins(
@@ -342,28 +360,42 @@ class _HistoryItemCard extends StatelessWidget {
                 width: double.infinity,
                 height: 48.h,
                 child: OutlinedButton.icon(
-                  onPressed: () => HistoryInvoiceViewer.viewAndShare(data['completionData'], context),
+                  onPressed: () => HistoryInvoiceViewer.viewAndShare(
+                    data['completionData'],
+                    context,
+                  ),
                   icon: Icon(Iconsax.document_download, size: 18.sp),
-                  label: Text('View Invoice', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                  label: Text(
+                    'View Invoice',
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                  ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.primary,
                     side: BorderSide(color: AppColors.primary.withOpacity(0.5)),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
                   ),
                 ),
               ),
             ] else ...[
-               Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text('View Details',
-                      style: GoogleFonts.poppins(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.primary)),
+                  Text(
+                    'View Details',
+                    style: GoogleFonts.poppins(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.primary,
+                    ),
+                  ),
                   SizedBox(width: 4.w),
-                  Icon(Iconsax.arrow_right_3,
-                      size: 14.w, color: AppColors.primary),
+                  Icon(
+                    Iconsax.arrow_right_3,
+                    size: 14.w,
+                    color: AppColors.primary,
+                  ),
                 ],
               ),
             ],

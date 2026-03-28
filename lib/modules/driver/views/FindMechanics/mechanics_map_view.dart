@@ -51,11 +51,10 @@ class MechanicsMapView extends StatelessWidget {
             Marker(
               markerId: MarkerId(mech['id'] ?? name),
               position: LatLng(lat.toDouble(), lng.toDouble()),
-              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
-              infoWindow: InfoWindow(
-                title: name,
-                snippet: '${dist} km away',
+              icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueOrange,
               ),
+              infoWindow: InfoWindow(title: name, snippet: '${dist} km away'),
             ),
           );
         }
@@ -80,7 +79,10 @@ class MechanicsMapView extends StatelessWidget {
               bottom: 12,
               left: 12,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.95),
                   borderRadius: BorderRadius.circular(10),
@@ -103,7 +105,13 @@ class MechanicsMapView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 6),
-                    Text("You", style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w500)),
+                    Text(
+                      "You",
+                      style: GoogleFonts.poppins(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                     const SizedBox(width: 12),
                     Container(
                       width: 10,
@@ -114,7 +122,13 @@ class MechanicsMapView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 6),
-                    Text("Mechanics", style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w500)),
+                    Text(
+                      "Mechanics",
+                      style: GoogleFonts.poppins(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -124,7 +138,10 @@ class MechanicsMapView extends StatelessWidget {
               top: 12,
               right: 12,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFF6C63FF),
                   borderRadius: BorderRadius.circular(20),

@@ -52,12 +52,14 @@ class OnboardingStepTwo extends StatelessWidget {
               child: DropdownButton<String>(
                 value: controller.selectedIdType.value,
                 isExpanded: true,
-                style: AppTextStyles.body2.copyWith(fontWeight: FontWeight.w500),
+                style: AppTextStyles.body2.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
                 items: controller.idTypes
                     .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                     .toList(),
-                onChanged: (v) =>
-                    controller.selectedIdType.value = v ?? controller.selectedIdType.value,
+                onChanged: (v) => controller.selectedIdType.value =
+                    v ?? controller.selectedIdType.value,
               ),
             ),
           ),

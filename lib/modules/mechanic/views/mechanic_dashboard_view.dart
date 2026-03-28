@@ -28,7 +28,7 @@ class MechanicDashboardView extends StatelessWidget {
       CurrentRequestView(),
       const MechanicHistoryView(),
       ChatListView(),
-      MechanicProfileView()
+      MechanicProfileView(),
     ];
 
     return Scaffold(
@@ -79,4 +79,3 @@ class MechanicDashboardView extends StatelessWidget {
     );
   }
 }
-

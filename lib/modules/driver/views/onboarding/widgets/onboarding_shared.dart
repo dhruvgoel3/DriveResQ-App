@@ -50,7 +50,9 @@ class OnboardingShared {
             style: AppTextStyles.body2.copyWith(fontWeight: FontWeight.w500),
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: AppTextStyles.body2.copyWith(color: AppColors.textHint),
+              hintStyle: AppTextStyles.body2.copyWith(
+                color: AppColors.textHint,
+              ),
               prefixIcon: Icon(
                 icon,
                 size: 20.w,
@@ -73,7 +75,10 @@ class OnboardingShared {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14.r),
-                borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                borderSide: const BorderSide(
+                  color: AppColors.primary,
+                  width: 1.5,
+                ),
               ),
             ),
           ),
@@ -95,10 +100,14 @@ class OnboardingShared {
         height: 120.h,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: hasPhoto ? AppColors.primary.withOpacity(0.05) : AppColors.background,
+          color: hasPhoto
+              ? AppColors.primary.withOpacity(0.05)
+              : AppColors.background,
           borderRadius: BorderRadius.circular(14.r),
           border: Border.all(
-            color: hasPhoto ? AppColors.primary.withOpacity(0.3) : AppColors.border,
+            color: hasPhoto
+                ? AppColors.primary.withOpacity(0.3)
+                : AppColors.border,
             width: 1.5,
           ),
         ),
@@ -123,7 +132,9 @@ class OnboardingShared {
                     SizedBox(width: 8.w),
                     Text(
                       '(tap to change)',
-                      style: AppTextStyles.caption.copyWith(color: AppColors.textHint),
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.textHint,
+                      ),
                     ),
                   ],
                 ),
@@ -131,11 +142,7 @@ class OnboardingShared {
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Iconsax.camera,
-                    size: 32.w,
-                    color: AppColors.textHint,
-                  ),
+                  Icon(Iconsax.camera, size: 32.w, color: AppColors.textHint),
                   SizedBox(height: 8.h),
                   Text(
                     label,

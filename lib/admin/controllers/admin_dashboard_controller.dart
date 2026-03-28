@@ -75,7 +75,7 @@ class AdminDashboardController extends GetxController {
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      debugPrint('❌ Stats fetch error: $e');
+      debugPrint(' Stats fetch error: $e');
     }
   }
 
@@ -93,7 +93,7 @@ class AdminDashboardController extends GetxController {
         return data;
       }).toList();
     } catch (e) {
-      debugPrint('❌ Recent actions fetch error: $e');
+      debugPrint(' Recent actions fetch error: $e');
     }
   }
 }

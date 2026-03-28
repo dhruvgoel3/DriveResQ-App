@@ -172,11 +172,7 @@ class Step1PersonalDetails extends StatelessWidget {
                     color: Color(0xFFFF9800),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    Iconsax.camera,
-                    size: 18.w,
-                    color: Colors.white,
-                  ),
+                  child: Icon(Iconsax.camera, size: 18.w, color: Colors.white),
                 ),
               ),
             ],
@@ -359,7 +355,10 @@ class Step1PersonalDetails extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14.r),
-              borderSide: const BorderSide(color: Color(0xFFFF9800), width: 1.5),
+              borderSide: const BorderSide(
+                color: Color(0xFFFF9800),
+                width: 1.5,
+              ),
             ),
           ),
         ),

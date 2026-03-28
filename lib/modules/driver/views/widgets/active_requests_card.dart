@@ -48,28 +48,39 @@ class ActiveRequestCard extends StatelessWidget {
           SizedBox(height: 14.h),
 
           // 🗺️ MAP PREVIEW
-          if (status == 'accepted') _MapPreview(controller: controller, request: request),
+          if (status == 'accepted')
+            _MapPreview(controller: controller, request: request),
           if (status == 'accepted') SizedBox(height: 14.h),
 
           // 🧑‍🔧 MECHANIC INFO
           if (request['mechanicId'] != null && status != 'open')
-             _MechanicInfoTile(mechanicId: request['mechanicId'], mechanicName: request['mechanicName'] ?? 'Mechanic'),
-          if (request['mechanicId'] != null && status != 'open') SizedBox(height: 14.h),
+            _MechanicInfoTile(
+              mechanicId: request['mechanicId'],
+              mechanicName: request['mechanicName'] ?? 'Mechanic',
+            ),
+          if (request['mechanicId'] != null && status != 'open')
+            SizedBox(height: 14.h),
 
           // 📍 INFO TILES
           _InfoTile(
             icon: Iconsax.location,
-            title: (request['locationName'] ?? '').toString().isEmpty ? 'Location not available' : request['locationName'],
+            title: (request['locationName'] ?? '').toString().isEmpty
+                ? 'Location not available'
+                : request['locationName'],
             subtitle: "Pickup Location",
           ),
           _InfoTile(
             icon: Iconsax.car,
-            title: (request['vehicleType'] ?? '').toString().isEmpty ? 'Not specified' : request['vehicleType'],
+            title: (request['vehicleType'] ?? '').toString().isEmpty
+                ? 'Not specified'
+                : request['vehicleType'],
             subtitle: "Vehicle Type",
           ),
           _InfoTile(
             icon: Iconsax.warning_2,
-            title: (request['problem'] ?? '').toString().isEmpty ? 'Not specified' : request['problem'],
+            title: (request['problem'] ?? '').toString().isEmpty
+                ? 'Not specified'
+                : request['problem'],
             subtitle: "Reported Issue",
           ),
           if ((request['landmark'] ?? '').toString().isNotEmpty)
@@ -80,9 +91,14 @@ class ActiveRequestCard extends StatelessWidget {
             ),
 
           // 🔐 VERIFICATION CODE
-          if ((status == 'accepted' || status == 'verified') && request['verificationCode'] != null)
-            _VerificationCode(controller: controller, code: request['verificationCode']),
-          if ((status == 'accepted' || status == 'verified') && request['verificationCode'] != null)
+          if ((status == 'accepted' || status == 'verified') &&
+              request['verificationCode'] != null)
+            _VerificationCode(
+              controller: controller,
+              code: request['verificationCode'],
+            ),
+          if ((status == 'accepted' || status == 'verified') &&
+              request['verificationCode'] != null)
             SizedBox(height: 14.h),
 
           SizedBox(height: 18.h),
@@ -90,7 +106,7 @@ class ActiveRequestCard extends StatelessWidget {
           // 🎬 ACTION BUTTONS
           if (status == 'mechanic_accepted')
             _MechanicAcceptedMessage()
-          else if (status == 'accepted') 
+          else if (status == 'accepted')
             _ActionButtons(controller: controller, request: request)
           else if (status == 'verified')
             _VerifiedMessage()
@@ -165,10 +181,7 @@ class _StatusChip extends StatelessWidget {
         color: color.withOpacity(0.12),
         borderRadius: BorderRadius.circular(20.r),
       ),
-      child: Text(
-        text,
-        style: AppTextStyles.label.copyWith(color: color),
-      ),
+      child: Text(text, style: AppTextStyles.label.copyWith(color: color)),
     );
   }
 }
@@ -195,97 +208,129 @@ class _MapPreview extends StatelessWidget {
           borderRadius: BorderRadius.circular(14.r),
           child: Stack(
             children: [
-              Obx(() => controller.mechanicLat.value != null && controller.mechanicLng.value != null
-                  ? GoogleMap(
-                      initialCameraPosition: CameraPosition(
-                        target: LatLng(controller.mechanicLat.value!, controller.mechanicLng.value!),
-                        zoom: 14,
-                      ),
-                      markers: controller.markers,
-                      onMapCreated: controller.setMapController,
-                      myLocationEnabled: false,
-                      zoomControlsEnabled: false,
-                      scrollGesturesEnabled: false,
-                      zoomGesturesEnabled: false,
-                      tiltGesturesEnabled: false,
-                      rotateGesturesEnabled: false,
-                      mapToolbarEnabled: false,
-                    )
-                  : Container(
-                      color: AppColors.background,
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const CircularProgressIndicator(),
-                            SizedBox(height: 12.h),
-                            Text(
-                              "Loading mechanic location...",
-                              style: AppTextStyles.caption,
-                            ),
-                          ],
+              Obx(
+                () =>
+                    controller.mechanicLat.value != null &&
+                        controller.mechanicLng.value != null
+                    ? GoogleMap(
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(
+                            controller.mechanicLat.value!,
+                            controller.mechanicLng.value!,
+                          ),
+                          zoom: 14,
+                        ),
+                        markers: controller.markers,
+                        onMapCreated: controller.setMapController,
+                        myLocationEnabled: false,
+                        zoomControlsEnabled: false,
+                        scrollGesturesEnabled: false,
+                        zoomGesturesEnabled: false,
+                        tiltGesturesEnabled: false,
+                        rotateGesturesEnabled: false,
+                        mapToolbarEnabled: false,
+                      )
+                    : Container(
+                        color: AppColors.background,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const CircularProgressIndicator(),
+                              SizedBox(height: 12.h),
+                              Text(
+                                "Loading mechanic location...",
+                                style: AppTextStyles.caption,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    )),
+              ),
               Positioned(
                 top: 12.h,
                 right: 12.w,
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
+                    vertical: 6.h,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.primary,
                     borderRadius: BorderRadius.circular(20.r),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 8),
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 8,
+                      ),
                     ],
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Iconsax.mouse_circle, size: 14.w, color: AppColors.surface),
+                      Icon(
+                        Iconsax.mouse_circle,
+                        size: 14.w,
+                        color: AppColors.surface,
+                      ),
                       SizedBox(width: 4.w),
                       Text(
                         "Tap to view",
-                        style: AppTextStyles.label.copyWith(color: AppColors.surface),
+                        style: AppTextStyles.label.copyWith(
+                          color: AppColors.surface,
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
-              Obx(() => controller.mechanicLat.value != null && controller.mechanicLng.value != null
-                  ? Positioned(
-                      left: 12.w,
-                      bottom: 12.h,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                        decoration: BoxDecoration(
-                          color: AppColors.surface,
-                          borderRadius: BorderRadius.circular(20.r),
-                          boxShadow: [
-                            BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 8),
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: 8.w,
-                              height: 8.h,
-                              decoration: const BoxDecoration(
-                                color: AppColors.success,
-                                shape: BoxShape.circle,
+              Obx(
+                () =>
+                    controller.mechanicLat.value != null &&
+                        controller.mechanicLng.value != null
+                    ? Positioned(
+                        left: 12.w,
+                        bottom: 12.h,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 6.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.surface,
+                            borderRadius: BorderRadius.circular(20.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 8,
                               ),
-                            ),
-                            SizedBox(width: 6.w),
-                            Text(
-                              "MECHANIC EN ROUTE",
-                              style: AppTextStyles.label.copyWith(color: AppColors.textPrimary, fontSize: 10.sp),
-                            ),
-                          ],
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 8.w,
+                                height: 8.h,
+                                decoration: const BoxDecoration(
+                                  color: AppColors.success,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              SizedBox(width: 6.w),
+                              Text(
+                                "MECHANIC EN ROUTE",
+                                style: AppTextStyles.label.copyWith(
+                                  color: AppColors.textPrimary,
+                                  fontSize: 10.sp,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                  : const SizedBox()),
+                      )
+                    : const SizedBox(),
+              ),
             ],
           ),
         ),
@@ -299,7 +344,11 @@ class _InfoTile extends StatelessWidget {
   final String title;
   final String subtitle;
 
-  const _InfoTile({required this.icon, required this.title, required this.subtitle});
+  const _InfoTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -323,13 +372,12 @@ class _InfoTile extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: AppTextStyles.body2.copyWith(fontWeight: FontWeight.w600),
+                  style: AppTextStyles.body2.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  subtitle,
-                  style: AppTextStyles.caption,
-                ),
+                Text(subtitle, style: AppTextStyles.caption),
               ],
             ),
           ),
@@ -400,7 +448,9 @@ class _VerificationCodeState extends State<_VerificationCode> {
                   decoration: BoxDecoration(
                     color: AppColors.surface,
                     borderRadius: BorderRadius.circular(10.r),
-                    border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                    border: Border.all(
+                      color: AppColors.primary.withOpacity(0.3),
+                    ),
                     boxShadow: [
                       BoxShadow(
                         color: AppColors.primary.withOpacity(0.08),
@@ -436,12 +486,16 @@ class _VerificationCodeState extends State<_VerificationCode> {
                   ),
                   label: Text(
                     _isRevealed ? "Hide" : "View Code",
-                    style: AppTextStyles.button.copyWith(color: AppColors.primary),
+                    style: AppTextStyles.button.copyWith(
+                      color: AppColors.primary,
+                    ),
                   ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.primary,
                     side: const BorderSide(color: AppColors.primary),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
                     padding: EdgeInsets.symmetric(vertical: 10.h),
                   ),
                 ),
@@ -449,13 +503,21 @@ class _VerificationCodeState extends State<_VerificationCode> {
               SizedBox(width: 10.w),
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () => widget.controller.shareVerificationCode(widget.code),
+                  onPressed: () =>
+                      widget.controller.shareVerificationCode(widget.code),
                   icon: Icon(Iconsax.share, size: 16.w),
-                  label: Text("Share", style: AppTextStyles.button.copyWith(color: AppColors.primary)),
+                  label: Text(
+                    "Share",
+                    style: AppTextStyles.button.copyWith(
+                      color: AppColors.primary,
+                    ),
+                  ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.primary,
                     side: const BorderSide(color: AppColors.primary),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
                     padding: EdgeInsets.symmetric(vertical: 10.h),
                   ),
                 ),
@@ -485,8 +547,17 @@ class _ActionButtons extends StatelessWidget {
                 height: 48.h,
                 child: ElevatedButton.icon(
                   onPressed: controller.callMechanic,
-                  icon: Icon(Iconsax.call, size: 18.w, color: AppColors.surface),
-                  label: Text("Call", style: AppTextStyles.button.copyWith(color: AppColors.surface)),
+                  icon: Icon(
+                    Iconsax.call,
+                    size: 18.w,
+                    color: AppColors.surface,
+                  ),
+                  label: Text(
+                    "Call",
+                    style: AppTextStyles.button.copyWith(
+                      color: AppColors.surface,
+                    ),
+                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: AppColors.surface,
@@ -503,8 +574,17 @@ class _ActionButtons extends StatelessWidget {
                 height: 48.h,
                 child: ElevatedButton.icon(
                   onPressed: controller.openChat,
-                  icon: Icon(Iconsax.message, size: 18.w, color: AppColors.surface),
-                  label: Text("Chat", style: AppTextStyles.button.copyWith(color: AppColors.surface)),
+                  icon: Icon(
+                    Iconsax.message,
+                    size: 18.w,
+                    color: AppColors.surface,
+                  ),
+                  label: Text(
+                    "Chat",
+                    style: AppTextStyles.button.copyWith(
+                      color: AppColors.surface,
+                    ),
+                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: AppColors.surface,
@@ -525,8 +605,15 @@ class _ActionButtons extends StatelessWidget {
             onPressed: () {
               Get.to(() => LiveTrackingView(requestId: request['id']));
             },
-            icon: Icon(Iconsax.location_cross, size: 18.w, color: AppColors.primary),
-            label: Text("Track Mechanic Live", style: AppTextStyles.button.copyWith(color: AppColors.primary)),
+            icon: Icon(
+              Iconsax.location_cross,
+              size: 18.w,
+              color: AppColors.primary,
+            ),
+            label: Text(
+              "Track Mechanic Live",
+              style: AppTextStyles.button.copyWith(color: AppColors.primary),
+            ),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.primary,
               side: const BorderSide(color: AppColors.primary, width: 1.5),
@@ -557,7 +644,9 @@ class _WaitingMessage extends StatelessWidget {
           Expanded(
             child: Text(
               "Waiting for a mechanic to accept your request...",
-              style: AppTextStyles.body2.copyWith(color: AppColors.secondaryDark),
+              style: AppTextStyles.body2.copyWith(
+                color: AppColors.secondaryDark,
+              ),
             ),
           ),
         ],
@@ -592,9 +681,7 @@ class _VerifiedMessage extends StatelessWidget {
           SizedBox(height: 6.h),
           Text(
             "Please wait securely. Your mechanic is diagnosing and fixing the issue.",
-            style: AppTextStyles.body2.copyWith(
-              color: AppColors.textSecondary,
-            ),
+            style: AppTextStyles.body2.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
         ],
@@ -643,9 +730,7 @@ class _MechanicAcceptedMessage extends StatelessWidget {
           SizedBox(height: 6.h),
           Text(
             "Do you want this mechanic to help you? Accept to generate a verification code.",
-            style: AppTextStyles.body2.copyWith(
-              color: AppColors.textSecondary,
-            ),
+            style: AppTextStyles.body2.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 20.h),
@@ -658,7 +743,8 @@ class _MechanicAcceptedMessage extends StatelessWidget {
                     onPressed: () {
                       Get.defaultDialog(
                         title: "Decline Mechanic?",
-                        middleText: "This will open your request to other mechanics.",
+                        middleText:
+                            "This will open your request to other mechanics.",
                         textConfirm: "Yes, Decline",
                         textCancel: "No",
                         confirmTextColor: AppColors.surface,
@@ -670,11 +756,18 @@ class _MechanicAcceptedMessage extends StatelessWidget {
                       );
                     },
                     icon: Icon(Iconsax.close_circle, size: 18.w),
-                    label: Text("Decline", style: AppTextStyles.button.copyWith(color: AppColors.error)),
+                    label: Text(
+                      "Decline",
+                      style: AppTextStyles.button.copyWith(
+                        color: AppColors.error,
+                      ),
+                    ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.error,
                       side: const BorderSide(color: AppColors.error),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14.r),
+                      ),
                     ),
                   ),
                 ),
@@ -685,12 +778,23 @@ class _MechanicAcceptedMessage extends StatelessWidget {
                   height: 48.h,
                   child: ElevatedButton.icon(
                     onPressed: () => controller.approveMechanic(),
-                    icon: Icon(Iconsax.tick_circle, size: 18.w, color: AppColors.surface),
-                    label: Text("Accept", style: AppTextStyles.button.copyWith(color: AppColors.surface)),
+                    icon: Icon(
+                      Iconsax.tick_circle,
+                      size: 18.w,
+                      color: AppColors.surface,
+                    ),
+                    label: Text(
+                      "Accept",
+                      style: AppTextStyles.button.copyWith(
+                        color: AppColors.surface,
+                      ),
+                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.success,
                       foregroundColor: AppColors.surface,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14.r),
+                      ),
                     ),
                   ),
                 ),
@@ -707,15 +811,23 @@ class _MechanicInfoTile extends StatelessWidget {
   final String mechanicId;
   final String mechanicName;
 
-  const _MechanicInfoTile({required this.mechanicId, required this.mechanicName});
+  const _MechanicInfoTile({
+    required this.mechanicId,
+    required this.mechanicName,
+  });
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<DocumentSnapshot?>(
-      future: FirebaseFirestore.instance.collection('users').doc(mechanicId).get(),
+      future: FirebaseFirestore.instance
+          .collection('users')
+          .doc(mechanicId)
+          .get(),
       builder: (context, snapshot) {
         double rating = 0.0;
-        if (snapshot.hasData && snapshot.data != null && snapshot.data!.exists) {
+        if (snapshot.hasData &&
+            snapshot.data != null &&
+            snapshot.data!.exists) {
           final data = snapshot.data!.data() as Map<String, dynamic>;
           rating = (data['averageRating'] ?? 0.0).toDouble();
         }
@@ -745,7 +857,9 @@ class _MechanicInfoTile extends StatelessWidget {
                   children: [
                     Text(
                       mechanicName,
-                      style: AppTextStyles.body2.copyWith(fontWeight: FontWeight.w700),
+                      style: AppTextStyles.body2.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -754,11 +868,17 @@ class _MechanicInfoTile extends StatelessWidget {
                       children: [
                         Text(
                           "Assigned Mechanic",
-                          style: AppTextStyles.caption.copyWith(color: AppColors.primary),
+                          style: AppTextStyles.caption.copyWith(
+                            color: AppColors.primary,
+                          ),
                         ),
                         if (rating > 0) ...[
                           SizedBox(width: 8.w),
-                          Icon(Iconsax.star1, color: AppColors.warning, size: 14.sp),
+                          Icon(
+                            Iconsax.star1,
+                            color: AppColors.warning,
+                            size: 14.sp,
+                          ),
                           SizedBox(width: 4.w),
                           Text(
                             rating.toStringAsFixed(1),

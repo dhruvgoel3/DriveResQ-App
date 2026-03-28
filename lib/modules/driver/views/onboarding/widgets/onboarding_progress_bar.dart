@@ -20,16 +20,16 @@ class OnboardingProgressBar extends StatelessWidget {
             children: [
               Text(
                 'Step ${controller.currentStep.value + 1} of 2',
-                style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textSecondary,
+                ),
               ),
               const Spacer(),
               Text(
                 controller.currentStep.value == 0
                     ? 'Personal Details'
                     : 'ID Verification',
-                style: AppTextStyles.label.copyWith(
-                  color: AppColors.primary,
-                ),
+                style: AppTextStyles.label.copyWith(color: AppColors.primary),
               ),
             ],
           ),

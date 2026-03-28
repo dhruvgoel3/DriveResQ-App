@@ -301,7 +301,7 @@ class JobCompletionController extends GetxController {
       currentStep.value = 2; // Go to success screen
     } catch (e) {
       isLoading.value = false;
-      debugPrint('❌ Completion error: $e');
+      debugPrint(' Completion error: $e');
       Get.snackbar(
         'Error',
         'Failed to complete job: $e',

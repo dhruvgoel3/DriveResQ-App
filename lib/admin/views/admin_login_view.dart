@@ -175,7 +175,9 @@ class AdminLoginView extends StatelessWidget {
                               ),
                             )
                           : Text(
-                              c.isFirstSetup.value ? 'Setup Admin Account' : 'Sign In',
+                              c.isFirstSetup.value
+                                  ? 'Setup Admin Account'
+                                  : 'Sign In',
                               style: GoogleFonts.poppins(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,

@@ -41,7 +41,7 @@ class FindMechanicsController extends GetxController {
     'Electrical',
     'Body Work',
     'Oil Change',
-    'General Repair'
+    'General Repair',
   ];
 
   @override
@@ -52,7 +52,7 @@ class FindMechanicsController extends GetxController {
     // Debounce search to avoid re-filtering on every keystroke
     _searchDebounce = debounce(
       searchQuery,
-      (_) {},  // filteredMechanics is a computed getter, debounce triggers Obx
+      (_) {}, // filteredMechanics is a computed getter, debounce triggers Obx
       time: const Duration(milliseconds: 300),
     );
   }
@@ -105,7 +105,8 @@ class FindMechanicsController extends GetxController {
 
               // Calculate distance
               if (lat != null && lng != null && driverLat.value != 0.0) {
-                dist = Geolocator.distanceBetween(
+                dist =
+                    Geolocator.distanceBetween(
                       driverLat.value,
                       driverLng.value,
                       lat,
@@ -114,18 +115,14 @@ class FindMechanicsController extends GetxController {
                     1000; // in km
               }
 
-              mechanics.add({
-                ...data,
-                'id': doc.id,
-                'distance': dist,
-              });
+              mechanics.add({...data, 'id': doc.id, 'distance': dist});
             }
 
             allMechanics.value = mechanics;
             isLoading.value = false;
           },
           onError: (error) {
-            debugPrint('❌ Error listening to mechanics: $error');
+            debugPrint(' Error listening to mechanics: $error');
             isLoading.value = false;
           },
         );
@@ -151,9 +148,13 @@ class FindMechanicsController extends GetxController {
       if (selectedService.value != 'All') {
         final services = List<String>.from(mech['servicesOffered'] ?? []);
         final spec = List<String>.from(mech['specializations'] ?? []);
-        bool hasService = services
-                .any((s) => s.toLowerCase() == selectedService.value.toLowerCase()) ||
-            spec.any((s) => s.toLowerCase() == selectedService.value.toLowerCase());
+        bool hasService =
+            services.any(
+              (s) => s.toLowerCase() == selectedService.value.toLowerCase(),
+            ) ||
+            spec.any(
+              (s) => s.toLowerCase() == selectedService.value.toLowerCase(),
+            );
 
         if (!hasService) return false;
       }
@@ -161,7 +162,9 @@ class FindMechanicsController extends GetxController {
       // Filter by search query
       if (searchQuery.value.isNotEmpty) {
         final q = searchQuery.value.toLowerCase();
-        final name = (mech['fullName'] ?? mech['name'] ?? '').toString().toLowerCase();
+        final name = (mech['fullName'] ?? mech['name'] ?? '')
+            .toString()
+            .toLowerCase();
         final shop = (mech['shopName'] ?? '').toString().toLowerCase();
         if (!name.contains(q) && !shop.contains(q)) {
           return false;

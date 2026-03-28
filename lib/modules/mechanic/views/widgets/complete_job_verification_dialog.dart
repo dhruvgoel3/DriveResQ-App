@@ -124,10 +124,7 @@ class _CompleteJobVerificationDialogState
 
           Get.to(
             () => const JobCompletionPage(),
-            arguments: {
-              'job': jobData,
-              'jobId': savedJobId,
-            },
+            arguments: {'job': jobData, 'jobId': savedJobId},
           );
         }
       }

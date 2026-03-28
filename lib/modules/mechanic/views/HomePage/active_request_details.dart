@@ -165,7 +165,11 @@ class ActiveRequestDetailsPage extends StatelessWidget {
               color: Colors.white.withOpacity(0.2),
               shape: BoxShape.circle,
             ),
-            child: Icon(isWaiting ? Iconsax.clock : Iconsax.setting_2, color: Colors.white, size: 32.w),
+            child: Icon(
+              isWaiting ? Iconsax.clock : Iconsax.setting_2,
+              color: Colors.white,
+              size: 32.w,
+            ),
           ),
           SizedBox(height: 10.h),
           Text(
@@ -304,7 +308,11 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(Iconsax.location, size: 18.w, color: Colors.grey.shade600),
+                    Icon(
+                      Iconsax.location,
+                      size: 18.w,
+                      color: Colors.grey.shade600,
+                    ),
                     SizedBox(width: 8.w),
                     Expanded(
                       child: Text(
@@ -436,11 +444,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                     color: Colors.red.shade200,
                     borderRadius: BorderRadius.circular(10.r),
                   ),
-                  child: Icon(
-                    Iconsax.warning_2,
-                    color: Colors.red,
-                    size: 24.w,
-                  ),
+                  child: Icon(Iconsax.warning_2, color: Colors.red, size: 24.w),
                 ),
                 SizedBox(width: 12.w),
                 Text(
@@ -490,7 +494,11 @@ class ActiveRequestDetailsPage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Icon(Iconsax.info_circle, color: Colors.orange.shade700, size: 28.w),
+                  Icon(
+                    Iconsax.info_circle,
+                    color: Colors.orange.shade700,
+                    size: 28.w,
+                  ),
                   SizedBox(height: 8.h),
                   Text(
                     "Waiting for Driver",
@@ -518,84 +526,89 @@ class ActiveRequestDetailsPage extends StatelessWidget {
               child: OutlinedButton.icon(
                 onPressed: () => _showCancelDialog(controller),
                 icon: Icon(Iconsax.close_square, size: 20.w),
-                label: Text("Cancel Offer", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                label: Text(
+                  "Cancel Offer",
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.red,
                   side: BorderSide(color: Colors.red, width: 2),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                  ),
                   padding: EdgeInsets.symmetric(vertical: 16.h),
                 ),
               ),
             ),
           ] else ...[
-          // Primary Actions
-          Row(
-            children: [
-              Expanded(
-                child: _actionButton(
-                  icon: Iconsax.call,
-                  label: "Call Driver",
-                  color: primary,
-                  onPressed: () => _callDriver(job),
+            // Primary Actions
+            Row(
+              children: [
+                Expanded(
+                  child: _actionButton(
+                    icon: Iconsax.call,
+                    label: "Call Driver",
+                    color: primary,
+                    onPressed: () => _callDriver(job),
+                  ),
                 ),
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: _actionButton(
-                  icon: Iconsax.location,
-                  label: "Navigate",
-                  color: Colors.blue,
-                  onPressed: () => _navigateToDriver(job),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: _actionButton(
+                    icon: Iconsax.location,
+                    label: "Navigate",
+                    color: Colors.blue,
+                    onPressed: () => _navigateToDriver(job),
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
 
-          SizedBox(height: 12.h),
+            SizedBox(height: 12.h),
 
-          // Secondary Actions
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () => _showCancelDialog(controller),
-                  icon: Icon(Iconsax.close_square, size: 20.w),
-                  label: Text(
-                    "Cancel Job",
-                    style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.red,
-                    side: BorderSide(color: Colors.red, width: 2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14.r),
+            // Secondary Actions
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _showCancelDialog(controller),
+                    icon: Icon(Iconsax.close_square, size: 20.w),
+                    label: Text(
+                      "Cancel Job",
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 16.h),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.red,
+                      side: BorderSide(color: Colors.red, width: 2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14.r),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () => _showCompleteDialog(controller),
-                  icon: Icon(Iconsax.tick_circle, size: 20.w),
-                  label: Text(
-                    "Complete",
-                    style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14.r),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => _showCompleteDialog(controller),
+                    icon: Icon(Iconsax.tick_circle, size: 20.w),
+                    label: Text(
+                      "Complete",
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 16.h),
-                    elevation: 2,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14.r),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
+                      elevation: 2,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
           ],
         ],
       ),

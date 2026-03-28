@@ -46,10 +46,14 @@ class _RatingDialogState extends State<RatingDialog> {
             CircleAvatar(
               radius: 36,
               backgroundColor: AppColors.primary.withOpacity(0.1),
-              child: const Icon(Iconsax.star1, size: 36, color: AppColors.warning),
+              child: const Icon(
+                Iconsax.star1,
+                size: 36,
+                color: AppColors.warning,
+              ),
             ),
             const SizedBox(height: 16),
-            
+
             // Title
             Text(
               widget.title,
@@ -57,15 +61,17 @@ class _RatingDialogState extends State<RatingDialog> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
-            
+
             // Description
             Text(
               'How was your experience with ${widget.entityName}?',
-              style: AppTextStyles.body2.copyWith(color: AppColors.textSecondary),
+              style: AppTextStyles.body2.copyWith(
+                color: AppColors.textSecondary,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
-            
+
             // Stars
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -81,14 +87,16 @@ class _RatingDialogState extends State<RatingDialog> {
                     child: Icon(
                       index < _rating ? Iconsax.star1 : Iconsax.star,
                       size: 40,
-                      color: index < _rating ? AppColors.warning : AppColors.disabled,
+                      color: index < _rating
+                          ? AppColors.warning
+                          : AppColors.disabled,
                     ),
                   ),
                 );
               }),
             ),
             const SizedBox(height: 24),
-            
+
             // Review Text
             TextField(
               controller: _reviewController,
@@ -96,7 +104,10 @@ class _RatingDialogState extends State<RatingDialog> {
               style: GoogleFonts.poppins(fontSize: 14),
               decoration: InputDecoration(
                 hintText: 'Add an optional review...',
-                hintStyle: GoogleFonts.poppins(color: AppColors.textHint, fontSize: 13),
+                hintStyle: GoogleFonts.poppins(
+                  color: AppColors.textHint,
+                  fontSize: 13,
+                ),
                 filled: true,
                 fillColor: AppColors.background,
                 border: OutlineInputBorder(
@@ -107,7 +118,7 @@ class _RatingDialogState extends State<RatingDialog> {
               ),
             ),
             const SizedBox(height: 24),
-            
+
             // Submit Button
             SizedBox(
               width: double.infinity,
@@ -130,12 +141,14 @@ class _RatingDialogState extends State<RatingDialog> {
                 child: Text(
                   'Submit Rating',
                   style: GoogleFonts.poppins(
-                      fontSize: 15, fontWeight: FontWeight.w600),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 12),
-            
+
             // Cancel Button
             TextButton(
               onPressed: () => Get.back(),

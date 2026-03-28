@@ -35,7 +35,11 @@ class NotificationsView extends StatelessWidget {
         iconTheme: const IconThemeData(color: Color(0xFF1A1D26)),
         actions: [
           IconButton(
-            icon: Icon(Iconsax.tick_circle, color: const Color(0xFF6C63FF), size: 22.w),
+            icon: Icon(
+              Iconsax.tick_circle,
+              color: const Color(0xFF6C63FF),
+              size: 22.w,
+            ),
             tooltip: 'Mark all as read',
             onPressed: () => _markAllRead(uid),
           ),
@@ -58,10 +62,12 @@ class NotificationsView extends StatelessWidget {
             return _buildSetupMessage();
           }
 
-          final docs = snapshot.data?.docs.where((doc) {
-            final data = doc.data() as Map<String, dynamic>;
-            return data['type'] != 'chat_message';
-          }).toList() ?? [];
+          final docs =
+              snapshot.data?.docs.where((doc) {
+                final data = doc.data() as Map<String, dynamic>;
+                return data['type'] != 'chat_message';
+              }).toList() ??
+              [];
 
           if (docs.isEmpty) {
             return _buildEmptyState();
@@ -80,7 +86,10 @@ class NotificationsView extends StatelessWidget {
                 children: [
                   // Date header
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 12.h,
+                    ),
                     child: Text(
                       group['label'] as String,
                       style: GoogleFonts.poppins(
@@ -116,12 +125,12 @@ class NotificationsView extends StatelessWidget {
         .where('isRead', isEqualTo: false)
         .get()
         .then((snapshot) {
-      final batch = FirebaseFirestore.instance.batch();
-      for (var doc in snapshot.docs) {
-        batch.update(doc.reference, {'isRead': true});
-      }
-      batch.commit();
-    });
+          final batch = FirebaseFirestore.instance.batch();
+          for (var doc in snapshot.docs) {
+            batch.update(doc.reference, {'isRead': true});
+          }
+          batch.commit();
+        });
   }
 
   // ─── Empty State ───
@@ -137,7 +146,11 @@ class NotificationsView extends StatelessWidget {
               color: const Color(0xFFEEEDFF),
               borderRadius: BorderRadius.circular(24.r),
             ),
-            child: Icon(Iconsax.notification, size: 36.w, color: const Color(0xFF6C63FF)),
+            child: Icon(
+              Iconsax.notification,
+              size: 36.w,
+              color: const Color(0xFF6C63FF),
+            ),
           ),
           SizedBox(height: 20.h),
           Text(
@@ -169,7 +182,11 @@ class NotificationsView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Iconsax.info_circle, size: 48.w, color: const Color(0xFF6C63FF)),
+            Icon(
+              Iconsax.info_circle,
+              size: 48.w,
+              color: const Color(0xFF6C63FF),
+            ),
             SizedBox(height: 16.h),
             Text(
               "Setting things up...",
@@ -183,7 +200,10 @@ class NotificationsView extends StatelessWidget {
             Text(
               "Notifications will be available shortly.\nPlease try again in a few minutes.",
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(fontSize: 13.sp, color: const Color(0xFF8E92A4)),
+              style: GoogleFonts.poppins(
+                fontSize: 13.sp,
+                color: const Color(0xFF8E92A4),
+              ),
             ),
           ],
         ),
@@ -196,9 +216,7 @@ class NotificationsView extends StatelessWidget {
     final data = doc.data() as Map<String, dynamic>;
     final isRead = data['isRead'] ?? false;
     final createdAt = data['createdAt'] as Timestamp?;
-    final timeString = createdAt != null
-        ? _formatTime(createdAt.toDate())
-        : '';
+    final timeString = createdAt != null ? _formatTime(createdAt.toDate()) : '';
 
     final type = data['type'] as String? ?? '';
     final title = data['title'] ?? 'Notification';
@@ -264,7 +282,9 @@ class NotificationsView extends StatelessWidget {
                           child: Text(
                             title,
                             style: GoogleFonts.poppins(
-                              fontWeight: isRead ? FontWeight.w500 : FontWeight.w600,
+                              fontWeight: isRead
+                                  ? FontWeight.w500
+                                  : FontWeight.w600,
                               fontSize: 13.5.sp,
                               color: const Color(0xFF1A1D26),
                             ),
@@ -342,7 +362,9 @@ class NotificationsView extends StatelessWidget {
       groups[label]!.add(doc);
     }
 
-    return groups.entries.map((e) => {'label': e.key, 'docs': e.value}).toList();
+    return groups.entries
+        .map((e) => {'label': e.key, 'docs': e.value})
+        .toList();
   }
 
   bool _isSameDay(DateTime a, DateTime b) =>

@@ -256,7 +256,11 @@ class Step3Documents extends StatelessWidget {
           maxLength: 12,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           cursorColor: const Color(0xFFFF9800),
-          style: GoogleFonts.poppins(fontSize: 15.sp, letterSpacing: 2, color: Colors.black87),
+          style: GoogleFonts.poppins(
+            fontSize: 15.sp,
+            letterSpacing: 2,
+            color: Colors.black87,
+          ),
           decoration: InputDecoration(
             hintText: 'XXXX XXXX XXXX',
             hintStyle: GoogleFonts.poppins(
@@ -285,7 +289,10 @@ class Step3Documents extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14.r),
-              borderSide: const BorderSide(color: Color(0xFFFF9800), width: 1.5),
+              borderSide: const BorderSide(
+                color: Color(0xFFFF9800),
+                width: 1.5,
+              ),
             ),
           ),
         ),

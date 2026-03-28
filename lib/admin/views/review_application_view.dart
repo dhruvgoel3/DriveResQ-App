@@ -801,7 +801,11 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
             ),
             title: Row(
               children: [
-                const Icon(Iconsax.close_square, color: Color(0xFFF44336), size: 28),
+                const Icon(
+                  Iconsax.close_square,
+                  color: Color(0xFFF44336),
+                  size: 28,
+                ),
                 const SizedBox(width: 12),
                 Text(
                   'Reject $name?',

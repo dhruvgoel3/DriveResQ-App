@@ -20,7 +20,9 @@ class VerificationPendingView extends StatelessWidget {
               .doc(FirebaseAuth.instance.currentUser?.uid)
               .snapshots(),
           builder: (context, snapshot) {
-            if (snapshot.hasData && snapshot.data != null && snapshot.data!.exists) {
+            if (snapshot.hasData &&
+                snapshot.data != null &&
+                snapshot.data!.exists) {
               final data = snapshot.data!.data() as Map<String, dynamic>?;
               final status = data?['verificationStatus'] ?? 'pending';
 
@@ -44,15 +46,14 @@ class VerificationPendingView extends StatelessWidget {
             }
 
             String currentStatus = 'loading';
-            if (snapshot.hasData && snapshot.data != null && snapshot.data!.exists) {
+            if (snapshot.hasData &&
+                snapshot.data != null &&
+                snapshot.data!.exists) {
               final data = snapshot.data!.data() as Map<String, dynamic>?;
               currentStatus = data?['verificationStatus'] ?? 'pending';
             }
 
-            return _buildPendingView(
-              status: currentStatus,
-              snapshot: snapshot,
-            );
+            return _buildPendingView(status: currentStatus, snapshot: snapshot);
           },
         ),
       ),
@@ -88,7 +89,10 @@ class VerificationPendingView extends StatelessWidget {
     }
   }
 
-  Widget _buildPendingView({required String status, required AsyncSnapshot<DocumentSnapshot> snapshot}) {
+  Widget _buildPendingView({
+    required String status,
+    required AsyncSnapshot<DocumentSnapshot> snapshot,
+  }) {
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 48.h),
       child: Column(
@@ -179,7 +183,10 @@ class VerificationPendingView extends StatelessWidget {
           ExpansionTile(
             title: Text(
               'View Debug Info',
-              style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey.shade400),
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                color: Colors.grey.shade400,
+              ),
             ),
             children: [
               Container(
@@ -188,9 +195,17 @@ class VerificationPendingView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _debugRow('Your UID:', FirebaseAuth.instance.currentUser?.uid ?? 'No User'),
+                    _debugRow(
+                      'Your UID:',
+                      FirebaseAuth.instance.currentUser?.uid ?? 'No User',
+                    ),
                     _debugRow('Status:', status),
-                    _debugRow('Exists:', (snapshot.hasData && snapshot.data != null) ? snapshot.data!.exists.toString() : 'N/A'),
+                    _debugRow(
+                      'Exists:',
+                      (snapshot.hasData && snapshot.data != null)
+                          ? snapshot.data!.exists.toString()
+                          : 'N/A',
+                    ),
                   ],
                 ),
               ),
@@ -226,8 +241,17 @@ class VerificationPendingView extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold)),
-          Text(value, style: GoogleFonts.poppins(fontSize: 11, color: Colors.blue)),
+          Text(
+            label,
+            style: GoogleFonts.poppins(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            value,
+            style: GoogleFonts.poppins(fontSize: 11, color: Colors.blue),
+          ),
         ],
       ),
     );

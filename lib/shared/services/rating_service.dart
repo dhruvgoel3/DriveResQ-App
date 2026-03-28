@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import '../../modules/notifications/services/notification_sender.dart';
 
 /// A service dedicated to managing user ratings and reviews.
-/// 
+///
 /// This service handles the atomic update of a user's average rating
 /// while storing their review history in a sub-collection.
 class RatingService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   /// Submits a rating for a specific [targetUserId].
-  /// 
+  ///
   /// Uses a Firestore [Transaction] to ensure the average calculation remains
   /// consistent even when multiple reviews are submitted simultaneously.
   static Future<void> submitRating({
@@ -21,14 +21,16 @@ class RatingService {
     String reviewText = '',
   }) async {
     final userRef = _firestore.collection('users').doc(targetUserId);
-    final reviewsRef = userRef.collection('reviews').doc(); 
+    final reviewsRef = userRef.collection('reviews').doc();
 
     try {
       await _firestore.runTransaction((transaction) async {
         final userSnapshot = await transaction.get(userRef);
 
         if (!userSnapshot.exists) {
-          throw Exception("Service failure: Target user record does not exist.");
+          throw Exception(
+            "Service failure: Target user record does not exist.",
+          );
         }
 
         final data = userSnapshot.data()!;
@@ -59,7 +61,6 @@ class RatingService {
         rating: newRating,
         review: reviewText,
       ).catchError((e) => debugPrint('⚠️ Rating Notification Failed: $e'));
-
     } catch (e) {
       debugPrint("RatingService Error: $e");
       rethrow;

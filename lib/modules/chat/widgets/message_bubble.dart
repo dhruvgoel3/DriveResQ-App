@@ -37,10 +37,7 @@ class MessageBubble extends StatelessWidget {
   Widget _senderLabel() {
     if (isMe || message.senderName.isEmpty) return const SizedBox.shrink();
     return Padding(
-      padding: EdgeInsets.only(
-        left: 16.w,
-        bottom: 2.h,
-      ),
+      padding: EdgeInsets.only(left: 16.w, bottom: 2.h),
       child: Text(
         message.senderName,
         style: GoogleFonts.poppins(
@@ -54,8 +51,9 @@ class MessageBubble extends StatelessWidget {
 
   Widget _textBubble() {
     return Column(
-      crossAxisAlignment:
-          isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment: isMe
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       children: [
         _senderLabel(),
         Align(
@@ -86,8 +84,9 @@ class MessageBubble extends StatelessWidget {
               ],
             ),
             child: Column(
-              crossAxisAlignment:
-                  isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              crossAxisAlignment: isMe
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
               children: [
                 Text(
                   message.content,
@@ -111,7 +110,9 @@ class MessageBubble extends StatelessWidget {
                     if (isMe) ...[
                       SizedBox(width: 4.w),
                       Icon(
-                        message.read ? Iconsax.tick_circle : Iconsax.tick_circle,
+                        message.read
+                            ? Iconsax.tick_circle
+                            : Iconsax.tick_circle,
                         size: 14.w,
                         color: message.read
                             ? Colors.lightBlueAccent
@@ -130,8 +131,9 @@ class MessageBubble extends StatelessWidget {
 
   Widget _imageBubble(BuildContext context) {
     return Column(
-      crossAxisAlignment:
-          isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment: isMe
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       children: [
         _senderLabel(),
         Align(
@@ -159,8 +161,9 @@ class MessageBubble extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 ClipRRect(
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(16.r)),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(16.r),
+                  ),
                   child: GestureDetector(
                     onTap: () => _showFullImage(context),
                     child: Image.network(
@@ -193,8 +196,10 @@ class MessageBubble extends StatelessWidget {
                 ),
                 if (message.content.isNotEmpty)
                   Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.w,
+                      vertical: 6.h,
+                    ),
                     child: Text(
                       message.content,
                       style: GoogleFonts.poppins(
@@ -204,8 +209,11 @@ class MessageBubble extends StatelessWidget {
                     ),
                   ),
                 Padding(
-                  padding:
-                      EdgeInsets.only(right: 10.w, bottom: 6.h, left: 10.w),
+                  padding: EdgeInsets.only(
+                    right: 10.w,
+                    bottom: 6.h,
+                    left: 10.w,
+                  ),
                   child: Text(
                     _formatTime(message.timestamp),
                     style: GoogleFonts.poppins(
@@ -229,8 +237,9 @@ class MessageBubble extends StatelessWidget {
         '${(duration ~/ 60).toString().padLeft(2, '0')}:${(duration % 60).toString().padLeft(2, '0')}';
 
     return Column(
-      crossAxisAlignment:
-          isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment: isMe
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       children: [
         _senderLabel(),
         Align(
@@ -261,8 +270,8 @@ class MessageBubble extends StatelessWidget {
               ],
             ),
             child: Obx(() {
-              final isThisPlaying = c.isPlaying.value &&
-                  c.currentlyPlayingId.value == message.id;
+              final isThisPlaying =
+                  c.isPlaying.value && c.currentlyPlayingId.value == message.id;
               final progress = isThisPlaying ? c.playbackProgress.value : 0.0;
 
               return Row(
@@ -303,26 +312,44 @@ class MessageBubble extends StatelessWidget {
                             children: List.generate(20, (i) {
                               // Generate pseudo-random heights for waveform look
                               final heights = [
-                                0.4, 0.7, 0.5, 0.9, 0.6, 0.8, 0.3, 1.0, 0.5,
-                                0.7, 0.6, 0.9, 0.4, 0.8, 0.5, 0.7, 0.3, 0.6,
-                                0.8, 0.5
+                                0.4,
+                                0.7,
+                                0.5,
+                                0.9,
+                                0.6,
+                                0.8,
+                                0.3,
+                                1.0,
+                                0.5,
+                                0.7,
+                                0.6,
+                                0.9,
+                                0.4,
+                                0.8,
+                                0.5,
+                                0.7,
+                                0.3,
+                                0.6,
+                                0.8,
+                                0.5,
                               ];
                               final barProgress = (i + 1) / 20;
                               final isActive = barProgress <= progress;
 
                               return Expanded(
                                 child: Container(
-                                  margin:
-                                      EdgeInsets.symmetric(horizontal: 0.5.w),
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: 0.5.w,
+                                  ),
                                   height: 24.h * heights[i],
                                   decoration: BoxDecoration(
                                     color: isActive
                                         ? (isMe
-                                            ? Colors.white
-                                            : const Color(0xFF6C63FF))
+                                              ? Colors.white
+                                              : const Color(0xFF6C63FF))
                                         : (isMe
-                                            ? Colors.white.withOpacity(0.3)
-                                            : Colors.grey.shade300),
+                                              ? Colors.white.withOpacity(0.3)
+                                              : Colors.grey.shade300),
                                     borderRadius: BorderRadius.circular(2.r),
                                   ),
                                 ),

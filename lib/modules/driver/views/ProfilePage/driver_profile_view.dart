@@ -21,7 +21,9 @@ class DriverProfileView extends StatelessWidget {
       backgroundColor: AppColors.background,
       body: Obx(() {
         if (c.userData.value == null) {
-          return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.primary),
+          );
         }
 
         return CustomScrollView(

@@ -8,7 +8,7 @@ import '../../notifications/services/notification_sender.dart';
 import '../models/message_model.dart';
 
 /// A comprehensive service for managing real-time chat between Drivers and Mechanics.
-/// 
+///
 /// Handles:
 /// - Chat room initialization.
 /// - Text, image, voice, and system message dispatch.
@@ -26,8 +26,8 @@ class ChatService {
   // ---------------------------------------------------------------------------
 
   /// Creates a persistent chat room for a specific request.
-  /// 
-  /// Automatically resolves participant names and profile photos from Firestore 
+  ///
+  /// Automatically resolves participant names and profile photos from Firestore
   /// if they are missing or hold generic placeholders.
   static Future<void> createChat({
     required String requestId,
@@ -52,7 +52,8 @@ class ChatService {
         if (doc.exists) {
           final data = doc.data()!;
           resolvedDriverName = data['fullName'] ?? data['name'] ?? 'Driver';
-          resolvedDriverPhoto = data['profilePhotoUrl'] ?? data['photoUrl'] ?? '';
+          resolvedDriverPhoto =
+              data['profilePhotoUrl'] ?? data['photoUrl'] ?? '';
         }
       }
 
@@ -61,11 +62,14 @@ class ChatService {
         if (doc.exists) {
           final data = doc.data()!;
           resolvedMechanicName = data['fullName'] ?? data['name'] ?? 'Mechanic';
-          resolvedMechanicPhoto = data['profilePhotoUrl'] ?? data['photoUrl'] ?? '';
+          resolvedMechanicPhoto =
+              data['profilePhotoUrl'] ?? data['photoUrl'] ?? '';
         }
       }
     } catch (e) {
-      debugPrint('ChatService: Metadata resolution failed, using fallbacks. ($e)');
+      debugPrint(
+        'ChatService: Metadata resolution failed, using fallbacks. ($e)',
+      );
     }
 
     await chatRef.set({
@@ -165,7 +169,10 @@ class ChatService {
     final file = File(localPath);
     if (!await file.exists()) throw Exception('Image source not found.');
 
-    final uploadTask = storageRef.putFile(file, SettableMetadata(contentType: 'image/jpeg'));
+    final uploadTask = storageRef.putFile(
+      file,
+      SettableMetadata(contentType: 'image/jpeg'),
+    );
     final snapshot = await uploadTask;
     final downloadUrl = await snapshot.ref.getDownloadURL();
 
@@ -204,7 +211,10 @@ class ChatService {
     final file = File(audioPath);
     if (!await file.exists()) throw Exception('Recording source not found.');
 
-    final uploadTask = storageRef.putFile(file, SettableMetadata(contentType: 'audio/m4a'));
+    final uploadTask = storageRef.putFile(
+      file,
+      SettableMetadata(contentType: 'audio/m4a'),
+    );
     final snapshot = await uploadTask;
     final downloadUrl = await snapshot.ref.getDownloadURL();
 
@@ -271,7 +281,12 @@ class ChatService {
         });
 
     await _updateChatPulse(chatId, '💰 Estimate: $formattedPrice', 'mechanic');
-    _dispatchNotification(chatId, 'mechanic', '💰 Estimate: $formattedPrice', senderName);
+    _dispatchNotification(
+      chatId,
+      'mechanic',
+      '💰 Estimate: $formattedPrice',
+      senderName,
+    );
   }
 
   /// Updates the status of a specific price quote based on driver interaction.
@@ -282,14 +297,18 @@ class ChatService {
     double? counterOffer,
     String? reason,
   }) async {
-    final msgRef = _firestore.collection('chats').doc(chatId).collection('messages').doc(messageId);
-    
+    final msgRef = _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .doc(messageId);
+
     final snapshot = await msgRef.get();
     if (!snapshot.exists) return;
 
     final data = snapshot.data()!;
     final priceData = Map<String, dynamic>.from(data['priceData'] ?? {});
-    
+
     priceData['status'] = responseStatus;
     if (counterOffer != null) priceData['counterOffer'] = counterOffer;
     if (reason != null) priceData['reason'] = reason;
@@ -299,10 +318,18 @@ class ChatService {
     // Send visual confirmation in chat
     if (responseStatus == 'accepted') {
       final cost = priceData['estimatedCost'] ?? 0;
-      await _firestore.collection('chats').doc(chatId).update({'priceAgreed': cost});
-      await sendSystemMessage(chatId, '✅ Price agreed: ₹${(cost as num).toStringAsFixed(0)}');
+      await _firestore.collection('chats').doc(chatId).update({
+        'priceAgreed': cost,
+      });
+      await sendSystemMessage(
+        chatId,
+        '✅ Price agreed: ₹${(cost as num).toStringAsFixed(0)}',
+      );
     } else if (responseStatus == 'rejected') {
-      await sendSystemMessage(chatId, '❌ Estimate declined${reason != null ? ': $reason' : ''}');
+      await sendSystemMessage(
+        chatId,
+        '❌ Estimate declined${reason != null ? ': $reason' : ''}',
+      );
     }
   }
 
@@ -318,7 +345,11 @@ class ChatService {
         .collection('messages')
         .orderBy('timestamp', descending: true)
         .snapshots()
-        .map((snap) => snap.docs.map((d) => MessageModel.fromMap(d.data(), d.id)).toList());
+        .map(
+          (snap) => snap.docs
+              .map((d) => MessageModel.fromMap(d.data(), d.id))
+              .toList(),
+        );
   }
 
   /// Stream of all active chats for the current user.
@@ -332,7 +363,9 @@ class ChatService {
 
   /// Marks all unread messages as read for the given [chatId].
   static Future<void> markAsRead(String chatId, String role) async {
-    final unreadField = (role == 'driver') ? 'driverUnreadCount' : 'mechanicUnreadCount';
+    final unreadField = (role == 'driver')
+        ? 'driverUnreadCount'
+        : 'mechanicUnreadCount';
     await _firestore.collection('chats').doc(chatId).update({unreadField: 0});
 
     final unreadMessages = await _firestore
@@ -357,9 +390,15 @@ class ChatService {
   // ---------------------------------------------------------------------------
 
   /// Updates the main chat document meta-data (last message, timestamp, unread counters).
-  static Future<void> _updateChatPulse(String chatId, String lastMsg, String senderRole) async {
-    final unreadField = (senderRole == 'driver') ? 'mechanicUnreadCount' : 'driverUnreadCount';
-    
+  static Future<void> _updateChatPulse(
+    String chatId,
+    String lastMsg,
+    String senderRole,
+  ) async {
+    final unreadField = (senderRole == 'driver')
+        ? 'mechanicUnreadCount'
+        : 'driverUnreadCount';
+
     await _firestore.collection('chats').doc(chatId).update({
       'lastMessage': lastMsg,
       'lastMessageBy': _currentUid,
@@ -373,10 +412,10 @@ class ChatService {
     try {
       final doc = await _firestore.collection('chats').doc(chatId).get();
       if (!doc.exists) return (role == 'driver') ? 'Driver' : 'Mechanic';
-      
+
       final data = doc.data()!;
-      return (role == 'driver') 
-          ? (data['driverName'] ?? 'Driver') 
+      return (role == 'driver')
+          ? (data['driverName'] ?? 'Driver')
           : (data['mechanicName'] ?? 'Mechanic');
     } catch (_) {
       return (role == 'driver') ? 'Driver' : 'Mechanic';
@@ -384,11 +423,18 @@ class ChatService {
   }
 
   /// Attempts to notify the recipient via mobile push notification.
-  static void _dispatchNotification(String chatId, String role, String content, String senderName) async {
+  static void _dispatchNotification(
+    String chatId,
+    String role,
+    String content,
+    String senderName,
+  ) async {
     try {
       final doc = await _firestore.collection('chats').doc(chatId).get();
       final data = doc.data() ?? {};
-      final recipientId = (role == 'driver') ? data['mechanicId'] : data['driverId'];
+      final recipientId = (role == 'driver')
+          ? data['mechanicId']
+          : data['driverId'];
 
       if (recipientId != null) {
         NotificationSender.notifyChatMessage(
@@ -403,4 +449,3 @@ class ChatService {
     }
   }
 }
-

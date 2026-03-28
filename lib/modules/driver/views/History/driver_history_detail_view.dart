@@ -32,13 +32,17 @@ class DriverHistoryDetailView extends StatelessWidget {
           icon: const Icon(Iconsax.arrow_left, color: AppColors.textPrimary),
           onPressed: () => Get.back(),
         ),
-        title: Text('Request Details',
-            style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.bold)),
+        title: Text(
+          'Request Details',
+          style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.bold),
+        ),
         actions: [
           if (isCompleted && completionData != null)
             IconButton(
-              icon: const Icon(Iconsax.document_download,
-                  color: AppColors.primary),
+              icon: const Icon(
+                Iconsax.document_download,
+                color: AppColors.primary,
+              ),
               tooltip: 'Download Invoice',
               onPressed: () =>
                   HistoryInvoiceViewer.viewAndShare(completionData, context),
@@ -153,35 +157,41 @@ class DriverHistoryDetailView extends StatelessWidget {
       child: Column(
         children: [
           _InfoRow(
-              icon: Iconsax.danger,
-              label: 'Problem',
-              value: requestData['problem'] ?? 'N/A'),
+            icon: Iconsax.danger,
+            label: 'Problem',
+            value: requestData['problem'] ?? 'N/A',
+          ),
           _InfoRow(
-              icon: Iconsax.car,
-              label: 'Vehicle',
-              value: requestData['vehicleType'] ?? 'N/A'),
+            icon: Iconsax.car,
+            label: 'Vehicle',
+            value: requestData['vehicleType'] ?? 'N/A',
+          ),
           _InfoRow(
-              icon: Iconsax.location,
-              label: 'Location',
-              value: requestData['locationName'] ?? 'N/A'),
+            icon: Iconsax.location,
+            label: 'Location',
+            value: requestData['locationName'] ?? 'N/A',
+          ),
           if (requestData['landmark'] != null &&
               requestData['landmark'].toString().isNotEmpty)
             _InfoRow(
-                icon: Iconsax.flag,
-                label: 'Landmark',
-                value: requestData['landmark']),
+              icon: Iconsax.flag,
+              label: 'Landmark',
+              value: requestData['landmark'],
+            ),
           if (requestData['vehicleNumber'] != null &&
               requestData['vehicleNumber'].toString().isNotEmpty)
             _InfoRow(
-                icon: Iconsax.hashtag,
-                label: 'Vehicle No.',
-                value: requestData['vehicleNumber']),
+              icon: Iconsax.hashtag,
+              label: 'Vehicle No.',
+              value: requestData['vehicleNumber'],
+            ),
           if (requestData['description'] != null &&
               requestData['description'].toString().isNotEmpty)
             _InfoRow(
-                icon: Iconsax.document_text,
-                label: 'Description',
-                value: requestData['description']),
+              icon: Iconsax.document_text,
+              label: 'Description',
+              value: requestData['description'],
+            ),
         ],
       ),
     );
@@ -239,17 +249,18 @@ class DriverHistoryDetailView extends StatelessWidget {
           if (!snapshot.hasData || !snapshot.data!.exists) {
             return Padding(
               padding: EdgeInsets.all(8.w),
-              child: Text('Mechanic details unavailable',
-                  style: AppTextStyles.body2
-                      .copyWith(color: AppColors.textSecondary)),
+              child: Text(
+                'Mechanic details unavailable',
+                style: AppTextStyles.body2.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
             );
           }
 
           final mech = snapshot.data!.data() as Map<String, dynamic>;
           final name = mech['fullName'] ?? mech['name'] ?? 'Mechanic';
-          final phone = mech['phone'] ??
-              requestData['mechanicPhone'] ??
-              '';
+          final phone = mech['phone'] ?? requestData['mechanicPhone'] ?? '';
           final photo = mech['profilePhotoUrl'] ?? '';
           final rating = (mech['averageRating'] ?? 0.0).toDouble();
 
@@ -258,8 +269,7 @@ class DriverHistoryDetailView extends StatelessWidget {
               CircleAvatar(
                 radius: 24.r,
                 backgroundColor: AppColors.mechanicPrimary.withOpacity(0.15),
-                backgroundImage:
-                    photo.isNotEmpty ? NetworkImage(photo) : null,
+                backgroundImage: photo.isNotEmpty ? NetworkImage(photo) : null,
                 child: photo.isEmpty
                     ? Icon(Iconsax.user, color: AppColors.mechanicPrimary)
                     : null,
@@ -271,41 +281,55 @@ class DriverHistoryDetailView extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Text(name,
-                            style: GoogleFonts.poppins(
-                                fontSize: 15.sp, 
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.textPrimary)),
+                        Text(
+                          name,
+                          style: GoogleFonts.poppins(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
                         if (rating > 0) ...[
                           SizedBox(width: 8.w),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 6.w,
+                              vertical: 2.h,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.warning.withOpacity(0.15),
                               borderRadius: BorderRadius.circular(8.r),
                             ),
                             child: Row(
                               children: [
-                                Icon(Iconsax.star1, color: AppColors.warning, size: 12.sp),
+                                Icon(
+                                  Iconsax.star1,
+                                  color: AppColors.warning,
+                                  size: 12.sp,
+                                ),
                                 SizedBox(width: 4.w),
                                 Text(
                                   rating.toStringAsFixed(1),
                                   style: GoogleFonts.poppins(
-                                      fontSize: 11.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.warning),
+                                    fontSize: 11.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.warning,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                        ]
+                        ],
                       ],
                     ),
                     if (phone.isNotEmpty)
-                      Text(phone,
-                          style: GoogleFonts.poppins(
-                              fontSize: 13.sp,
-                              color: AppColors.textSecondary)),
+                      Text(
+                        phone,
+                        style: GoogleFonts.poppins(
+                          fontSize: 13.sp,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -327,21 +351,26 @@ class DriverHistoryDetailView extends StatelessWidget {
         spacing: 8.w,
         runSpacing: 8.h,
         children: services
-            .map((s) => Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(20.r),
-                    border: Border.all(
-                        color: AppColors.primary.withOpacity(0.15)),
+            .map(
+              (s) => Container(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(20.r),
+                  border: Border.all(
+                    color: AppColors.primary.withOpacity(0.15),
                   ),
-                  child: Text(s,
-                      style: GoogleFonts.poppins(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.primary)),
-                ))
+                ),
+                child: Text(
+                  s,
+                  style: GoogleFonts.poppins(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+            )
             .toList(),
       ),
     );
@@ -370,16 +399,22 @@ class DriverHistoryDetailView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Total Amount',
-                  style: GoogleFonts.poppins(
-                      fontSize: 16.sp, 
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary)),
-              Text('₹${totalAmount.toStringAsFixed(0)}',
-                  style: GoogleFonts.poppins(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.success)),
+              Text(
+                'Total Amount',
+                style: GoogleFonts.poppins(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              Text(
+                '₹${totalAmount.toStringAsFixed(0)}',
+                style: GoogleFonts.poppins(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.success,
+                ),
+              ),
             ],
           ),
         ],
@@ -387,17 +422,20 @@ class DriverHistoryDetailView extends StatelessWidget {
     );
   }
 
-  Widget _buildInvoiceButton(
-      Map<String, dynamic> data, BuildContext context) {
+  Widget _buildInvoiceButton(Map<String, dynamic> data, BuildContext context) {
     return SizedBox(
       width: double.infinity,
       height: 54.h,
       child: ElevatedButton.icon(
         onPressed: () => HistoryInvoiceViewer.viewAndShare(data, context),
         icon: const Icon(Iconsax.document_download),
-        label: Text('View & Share Invoice',
-            style: GoogleFonts.poppins(
-                fontSize: 15.sp, fontWeight: FontWeight.w600)),
+        label: Text(
+          'View & Share Invoice',
+          style: GoogleFonts.poppins(
+            fontSize: 15.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
@@ -426,8 +464,11 @@ class _CardWrapper extends StatelessWidget {
   final IconData icon;
   final Widget child;
 
-  const _CardWrapper(
-      {required this.title, required this.icon, required this.child});
+  const _CardWrapper({
+    required this.title,
+    required this.icon,
+    required this.child,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -453,11 +494,14 @@ class _CardWrapper extends StatelessWidget {
             children: [
               Icon(icon, size: 18.w, color: AppColors.primary),
               SizedBox(width: 8.w),
-              Text(title,
-                  style: GoogleFonts.poppins(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary)),
+              Text(
+                title,
+                style: GoogleFonts.poppins(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
             ],
           ),
           SizedBox(height: 14.h),
@@ -473,8 +517,11 @@ class _InfoRow extends StatelessWidget {
   final String label;
   final String value;
 
-  const _InfoRow(
-      {required this.icon, required this.label, required this.value});
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -487,16 +534,23 @@ class _InfoRow extends StatelessWidget {
           SizedBox(width: 10.w),
           SizedBox(
             width: 85.w,
-            child: Text(label,
-                style: GoogleFonts.poppins(
-                    fontSize: 13.sp, color: AppColors.textSecondary)),
+            child: Text(
+              label,
+              style: GoogleFonts.poppins(
+                fontSize: 13.sp,
+                color: AppColors.textSecondary,
+              ),
+            ),
           ),
           Expanded(
-            child: Text(value,
-                style: GoogleFonts.poppins(
-                    fontSize: 13.sp, 
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textPrimary)),
+            child: Text(
+              value,
+              style: GoogleFonts.poppins(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary,
+              ),
+            ),
           ),
         ],
       ),
@@ -523,7 +577,8 @@ class _TimelineStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dotColor = color ?? (isCompleted ? AppColors.primary : AppColors.disabled);
+    final dotColor =
+        color ?? (isCompleted ? AppColors.primary : AppColors.disabled);
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -534,8 +589,11 @@ class _TimelineStep extends StatelessWidget {
               children: [
                 if (!isFirst)
                   Expanded(
-                      child: Container(
-                          width: 2, color: dotColor.withOpacity(0.3))),
+                    child: Container(
+                      width: 2,
+                      color: dotColor.withOpacity(0.3),
+                    ),
+                  ),
                 Container(
                   width: 12.w,
                   height: 12.h,
@@ -546,8 +604,11 @@ class _TimelineStep extends StatelessWidget {
                 ),
                 if (!isLast)
                   Expanded(
-                      child: Container(
-                          width: 2, color: dotColor.withOpacity(0.3))),
+                    child: Container(
+                      width: 2,
+                      color: dotColor.withOpacity(0.3),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -558,16 +619,22 @@ class _TimelineStep extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label,
-                      style: GoogleFonts.poppins(
-                          fontSize: 14.sp, 
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.textPrimary)),
+                  Text(
+                    label,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
                   if (time.isNotEmpty)
-                    Text(time,
-                        style: GoogleFonts.poppins(
-                            fontSize: 12.sp,
-                            color: AppColors.textSecondary)),
+                    Text(
+                      time,
+                      style: GoogleFonts.poppins(
+                        fontSize: 12.sp,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -591,14 +658,21 @@ class _CostRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label,
-              style: GoogleFonts.poppins(
-                  fontSize: 13.sp, color: AppColors.textSecondary)),
-          Text('₹${amount.toStringAsFixed(0)}',
-              style: GoogleFonts.poppins(
-                  fontSize: 14.sp, 
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textPrimary)),
+          Text(
+            label,
+            style: GoogleFonts.poppins(
+              fontSize: 13.sp,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          Text(
+            '₹${amount.toStringAsFixed(0)}',
+            style: GoogleFonts.poppins(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textPrimary,
+            ),
+          ),
         ],
       ),
     );

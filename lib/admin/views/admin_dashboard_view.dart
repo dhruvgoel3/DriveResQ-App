@@ -220,7 +220,9 @@ class AdminDashboardView extends StatelessWidget {
                                   ? Colors.green.shade50
                                   : Colors.red.shade50,
                               child: Icon(
-                                isApproval ? Iconsax.tick_circle : Iconsax.close_square,
+                                isApproval
+                                    ? Iconsax.tick_circle
+                                    : Iconsax.close_square,
                                 size: 18,
                                 color: isApproval ? Colors.green : Colors.red,
                               ),

@@ -260,7 +260,10 @@ class MechanicOnboardingController extends GetxController {
                 ),
                 ListTile(
                   leading: Icon(Iconsax.camera, color: Color(0xFFFF9800)),
-                  title: Text('Take Photo', style: GoogleFonts.poppins(color: Colors.black87)),
+                  title: Text(
+                    'Take Photo',
+                    style: GoogleFonts.poppins(color: Colors.black87),
+                  ),
                   onTap: () async {
                     Get.back();
                     final picked = await _picker.pickImage(
@@ -273,7 +276,10 @@ class MechanicOnboardingController extends GetxController {
                 ),
                 ListTile(
                   leading: Icon(Iconsax.gallery, color: Color(0xFFFF9800)),
-                  title: Text('Choose from Gallery', style: GoogleFonts.poppins(color: Colors.black87)),
+                  title: Text(
+                    'Choose from Gallery',
+                    style: GoogleFonts.poppins(color: Colors.black87),
+                  ),
                   onTap: () async {
                     Get.back();
                     final picked = await _picker.pickImage(
@@ -383,7 +389,7 @@ class MechanicOnboardingController extends GetxController {
       final snapshot = await uploadTask;
       return await snapshot.ref.getDownloadURL();
     } catch (e) {
-      debugPrint('❌ Upload error for $path: $e');
+      debugPrint(' Upload error for $path: $e');
       return null;
     }
   }
@@ -504,15 +510,20 @@ class MechanicOnboardingController extends GetxController {
 
       // ── Trigger Email to Admin ──
       try {
-        final settingsDoc = await _firestore.collection('adminSettings').doc('general').get();
+        final settingsDoc = await _firestore
+            .collection('adminSettings')
+            .doc('general')
+            .get();
         if (settingsDoc.exists) {
-          final adminEmail = settingsDoc.data()?['notificationEmail'] as String?;
+          final adminEmail =
+              settingsDoc.data()?['notificationEmail'] as String?;
           if (adminEmail != null && adminEmail.isNotEmpty) {
             await _firestore.collection('mail').add({
               'to': adminEmail,
               'message': {
                 'subject': 'New Mechanic Registration Pending Approval',
-                'html': '''
+                'html':
+                    '''
                   <h2>New Mechanic Needs Approval</h2>
                   <p>A new mechanic <b>${nameController.text.trim()}</b> has completed onboarding and is waiting for your review.</p>
                   <p><b>Shop name:</b> ${shopNameController.text.trim()}</p>
@@ -523,11 +534,11 @@ class MechanicOnboardingController extends GetxController {
               },
               'createdAt': FieldValue.serverTimestamp(),
             });
-            debugPrint('✅ Triggered admin email notification to $adminEmail');
+            debugPrint(' Triggered admin email notification to $adminEmail');
           }
         }
       } catch (mailError) {
-        debugPrint('⚠️ Failed to trigger admin email: $mailError');
+        debugPrint('️ Failed to trigger admin email: $mailError');
         // Do not block onboarding on email failure
       }
 
@@ -536,7 +547,7 @@ class MechanicOnboardingController extends GetxController {
       Get.offAllNamed('/mechanic-verification');
     } catch (e) {
       isLoading.value = false;
-      debugPrint('❌ Onboarding submit error: $e');
+      debugPrint(' Onboarding submit error: $e');
       Get.snackbar(
         "Error",
         "Failed to submit. Please try again.",

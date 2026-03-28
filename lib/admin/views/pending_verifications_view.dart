@@ -126,11 +126,7 @@ class PendingVerificationsView extends StatelessWidget {
         padding: const EdgeInsets.all(60),
         child: Column(
           children: [
-            Icon(
-              Iconsax.tick_circle,
-              size: 72,
-              color: Colors.green.shade300,
-            ),
+            Icon(Iconsax.tick_circle, size: 72, color: Colors.green.shade300),
             const SizedBox(height: 16),
             Text(
               'All caught up! 🎉',

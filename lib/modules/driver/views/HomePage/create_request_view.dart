@@ -52,7 +52,9 @@ class CreateRequestView extends StatelessWidget {
                 SizedBox(height: 16.h),
                 Text(
                   "Submitting your request...",
-                  style: AppTextStyles.body2.copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.body2.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
@@ -96,7 +98,8 @@ class CreateRequestView extends StatelessWidget {
                                     : controller.locationName.value,
                                 style: AppTextStyles.body2.copyWith(
                                   fontWeight: FontWeight.w500,
-                                  color: controller.locationName.value ==
+                                  color:
+                                      controller.locationName.value ==
                                           "Enable location to continue"
                                       ? AppColors.error
                                       : AppColors.textPrimary,
@@ -108,7 +111,11 @@ class CreateRequestView extends StatelessWidget {
                           ],
                         ),
                       ),
-                      Icon(Iconsax.edit_2, color: AppColors.primary, size: 20.w),
+                      Icon(
+                        Iconsax.edit_2,
+                        color: AppColors.primary,
+                        size: 20.w,
+                      ),
                     ],
                   ),
                 ),
@@ -138,7 +145,9 @@ class CreateRequestView extends StatelessWidget {
                       : controller.selectedVehicle.value,
                   hint: Text(
                     "Select your vehicle type",
-                    style: AppTextStyles.body2.copyWith(color: AppColors.textHint),
+                    style: AppTextStyles.body2.copyWith(
+                      color: AppColors.textHint,
+                    ),
                   ),
                   items: vehicleTypes
                       .map(
@@ -146,7 +155,9 @@ class CreateRequestView extends StatelessWidget {
                           value: e,
                           child: Text(
                             e,
-                            style: AppTextStyles.body2.copyWith(color: AppColors.textPrimary),
+                            style: AppTextStyles.body2.copyWith(
+                              color: AppColors.textPrimary,
+                            ),
                           ),
                         ),
                       )
@@ -157,11 +168,21 @@ class CreateRequestView extends StatelessWidget {
                   decoration: InputDecoration(
                     prefixIcon: Padding(
                       padding: EdgeInsets.only(left: 12.w, right: 8.w),
-                      child: Icon(Iconsax.car, color: AppColors.primary, size: 22.w),
+                      child: Icon(
+                        Iconsax.car,
+                        color: AppColors.primary,
+                        size: 22.w,
+                      ),
                     ),
-                    prefixIconConstraints: BoxConstraints(minWidth: 42.w, minHeight: 42.h),
+                    prefixIconConstraints: BoxConstraints(
+                      minWidth: 42.w,
+                      minHeight: 42.h,
+                    ),
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 14.h,
+                    ),
                   ),
                   dropdownColor: AppColors.surface,
                   borderRadius: BorderRadius.circular(14.r),
@@ -194,7 +215,10 @@ class CreateRequestView extends StatelessWidget {
               SizedBox(height: 20.h),
 
               // ── DESCRIPTION ──
-              _sectionLabel("Additional Details (Optional)", Iconsax.document_text),
+              _sectionLabel(
+                "Additional Details (Optional)",
+                Iconsax.document_text,
+              ),
               SizedBox(height: 8.h),
               _buildTextField(
                 controller: controller.descriptionController,
@@ -360,10 +384,17 @@ class CreateRequestView extends StatelessWidget {
           hintText: hint,
           hintStyle: AppTextStyles.body2.copyWith(color: AppColors.textHint),
           prefixIcon: Padding(
-            padding: EdgeInsets.only(left: 12.w, right: 8.w, top: maxLines > 1 ? 14.h : 0),
+            padding: EdgeInsets.only(
+              left: 12.w,
+              right: 8.w,
+              top: maxLines > 1 ? 14.h : 0,
+            ),
             child: Icon(icon, color: AppColors.primary, size: 22.w),
           ),
-          prefixIconConstraints: BoxConstraints(minWidth: 42.w, minHeight: 42.h),
+          prefixIconConstraints: BoxConstraints(
+            minWidth: 42.w,
+            minHeight: 42.h,
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14.r),
             borderSide: BorderSide.none,
@@ -376,7 +407,10 @@ class CreateRequestView extends StatelessWidget {
             borderRadius: BorderRadius.circular(14.r),
             borderSide: BorderSide(color: AppColors.primary, width: 1.5),
           ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 16.w,
+            vertical: 14.h,
+          ),
           filled: true,
           fillColor: Colors.transparent,
         ),

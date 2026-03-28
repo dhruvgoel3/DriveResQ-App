@@ -209,9 +209,7 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
-                            _hasError
-                                ? Iconsax.close_circle
-                                : Iconsax.mobile,
+                            _hasError ? Iconsax.close_circle : Iconsax.mobile,
                             size: 48.w,
                             color: _hasError ? _red : _primary,
                           ),

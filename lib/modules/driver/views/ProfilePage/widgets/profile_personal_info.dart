@@ -32,15 +32,25 @@ class ProfilePersonalInfo extends StatelessWidget {
                 maxLines: 2,
               ),
               SizedBox(height: 12.h),
-              _editField('Gender', controller.genderController, Iconsax.profile_2user),
+              _editField(
+                'Gender',
+                controller.genderController,
+                Iconsax.profile_2user,
+              ),
               SizedBox(height: 12.h),
-              _editField('Date of Birth (YYYY-MM-DD)', controller.dobController, Iconsax.cake),
+              _editField(
+                'Date of Birth (YYYY-MM-DD)',
+                controller.dobController,
+                Iconsax.cake,
+              ),
               SizedBox(height: 16.h),
               SizedBox(
                 width: double.infinity,
                 child: Obx(
                   () => ElevatedButton(
-                    onPressed: controller.isLoading.value ? null : controller.saveBasicInfo,
+                    onPressed: controller.isLoading.value
+                        ? null
+                        : controller.saveBasicInfo,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: AppColors.surface,
@@ -61,7 +71,9 @@ class ProfilePersonalInfo extends StatelessWidget {
                           )
                         : Text(
                             'Save Changes',
-                            style: AppTextStyles.button.copyWith(color: AppColors.surface),
+                            style: AppTextStyles.button.copyWith(
+                              color: AppColors.surface,
+                            ),
                           ),
                   ),
                 ),
@@ -69,15 +81,37 @@ class ProfilePersonalInfo extends StatelessWidget {
             ] else ...[
               _infoRow(Iconsax.user, 'Full Name', controller.displayName),
               _sep(),
-              _infoRow(Iconsax.call, 'Phone', controller.phone.isNotEmpty ? controller.phone : 'Not added'),
+              _infoRow(
+                Iconsax.call,
+                'Phone',
+                controller.phone.isNotEmpty ? controller.phone : 'Not added',
+              ),
               _sep(),
-              _infoRow(Iconsax.sms, 'Email', controller.email.isNotEmpty ? controller.email : 'Not added'),
+              _infoRow(
+                Iconsax.sms,
+                'Email',
+                controller.email.isNotEmpty ? controller.email : 'Not added',
+              ),
               _sep(),
-              _infoRow(Iconsax.home, 'Address', controller.address.isNotEmpty ? controller.address : 'Not added'),
+              _infoRow(
+                Iconsax.home,
+                'Address',
+                controller.address.isNotEmpty
+                    ? controller.address
+                    : 'Not added',
+              ),
               _sep(),
-              _infoRow(Iconsax.profile_2user, 'Gender', controller.gender.isNotEmpty ? controller.gender : 'Not added'),
+              _infoRow(
+                Iconsax.profile_2user,
+                'Gender',
+                controller.gender.isNotEmpty ? controller.gender : 'Not added',
+              ),
               _sep(),
-              _infoRow(Iconsax.cake, 'Date of Birth', controller.dob.isNotEmpty ? controller.dob : 'Not added'),
+              _infoRow(
+                Iconsax.cake,
+                'Date of Birth',
+                controller.dob.isNotEmpty ? controller.dob : 'Not added',
+              ),
             ],
           ],
         );
@@ -111,7 +145,9 @@ class ProfilePersonalInfo extends StatelessWidget {
                   value,
                   style: AppTextStyles.body2.copyWith(
                     fontWeight: FontWeight.w500,
-                    color: value == 'Not added' ? AppColors.textHint : AppColors.textPrimary,
+                    color: value == 'Not added'
+                        ? AppColors.textHint
+                        : AppColors.textPrimary,
                   ),
                 ),
               ],
@@ -122,7 +158,11 @@ class ProfilePersonalInfo extends StatelessWidget {
     );
   }
 
-  Widget _sep() => Divider(height: 16.h, thickness: 0.5, color: AppColors.border.withOpacity(0.5));
+  Widget _sep() => Divider(
+    height: 16.h,
+    thickness: 0.5,
+    color: AppColors.border.withOpacity(0.5),
+  );
 
   Widget _editField(
     String label,
@@ -136,7 +176,9 @@ class ProfilePersonalInfo extends StatelessWidget {
       style: AppTextStyles.body2,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: AppTextStyles.body2.copyWith(color: AppColors.textSecondary),
+        labelStyle: AppTextStyles.body2.copyWith(
+          color: AppColors.textSecondary,
+        ),
         prefixIcon: Icon(icon, size: 20.w, color: AppColors.primary),
         filled: false,
         fillColor: AppColors.background,

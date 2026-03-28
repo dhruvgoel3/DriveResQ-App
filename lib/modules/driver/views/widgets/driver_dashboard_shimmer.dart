@@ -55,7 +55,7 @@ class DriverDashboardShimmer extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 20.h),
-                  
+
                   // Map Preview Skeleton
                   Container(
                     height: 180.h,
@@ -66,7 +66,7 @@ class DriverDashboardShimmer extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 16.h),
-                  
+
                   // List of Info Tiles
                   for (int i = 0; i < 3; i++)
                     Padding(
@@ -110,7 +110,7 @@ class DriverDashboardShimmer extends StatelessWidget {
                       ),
                     ),
                   SizedBox(height: 18.h),
-                  
+
                   // Buttons Skeleton
                   Row(
                     children: [

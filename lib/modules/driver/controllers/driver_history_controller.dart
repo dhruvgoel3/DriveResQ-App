@@ -46,10 +46,7 @@ class DriverHistoryController extends GetxController {
       int cancelled = 0;
 
       for (var doc in snapshot.docs) {
-        final data = {
-          ...doc.data(),
-          'id': doc.id,
-        };
+        final data = {...doc.data(), 'id': doc.id};
 
         if (data['status'] == 'completed') {
           completed++;
@@ -64,7 +61,7 @@ class DriverHistoryController extends GetxController {
               data['completionData'] = completedDoc.data();
             }
           } catch (e) {
-            debugPrint('⚠️ Failed to fetch completion data for ${doc.id}: $e');
+            debugPrint('️ Failed to fetch completion data for ${doc.id}: $e');
           }
         } else if (data['status'] == 'cancelled') {
           cancelled++;
@@ -75,8 +72,12 @@ class DriverHistoryController extends GetxController {
 
       // Sort locally to bypass Firestore composite index requirement
       items.sort((a, b) {
-        final aTime = (a['createdAt'] as Timestamp?)?.toDate() ?? DateTime.fromMillisecondsSinceEpoch(0);
-        final bTime = (b['createdAt'] as Timestamp?)?.toDate() ?? DateTime.fromMillisecondsSinceEpoch(0);
+        final aTime =
+            (a['createdAt'] as Timestamp?)?.toDate() ??
+            DateTime.fromMillisecondsSinceEpoch(0);
+        final bTime =
+            (b['createdAt'] as Timestamp?)?.toDate() ??
+            DateTime.fromMillisecondsSinceEpoch(0);
         return bTime.compareTo(aTime);
       });
 
@@ -85,7 +86,7 @@ class DriverHistoryController extends GetxController {
       rescuedCount.value = completed;
       cancelledCount.value = cancelled;
     } catch (e) {
-      debugPrint('❌ Error fetching driver history: $e');
+      debugPrint(' Error fetching driver history: $e');
       Get.snackbar('Error', 'Failed to load history');
     } finally {
       isLoading.value = false;

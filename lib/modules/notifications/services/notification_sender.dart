@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 /// A robust service responsible for dispatching in-app and push notifications.
-/// 
+///
 /// This service acts as a primary interface for creating notification documents
 /// in Firestore, which are then processed by background functions or local listeners.
 class NotificationSender {
@@ -33,7 +33,8 @@ class NotificationSender {
 
       for (final doc in mechanicsGate.docs) {
         final data = doc.data();
-        if (data['fcmToken'] == null || (data['fcmToken'] as String).isEmpty) continue;
+        if (data['fcmToken'] == null || (data['fcmToken'] as String).isEmpty)
+          continue;
 
         final notifyRef = _firestore.collection('notifications').doc();
         batch.set(notifyRef, {
@@ -96,7 +97,8 @@ class NotificationSender {
     required String mechanicName,
     required double totalAmount,
   }) async {
-    final body = '$mechanicName finished the job. Total: ₹${totalAmount.toStringAsFixed(0)}. Please rate the service.';
+    final body =
+        '$mechanicName finished the job. Total: ₹${totalAmount.toStringAsFixed(0)}. Please rate the service.';
     await _enqueueNotification(
       recipientId: driverId,
       type: 'job_completed',
@@ -118,8 +120,9 @@ class NotificationSender {
     required String review,
   }) async {
     final stars = '⭐' * rating.round();
-    final body = '$stars ${rating.toStringAsFixed(1)} stars${review.isNotEmpty ? ' — "${_truncate(review, 35)}"' : ''}';
-    
+    final body =
+        '$stars ${rating.toStringAsFixed(1)} stars${review.isNotEmpty ? ' — "${_truncate(review, 35)}"' : ''}';
+
     await _enqueueNotification(
       recipientId: mechanicId,
       type: 'rating_received',
@@ -145,7 +148,7 @@ class NotificationSender {
       recipientId: mechanicId,
       type: approved ? 'verification_approved' : 'verification_rejected',
       title: approved ? 'Account Approved' : 'Profile Update Required',
-      body: approved 
+      body: approved
           ? 'Your credentials have been verified. You can now start earning!'
           : 'Status Update: $reason',
       payload: {

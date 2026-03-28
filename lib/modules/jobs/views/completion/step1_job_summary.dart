@@ -281,7 +281,10 @@ class JobSummaryView extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: TextField(
-                  style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black87),
+                  style: GoogleFonts.poppins(
+                    fontSize: 13.sp,
+                    color: Colors.black87,
+                  ),
                   decoration: _inputDecor('Part name'),
                   onChanged: (v) => c.updatePart(i, 'name', v),
                 ),
@@ -290,7 +293,10 @@ class JobSummaryView extends StatelessWidget {
               SizedBox(
                 width: 50.w,
                 child: TextField(
-                  style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black87),
+                  style: GoogleFonts.poppins(
+                    fontSize: 13.sp,
+                    color: Colors.black87,
+                  ),
                   decoration: _inputDecor('Qty'),
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -302,7 +308,10 @@ class JobSummaryView extends StatelessWidget {
               SizedBox(
                 width: 80.w,
                 child: TextField(
-                  style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black87),
+                  style: GoogleFonts.poppins(
+                    fontSize: 13.sp,
+                    color: Colors.black87,
+                  ),
                   decoration: _inputDecor('₹ Cost'),
                   keyboardType: TextInputType.number,
                   onChanged: (v) =>
@@ -364,7 +373,11 @@ class JobSummaryView extends StatelessWidget {
                         color: Colors.red,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(Iconsax.close_square, color: Colors.white, size: 14.w),
+                      child: Icon(
+                        Iconsax.close_square,
+                        color: Colors.white,
+                        size: 14.w,
+                      ),
                     ),
                   ),
                 ),
