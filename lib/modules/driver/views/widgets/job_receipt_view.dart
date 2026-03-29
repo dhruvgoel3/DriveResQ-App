@@ -10,6 +10,7 @@ import '../../../../shared/services/rating_service.dart';
 import '../../../../theme/app_colors.dart';
 import '../../../../theme/app_text_styles.dart';
 import '../../../../utils/helpers/responsive_helper.dart';
+import '../../../../utils/helpers/app_snackbar.dart';
 import '../../controllers/driver_controller.dart';
 
 class JobReceiptView extends StatelessWidget {
@@ -126,7 +127,7 @@ class JobReceiptView extends StatelessWidget {
                     CircleAvatar(
                       radius: 24.r,
                       backgroundColor: AppColors.primary.withOpacity(0.1),
-                      child: Icon(Iconsax.user, color: AppColors.primary),
+                      child: const Icon(Iconsax.user, color: AppColors.primary),
                     ),
                     SizedBox(width: 12.w),
                     Expanded(
@@ -287,7 +288,10 @@ class JobReceiptView extends StatelessWidget {
                     ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.primary,
-                      side: BorderSide(color: AppColors.primary, width: 1.5),
+                      side: const BorderSide(
+                        color: AppColors.primary,
+                        width: 1.5,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16.r),
                       ),
@@ -320,11 +324,7 @@ class JobReceiptView extends StatelessWidget {
         entityName: mechanicName,
         onSubmit: (rating, review) async {
           Get.back(); // close dialog
-          Get.snackbar(
-            'Submitting...',
-            'Saving your review',
-            snackPosition: SnackPosition.BOTTOM,
-          );
+          AppSnackbar.info('Saving your review', title: 'Submitting...');
 
           try {
             final currentUser = FirebaseAuth.instance.currentUser;
@@ -335,22 +335,10 @@ class JobReceiptView extends StatelessWidget {
                 reviewerId: currentUser.uid,
                 reviewText: review,
               );
-              Get.snackbar(
-                'Success',
-                'Thank you for your feedback!',
-                backgroundColor: AppColors.success.withOpacity(0.1),
-                colorText: AppColors.success,
-                snackPosition: SnackPosition.BOTTOM,
-              );
+              AppSnackbar.success('Thank you for your feedback!');
             }
           } catch (e) {
-            Get.snackbar(
-              'Error',
-              'Failed to submit review',
-              backgroundColor: AppColors.error.withOpacity(0.1),
-              colorText: AppColors.error,
-              snackPosition: SnackPosition.BOTTOM,
-            );
+            AppSnackbar.error('Failed to submit review');
           }
         },
       ),

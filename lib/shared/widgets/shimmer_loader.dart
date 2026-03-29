@@ -8,7 +8,7 @@ class ShimmerLoader extends StatelessWidget {
   final int itemCount;
   final ShimmerCardType cardType;
 
-  ShimmerLoader({
+  const ShimmerLoader({
     super.key,
     this.itemCount = 3,
     this.cardType = ShimmerCardType.standard,
@@ -21,7 +21,7 @@ class ShimmerLoader extends StatelessWidget {
       highlightColor: Colors.grey.shade50,
       child: ListView.builder(
         shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         padding: EdgeInsets.all(16.w),
         itemCount: itemCount,
         itemBuilder: (_, i) {

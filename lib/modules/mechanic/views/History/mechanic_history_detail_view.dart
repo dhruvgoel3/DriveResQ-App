@@ -232,7 +232,7 @@ class MechanicHistoryDetailView extends StatelessWidget {
                 backgroundColor: AppColors.primary.withOpacity(0.15),
                 backgroundImage: photo.isNotEmpty ? NetworkImage(photo) : null,
                 child: photo.isEmpty
-                    ? Icon(Iconsax.user, color: AppColors.primary)
+                    ? const Icon(Iconsax.user, color: AppColors.primary)
                     : null,
               ),
               SizedBox(width: 14.w),

@@ -401,6 +401,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  flashy_flushbar:
+    dependency: "direct main"
+    description:
+      name: flashy_flushbar
+      sha256: e52cabf451ee9809c94bfb0ea696d34f5936f551f0ad0f1a153ba76b003af142
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.1"
   flutter:
     dependency: "direct main"
     description: flutter

@@ -442,7 +442,7 @@ class ChatService {
           recipientId: recipientId,
           senderName: senderName,
           message: content,
-        ).catchError((e) => debugPrint('⚠️ Chat Notification Failed: $e'));
+        ).catchError((e) => debugPrint('️ Chat Notification Failed: $e'));
       }
     } catch (e) {
       debugPrint('ChatService: Notification dispatch failure. ($e)');

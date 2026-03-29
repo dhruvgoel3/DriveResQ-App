@@ -234,7 +234,7 @@ class MechanicService {
         mechanicPhoto: mechanicData['profilePhotoUrl'] ?? '',
       );
     } catch (e) {
-      debugPrint('⚠️ Non-critical failure during post-acceptance sync: $e');
+      debugPrint('️ Non-critical failure during post-acceptance sync: $e');
     }
   }
 }

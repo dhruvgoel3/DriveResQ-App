@@ -160,19 +160,22 @@ class SafetyTipsSection extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 16.h),
-              _StepRow(
+              const _StepRow(
                 number: "1",
                 text: "Create a help request with your issue",
               ),
               SizedBox(height: 10.h),
-              _StepRow(
+              const _StepRow(
                 number: "2",
                 text: "Nearby verified mechanics get notified",
               ),
               SizedBox(height: 10.h),
-              _StepRow(number: "3", text: "Accept the mechanic and get an OTP"),
+              const _StepRow(
+                number: "3",
+                text: "Accept the mechanic and get an OTP",
+              ),
               SizedBox(height: 10.h),
-              _StepRow(
+              const _StepRow(
                 number: "4",
                 text: "Mechanic fixes your vehicle on-site",
               ),

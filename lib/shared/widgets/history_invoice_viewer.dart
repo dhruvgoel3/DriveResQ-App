@@ -1,13 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
 
-import '../../theme/app_colors.dart';
+import '../../utils/helpers/app_snackbar.dart';
 
 /// Generates and shares a PDF invoice from historical completedJobs data.
 /// Unlike the live InvoiceGenerator which needs a controller, this works
@@ -19,26 +18,15 @@ class HistoryInvoiceViewer {
     BuildContext context,
   ) async {
     try {
-      Get.snackbar(
-        'Generating Invoice',
-        'Please wait...',
-        duration: const Duration(seconds: 2),
-        backgroundColor: AppColors.primary.withOpacity(0.9),
-        colorText: Colors.white,
-      );
+      AppSnackbar.info('Generating invoice...', title: 'Please Wait');
 
       final file = await _generatePdf(completionData);
       await Share.shareXFiles([
         XFile(file.path),
       ], text: 'DriveResQ Invoice ${completionData['invoiceNumber'] ?? ''}');
     } catch (e) {
-      debugPrint('❌ Invoice generation error: $e');
-      Get.snackbar(
-        'Error',
-        'Failed to generate invoice',
-        backgroundColor: AppColors.error.withOpacity(0.9),
-        colorText: Colors.white,
-      );
+      debugPrint(' Invoice generation error: $e');
+      AppSnackbar.error('Failed to generate invoice');
     }
   }
 
@@ -90,7 +78,7 @@ class HistoryInvoiceViewer {
                       pw.SizedBox(height: 4),
                       pw.Text(
                         'Roadside Assistance',
-                        style: pw.TextStyle(
+                        style: const pw.TextStyle(
                           fontSize: 12,
                           color: PdfColors.grey600,
                         ),
@@ -110,7 +98,7 @@ class HistoryInvoiceViewer {
                       pw.SizedBox(height: 4),
                       pw.Text(
                         invoiceNumber,
-                        style: pw.TextStyle(
+                        style: const pw.TextStyle(
                           fontSize: 12,
                           color: PdfColors.grey700,
                         ),
@@ -269,7 +257,10 @@ class HistoryInvoiceViewer {
               pw.Center(
                 child: pw.Text(
                   'Powered by DriveResQ • Roadside Assistance',
-                  style: pw.TextStyle(fontSize: 9, color: PdfColors.grey500),
+                  style: const pw.TextStyle(
+                    fontSize: 9,
+                    color: PdfColors.grey500,
+                  ),
                 ),
               ),
             ],
@@ -306,7 +297,7 @@ class HistoryInvoiceViewer {
             width: 70,
             child: pw.Text(
               '$label:',
-              style: pw.TextStyle(fontSize: 9, color: PdfColors.grey600),
+              style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey600),
             ),
           ),
           pw.Expanded(

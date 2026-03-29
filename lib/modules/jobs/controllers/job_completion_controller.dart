@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../notifications/services/notification_sender.dart';
 import '../../../shared/services/rating_service.dart';
+import '../../../utils/helpers/app_snackbar.dart';
 
 class JobCompletionController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -171,11 +172,9 @@ class JobCompletionController extends GetxController {
 
   bool validateStep1() {
     if (selectedServices.isEmpty) {
-      Get.snackbar(
-        'Required',
+      AppSnackbar.warning(
         'Select at least one service performed',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red,
+        title: 'Required',
       );
       return false;
     }
@@ -215,7 +214,7 @@ class JobCompletionController extends GetxController {
       if (acceptedAt is Timestamp) {
         startTime = acceptedAt.toDate();
       } else {
-        startTime = now.subtract(Duration(hours: 1));
+        startTime = now.subtract(const Duration(hours: 1));
       }
 
       final completionData = {
@@ -302,12 +301,7 @@ class JobCompletionController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       debugPrint(' Completion error: $e');
-      Get.snackbar(
-        'Error',
-        'Failed to complete job: $e',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Failed to complete job: $e');
     }
   }
 

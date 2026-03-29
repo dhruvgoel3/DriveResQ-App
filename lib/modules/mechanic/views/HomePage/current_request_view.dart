@@ -319,7 +319,7 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
         child: ListView(
           padding: EdgeInsets.all(16.w),
           children: [
-            if (hasAcceptedJob) AcceptedRequestIndicatorCard(),
+            if (hasAcceptedJob) const AcceptedRequestIndicatorCard(),
             if (hasAcceptedJob) SizedBox(height: 12.h),
 
             if (openRequestsList.isEmpty && hasAcceptedJob)

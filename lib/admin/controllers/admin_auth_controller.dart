@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../utils/helpers/app_snackbar.dart';
+
 class AdminAuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -85,12 +87,7 @@ class AdminAuthController extends GetxController {
     final password = passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please enter email and password',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Please enter email and password');
       return;
     }
 
@@ -111,11 +108,9 @@ class AdminAuthController extends GetxController {
           isLoggedIn.value = true;
           isLoading.value = false;
 
-          Get.snackbar(
-            'Setup Complete',
+          AppSnackbar.success(
             'Admin account created successfully!',
-            backgroundColor: Colors.green.shade50,
-            colorText: Colors.green.shade800,
+            title: 'Setup Complete',
           );
           Get.offAllNamed('/admin/dashboard');
           return;
@@ -134,11 +129,9 @@ class AdminAuthController extends GetxController {
           if (!isAdmin) {
             await _auth.signOut();
             isLoading.value = false;
-            Get.snackbar(
-              'Access Denied',
+            AppSnackbar.error(
               'You do not have admin privileges',
-              backgroundColor: Colors.red.shade50,
-              colorText: Colors.red,
+              title: 'Access Denied',
             );
             return;
           }
@@ -161,23 +154,14 @@ class AdminAuthController extends GetxController {
           e.code == 'wrong-password') {
         msg = 'Invalid email or password';
       }
-      if (e.code == 'email-already-in-use')
+      if (e.code == 'email-already-in-use') {
         msg = 'This email is already taken. Try signing in.';
+      }
 
-      Get.snackbar(
-        'Error',
-        msg,
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red,
-      );
+      AppSnackbar.error(msg);
     } catch (e) {
       isLoading.value = false;
-      Get.snackbar(
-        'Error',
-        'Action failed: $e',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Action failed: $e');
     }
   }
 
@@ -196,11 +180,9 @@ class AdminAuthController extends GetxController {
   Future<void> sendPasswordReset() async {
     final email = emailController.text.trim();
     if (email.isEmpty) {
-      Get.snackbar(
-        'Required',
+      AppSnackbar.warning(
         'Please enter your admin email first to reset your password.',
-        backgroundColor: Colors.orange.shade50,
-        colorText: Colors.orange.shade800,
+        title: 'Required',
       );
       return;
     }
@@ -209,20 +191,12 @@ class AdminAuthController extends GetxController {
       isLoading.value = true;
       await _auth.sendPasswordResetEmail(email: email);
       isLoading.value = false;
-      Get.snackbar(
-        'Success',
+      AppSnackbar.success(
         'Password reset email sent. Please check your inbox.',
-        backgroundColor: Colors.green.shade50,
-        colorText: Colors.green.shade800,
       );
     } catch (e) {
       isLoading.value = false;
-      Get.snackbar(
-        'Error',
-        'Failed to send password reset email: $e',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Failed to send password reset email: $e');
     }
   }
 

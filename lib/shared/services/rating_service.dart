@@ -60,7 +60,7 @@ class RatingService {
         mechanicId: targetUserId,
         rating: newRating,
         review: reviewText,
-      ).catchError((e) => debugPrint('⚠️ Rating Notification Failed: $e'));
+      ).catchError((e) => debugPrint('️ Rating Notification Failed: $e'));
     } catch (e) {
       debugPrint("RatingService Error: $e");
       rethrow;

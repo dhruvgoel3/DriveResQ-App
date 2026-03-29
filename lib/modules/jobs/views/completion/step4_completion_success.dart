@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/job_completion_controller.dart';
 import '../../services/invoice_generator.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 
 class CompletionSuccessView extends StatelessWidget {
   const CompletionSuccessView({super.key});
@@ -22,7 +23,7 @@ class CompletionSuccessView extends StatelessWidget {
           // Success Animation
           TweenAnimationBuilder<double>(
             tween: Tween(begin: 0, end: 1),
-            duration: Duration(milliseconds: 800),
+            duration: const Duration(milliseconds: 800),
             curve: Curves.elasticOut,
             builder: (_, v, child) => Transform.scale(scale: v, child: child),
             child: Container(
@@ -37,7 +38,7 @@ class CompletionSuccessView extends StatelessWidget {
                   BoxShadow(
                     color: Colors.green.withOpacity(0.3),
                     blurRadius: 20,
-                    offset: Offset(0, 8),
+                    offset: const Offset(0, 8),
                   ),
                 ],
               ),
@@ -49,7 +50,7 @@ class CompletionSuccessView extends StatelessWidget {
 
           TweenAnimationBuilder<double>(
             tween: Tween(begin: 0, end: 1),
-            duration: Duration(milliseconds: 600),
+            duration: const Duration(milliseconds: 600),
             curve: Curves.easeOut,
             builder: (_, v, child) => Opacity(opacity: v, child: child),
             child: Column(
@@ -87,7 +88,7 @@ class CompletionSuccessView extends StatelessWidget {
                 BoxShadow(
                   color: Colors.black.withOpacity(0.05),
                   blurRadius: 10,
-                  offset: Offset(0, 4),
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
@@ -134,7 +135,7 @@ class CompletionSuccessView extends StatelessWidget {
                             i < c.mechanicRating.value
                                 ? Iconsax.star
                                 : Iconsax.star,
-                            color: Color(0xFFFFB300),
+                            color: const Color(0xFFFFB300),
                             size: 20.w,
                           ),
                         ),
@@ -163,7 +164,7 @@ class CompletionSuccessView extends StatelessWidget {
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF4CAF50),
+                backgroundColor: const Color(0xFF4CAF50),
                 foregroundColor: Colors.white,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
@@ -189,8 +190,8 @@ class CompletionSuccessView extends StatelessWidget {
                 ),
               ),
               style: OutlinedButton.styleFrom(
-                foregroundColor: Color(0xFF4CAF50),
-                side: BorderSide(color: Color(0xFF4CAF50)),
+                foregroundColor: const Color(0xFF4CAF50),
+                side: const BorderSide(color: Color(0xFF4CAF50)),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14.r),
                 ),
@@ -256,29 +257,13 @@ class CompletionSuccessView extends StatelessWidget {
 
   void _downloadInvoice(JobCompletionController c) async {
     try {
-      Get.snackbar(
-        'Generating...',
-        'Creating PDF invoice',
-        backgroundColor: Colors.blue.shade50,
-        colorText: Colors.blue,
-      );
+      AppSnackbar.info('Creating PDF invoice', title: 'Generating...');
 
       final pdfFile = await InvoiceGenerator.generateAndSave(c);
 
-      Get.snackbar(
-        '✅ Downloaded',
-        'Invoice saved to ${pdfFile.path}',
-        backgroundColor: Colors.green.shade50,
-        colorText: Colors.green,
-        duration: Duration(seconds: 4),
-      );
+      AppSnackbar.success('Invoice saved to ${pdfFile.path}', title: '✅ Downloaded');
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to generate invoice: $e',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Failed to generate invoice: $e');
     }
   }
 
@@ -286,12 +271,7 @@ class CompletionSuccessView extends StatelessWidget {
     try {
       await InvoiceGenerator.generateAndShare(c);
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to share: $e',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Failed to share: $e');
     }
   }
 }

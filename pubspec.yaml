@@ -30,6 +30,7 @@ dependencies:
   shimmer: ^3.0.0
   pinput: ^6.0.1
   cached_network_image: ^3.4.1
+  flashy_flushbar: ^1.4.1
 
   # Location & Maps
   geolocator: ^14.0.2

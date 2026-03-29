@@ -60,7 +60,7 @@ class InvoiceGenerator {
     // Dynamic Color Palette
     final primaryColor = PdfColor.fromHex('#F57C00'); // DriveResQ Orange
     final secondaryColor = PdfColor.fromHex('#263238'); // Deep Blue Grey
-    final lightGrey = PdfColors.grey200;
+    const lightGrey = PdfColors.grey200;
     final surfaceColor = PdfColor.fromHex('#FAFAFA');
 
     pdf.addPage(

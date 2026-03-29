@@ -9,7 +9,7 @@ class BounceButton extends StatefulWidget {
   final VoidCallback onPressed;
   final Widget child;
 
-  BounceButton({super.key, required this.onPressed, required this.child});
+  const BounceButton({super.key, required this.onPressed, required this.child});
 
   /// Convenience factory for a styled primary CTA button.
   factory BounceButton.primary({
@@ -32,7 +32,7 @@ class BounceButton extends StatefulWidget {
             BoxShadow(
               color: color.withValues(alpha: 0.3),
               blurRadius: 12,
-              offset: Offset(0, 4),
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -71,7 +71,7 @@ class _BounceButtonState extends State<BounceButton>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 120),
+      duration: const Duration(milliseconds: 120),
     );
     _scale = Tween<double>(
       begin: 1.0,
@@ -106,7 +106,7 @@ class StaggeredListItem extends StatefulWidget {
   final Widget child;
   final int delayMs;
 
-  StaggeredListItem({
+  const StaggeredListItem({
     super.key,
     required this.index,
     required this.child,
@@ -128,11 +128,11 @@ class _StaggeredListItemState extends State<StaggeredListItem>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
     );
     _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
     _slide = Tween<Offset>(
-      begin: Offset(0, 0.15),
+      begin: const Offset(0, 0.15),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
 

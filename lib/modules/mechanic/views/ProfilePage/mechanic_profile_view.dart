@@ -16,11 +16,11 @@ class MechanicProfileView extends StatelessWidget {
     final c = Get.put(MechanicProfileController());
 
     return Scaffold(
-      backgroundColor: Color(0xFFF5F6FA),
+      backgroundColor: const Color(0xFFF5F6FA),
       body: Obx(() {
         final data = c.userData.value;
         if (data == null) {
-          return Center(child: CircularProgressIndicator(color: _accent));
+          return const Center(child: CircularProgressIndicator(color: _accent));
         }
 
         return CustomScrollView(
@@ -65,7 +65,7 @@ class MechanicProfileView extends StatelessWidget {
       pinned: true,
       backgroundColor: _accent,
       leading: IconButton(
-        icon: Icon(Iconsax.arrow_left, color: Colors.white),
+        icon: const Icon(Iconsax.arrow_left, color: Colors.white),
         onPressed: () => Get.back(),
       ),
       actions: [
@@ -81,7 +81,7 @@ class MechanicProfileView extends StatelessWidget {
       ],
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [Color(0xFF6C63FF), Color(0xFF5A52E8), Color(0xFF4840D4)],
               begin: Alignment.topLeft,
@@ -121,7 +121,7 @@ class MechanicProfileView extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-                SizedBox(height: 2),
+                const SizedBox(height: 2),
                 if (data['shopName'] != null &&
                     data['shopName'].toString().isNotEmpty)
                   Text(
@@ -149,7 +149,7 @@ class MechanicProfileView extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        c.verificationColor == Color(0xFF4CAF50)
+                        c.verificationColor == const Color(0xFF4CAF50)
                             ? Iconsax.verify
                             : Iconsax.clock,
                         size: 14.w,
@@ -386,7 +386,7 @@ class MechanicProfileView extends StatelessWidget {
               spacing: 6,
               runSpacing: 6,
               children: c.servicesOffered
-                  .map((s) => _chip(s, Color(0xFF4CAF50)))
+                  .map((s) => _chip(s, const Color(0xFF4CAF50)))
                   .toList(),
             ),
           ],
@@ -591,7 +591,7 @@ class MechanicProfileView extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
             blurRadius: 8,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -629,7 +629,7 @@ class MechanicProfileView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(label, style: _labelStyle),
-              SizedBox(height: 2),
+              const SizedBox(height: 2),
               Text(
                 value,
                 style: GoogleFonts.poppins(
@@ -682,7 +682,7 @@ class MechanicProfileView extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.r),
-          borderSide: BorderSide(color: _accent, width: 2),
+          borderSide: const BorderSide(color: _accent, width: 2),
         ),
       ),
     );
@@ -731,7 +731,7 @@ class MechanicProfileView extends StatelessWidget {
             color: verified ? Colors.black87 : Colors.grey.shade500,
           ),
         ),
-        Spacer(),
+        const Spacer(),
         Icon(icon, size: 18.w, color: Colors.grey.shade300),
       ],
     );
@@ -756,7 +756,7 @@ class MechanicProfileView extends StatelessWidget {
               ? SizedBox(
                   height: 20.h,
                   width: 20.w,
-                  child: CircularProgressIndicator(
+                  child: const CircularProgressIndicator(
                     color: Colors.white,
                     strokeWidth: 2,
                   ),
@@ -788,7 +788,7 @@ class MechanicProfileView extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.red.shade400,
         foregroundColor: Colors.white,
-        minimumSize: Size(double.infinity, 52),
+        minimumSize: const Size(double.infinity, 52),
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14.r),

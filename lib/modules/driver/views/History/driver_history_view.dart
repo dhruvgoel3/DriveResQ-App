@@ -58,17 +58,15 @@ class DriverHistoryView extends StatelessWidget {
                 style: AppTextStyles.h4.copyWith(fontWeight: FontWeight.w600),
               ),
               SizedBox(height: 12.h),
-              ...controller.historyList
-                  .map(
-                    (item) => _HistoryItemCard(
-                      data: item,
-                      onTap: () => Get.to(
-                        () => DriverHistoryDetailView(requestData: item),
-                        transition: Transition.rightToLeft,
-                      ),
-                    ),
-                  )
-                  .toList(),
+              ...controller.historyList.map(
+                (item) => _HistoryItemCard(
+                  data: item,
+                  onTap: () => Get.to(
+                    () => DriverHistoryDetailView(requestData: item),
+                    transition: Transition.rightToLeft,
+                  ),
+                ),
+              ),
             ],
           ),
         );

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import '../../notifications/services/fcm_service.dart';
 import '../../../app/routes/app_pages.dart';
+import '../../../utils/helpers/app_snackbar.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -57,22 +58,12 @@ class AuthController extends GetxController {
     final sanitized = _sanitizePhone(phoneController.text);
 
     if (sanitized.length != 10 || !RegExp(r'^\d{10}$').hasMatch(sanitized)) {
-      Get.snackbar(
-        "Error",
-        "Please enter a valid 10-digit phone number",
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Please enter a valid 10-digit phone number');
       return;
     }
 
     if (selectedRole.value.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Please select your role first",
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+      AppSnackbar.warning('Please select your role first');
       return;
     }
 
@@ -84,7 +75,7 @@ class AuthController extends GetxController {
 
       await _auth.verifyPhoneNumber(
         phoneNumber: phone,
-        timeout: Duration(seconds: 60),
+        timeout: const Duration(seconds: 60),
         verificationCompleted: (PhoneAuthCredential credential) async {
           debugPrint("Auto-verification completed");
           await _signInWithCredential(credential);
@@ -108,25 +99,14 @@ class AuthController extends GetxController {
             default:
               errorMsg = e.message ?? "Verification failed. Please try again.";
           }
-          Get.snackbar(
-            "Error",
-            errorMsg,
-            backgroundColor: Colors.red.withOpacity(0.1),
-            colorText: Colors.red,
-          );
+          AppSnackbar.error(errorMsg);
         },
         codeSent: (String verId, int? resendToken) {
           isLoading.value = false;
           verificationId = verId;
           debugPrint("OTP code sent, verificationId: $verId");
 
-          Get.snackbar(
-            "Success",
-            "OTP sent to $phone",
-            backgroundColor: Colors.green.withOpacity(0.1),
-            colorText: Colors.green,
-          );
-
+          AppSnackbar.success('OTP sent to $phone');
           Get.toNamed('/otp');
         },
         codeAutoRetrievalTimeout: (String verId) {
@@ -136,11 +116,8 @@ class AuthController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       debugPrint("Exception in sendOTP: $e");
-      Get.snackbar(
-        "Error",
-        "Failed to send OTP. Please check your internet connection and try again.",
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
+      AppSnackbar.error(
+        'Failed to send OTP. Please check your internet connection and try again.',
       );
     }
   }
@@ -148,22 +125,12 @@ class AuthController extends GetxController {
   // Verify OTP
   Future<void> verifyOTP() async {
     if (otpController.text.trim().length != 6) {
-      Get.snackbar(
-        "Error",
-        "Please enter a valid 6-digit OTP",
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Please enter a valid 6-digit OTP');
       return;
     }
 
     if (verificationId == null) {
-      Get.snackbar(
-        "Error",
-        "Verification ID not found. Please try again.",
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Verification ID not found. Please try again.');
       return;
     }
 
@@ -199,21 +166,11 @@ class AuthController extends GetxController {
         default:
           errorMsg = e.message ?? 'Verification failed. Please try again.';
       }
-      Get.snackbar(
-        "Error",
-        errorMsg,
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+      AppSnackbar.error(errorMsg);
     } catch (e) {
       isLoading.value = false;
       debugPrint("OTP verification error: $e");
-      Get.snackbar(
-        "Error",
-        "Verification failed: $e",
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Verification failed: $e');
     }
   }
 
@@ -297,7 +254,7 @@ class AuthController extends GetxController {
         Get.offAllNamed(Routes.ROLE);
       }
     } catch (e) {
-      Get.snackbar("Error", "Failed to load user data");
+      AppSnackbar.error('Failed to load user data');
     }
   }
 

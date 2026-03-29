@@ -8,11 +8,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 
 class LiveTrackingView extends StatefulWidget {
   final String requestId;
 
-  LiveTrackingView({super.key, required this.requestId});
+  const LiveTrackingView({super.key, required this.requestId});
 
   @override
   State<LiveTrackingView> createState() => _LiveTrackingViewState();
@@ -78,7 +79,7 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
       _updateDriverMarker();
     } catch (e) {
       debugPrint("Error getting driver location: $e");
-      Get.snackbar("Error", "Could not get your location");
+      AppSnackbar.error('Could not get your location');
     }
   }
 
@@ -98,9 +99,9 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
 
           if (status == 'completed' || status == 'cancelled') {
             Get.back();
-            Get.snackbar(
-              "Request ${status.capitalize}",
-              "This request has been $status",
+            AppSnackbar.info(
+              'This request has been $status',
+              title: 'Request ${status.capitalize}',
             );
             return;
           }
@@ -151,10 +152,10 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
       _markers.removeWhere((m) => m.markerId.value == 'driver');
       _markers.add(
         Marker(
-          markerId: MarkerId('driver'),
+          markerId: const MarkerId('driver'),
           position: LatLng(driverLat!, driverLng!),
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-          infoWindow: InfoWindow(title: 'Your Location'),
+          infoWindow: const InfoWindow(title: 'Your Location'),
         ),
       );
     });
@@ -168,12 +169,12 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
       _markers.removeWhere((m) => m.markerId.value == 'mechanic');
       _markers.add(
         Marker(
-          markerId: MarkerId('mechanic'),
+          markerId: const MarkerId('mechanic'),
           position: LatLng(mechanicLat!, mechanicLng!),
           icon: BitmapDescriptor.defaultMarkerWithHue(
             BitmapDescriptor.hueGreen,
           ),
-          infoWindow: InfoWindow(title: 'Mechanic Location'),
+          infoWindow: const InfoWindow(title: 'Mechanic Location'),
         ),
       );
     });
@@ -192,12 +193,12 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
       _polylines.clear();
       _polylines.add(
         Polyline(
-          polylineId: PolylineId('route'),
+          polylineId: const PolylineId('route'),
           points: [
             LatLng(mechanicLat!, mechanicLng!),
             LatLng(driverLat!, driverLng!),
           ],
-          color: Color(0xFF6C63FF),
+          color: const Color(0xFF6C63FF),
           width: 4.w.toInt(),
         ),
       );
@@ -268,7 +269,7 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Iconsax.arrow_left, color: Colors.black),
+          icon: const Icon(Iconsax.arrow_left, color: Colors.black),
           onPressed: () => Get.back(),
         ),
         title: Text(
@@ -281,7 +282,7 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
         ),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Stack(
               children: [
                 // 🗺️ Google Map
@@ -319,7 +320,7 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
                     mini: true,
                     backgroundColor: Colors.white,
                     onPressed: _moveCameraToShowBoth,
-                    child: Icon(Iconsax.gps, color: Color(0xFF6C63FF)),
+                    child: const Icon(Iconsax.gps, color: Color(0xFF6C63FF)),
                   ),
                 ),
               ],
@@ -338,7 +339,7 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
           topRight: Radius.circular(24.r),
         ),
         boxShadow: [
-          BoxShadow(
+          const BoxShadow(
             color: Colors.black12,
             blurRadius: 10,
             offset: Offset(0, -2),
@@ -361,7 +362,7 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
                 Container(
                   width: 8.w,
                   height: 8.h,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.green,
                     shape: BoxShape.circle,
                   ),
@@ -399,11 +400,11 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: _callMechanic,
-                  icon: Icon(Iconsax.call),
-                  label: Text("Call"),
+                  icon: const Icon(Iconsax.call),
+                  label: const Text("Call"),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Color(0xFF6C63FF),
-                    side: BorderSide(color: Color(0xFF6C63FF)),
+                    foregroundColor: const Color(0xFF6C63FF),
+                    side: const BorderSide(color: Color(0xFF6C63FF)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14.r),
                     ),
@@ -415,10 +416,10 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
               Expanded(
                 child: ElevatedButton.icon(
                   onPressed: _openNavigation,
-                  icon: Icon(Iconsax.location),
-                  label: Text("Navigate"),
+                  icon: const Icon(Iconsax.location),
+                  label: const Text("Navigate"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF6C63FF),
+                    backgroundColor: const Color(0xFF6C63FF),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14.r),
                     ),
@@ -436,7 +437,7 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
   Widget _buildStatItem(IconData icon, String value, String label) {
     return Column(
       children: [
-        Icon(icon, color: Color(0xFF6C63FF)),
+        Icon(icon, color: const Color(0xFF6C63FF)),
         SizedBox(height: 8.h),
         Text(
           value,
@@ -460,7 +461,7 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
   // 📞 Call mechanic
   void _callMechanic() async {
     if (mechanicPhone.isEmpty) {
-      Get.snackbar("Error", "Mechanic phone number not available");
+      AppSnackbar.error('Mechanic phone number not available');
       return;
     }
 
@@ -468,14 +469,14 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
-      Get.snackbar("Error", "Cannot make call");
+      AppSnackbar.error('Cannot make call');
     }
   }
 
   // 🗺️ Open navigation
   void _openNavigation() async {
     if (mechanicLat == null || mechanicLng == null) {
-      Get.snackbar("Error", "Mechanic location not available");
+      AppSnackbar.error('Mechanic location not available');
       return;
     }
 
@@ -486,7 +487,7 @@ class _LiveTrackingViewState extends State<LiveTrackingView> {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
-      Get.snackbar("Error", "Cannot open maps");
+      AppSnackbar.error('Cannot open maps');
     }
   }
 }

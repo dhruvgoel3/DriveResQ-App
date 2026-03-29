@@ -15,14 +15,14 @@ class DriverMapWidget extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16.r),
         child: GoogleMap(
-          initialCameraPosition: CameraPosition(
+          initialCameraPosition: const CameraPosition(
             target: LatLng(40.7128, -74.0060), // replace with driver location
             zoom: 12,
           ),
           zoomControlsEnabled: false,
           myLocationEnabled: true,
           markers: {
-            Marker(
+            const Marker(
               markerId: MarkerId("mechanic"),
               position: LatLng(40.715, -74.002),
               infoWindow: InfoWindow(title: "Mechanic En Route"),

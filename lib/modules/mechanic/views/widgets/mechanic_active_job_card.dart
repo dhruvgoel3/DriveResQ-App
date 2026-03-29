@@ -9,6 +9,7 @@ import '../../../chat/views/chat_screen.dart';
 import 'complete_job_verification_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 
 class MechanicActiveJobCard extends StatefulWidget {
   final Map<String, dynamic> job;
@@ -528,7 +529,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: _red,
-                  side: BorderSide(color: _red, width: 1.5),
+                  side: const BorderSide(color: _red, width: 1.5),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.r),
                   ),
@@ -599,7 +600,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
             ),
             style: OutlinedButton.styleFrom(
               foregroundColor: _red,
-              side: BorderSide(color: _red, width: 1.5),
+              side: const BorderSide(color: _red, width: 1.5),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r),
               ),
@@ -612,8 +613,8 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
           flex: 3,
           child: Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [_orange, const Color(0xFFF57C00)],
+              gradient: const LinearGradient(
+                colors: [_orange, Color(0xFFF57C00)],
               ),
               borderRadius: BorderRadius.circular(12.r),
               boxShadow: [
@@ -689,10 +690,10 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri);
       } else {
-        Get.snackbar("Error", "Cannot make call");
+        AppSnackbar.error('Cannot make call');
       }
     } else {
-      Get.snackbar("Error", "Phone number not available");
+      AppSnackbar.error('Phone number not available');
     }
   }
 
@@ -706,10 +707,10 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       } else {
-        Get.snackbar("Error", "Cannot open maps");
+        AppSnackbar.error('Cannot open maps');
       }
     } else {
-      Get.snackbar("Error", "Location not available");
+      AppSnackbar.error('Location not available');
     }
   }
 
@@ -724,7 +725,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
   void _openChat() {
     final chatId = widget.job['id'] ?? '';
     if (chatId.isEmpty) {
-      Get.snackbar('Error', 'Chat not available');
+      AppSnackbar.error('Chat not available');
       return;
     }
     Get.delete<ChatController>(force: true);
@@ -737,7 +738,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
       ),
     );
     Get.to(
-      () => ChatScreen(),
+      () => const ChatScreen(),
       transition: Transition.rightToLeft,
       duration: const Duration(milliseconds: 250),
     );

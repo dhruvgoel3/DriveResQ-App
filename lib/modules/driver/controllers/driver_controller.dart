@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../services/driver_service.dart';
+import '../../../utils/helpers/app_snackbar.dart';
 
 class DriverController extends GetxController {
   var currentIndex = 0.obs;
@@ -89,7 +90,7 @@ class DriverController extends GetxController {
       final requestId = data?['id'];
 
       if (requestId == null || requestId.toString().isEmpty) {
-        Get.snackbar('Error', 'No active request found to cancel.');
+        AppSnackbar.error('No active request found to cancel.');
         return;
       }
 
@@ -98,10 +99,10 @@ class DriverController extends GetxController {
       await DriverService.cancelActiveRequest(requestId);
 
       debugPrint('Request cancelled successfully');
-      Get.snackbar('Cancelled', 'Your request has been cancelled.');
+      AppSnackbar.warning('Your request has been cancelled.', title: 'Cancelled');
     } catch (e) {
       debugPrint('Error cancelling request: $e');
-      Get.snackbar('Error', 'Failed to cancel request. Please try again.');
+      AppSnackbar.error('Failed to cancel request. Please try again.');
     }
   }
 
@@ -111,19 +112,14 @@ class DriverController extends GetxController {
       final data = requestData.value;
       final requestId = data?['id'];
       if (requestId == null) {
-        Get.snackbar('Error', 'No request found.');
+        AppSnackbar.error('No request found.');
         return;
       }
       await DriverService.approveMechanic(requestId);
-      Get.snackbar(
-        'Approved!',
-        'Mechanic confirmed. OTP generated.',
-        backgroundColor: const Color(0xFF4CAF50).withOpacity(0.9),
-        colorText: const Color(0xFFFFFFFF),
-      );
+      AppSnackbar.success('Mechanic confirmed. OTP generated.', title: 'Approved!');
     } catch (e) {
       debugPrint('Error approving mechanic: $e');
-      Get.snackbar('Error', 'Failed to approve. Please try again.');
+      AppSnackbar.error('Failed to approve. Please try again.');
     }
   }
 
@@ -133,19 +129,17 @@ class DriverController extends GetxController {
       final data = requestData.value;
       final requestId = data?['id'];
       if (requestId == null) {
-        Get.snackbar('Error', 'No request found.');
+        AppSnackbar.error('No request found.');
         return;
       }
       await DriverService.declineMechanic(requestId);
-      Get.snackbar(
-        'Declined',
+      AppSnackbar.warning(
         'Request is open for other mechanics.',
-        backgroundColor: const Color(0xFFFF9800).withOpacity(0.9),
-        colorText: const Color(0xFFFFFFFF),
+        title: 'Declined',
       );
     } catch (e) {
       debugPrint('Error declining mechanic: $e');
-      Get.snackbar('Error', 'Failed to decline. Please try again.');
+      AppSnackbar.error('Failed to decline. Please try again.');
     }
   }
 }

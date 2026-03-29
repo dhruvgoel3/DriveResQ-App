@@ -10,7 +10,7 @@ class AppTextField extends StatelessWidget {
   final int maxLines;
   final TextInputType keyboardType;
 
-  AppTextField({
+  const AppTextField({
     super.key,
     required this.controller,
     required this.label,

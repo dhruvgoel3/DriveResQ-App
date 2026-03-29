@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 
 class DriverOnboardingController extends GetxController {
   final _auth = FirebaseAuth.instance;
@@ -43,12 +44,7 @@ class DriverOnboardingController extends GetxController {
   void nextStep() {
     final error = _validateCurrentStep();
     if (error != null) {
-      Get.snackbar(
-        'Required',
-        error,
-        backgroundColor: Colors.orange.withOpacity(0.1),
-        colorText: Colors.orange.shade800,
-      );
+      AppSnackbar.warning(error, title: 'Required');
       return;
     }
     if (currentStep.value < 1) {
@@ -186,7 +182,7 @@ class DriverOnboardingController extends GetxController {
   Future<void> submitOnboarding() async {
     final error = _validateCurrentStep();
     if (error != null) {
-      Get.snackbar('Required', error);
+      AppSnackbar.warning(error, title: 'Required');
       return;
     }
 
@@ -214,21 +210,11 @@ class DriverOnboardingController extends GetxController {
 
       isLoading.value = false;
       Get.offAllNamed('/driver');
-      Get.snackbar(
-        'Welcome!',
-        'Profile setup complete 🎉',
-        backgroundColor: Colors.green.withOpacity(0.1),
-        colorText: Colors.green,
-      );
+      AppSnackbar.success('Profile setup complete 🎉', title: 'Welcome!');
     } catch (e) {
       isLoading.value = false;
       debugPrint(' Driver onboarding error: $e');
-      Get.snackbar(
-        'Error',
-        'Failed to submit. Please try again.',
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Failed to submit. Please try again.');
     }
   }
 }

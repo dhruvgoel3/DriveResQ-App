@@ -48,18 +48,18 @@ class LiveTrackingController extends GetxController {
           if (data['driverLat'] != null && data['driverLng'] != null) {
             driverLatLng = LatLng(data['driverLat'], data['driverLng']);
             driverMarker.value = Marker(
-              markerId: MarkerId("driver"),
+              markerId: const MarkerId("driver"),
               position: driverLatLng!,
-              infoWindow: InfoWindow(title: "Driver"),
+              infoWindow: const InfoWindow(title: "Driver"),
             );
           }
 
           if (data['mechanicLat'] != null && data['mechanicLng'] != null) {
             mechanicLatLng = LatLng(data['mechanicLat'], data['mechanicLng']);
             mechanicMarker.value = Marker(
-              markerId: MarkerId("mechanic"),
+              markerId: const MarkerId("mechanic"),
               position: mechanicLatLng!,
-              infoWindow: InfoWindow(title: "Mechanic"),
+              infoWindow: const InfoWindow(title: "Mechanic"),
             );
           }
 
@@ -71,7 +71,7 @@ class LiveTrackingController extends GetxController {
   void _startSendingMyLocation() {
     locationSub =
         Geolocator.getPositionStream(
-          locationSettings: LocationSettings(
+          locationSettings: const LocationSettings(
             accuracy: LocationAccuracy.high,
             distanceFilter: 10,
           ),

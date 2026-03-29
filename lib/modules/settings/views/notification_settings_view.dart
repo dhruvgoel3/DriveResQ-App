@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 
 class NotificationSettingsView extends StatefulWidget {
   const NotificationSettingsView({super.key});
@@ -76,21 +76,21 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView> {
     } catch (e) {
       // Revert if error
       setState(() => settings[key] = !value);
-      Get.snackbar('Error', 'Could not update settings.');
+      AppSnackbar.error('Could not update settings');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     // Whether individual keys are disabled due to "All Notifications" switch
     final bool masterSwitch = settings['all_notifications'] ?? true;
 
     return Scaffold(
-      backgroundColor: Color(0xFFF5F6FA),
+      backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
         title: Text(
           'Notification Preferences',
@@ -103,7 +103,7 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.black87),
+        iconTheme: const IconThemeData(color: Colors.black87),
       ),
       body: ListView(
         padding: EdgeInsets.symmetric(vertical: 16.h),
@@ -169,13 +169,13 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView> {
 
   Widget _sectionHeader(String title) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(20, 0, 20, 8),
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
       child: Text(
         title.toUpperCase(),
         style: GoogleFonts.poppins(
           fontSize: 12.sp,
           fontWeight: FontWeight.bold,
-          color: Color(0xFF6C63FF),
+          color: const Color(0xFF6C63FF),
           letterSpacing: 1.0,
         ),
       ),
@@ -207,7 +207,7 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView> {
       trailing: Switch(
         value: enabled ? (settings[key] ?? true) : false,
         onChanged: enabled ? (val) => _updateSetting(key, val) : null,
-        activeThumbColor: Color(0xFF6C63FF),
+        activeThumbColor: const Color(0xFF6C63FF),
       ),
     );
   }

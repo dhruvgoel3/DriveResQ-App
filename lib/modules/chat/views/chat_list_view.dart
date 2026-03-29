@@ -67,11 +67,14 @@ class ChatListView extends StatelessWidget {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return ShimmerLoader(itemCount: 5, cardType: ShimmerCardType.chat);
+            return const ShimmerLoader(
+              itemCount: 5,
+              cardType: ShimmerCardType.chat,
+            );
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return EmptyStateWidget(
+            return const EmptyStateWidget(
               icon: Iconsax.message,
               iconColor: AppColors.primary,
               title: 'No Messages Yet',

@@ -63,13 +63,16 @@ class OpenRequestCard extends StatelessWidget {
 
   IconData _problemIcon(String? problem) {
     final p = (problem ?? '').toLowerCase();
-    if (p.contains('tire') || p.contains('tyre') || p.contains('flat'))
+    if (p.contains('tire') || p.contains('tyre') || p.contains('flat')) {
       return Iconsax.car;
+    }
     if (p.contains('engine') || p.contains('motor')) return Iconsax.setting_2;
-    if (p.contains('battery') || p.contains('charge'))
+    if (p.contains('battery') || p.contains('charge')) {
       return Iconsax.battery_charging;
-    if (p.contains('fuel') || p.contains('petrol') || p.contains('diesel'))
+    }
+    if (p.contains('fuel') || p.contains('petrol') || p.contains('diesel')) {
       return Iconsax.gas_station;
+    }
     if (p.contains('key') || p.contains('lock')) return Iconsax.key;
     return Iconsax.warning_2;
   }

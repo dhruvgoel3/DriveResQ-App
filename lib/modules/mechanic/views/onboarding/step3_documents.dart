@@ -108,7 +108,7 @@ class Step3Documents extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFFFF9800),
+                    color: const Color(0xFFFF9800),
                   ),
                 ),
                 Text(
@@ -127,7 +127,9 @@ class Step3Documents extends StatelessWidget {
                 value: c.currentStep.value / 6,
                 minHeight: 6.h,
                 backgroundColor: Colors.grey.shade200,
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF9800)),
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  Color(0xFFFF9800),
+                ),
               ),
             ),
           ],
@@ -189,7 +191,9 @@ class Step3Documents extends StatelessWidget {
                 color: hasFile ? null : Colors.grey.shade50,
                 borderRadius: BorderRadius.circular(14.r),
                 border: Border.all(
-                  color: hasFile ? Color(0xFF4CAF50) : Colors.grey.shade200,
+                  color: hasFile
+                      ? const Color(0xFF4CAF50)
+                      : Colors.grey.shade200,
                   width: 1.5,
                 ),
                 image: hasFile
@@ -205,7 +209,7 @@ class Step3Documents extends StatelessWidget {
                       child: Container(
                         margin: EdgeInsets.all(8.w),
                         padding: EdgeInsets.all(6.w),
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Color(0xFF4CAF50),
                           shape: BoxShape.circle,
                         ),
@@ -324,11 +328,11 @@ class Step3Documents extends StatelessWidget {
           onPressed: () {
             c.nextStep();
             if (c.currentStep.value == 4) {
-              Get.to(() => Step4BankDetails());
+              Get.to(() => const Step4BankDetails());
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFFFF9800),
+            backgroundColor: const Color(0xFFFF9800),
             foregroundColor: Colors.white,
             elevation: 0,
             shape: RoundedRectangleBorder(

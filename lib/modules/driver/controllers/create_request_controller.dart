@@ -11,6 +11,8 @@ import '../services/location_service.dart';
 import '../../notifications/services/notification_sender.dart';
 import '../../../shared/services/connectivity_service.dart';
 import '../../../shared/services/error_handler.dart';
+import '../../../utils/helpers/app_snackbar.dart';
+import '../../../utils/helpers/app_dialogs.dart';
 
 class CreateRequestController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -40,7 +42,7 @@ class CreateRequestController extends GetxController {
   void fetchLocation() async {
     try {
       locationName.value = "Fetching location...";
-      final locationData = await LocationService.getLocationData(); // ✅ FIXED
+      final locationData = await LocationService.getLocationData();
 
       locationName.value = locationData['locationName'];
       driverLat = locationData['lat'];
@@ -51,41 +53,16 @@ class CreateRequestController extends GetxController {
   }
 
   // ✏️ Edit location manually
-  void editLocationName() {
-    final TextEditingController editController = TextEditingController(
-      text: locationName.value,
+  void editLocationName() async {
+    final result = await AppDialogs.input(
+      title: 'Edit Location',
+      hint: 'Enter location manually',
+      initialValue: locationName.value,
     );
-    Get.dialog(
-      AlertDialog(
-        backgroundColor: Colors.white,
-        title: const Text("Edit Location"),
-        content: TextField(
-          controller: editController,
-          style: const TextStyle(color: Colors.black),
-          decoration: const InputDecoration(
-            hintText: "Enter location manually",
-            hintStyle: TextStyle(color: Colors.black54),
-            border: OutlineInputBorder(),
-          ),
-        ),
-        actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text("Cancel")),
-          ElevatedButton(
-            onPressed: () {
-              if (editController.text.trim().isNotEmpty) {
-                locationName.value = editController.text.trim();
-              }
-              Get.back();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF6C63FF),
-              foregroundColor: Colors.white,
-            ),
-            child: const Text("Save"),
-          ),
-        ],
-      ),
-    );
+
+    if (result != null && result.isNotEmpty) {
+      locationName.value = result;
+    }
   }
 
   // 📷 Pick image
@@ -103,7 +80,7 @@ class CreateRequestController extends GetxController {
         problemController.text.isEmpty ||
         driverLat == null ||
         driverLng == null) {
-      Get.snackbar("Error", "Please fill all required fields");
+      AppSnackbar.warning('Please fill all required fields');
       return;
     }
 
@@ -173,7 +150,7 @@ class CreateRequestController extends GetxController {
 
       isLoading.value = false;
       Get.back();
-      Get.snackbar('Success', 'Request created successfully!');
+      AppSnackbar.success('Request created successfully!');
     } on Exception catch (e) {
       isLoading.value = false;
       ErrorHandler.handle(e, onRetry: submitRequest);

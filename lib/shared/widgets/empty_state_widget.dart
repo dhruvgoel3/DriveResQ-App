@@ -15,7 +15,7 @@ class EmptyStateWidget extends StatefulWidget {
   final List<String>? tips;
   final Color? buttonColor;
 
-  EmptyStateWidget({
+  const EmptyStateWidget({
     super.key,
     required this.icon,
     this.iconColor = const Color(0xFF6C63FF),
@@ -43,7 +43,7 @@ class _EmptyStateWidgetState extends State<EmptyStateWidget>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 800),
     );
     _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
     _scale = Tween<double>(
@@ -51,7 +51,7 @@ class _EmptyStateWidgetState extends State<EmptyStateWidget>
       end: 1.0,
     ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.elasticOut));
     _slide = Tween<Offset>(
-      begin: Offset(0, 0.15),
+      begin: const Offset(0, 0.15),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
     _ctrl.forward();
@@ -65,7 +65,7 @@ class _EmptyStateWidgetState extends State<EmptyStateWidget>
 
   @override
   Widget build(BuildContext context) {
-    final btnColor = widget.buttonColor ?? Color(0xFF6C63FF);
+    final btnColor = widget.buttonColor ?? const Color(0xFF6C63FF);
 
     return Center(
       child: SlideTransition(

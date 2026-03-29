@@ -271,7 +271,7 @@ class DriverHistoryDetailView extends StatelessWidget {
                 backgroundColor: AppColors.mechanicPrimary.withOpacity(0.15),
                 backgroundImage: photo.isNotEmpty ? NetworkImage(photo) : null,
                 child: photo.isEmpty
-                    ? Icon(Iconsax.user, color: AppColors.mechanicPrimary)
+                    ? const Icon(Iconsax.user, color: AppColors.mechanicPrimary)
                     : null,
               ),
               SizedBox(width: 14.w),

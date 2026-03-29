@@ -2,10 +2,10 @@ import 'package:iconsax/iconsax.dart';
 import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:driveresq_app/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/utils/helpers/app_dialogs.dart';
 
 import '../../../tracking/views/live_tracking_view.dart';
 import '../../controllers/active_request_card_controller.dart';
@@ -15,7 +15,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class ActiveRequestCard extends StatelessWidget {
   final Map<String, dynamic> request;
 
-  ActiveRequestCard({super.key, required this.request});
+  const ActiveRequestCard({super.key, required this.request});
 
   @override
   Widget build(BuildContext context) {
@@ -740,20 +740,17 @@ class _MechanicAcceptedMessage extends StatelessWidget {
                 child: SizedBox(
                   height: 48.h,
                   child: OutlinedButton.icon(
-                    onPressed: () {
-                      Get.defaultDialog(
-                        title: "Decline Mechanic?",
-                        middleText:
-                            "This will open your request to other mechanics.",
-                        textConfirm: "Yes, Decline",
-                        textCancel: "No",
-                        confirmTextColor: AppColors.surface,
-                        buttonColor: AppColors.error,
-                        onConfirm: () {
-                          Get.back();
-                          controller.declineMechanic();
-                        },
+                    onPressed: () async {
+                      final confirmed = await AppDialogs.confirm(
+                        title: 'Decline Mechanic?',
+                        message: 'This will open your request to other mechanics.',
+                        confirmText: 'Yes, Decline',
+                        cancelText: 'No',
+                        isDangerous: true,
                       );
+                      if (confirmed == true) {
+                        controller.declineMechanic();
+                      }
                     },
                     icon: Icon(Iconsax.close_circle, size: 18.w),
                     label: Text(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 
 class VerificationPendingView extends StatelessWidget {
   const VerificationPendingView({super.key});
@@ -75,12 +76,9 @@ class VerificationPendingView extends StatelessWidget {
         if (status == 'approved') {
           Get.offAllNamed('/mechanic');
         } else {
-          Get.snackbar(
-            'Status: $status',
+          AppSnackbar.info(
             'Your account is still being reviewed. Please wait or contact support.',
-            backgroundColor: Colors.white,
-            colorText: Colors.black87,
-            snackPosition: SnackPosition.BOTTOM,
+            title: 'Status: $status',
           );
         }
       }
@@ -269,9 +267,13 @@ class VerificationPendingView extends StatelessWidget {
                 height: 28.h,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: completed ? Color(0xFF4CAF50) : Colors.grey.shade200,
+                  color: completed
+                      ? const Color(0xFF4CAF50)
+                      : Colors.grey.shade200,
                   border: Border.all(
-                    color: completed ? Color(0xFF4CAF50) : Colors.grey.shade300,
+                    color: completed
+                        ? const Color(0xFF4CAF50)
+                        : Colors.grey.shade300,
                     width: 2,
                   ),
                 ),
@@ -282,7 +284,9 @@ class VerificationPendingView extends StatelessWidget {
               Container(
                 width: 2,
                 height: 24.h,
-                color: completed ? Color(0xFF4CAF50) : Colors.grey.shade200,
+                color: completed
+                    ? const Color(0xFF4CAF50)
+                    : Colors.grey.shade200,
               ),
             ],
           ),
@@ -303,7 +307,7 @@ class VerificationPendingView extends StatelessWidget {
                   subtitle,
                   style: GoogleFonts.poppins(
                     fontSize: 12.sp,
-                    color: Color(0xFFFF9800),
+                    color: const Color(0xFFFF9800),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -408,7 +412,7 @@ class VerificationPendingView extends StatelessWidget {
                 Get.offAllNamed('/mechanic-onboarding');
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFFF9800),
+                backgroundColor: const Color(0xFFFF9800),
                 foregroundColor: Colors.white,
                 elevation: 0,
                 shape: RoundedRectangleBorder(

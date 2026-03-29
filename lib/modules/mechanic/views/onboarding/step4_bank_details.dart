@@ -127,7 +127,7 @@ class Step4BankDetails extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFFFF9800),
+                    color: const Color(0xFFFF9800),
                   ),
                 ),
                 Text(
@@ -146,7 +146,9 @@ class Step4BankDetails extends StatelessWidget {
                 value: c.currentStep.value / 6,
                 minHeight: 6.h,
                 backgroundColor: Colors.grey.shade200,
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF9800)),
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  Color(0xFFFF9800),
+                ),
               ),
             ),
           ],
@@ -279,11 +281,11 @@ class Step4BankDetails extends StatelessWidget {
           onPressed: () {
             c.nextStep();
             if (c.currentStep.value == 5) {
-              Get.to(() => Step5Availability());
+              Get.to(() => const Step5Availability());
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFFFF9800),
+            backgroundColor: const Color(0xFFFF9800),
             foregroundColor: Colors.white,
             elevation: 0,
             shape: RoundedRectangleBorder(

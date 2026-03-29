@@ -37,7 +37,7 @@ class AppPages {
   static const _dur = Duration(milliseconds: 300);
 
   static final pages = [
-    GetPage(name: Routes.SPLASH, page: () => SplashView()),
+    GetPage(name: Routes.SPLASH, page: () => const SplashView()),
     GetPage(
       name: Routes.ONBOARDING,
       page: () => const OnboardingView(),
@@ -46,19 +46,19 @@ class AppPages {
     ),
     GetPage(
       name: Routes.ROLE,
-      page: () => RoleSelectionView(),
+      page: () => const RoleSelectionView(),
       transition: Transition.fadeIn,
       transitionDuration: _dur,
     ),
     GetPage(
       name: Routes.LOGIN,
-      page: () => PhoneNumberView(),
+      page: () => const PhoneNumberView(),
       transition: Transition.rightToLeft,
       transitionDuration: _dur,
     ),
     GetPage(
       name: Routes.OTP,
-      page: () => OTPVerificationView(),
+      page: () => const OTPVerificationView(),
       transition: Transition.rightToLeft,
       transitionDuration: _dur,
     ),

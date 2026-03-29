@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
+import '../../../utils/helpers/app_snackbar.dart';
+
 /// Controller for the Mechanic History screen.
 /// Fetches past requests the mechanic worked on (completed / cancelled)
 /// and joins with completedJobs data for detailed reporting.
@@ -69,7 +71,7 @@ class MechanicHistoryController extends GetxController {
                   : 0);
             }
           } catch (e) {
-            debugPrint('⚠️ Failed to fetch completion data for ${doc.id}: $e');
+            debugPrint('️ Failed to fetch completion data for ${doc.id}: $e');
           }
         }
 
@@ -94,7 +96,7 @@ class MechanicHistoryController extends GetxController {
       totalDistance.value = distance;
     } catch (e) {
       debugPrint(' Error fetching mechanic history: $e');
-      Get.snackbar('Error', 'Failed to load history');
+      AppSnackbar.error('Failed to load history');
     } finally {
       isLoading.value = false;
     }

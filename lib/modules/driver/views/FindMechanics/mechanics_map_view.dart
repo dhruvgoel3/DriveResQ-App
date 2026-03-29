@@ -54,7 +54,7 @@ class MechanicsMapView extends StatelessWidget {
               icon: BitmapDescriptor.defaultMarkerWithHue(
                 BitmapDescriptor.hueOrange,
               ),
-              infoWindow: InfoWindow(title: name, snippet: '${dist} km away'),
+              infoWindow: InfoWindow(title: name, snippet: '$dist km away'),
             ),
           );
         }

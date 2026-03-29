@@ -89,7 +89,7 @@ class Step2ProfessionalDetails extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFFFF9800),
+                    color: const Color(0xFFFF9800),
                   ),
                 ),
                 Text(
@@ -108,7 +108,9 @@ class Step2ProfessionalDetails extends StatelessWidget {
                 value: c.currentStep.value / 6,
                 minHeight: 6.h,
                 backgroundColor: Colors.grey.shade200,
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF9800)),
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  Color(0xFFFF9800),
+                ),
               ),
             ),
           ],
@@ -260,17 +262,19 @@ class Step2ProfessionalDetails extends StatelessWidget {
               return GestureDetector(
                 onTap: () => c.toggleSpecialization(item),
                 child: AnimatedContainer(
-                  duration: Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 200),
                   padding: EdgeInsets.symmetric(
                     horizontal: 16.w,
                     vertical: 10.h,
                   ),
                   decoration: BoxDecoration(
-                    color: selected ? Color(0xFFFF9800) : Colors.grey.shade50,
+                    color: selected
+                        ? const Color(0xFFFF9800)
+                        : Colors.grey.shade50,
                     borderRadius: BorderRadius.circular(25.r),
                     border: Border.all(
                       color: selected
-                          ? Color(0xFFFF9800)
+                          ? const Color(0xFFFF9800)
                           : Colors.grey.shade300,
                       width: 1.5,
                     ),
@@ -322,19 +326,19 @@ class Step2ProfessionalDetails extends StatelessWidget {
               return GestureDetector(
                 onTap: () => c.toggleService(item),
                 child: AnimatedContainer(
-                  duration: Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 200),
                   padding: EdgeInsets.symmetric(
                     horizontal: 16.w,
                     vertical: 10.h,
                   ),
                   decoration: BoxDecoration(
                     color: selected
-                        ? Color(0xFFFF9800).withOpacity(0.15)
+                        ? const Color(0xFFFF9800).withOpacity(0.15)
                         : Colors.grey.shade50,
                     borderRadius: BorderRadius.circular(25.r),
                     border: Border.all(
                       color: selected
-                          ? Color(0xFFFF9800)
+                          ? const Color(0xFFFF9800)
                           : Colors.grey.shade300,
                       width: 1.5,
                     ),
@@ -346,7 +350,7 @@ class Step2ProfessionalDetails extends StatelessWidget {
                         Icon(
                           Iconsax.tick_circle,
                           size: 16.w,
-                          color: Color(0xFFFF9800),
+                          color: const Color(0xFFFF9800),
                         ),
                         SizedBox(width: 6.w),
                       ],
@@ -356,7 +360,7 @@ class Step2ProfessionalDetails extends StatelessWidget {
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w500,
                           color: selected
-                              ? Color(0xFFFF9800)
+                              ? const Color(0xFFFF9800)
                               : Colors.grey.shade700,
                         ),
                       ),
@@ -381,11 +385,11 @@ class Step2ProfessionalDetails extends StatelessWidget {
           onPressed: () {
             c.nextStep();
             if (c.currentStep.value == 3) {
-              Get.to(() => Step3Documents());
+              Get.to(() => const Step3Documents());
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFFFF9800),
+            backgroundColor: const Color(0xFFFF9800),
             foregroundColor: Colors.white,
             elevation: 0,
             shape: RoundedRectangleBorder(

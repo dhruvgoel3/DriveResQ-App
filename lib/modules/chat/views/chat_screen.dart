@@ -2,6 +2,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:driveresq_app/theme/app_text_styles.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -363,7 +364,7 @@ class _ChatInputBar extends StatelessWidget {
 
       if (sending) {
         return Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: AppColors.border,
             shape: BoxShape.circle,
           ),
@@ -606,12 +607,7 @@ class _EstimateDialog {
                     if (serviceCtrl.text.trim().isEmpty ||
                         cost == null ||
                         timeCtrl.text.trim().isEmpty) {
-                      Get.snackbar(
-                        'Required',
-                        'Fill service, cost and time',
-                        backgroundColor: AppColors.error,
-                        colorText: AppColors.surface,
-                      );
+                      AppSnackbar.warning('Fill service, cost and time');
                       return;
                     }
                     Get.back();

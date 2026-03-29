@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -10,6 +9,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../chat/controllers/chat_controller.dart';
 import '../../chat/views/chat_screen.dart';
 import '../services/driver_service.dart';
+import '../../../utils/helpers/app_snackbar.dart';
 
 class ActiveRequestCardController extends GetxController {
   final Map<String, dynamic> request;
@@ -108,7 +108,7 @@ class ActiveRequestCardController extends GetxController {
   Future<void> callMechanic() async {
     final phone = request['mechanicPhone'];
     if (phone == null || phone.isEmpty) {
-      Get.snackbar("Error", "Mechanic phone number not available");
+      AppSnackbar.error('Mechanic phone number not available');
       return;
     }
 
@@ -116,14 +116,14 @@ class ActiveRequestCardController extends GetxController {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
-      Get.snackbar("Error", "Cannot make call");
+      AppSnackbar.error('Cannot make call');
     }
   }
 
   void openChat() {
     final chatId = request['id'] ?? '';
     if (chatId.isEmpty) {
-      Get.snackbar('Error', 'Chat not available yet');
+      AppSnackbar.error('Chat not available yet');
       return;
     }
 
@@ -146,13 +146,9 @@ class ActiveRequestCardController extends GetxController {
 
   void copyVerificationCode(String code) {
     Clipboard.setData(ClipboardData(text: code));
-    Get.snackbar(
-      "Copied!",
-      "Verification code copied to clipboard",
-      snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 2),
-      backgroundColor: Colors.green.withOpacity(0.9),
-      colorText: Colors.white,
+    AppSnackbar.success(
+      'Verification code copied to clipboard',
+      title: 'Copied!',
     );
   }
 

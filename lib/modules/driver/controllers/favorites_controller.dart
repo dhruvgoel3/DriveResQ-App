@@ -1,8 +1,9 @@
-import 'package:iconsax/iconsax.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../utils/helpers/app_snackbar.dart';
 
 class FavoritesController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -43,14 +44,9 @@ class FavoritesController extends GetxController {
         'favoriteMechanics': FieldValue.arrayUnion([mechanicId]),
       });
 
-      Get.snackbar(
-        "Added to Favorites",
-        "You can quickly book this mechanic from your favorites",
-        backgroundColor: Colors.green.withOpacity(0.1),
-        colorText: Colors.green,
-        icon: const Icon(Iconsax.heart, color: Colors.green),
-        snackPosition: SnackPosition.BOTTOM,
-        margin: const EdgeInsets.all(16),
+      AppSnackbar.success(
+        'You can quickly book this mechanic from your favorites',
+        title: 'Added to Favorites',
       );
     } catch (e) {
       debugPrint("Error adding favorite: $e");

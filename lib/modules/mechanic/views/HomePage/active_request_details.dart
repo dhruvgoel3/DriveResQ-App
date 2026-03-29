@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../controller/mechanic_controller.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
+import 'package:driveresq_app/utils/helpers/app_dialogs.dart';
 
 class ActiveRequestDetailsPage extends StatelessWidget {
   static const primary = Color(0xFF6C63FF);
@@ -16,12 +18,12 @@ class ActiveRequestDetailsPage extends StatelessWidget {
     final controller = Get.find<MechanicController>();
 
     return Scaffold(
-      backgroundColor: Color(0xFFF6F7FB),
+      backgroundColor: const Color(0xFFF6F7FB),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Iconsax.arrow_left, color: Colors.black87),
+          icon: const Icon(Iconsax.arrow_left, color: Colors.black87),
           onPressed: () => Get.back(),
         ),
         title: Text(
@@ -80,7 +82,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                     BoxShadow(
                       color: Colors.black.withOpacity(0.08),
                       blurRadius: 20,
-                      offset: Offset(0, 4),
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
@@ -216,7 +218,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
             BoxShadow(
               color: Colors.blue.withOpacity(0.3),
               blurRadius: 10,
-              offset: Offset(0, 4),
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -532,7 +534,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.red,
-                  side: BorderSide(color: Colors.red, width: 2),
+                  side: const BorderSide(color: Colors.red, width: 2),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14.r),
                   ),
@@ -579,7 +581,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                     ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.red,
-                      side: BorderSide(color: Colors.red, width: 2),
+                      side: const BorderSide(color: Colors.red, width: 2),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14.r),
                       ),
@@ -648,10 +650,10 @@ class ActiveRequestDetailsPage extends StatelessWidget {
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri);
       } else {
-        Get.snackbar("Error", "Cannot make call");
+        AppSnackbar.error('Cannot make call');
       }
     } else {
-      Get.snackbar("Error", "Phone number not available");
+      AppSnackbar.error('Phone number not available');
     }
   }
 
@@ -668,52 +670,47 @@ class ActiveRequestDetailsPage extends StatelessWidget {
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       } else {
-        Get.snackbar("Error", "Cannot open maps");
+        AppSnackbar.error('Cannot open maps');
       }
     } else {
-      Get.snackbar("Error", "Location not available");
+      AppSnackbar.error('Location not available');
     }
   }
 
   // ❌ Show Cancel Dialog
-  void _showCancelDialog(MechanicController controller) {
-    Get.defaultDialog(
-      title: "Cancel Job",
-      middleText: "Are you sure you want to cancel this job?",
-      textConfirm: "Yes, Cancel",
-      textCancel: "No",
-      confirmTextColor: Colors.white,
-      buttonColor: Colors.red,
-      onConfirm: () {
-        Get.back(); // Close dialog
-        controller.cancelActiveJob();
-        Get.back(); // Go back to main page
-      },
+  void _showCancelDialog(MechanicController controller) async {
+    final confirmed = await AppDialogs.confirm(
+      title: 'Cancel Job',
+      message: 'Are you sure you want to cancel this job?',
+      confirmText: 'Yes, Cancel',
+      cancelText: 'No',
+      isDangerous: true,
     );
+    if (confirmed == true) {
+      controller.cancelActiveJob();
+      Get.back();
+    }
   }
 
   // ✅ Navigate to Job Completion Flow
-  void _showCompleteDialog(MechanicController controller) {
+  void _showCompleteDialog(MechanicController controller) async {
     if (controller.activeJob.value == null) return;
 
-    Get.defaultDialog(
-      title: "Complete Job",
-      middleText:
+    final confirmed = await AppDialogs.confirm(
+      title: 'Complete Job',
+      message:
           "Ready to complete this job? You'll fill in a summary, confirm cash collection, and rate the customer.",
-      textConfirm: "Yes, Proceed",
-      textCancel: "Not Yet",
-      confirmTextColor: Colors.white,
-      buttonColor: Colors.green,
-      onConfirm: () {
-        Get.back(); // Close dialog
-        Get.toNamed(
-          '/job-completion',
-          arguments: {
-            'job': controller.activeJob.value!,
-            'jobId': controller.activeJob.value!['id'],
-          },
-        );
-      },
+      confirmText: 'Yes, Proceed',
+      cancelText: 'Not Yet',
     );
+    if (confirmed == true) {
+      Get.toNamed(
+        '/job-completion',
+        arguments: {
+          'job': controller.activeJob.value!,
+          'jobId': controller.activeJob.value!['id'],
+        },
+      );
+    }
   }
 }

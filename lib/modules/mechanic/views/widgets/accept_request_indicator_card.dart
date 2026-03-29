@@ -6,7 +6,7 @@ import '../HomePage/active_request_details.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class AcceptedRequestIndicatorCard extends StatefulWidget {
-  AcceptedRequestIndicatorCard({super.key});
+  const AcceptedRequestIndicatorCard({super.key});
 
   @override
   State<AcceptedRequestIndicatorCard> createState() =>
@@ -24,7 +24,7 @@ class _AcceptedRequestIndicatorCardState
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 1500),
       vsync: this,
     )..repeat(reverse: true);
 
@@ -32,8 +32,8 @@ class _AcceptedRequestIndicatorCardState
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
 
-    _slideAnimation = Tween<Offset>(begin: Offset.zero, end: Offset(0.05, 0))
-        .animate(
+    _slideAnimation =
+        Tween<Offset>(begin: Offset.zero, end: const Offset(0.05, 0)).animate(
           CurvedAnimation(
             parent: _animationController,
             curve: Curves.easeInOut,
@@ -53,15 +53,15 @@ class _AcceptedRequestIndicatorCardState
       onTap: () {
         // Navigate to Active Request Details Page
         Get.to(
-          () => ActiveRequestDetailsPage(),
+          () => const ActiveRequestDetailsPage(),
           transition: Transition.rightToLeft,
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
         );
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 8.h),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             colors: [Color(0xFF6C63FF), Color(0xFF5A52E8)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -69,9 +69,9 @@ class _AcceptedRequestIndicatorCardState
           borderRadius: BorderRadius.circular(18.r),
           boxShadow: [
             BoxShadow(
-              color: Color(0xFF6C63FF).withOpacity(0.3),
+              color: const Color(0xFF6C63FF).withOpacity(0.3),
               blurRadius: 12,
-              offset: Offset(0, 4),
+              offset: const Offset(0, 4),
             ),
           ],
         ),

@@ -41,7 +41,7 @@ class RoleSelectionView extends StatelessWidget {
                         style: GoogleFonts.poppins(
                           fontSize: 40.sp,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF6C63FF),
+                          color: const Color(0xFF6C63FF),
                         ),
                       ),
                       SizedBox(height: 8.h),
@@ -92,7 +92,7 @@ class RoleSelectionView extends StatelessWidget {
                         ),
                       ),
 
-                      Spacer(),
+                      const Spacer(),
                       SizedBox(height: 20.h),
 
                       // Continue button
@@ -107,7 +107,7 @@ class RoleSelectionView extends StatelessWidget {
                                     Get.toNamed('/login');
                                   },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF6C63FF),
+                              backgroundColor: const Color(0xFF6C63FF),
                               foregroundColor: Colors.white,
                               disabledBackgroundColor: Colors.grey.shade300,
                               elevation: 0,
@@ -150,7 +150,7 @@ class RoleSelectionView extends StatelessWidget {
     return GestureDetector(
       onTap: () => controller.selectRole(role),
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
         padding: EdgeInsets.all(24.w),
         decoration: BoxDecoration(
@@ -165,7 +165,7 @@ class RoleSelectionView extends StatelessWidget {
                   BoxShadow(
                     color: color.withOpacity(0.3),
                     blurRadius: 20,
-                    offset: Offset(0, 8),
+                    offset: const Offset(0, 8),
                   ),
                 ]
               : [],

@@ -14,7 +14,7 @@ class NotificationsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) {
-      return Scaffold(body: Center(child: Text("Not logged in")));
+      return const Scaffold(body: Center(child: Text("Not logged in")));
     }
 
     return Scaffold(
@@ -385,27 +385,27 @@ class NotificationsView extends StatelessWidget {
   _NotifConfig _getNotificationConfig(String type) {
     switch (type) {
       case 'new_request':
-        return _NotifConfig(Iconsax.warning_2, const Color(0xFFFF6B35));
+        return const _NotifConfig(Iconsax.warning_2, Color(0xFFFF6B35));
       case 'request_accepted':
-        return _NotifConfig(Iconsax.tick_circle, const Color(0xFF22C55E));
+        return const _NotifConfig(Iconsax.tick_circle, Color(0xFF22C55E));
       case 'mechanic_nearby':
-        return _NotifConfig(Iconsax.location, const Color(0xFF3B82F6));
+        return const _NotifConfig(Iconsax.location, Color(0xFF3B82F6));
       case 'job_completed':
-        return _NotifConfig(Iconsax.task_square, const Color(0xFF22C55E));
+        return const _NotifConfig(Iconsax.task_square, Color(0xFF22C55E));
       case 'payment_received':
-        return _NotifConfig(Iconsax.wallet_2, const Color(0xFF10B981));
+        return const _NotifConfig(Iconsax.wallet_2, Color(0xFF10B981));
       case 'request_cancelled':
-        return _NotifConfig(Iconsax.close_circle, const Color(0xFFEF4444));
+        return const _NotifConfig(Iconsax.close_circle, Color(0xFFEF4444));
       case 'chat_message':
-        return _NotifConfig(Iconsax.message, const Color(0xFF6C63FF));
+        return const _NotifConfig(Iconsax.message, Color(0xFF6C63FF));
       case 'rating_received':
-        return _NotifConfig(Iconsax.star1, const Color(0xFFF59E0B));
+        return const _NotifConfig(Iconsax.star1, Color(0xFFF59E0B));
       case 'verification_approved':
-        return _NotifConfig(Iconsax.verify, const Color(0xFF22C55E));
+        return const _NotifConfig(Iconsax.verify, Color(0xFF22C55E));
       case 'verification_rejected':
-        return _NotifConfig(Iconsax.info_circle, const Color(0xFFEF4444));
+        return const _NotifConfig(Iconsax.info_circle, Color(0xFFEF4444));
       default:
-        return _NotifConfig(Iconsax.notification, const Color(0xFF8E92A4));
+        return const _NotifConfig(Iconsax.notification, Color(0xFF8E92A4));
     }
   }
 }

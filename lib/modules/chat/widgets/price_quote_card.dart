@@ -1,17 +1,17 @@
 import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/message_model.dart';
 import '../controllers/chat_controller.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/utils/helpers/app_dialogs.dart';
 
 class PriceQuoteCard extends StatelessWidget {
   final MessageModel message;
   final bool isMe;
   final ChatController controller;
 
-  PriceQuoteCard({
+  const PriceQuoteCard({
     super.key,
     required this.message,
     required this.isMe,
@@ -50,7 +50,7 @@ class PriceQuoteCard extends StatelessWidget {
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
               blurRadius: 8,
-              offset: Offset(0, 2),
+              offset: const Offset(0, 2),
             ),
           ],
         ),
@@ -80,7 +80,7 @@ class PriceQuoteCard extends StatelessWidget {
                       color: _statusColor(status),
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   _statusBadge(status),
                 ],
               ),
@@ -128,12 +128,12 @@ class PriceQuoteCard extends StatelessWidget {
                             style: GoogleFonts.poppins(
                               fontSize: 24.sp,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF4CAF50),
+                              color: const Color(0xFF4CAF50),
                             ),
                           ),
                         ],
                       ),
-                      Spacer(),
+                      const Spacer(),
                       if (time.isNotEmpty)
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -247,7 +247,7 @@ class PriceQuoteCard extends StatelessWidget {
                             onPressed: () => _showRejectDialog(),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: Colors.red,
-                              side: BorderSide(color: Colors.red),
+                              side: const BorderSide(color: Colors.red),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.r),
                               ),
@@ -268,7 +268,7 @@ class PriceQuoteCard extends StatelessWidget {
                             onPressed: () => _showNegotiateDialog(cost),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: Colors.orange,
-                              side: BorderSide(color: Colors.orange),
+                              side: const BorderSide(color: Colors.orange),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.r),
                               ),
@@ -291,7 +291,7 @@ class PriceQuoteCard extends StatelessWidget {
                               'accepted',
                             ),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF4CAF50),
+                              backgroundColor: const Color(0xFF4CAF50),
                               foregroundColor: Colors.white,
                               elevation: 0,
                               shape: RoundedRectangleBorder(
@@ -320,94 +320,51 @@ class PriceQuoteCard extends StatelessWidget {
     );
   }
 
-  void _showRejectDialog() {
-    final reasonCtrl = TextEditingController();
-    Get.defaultDialog(
+  void _showRejectDialog() async {
+    final reason = await AppDialogs.input(
       title: 'Decline Estimate',
-      content: TextField(
-        controller: reasonCtrl,
-        decoration: InputDecoration(
-          hintText: 'Reason (optional)',
-          border: OutlineInputBorder(),
-        ),
-      ),
-      textConfirm: 'Decline',
-      textCancel: 'Cancel',
-      confirmTextColor: Colors.white,
-      buttonColor: Colors.red,
-      onConfirm: () {
-        Get.back();
-        controller.respondToQuote(
-          message.id,
-          'rejected',
-          reason: reasonCtrl.text.trim().isNotEmpty
-              ? reasonCtrl.text.trim()
-              : null,
-        );
-      },
+      hint: 'Reason (optional)',
+      confirmText: 'Decline',
+      cancelText: 'Cancel',
     );
+    // If user tapped Decline (even with empty input), respond
+    // AppDialogs.input returns null only on cancel
+    if (reason != null) {
+      controller.respondToQuote(
+        message.id,
+        'rejected',
+        reason: reason.isNotEmpty ? reason : null,
+      );
+    }
   }
 
-  void _showNegotiateDialog(double originalCost) {
-    final priceCtrl = TextEditingController(
-      text: originalCost.toStringAsFixed(0),
-    );
-    final reasonCtrl = TextEditingController();
-    Get.defaultDialog(
+  void _showNegotiateDialog(double originalCost) async {
+    final counterPrice = await AppDialogs.input(
       title: 'Counter Offer',
-      content: Column(
-        children: [
-          Text(
-            'Original: ₹${originalCost.toStringAsFixed(0)}',
-            style: GoogleFonts.poppins(color: Colors.grey),
-          ),
-          SizedBox(height: 10.h),
-          TextField(
-            controller: priceCtrl,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              labelText: 'Your price (₹)',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          SizedBox(height: 8.h),
-          TextField(
-            controller: reasonCtrl,
-            decoration: InputDecoration(
-              labelText: 'Reason (optional)',
-              border: OutlineInputBorder(),
-            ),
-          ),
-        ],
-      ),
-      textConfirm: 'Send',
-      textCancel: 'Cancel',
-      confirmTextColor: Colors.white,
-      buttonColor: Colors.orange,
-      onConfirm: () {
-        Get.back();
-        controller.respondToQuote(
-          message.id,
-          'negotiated',
-          counterOffer: double.tryParse(priceCtrl.text),
-          reason: reasonCtrl.text.trim().isNotEmpty
-              ? reasonCtrl.text.trim()
-              : null,
-        );
-      },
+      hint: 'Your price (₹)',
+      initialValue: originalCost.toStringAsFixed(0),
+      confirmText: 'Send',
+      cancelText: 'Cancel',
     );
+    if (counterPrice != null) {
+      controller.respondToQuote(
+        message.id,
+        'negotiated',
+        counterOffer: double.tryParse(counterPrice),
+      );
+    }
   }
 
   Color _statusColor(String status) {
     switch (status) {
       case 'accepted':
-        return Color(0xFF4CAF50);
+        return const Color(0xFF4CAF50);
       case 'rejected':
         return Colors.red;
       case 'negotiated':
         return Colors.orange;
       default:
-        return Color(0xFF6C63FF);
+        return const Color(0xFF6C63FF);
     }
   }
 

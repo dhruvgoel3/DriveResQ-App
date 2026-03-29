@@ -81,7 +81,7 @@ class FindMechanicsView extends StatelessWidget {
                   // Location
                   Row(
                     children: [
-                      Icon(Iconsax.location, color: _accent, size: 20),
+                      const Icon(Iconsax.location, color: _accent, size: 20),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Obx(
@@ -179,8 +179,9 @@ class FindMechanicsView extends StatelessWidget {
                               label: Text(service),
                               selected: isSelected,
                               onSelected: (val) {
-                                if (val)
+                                if (val) {
                                   controller.selectedService.value = service;
+                                }
                               },
                               labelStyle: GoogleFonts.poppins(
                                 fontSize: 12,

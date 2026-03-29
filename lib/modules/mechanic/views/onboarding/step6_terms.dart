@@ -79,7 +79,7 @@ class Step6Terms extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFFFF9800),
+                    color: const Color(0xFFFF9800),
                   ),
                 ),
                 Text(
@@ -98,7 +98,9 @@ class Step6Terms extends StatelessWidget {
                 value: c.currentStep.value / 6,
                 minHeight: 6.h,
                 backgroundColor: Colors.grey.shade200,
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF9800)),
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  Color(0xFFFF9800),
+                ),
               ),
             ),
           ],
@@ -231,12 +233,12 @@ DriveResQ reserves the right to modify these terms at any time. Continued use of
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
         decoration: BoxDecoration(
           color: value
-              ? Color(0xFFFF9800).withOpacity(0.06)
+              ? const Color(0xFFFF9800).withOpacity(0.06)
               : Colors.grey.shade50,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
             color: value
-                ? Color(0xFFFF9800).withOpacity(0.4)
+                ? const Color(0xFFFF9800).withOpacity(0.4)
                 : Colors.grey.shade200,
             width: 1.5,
           ),
@@ -244,14 +246,14 @@ DriveResQ reserves the right to modify these terms at any time. Continued use of
         child: Row(
           children: [
             AnimatedContainer(
-              duration: Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 200),
               width: 24.w,
               height: 24.h,
               decoration: BoxDecoration(
-                color: value ? Color(0xFFFF9800) : Colors.transparent,
+                color: value ? const Color(0xFFFF9800) : Colors.transparent,
                 borderRadius: BorderRadius.circular(6.r),
                 border: Border.all(
-                  color: value ? Color(0xFFFF9800) : Colors.grey.shade400,
+                  color: value ? const Color(0xFFFF9800) : Colors.grey.shade400,
                   width: 2,
                 ),
               ),
@@ -292,7 +294,7 @@ DriveResQ reserves the right to modify these terms at any time. Continued use of
                 ? () => c.submitOnboarding()
                 : null,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFFFF9800),
+              backgroundColor: const Color(0xFFFF9800),
               foregroundColor: Colors.white,
               disabledBackgroundColor: Colors.grey.shade300,
               elevation: 0,
@@ -307,7 +309,7 @@ DriveResQ reserves the right to modify these terms at any time. Continued use of
                       SizedBox(
                         height: 20.h,
                         width: 20.w,
-                        child: CircularProgressIndicator(
+                        child: const CircularProgressIndicator(
                           color: Colors.white,
                           strokeWidth: 2,
                         ),

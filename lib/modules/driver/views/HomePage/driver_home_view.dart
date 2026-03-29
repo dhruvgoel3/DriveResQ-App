@@ -5,6 +5,7 @@ import 'package:driveresq_app/modules/driver/views/widgets/driver_safety_tips.da
 import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:driveresq_app/theme/app_text_styles.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/utils/helpers/app_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -89,26 +90,27 @@ class DriverHomeView extends StatelessWidget {
             ),
           Obx(() {
             if (controller.isLoadingRequest.value ||
-                !controller.hasActiveRequest.value)
+                !controller.hasActiveRequest.value) {
               return const SizedBox();
+            }
             final req = controller.requestData.value!;
-            if (req['status'] == 'verified' || req['status'] == 'completed')
+            if (req['status'] == 'verified' || req['status'] == 'completed') {
               return const SizedBox();
+            }
 
             return IconButton(
               icon: Icon(Iconsax.trash, color: AppColors.error, size: 22.w),
-              onPressed: () {
-                Get.defaultDialog(
-                  title: "Cancel Request",
-                  middleText: "Are you sure you want to cancel this request?",
-                  textConfirm: "Yes",
-                  textCancel: "No",
-                  confirmTextColor: AppColors.surface,
-                  onConfirm: () async {
-                    Get.back();
-                    await controller.cancelActiveRequest();
-                  },
+              onPressed: () async {
+                final confirmed = await AppDialogs.confirm(
+                  title: 'Cancel Request',
+                  message: 'Are you sure you want to cancel this request?',
+                  confirmText: 'Yes',
+                  cancelText: 'No',
+                  isDangerous: true,
                 );
+                if (confirmed == true) {
+                  await controller.cancelActiveRequest();
+                }
               },
             );
           }),

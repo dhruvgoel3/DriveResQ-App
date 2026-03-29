@@ -10,6 +10,7 @@ import 'package:record/record.dart';
 import '../models/message_model.dart';
 import '../services/chat_service.dart';
 import '../../../shared/services/error_handler.dart';
+import '../../../utils/helpers/app_snackbar.dart';
 
 class ChatController extends GetxController {
   final String chatId;
@@ -188,10 +189,9 @@ class ChatController extends GetxController {
       // Request microphone permission
       final status = await Permission.microphone.request();
       if (!status.isGranted) {
-        Get.snackbar(
-          'Permission Required',
+        AppSnackbar.warning(
           'Microphone permission is needed to send voice messages',
-          snackPosition: SnackPosition.BOTTOM,
+          title: 'Permission Required',
         );
         return;
       }
@@ -223,7 +223,7 @@ class ChatController extends GetxController {
       }
     } catch (e) {
       debugPrint(' Recording error: $e');
-      Get.snackbar('Error', 'Could not start recording');
+      AppSnackbar.error('Could not start recording');
     }
   }
 
@@ -237,10 +237,9 @@ class ChatController extends GetxController {
       final path = await _recorder.stop();
       if (path == null || recordingDuration.value < 1) {
         // Too short, discard
-        Get.snackbar(
-          'Too Short',
+        AppSnackbar.info(
           'Hold longer to record a voice message',
-          snackPosition: SnackPosition.BOTTOM,
+          title: 'Too Short',
         );
         return;
       }
@@ -318,7 +317,7 @@ class ChatController extends GetxController {
       );
     } catch (e) {
       debugPrint(' Estimate error: $e');
-      Get.snackbar('Error', 'Failed to send estimate');
+      AppSnackbar.error('Failed to send estimate');
     }
     isSending.value = false;
   }

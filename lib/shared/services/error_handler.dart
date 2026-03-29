@@ -1,11 +1,10 @@
 import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:driveresq_app/theme/app_colors.dart';
-import 'package:driveresq_app/theme/app_spacing.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 
 /// A centralized Error Handler to parse and display user-friendly error messages.
 ///
@@ -122,50 +121,16 @@ class ErrorHandler {
     bool isError = true,
     VoidCallback? onRetry,
   }) {
-    Get.snackbar(
-      isError ? 'Error' : 'Info',
-      message,
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: isError ? AppColors.error : AppColors.info,
-      colorText: Colors.white,
-      icon: Icon(
-        isError ? Iconsax.close_circle : Iconsax.info_circle,
-        color: Colors.white,
-      ),
-      margin: EdgeInsets.all(12.w),
-      borderRadius: AppRadius.medium,
-      duration: Duration(seconds: 4),
-      mainButton: onRetry != null
-          ? TextButton(
-              onPressed: () {
-                Get.closeCurrentSnackbar();
-                onRetry();
-              },
-              child: Text(
-                'Retry',
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            )
-          : null,
-    );
+    if (isError) {
+      AppSnackbar.error(message);
+    } else {
+      AppSnackbar.info(message);
+    }
   }
 
   // ── Success snackbar ──
   static void showSuccess(String message) {
-    Get.snackbar(
-      'Success',
-      message,
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: AppColors.success,
-      colorText: Colors.white,
-      icon: Icon(Iconsax.tick_circle, color: Colors.white),
-      margin: EdgeInsets.all(12.w),
-      borderRadius: AppRadius.medium,
-      duration: Duration(seconds: 3),
-    );
+    AppSnackbar.success(message);
   }
 
   // ── Bottom sheet error dialog ──
@@ -225,7 +190,7 @@ class _ErrorSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(24, 16, 24, 32),
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -332,7 +297,7 @@ class ErrorStateWidget extends StatelessWidget {
   final Color color;
   final VoidCallback? onRetry;
 
-  ErrorStateWidget({
+  const ErrorStateWidget({
     super.key,
     this.title = 'Something Went Wrong',
     this.message = 'An unexpected error occurred.',

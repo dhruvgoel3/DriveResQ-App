@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../utils/helpers/app_snackbar.dart';
+
 class AdminSettingsController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -41,11 +43,9 @@ class AdminSettingsController extends GetxController {
   Future<void> saveSettings() async {
     final email = emailController.text.trim();
     if (email.isEmpty) {
-      Get.snackbar(
-        'Required',
+      AppSnackbar.warning(
         'Please enter a notification email address',
-        backgroundColor: Colors.orange.shade50,
-        colorText: Colors.orange.shade800,
+        title: 'Required',
       );
       return;
     }
@@ -58,20 +58,10 @@ class AdminSettingsController extends GetxController {
       }, SetOptions(merge: true));
 
       isSaving.value = false;
-      Get.snackbar(
-        'Success',
-        'Notification settings saved successfully!',
-        backgroundColor: Colors.green.shade50,
-        colorText: Colors.green.shade800,
-      );
+      AppSnackbar.success('Notification settings saved successfully!');
     } catch (e) {
       isSaving.value = false;
-      Get.snackbar(
-        'Error',
-        'Failed to save settings: $e',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Failed to save settings: $e');
     }
   }
 }

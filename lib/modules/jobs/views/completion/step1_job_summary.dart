@@ -42,7 +42,7 @@ class JobSummaryView extends StatelessWidget {
                     ),
                   ),
                   onSelected: (_) => c.toggleService(s),
-                  selectedColor: Color(0xFF4CAF50),
+                  selectedColor: const Color(0xFF4CAF50),
                   backgroundColor: Colors.grey.shade100,
                   checkmarkColor: Colors.white,
                   side: BorderSide.none,
@@ -69,8 +69,8 @@ class JobSummaryView extends StatelessWidget {
                     style: GoogleFonts.poppins(fontSize: 13.sp),
                   ),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Color(0xFF4CAF50),
-                    side: BorderSide(color: Color(0xFF4CAF50)),
+                    foregroundColor: const Color(0xFF4CAF50),
+                    side: const BorderSide(color: Color(0xFF4CAF50)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.r),
                     ),
@@ -368,8 +368,8 @@ class JobSummaryView extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () => c.removePhoto(isBefore, i),
                     child: Container(
-                      padding: EdgeInsets.all(2),
-                      decoration: BoxDecoration(
+                      padding: const EdgeInsets.all(2),
+                      decoration: const BoxDecoration(
                         color: Colors.red,
                         shape: BoxShape.circle,
                       ),
@@ -451,7 +451,7 @@ class JobSummaryView extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 22.sp,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF4CAF50),
+                    color: const Color(0xFF4CAF50),
                   ),
                 ),
               ],
@@ -490,7 +490,7 @@ class JobSummaryView extends StatelessWidget {
   Widget _sectionTitle(String title, IconData icon) {
     return Row(
       children: [
-        Icon(icon, size: 20.w, color: Color(0xFF4CAF50)),
+        Icon(icon, size: 20.w, color: const Color(0xFF4CAF50)),
         SizedBox(width: 8.w),
         Text(
           title,
@@ -534,7 +534,7 @@ class JobSummaryView extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.r),
-          borderSide: BorderSide(color: Color(0xFF4CAF50), width: 2),
+          borderSide: const BorderSide(color: Color(0xFF4CAF50), width: 2),
         ),
       ),
     );

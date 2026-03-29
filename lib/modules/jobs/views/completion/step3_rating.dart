@@ -21,8 +21,12 @@ class RatingView extends StatelessWidget {
           // Driver avatar
           CircleAvatar(
             radius: 40.r,
-            backgroundColor: Color(0xFF4CAF50).withOpacity(0.1),
-            child: Icon(Iconsax.user, size: 44.w, color: Color(0xFF4CAF50)),
+            backgroundColor: const Color(0xFF4CAF50).withOpacity(0.1),
+            child: Icon(
+              Iconsax.user,
+              size: 44.w,
+              color: const Color(0xFF4CAF50),
+            ),
           ),
           SizedBox(height: 16.h),
 
@@ -63,12 +67,14 @@ class RatingView extends StatelessWidget {
                 return GestureDetector(
                   onTap: () => c.mechanicRating.value = (i + 1).toDouble(),
                   child: AnimatedContainer(
-                    duration: Duration(milliseconds: 200),
+                    duration: const Duration(milliseconds: 200),
                     margin: EdgeInsets.symmetric(horizontal: 6.w),
                     child: Icon(
                       filled ? Iconsax.star : Iconsax.star,
                       size: 48.w,
-                      color: filled ? Color(0xFFFFB300) : Colors.grey.shade300,
+                      color: filled
+                          ? const Color(0xFFFFB300)
+                          : Colors.grey.shade300,
                     ),
                   ),
                 );
@@ -82,7 +88,7 @@ class RatingView extends StatelessWidget {
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
                 color: c.mechanicRating.value > 0
-                    ? Color(0xFFFFB300)
+                    ? const Color(0xFFFFB300)
                     : Colors.grey.shade400,
               ),
             ),
@@ -127,12 +133,12 @@ class RatingView extends StatelessWidget {
                           ),
                         ),
                         onSelected: (_) => c.toggleTag(tag),
-                        selectedColor: Color(0xFF4CAF50),
+                        selectedColor: const Color(0xFF4CAF50),
                         backgroundColor: Colors.white,
                         checkmarkColor: Colors.white,
                         side: BorderSide(
                           color: selected
-                              ? Color(0xFF4CAF50)
+                              ? const Color(0xFF4CAF50)
                               : Colors.grey.shade300,
                         ),
                       );
@@ -198,7 +204,7 @@ class RatingView extends StatelessWidget {
                         ? null
                         : () => c.submitCompletion(),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF4CAF50),
+                      backgroundColor: const Color(0xFF4CAF50),
                       foregroundColor: Colors.white,
                       disabledBackgroundColor: Colors.grey.shade300,
                       padding: EdgeInsets.symmetric(vertical: 16.h),
@@ -211,7 +217,7 @@ class RatingView extends StatelessWidget {
                         ? SizedBox(
                             height: 20.h,
                             width: 20.w,
-                            child: CircularProgressIndicator(
+                            child: const CircularProgressIndicator(
                               color: Colors.white,
                               strokeWidth: 2,
                             ),

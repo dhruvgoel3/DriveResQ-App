@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../driver/services/mechanic_location_service.dart';
 import '../services/mechanic_service.dart';
+import '../../../utils/helpers/app_snackbar.dart';
 
 class MechanicController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -55,7 +54,7 @@ class MechanicController extends GetxController {
 
   Future<void> _initializeMechanic() async {
     if (_auth.currentUser == null) {
-      Get.snackbar("Error", "User not authenticated. Please login again.");
+      AppSnackbar.error('User not authenticated. Please login again.');
       return;
     }
 
@@ -74,12 +73,9 @@ class MechanicController extends GetxController {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         locationError.value = "Location services are disabled";
-        Get.snackbar(
-          "Location Disabled",
-          "Please enable location services to see nearby requests",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.orange.withOpacity(0.9),
-          colorText: Colors.white,
+        AppSnackbar.warning(
+          'Please enable location services to see nearby requests',
+          title: 'Location Disabled',
         );
         return;
       }
@@ -89,12 +85,9 @@ class MechanicController extends GetxController {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
           locationError.value = "Location permission denied";
-          Get.snackbar(
-            "Permission Required",
-            "Allow location access to see nearby requests",
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.orange.withOpacity(0.9),
-            colorText: Colors.white,
+          AppSnackbar.warning(
+            'Allow location access to see nearby requests',
+            title: 'Permission Required',
           );
           return;
         }
@@ -102,13 +95,9 @@ class MechanicController extends GetxController {
 
       if (permission == LocationPermission.deniedForever) {
         locationError.value = "Location permission permanently denied";
-        Get.snackbar(
-          "Permission Required",
-          "Please enable location in your device settings",
-          snackPosition: SnackPosition.BOTTOM,
-          duration: const Duration(seconds: 5),
-          backgroundColor: Colors.red.withOpacity(0.9),
-          colorText: Colors.white,
+        AppSnackbar.error(
+          'Please enable location in your device settings',
+          title: 'Permission Required',
         );
         return;
       }
@@ -137,12 +126,9 @@ class MechanicController extends GetxController {
     } catch (e) {
       debugPrint("Location Error: $e");
       locationError.value = "Could not fetch location";
-      Get.snackbar(
-        "Location Error",
-        "Could not get your location. Pull down to retry.",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red.withOpacity(0.9),
-        colorText: Colors.white,
+      AppSnackbar.error(
+        'Could not get your location. Pull down to retry.',
+        title: 'Location Error',
       );
     }
   }
@@ -184,7 +170,7 @@ class MechanicController extends GetxController {
           },
           onError: (error) {
             debugPrint("Error listening to active job: $error");
-            Get.snackbar("Error", "Failed to load active job");
+            AppSnackbar.error('Failed to load active job');
           },
         );
   }
@@ -259,7 +245,7 @@ class MechanicController extends GetxController {
           },
           onError: (error) {
             debugPrint("Error listening to requests: $error");
-            Get.snackbar("Error", "Failed to load requests");
+            AppSnackbar.error('Failed to load requests');
           },
         );
   }
@@ -269,12 +255,7 @@ class MechanicController extends GetxController {
     try {
       await MechanicService.acceptRequest(requestId, hasActiveJob.value);
 
-      Get.snackbar(
-        "Success",
-        "Request accepted! You can now chat with the driver.",
-        backgroundColor: Color(0xFF4CAF50).withOpacity(0.9),
-        colorText: Colors.white,
-      );
+      AppSnackbar.success('Request accepted! You can now chat with the driver.');
 
       changeInnerTab(1); // Switch to "Accepted Requests" tab
 
@@ -285,11 +266,11 @@ class MechanicController extends GetxController {
 
       // More specific error messages
       if (e.toString().contains('permission')) {
-        Get.snackbar("Error", "You don't have permission to accept requests");
+        AppSnackbar.error("You don't have permission to accept requests");
       } else if (e.toString().contains('network')) {
-        Get.snackbar("Error", "Network error. Please check your connection");
+        AppSnackbar.error('Network error. Please check your connection');
       } else {
-        Get.snackbar("Error", e.toString().replaceFirst('Exception: ', ''));
+        AppSnackbar.error(e.toString().replaceFirst('Exception: ', ''));
       }
     }
   }
@@ -297,53 +278,42 @@ class MechanicController extends GetxController {
   // ❌ Cancel active job with confirmation
   Future<void> cancelActiveJob() async {
     if (activeJob.value == null) {
-      Get.snackbar("Error", "No active job to cancel");
+      AppSnackbar.error('No active job to cancel');
       return;
     }
 
     try {
       await MechanicService.cancelActiveJob(activeJob.value!);
 
-      Get.snackbar(
-        "Success",
-        "Job cancelled successfully",
-        backgroundColor: Color(0xFFFF9800).withOpacity(0.9),
-        colorText: Colors.white,
-      );
+      AppSnackbar.warning('Job cancelled successfully', title: 'Cancelled');
 
       debugPrint("Job cancelled: ${activeJob.value!['id']}");
 
       // Location tracking will auto-stop via _listenToActiveJob
     } catch (e) {
       debugPrint("Error cancelling job: $e");
-      Get.snackbar("Error", "Failed to cancel job: $e");
+      AppSnackbar.error('Failed to cancel job: $e');
     }
   }
 
   // ✅ Complete job with validation
   Future<void> completeJob() async {
     if (activeJob.value == null) {
-      Get.snackbar("Error", "No active job to complete");
+      AppSnackbar.error('No active job to complete');
       return;
     }
 
     try {
       await MechanicService.completeJob(activeJob.value!);
 
-      Get.snackbar(
-        "Success",
-        "Job completed successfully! Great work!",
-        backgroundColor: Color(0xFF4CAF50).withOpacity(0.9),
-        colorText: Colors.white,
-        duration: Duration(seconds: 3),
-      );
+      AppSnackbar.success('Job completed successfully! Great work!');
 
       debugPrint("Job completed: ${activeJob.value!['id']}");
 
       // Location tracking will auto-stop via _listenToActiveJob
     } catch (e) {
       debugPrint("Error completing job: $e");
-      Get.snackbar("Error", "Failed to complete job: $e");
+      AppSnackbar.error('Failed to complete job: $e');
     }
   }
 
@@ -360,7 +330,7 @@ class MechanicController extends GetxController {
   // Refresh location manually
   Future<void> refreshLocation() async {
     await _getMechanicLocation();
-    Get.snackbar("Success", "Location refreshed");
+    AppSnackbar.success('Location refreshed');
   }
 
   // 🆕 Check mechanic's availability
@@ -383,12 +353,9 @@ class MechanicController extends GetxController {
     );
 
     if (errorMsg == null) {
-      Get.snackbar(
-        'Verified!',
+      AppSnackbar.success(
         'Code verified! Complete the job details now.',
-        backgroundColor: const Color(0xFF4CAF50).withOpacity(0.9),
-        colorText: Colors.white,
-        duration: const Duration(seconds: 2),
+        title: 'Verified!',
       );
       debugPrint('Job verified: $jobId');
       return null;

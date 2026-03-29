@@ -33,8 +33,9 @@ class NotificationSender {
 
       for (final doc in mechanicsGate.docs) {
         final data = doc.data();
-        if (data['fcmToken'] == null || (data['fcmToken'] as String).isEmpty)
+        if (data['fcmToken'] == null || (data['fcmToken'] as String).isEmpty) {
           continue;
+        }
 
         final notifyRef = _firestore.collection('notifications').doc();
         batch.set(notifyRef, {

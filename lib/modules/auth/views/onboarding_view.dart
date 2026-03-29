@@ -29,7 +29,7 @@ class _OnboardingViewState extends State<OnboardingView>
     _fadeControllers = List.generate(
       _totalPages,
       (i) => AnimationController(
-        duration: Duration(milliseconds: 600),
+        duration: const Duration(milliseconds: 600),
         vsync: this,
       ),
     );
@@ -58,7 +58,7 @@ class _OnboardingViewState extends State<OnboardingView>
   void _nextPage() {
     if (_currentPage < _totalPages - 1) {
       _pageController.nextPage(
-        duration: Duration(milliseconds: 400),
+        duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
       );
     }
@@ -67,7 +67,7 @@ class _OnboardingViewState extends State<OnboardingView>
   void _previousPage() {
     if (_currentPage > 0) {
       _pageController.previousPage(
-        duration: Duration(milliseconds: 400),
+        duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
       );
     }
@@ -167,33 +167,35 @@ class _OnboardingViewState extends State<OnboardingView>
           else
             SizedBox(width: 48.w),
 
-          Spacer(),
+          const Spacer(),
 
           // Dots
           Row(
             children: List.generate(_totalPages, (i) {
               final isActive = i == _currentPage;
               return AnimatedContainer(
-                duration: Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
                 margin: EdgeInsets.symmetric(horizontal: 4.w),
                 width: isActive ? 28 : 8,
                 height: 8.h,
                 decoration: BoxDecoration(
-                  color: isActive ? Color(0xFF6C63FF) : Colors.grey.shade300,
+                  color: isActive
+                      ? const Color(0xFF6C63FF)
+                      : Colors.grey.shade300,
                   borderRadius: BorderRadius.circular(4.r),
                 ),
               );
             }),
           ),
 
-          Spacer(),
+          const Spacer(),
 
           // Next
           GestureDetector(
             onTap: _nextPage,
             child: Container(
               padding: EdgeInsets.all(14.w),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color(0xFF6C63FF),
                 shape: BoxShape.circle,
                 boxShadow: [
@@ -219,7 +221,7 @@ class _OnboardingViewState extends State<OnboardingView>
     return FadeTransition(
       opacity: _fadeAnimations[0],
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -229,7 +231,7 @@ class _OnboardingViewState extends State<OnboardingView>
         child: SafeArea(
           child: Column(
             children: [
-              Spacer(flex: 2),
+              const Spacer(flex: 2),
               // Animated illustration
               _animatedIcon(
                 Iconsax.car,
@@ -247,7 +249,7 @@ class _OnboardingViewState extends State<OnboardingView>
               ),
               SizedBox(height: 4.h),
               ShaderMask(
-                shaderCallback: (b) => LinearGradient(
+                shaderCallback: (b) => const LinearGradient(
                   colors: [Colors.white, Color(0xFFFFD180)],
                 ).createShader(b),
                 child: Text(
@@ -269,7 +271,7 @@ class _OnboardingViewState extends State<OnboardingView>
                   color: Colors.white.withOpacity(0.8),
                 ),
               ),
-              Spacer(flex: 3),
+              const Spacer(flex: 3),
             ],
           ),
         ),
@@ -285,13 +287,13 @@ class _OnboardingViewState extends State<OnboardingView>
       opacity: _fadeAnimations[1],
       child: _whiteSlide(
         icon: Iconsax.location,
-        iconColor: Color(0xFF2196F3),
+        iconColor: const Color(0xFF2196F3),
         title: 'Stuck on the Road?',
         subtitle: 'Create a request and find nearby mechanics instantly',
         features: [
-          _Feature(Iconsax.flash, 'Quick request creation'),
-          _Feature(Iconsax.gps, 'Real-time mechanic tracking'),
-          _Feature(Iconsax.message, 'In-app chat with mechanic'),
+          const _Feature(Iconsax.flash, 'Quick request creation'),
+          const _Feature(Iconsax.gps, 'Real-time mechanic tracking'),
+          const _Feature(Iconsax.message, 'In-app chat with mechanic'),
         ],
       ),
     );
@@ -305,13 +307,13 @@ class _OnboardingViewState extends State<OnboardingView>
       opacity: _fadeAnimations[2],
       child: _whiteSlide(
         icon: Iconsax.setting_2,
-        iconColor: Color(0xFFFF9800),
+        iconColor: const Color(0xFFFF9800),
         title: 'Grow Your Business',
         subtitle: 'Get instant job requests in your area',
         features: [
-          _Feature(Iconsax.verify, 'Get verified customers'),
-          _Feature(Iconsax.wallet, 'Track your earnings'),
-          _Feature(Iconsax.star, 'Build your reputation'),
+          const _Feature(Iconsax.verify, 'Get verified customers'),
+          const _Feature(Iconsax.wallet, 'Track your earnings'),
+          const _Feature(Iconsax.star, 'Build your reputation'),
         ],
       ),
     );
@@ -325,13 +327,13 @@ class _OnboardingViewState extends State<OnboardingView>
       opacity: _fadeAnimations[3],
       child: _whiteSlide(
         icon: Iconsax.shield,
-        iconColor: Color(0xFF4CAF50),
+        iconColor: const Color(0xFF4CAF50),
         title: 'Safe & Secure',
         subtitle: 'Verified mechanics, secure payments, 24/7 support',
         features: [
-          _Feature(Iconsax.verify, 'Verified professionals'),
-          _Feature(Iconsax.star, 'Ratings & reviews'),
-          _Feature(Iconsax.support, 'Emergency support'),
+          const _Feature(Iconsax.verify, 'Verified professionals'),
+          const _Feature(Iconsax.star, 'Ratings & reviews'),
+          const _Feature(Iconsax.support, 'Emergency support'),
         ],
       ),
     );
@@ -344,13 +346,13 @@ class _OnboardingViewState extends State<OnboardingView>
     return FadeTransition(
       opacity: _fadeAnimations[4],
       child: Container(
-        color: Color(0xFFF5F6FA),
+        color: const Color(0xFFF5F6FA),
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.w),
             child: Column(
               children: [
-                Spacer(flex: 2),
+                const Spacer(flex: 2),
                 Text(
                   "Let's Get Started!",
                   style: GoogleFonts.poppins(
@@ -374,7 +376,7 @@ class _OnboardingViewState extends State<OnboardingView>
                   icon: Iconsax.car,
                   title: 'I need help',
                   subtitle: 'Find a mechanic near you',
-                  color: Color(0xFF2196F3),
+                  color: const Color(0xFF2196F3),
                   onTap: () => _completeOnboarding(role: 'driver'),
                 ),
                 SizedBox(height: 16.h),
@@ -384,11 +386,11 @@ class _OnboardingViewState extends State<OnboardingView>
                   icon: Iconsax.setting_2,
                   title: "I'm a mechanic",
                   subtitle: 'Help drivers & earn money',
-                  color: Color(0xFFFF9800),
+                  color: const Color(0xFFFF9800),
                   onTap: () => _completeOnboarding(role: 'mechanic'),
                 ),
 
-                Spacer(flex: 3),
+                const Spacer(flex: 3),
 
                 // Bottom dots (no controls on last page)
                 Row(
@@ -396,13 +398,13 @@ class _OnboardingViewState extends State<OnboardingView>
                   children: List.generate(_totalPages, (i) {
                     final isActive = i == _currentPage;
                     return AnimatedContainer(
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       margin: EdgeInsets.symmetric(horizontal: 4.w),
                       width: isActive ? 28 : 8,
                       height: 8.h,
                       decoration: BoxDecoration(
                         color: isActive
-                            ? Color(0xFF6C63FF)
+                            ? const Color(0xFF6C63FF)
                             : Colors.grey.shade300,
                         borderRadius: BorderRadius.circular(4.r),
                       ),
@@ -438,7 +440,7 @@ class _OnboardingViewState extends State<OnboardingView>
             BoxShadow(
               color: color.withOpacity(0.1),
               blurRadius: 20,
-              offset: Offset(0, 6),
+              offset: const Offset(0, 6),
             ),
           ],
         ),
@@ -465,7 +467,7 @@ class _OnboardingViewState extends State<OnboardingView>
                       color: Colors.black87,
                     ),
                   ),
-                  SizedBox(height: 2),
+                  const SizedBox(height: 2),
                   Text(
                     subtitle,
                     style: GoogleFonts.poppins(
@@ -498,7 +500,7 @@ class _OnboardingViewState extends State<OnboardingView>
           padding: EdgeInsets.symmetric(horizontal: 28.w),
           child: Column(
             children: [
-              Spacer(flex: 2),
+              const Spacer(flex: 2),
               _animatedIcon(
                 icon,
                 90,
@@ -526,7 +528,7 @@ class _OnboardingViewState extends State<OnboardingView>
               ),
               SizedBox(height: 36.h),
               ...features.map((f) => _featureRow(f.icon, f.label)),
-              Spacer(flex: 3),
+              const Spacer(flex: 3),
             ],
           ),
         ),
@@ -542,10 +544,10 @@ class _OnboardingViewState extends State<OnboardingView>
           Container(
             padding: EdgeInsets.all(10.w),
             decoration: BoxDecoration(
-              color: Color(0xFF6C63FF).withOpacity(0.08),
+              color: const Color(0xFF6C63FF).withOpacity(0.08),
               borderRadius: BorderRadius.circular(10.r),
             ),
-            child: Icon(icon, color: Color(0xFF6C63FF), size: 20.w),
+            child: Icon(icon, color: const Color(0xFF6C63FF), size: 20.w),
           ),
           SizedBox(width: 14.w),
           Text(
@@ -568,7 +570,7 @@ class _OnboardingViewState extends State<OnboardingView>
   }) {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.5, end: 1.0),
-      duration: Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 800),
       curve: Curves.elasticOut,
       builder: (_, val, child) => Transform.scale(scale: val, child: child),
       child: Container(

@@ -44,7 +44,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     // Logo
     _logoCtrl = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1200),
     );
     _logoFade = CurvedAnimation(parent: _logoCtrl, curve: Curves.easeOut);
     _logoScale = Tween<double>(
@@ -55,7 +55,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     // Pulse
     _pulseCtrl = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 1500),
     )..repeat(reverse: true);
     _pulse = Tween<double>(
       begin: 1.0,
@@ -65,7 +65,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     // Progress
     _progressCtrl = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 3500),
+      duration: const Duration(milliseconds: 3500),
     );
     _progress = Tween<double>(
       begin: 0,
@@ -76,10 +76,10 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     // Tagline
     _taglineCtrl = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 800),
     );
     _taglineSlide = Tween<Offset>(
-      begin: Offset(0, 0.5),
+      begin: const Offset(0, 0.5),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _taglineCtrl, curve: Curves.easeOut));
     _taglineFade = CurvedAnimation(parent: _taglineCtrl, curve: Curves.easeOut);
@@ -87,7 +87,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     // Car
     _carCtrl = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 2500),
+      duration: const Duration(milliseconds: 2500),
     )..repeat();
     _carPos = Tween<double>(
       begin: -1.2,
@@ -97,7 +97,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     // Exit
     _exitCtrl = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 600),
     );
     _exitFade = Tween<double>(
       begin: 1,
@@ -127,15 +127,15 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
   }
 
   Future<void> _startSequence() async {
-    await Future.delayed(Duration(milliseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 200));
     if (!mounted) return;
     _logoCtrl.forward();
 
-    await Future.delayed(Duration(milliseconds: 800));
+    await Future.delayed(const Duration(milliseconds: 800));
     if (!mounted) return;
     _taglineCtrl.forward();
 
-    await Future.delayed(Duration(milliseconds: 400));
+    await Future.delayed(const Duration(milliseconds: 400));
     if (!mounted) return;
     _progressCtrl.forward();
 
@@ -146,7 +146,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     if (_navigated) return;
 
     try {
-      await Future.delayed(Duration(milliseconds: 3800));
+      await Future.delayed(const Duration(milliseconds: 3800));
       if (_navigated || !mounted) return;
 
       final prefs = await SharedPreferences.getInstance();
@@ -195,7 +195,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
         await _goTo('/role');
       }
     } catch (e) {
-      debugPrint('❌ Splash: $e');
+      debugPrint(' Splash: $e');
       if (mounted && !_navigated) await _goTo('/role');
     }
   }
@@ -233,7 +233,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
             child: Container(
               width: sz.width,
               height: sz.height,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -266,15 +266,15 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                   SafeArea(
                     child: Column(
                       children: [
-                        Spacer(flex: 3),
+                        const Spacer(flex: 3),
                         _logo(),
                         SizedBox(height: 28.h),
                         _appName(),
                         SizedBox(height: 10.h),
                         _tagline(),
-                        Spacer(flex: 2),
+                        const Spacer(flex: 2),
                         _progressSection(sz),
-                        Spacer(),
+                        const Spacer(),
                       ],
                     ),
                   ),
@@ -330,21 +330,21 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Color(0xFF6C63FF).withValues(alpha: 0.4),
+                  color: const Color(0xFF6C63FF).withValues(alpha: 0.4),
                   blurRadius: 40,
                   spreadRadius: 5,
                 ),
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.15),
                   blurRadius: 20,
-                  offset: Offset(0, 10),
+                  offset: const Offset(0, 10),
                 ),
               ],
             ),
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Icon(Iconsax.car, size: 40.w, color: Color(0xFF6C63FF)),
+                Icon(Iconsax.car, size: 40.w, color: const Color(0xFF6C63FF)),
                 Positioned(
                   right: 22.w,
                   bottom: 24.h,
@@ -353,7 +353,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                     child: Icon(
                       Iconsax.setting_2,
                       size: 22.w,
-                      color: Color(0xFFFF9800).withValues(alpha: 0.9),
+                      color: const Color(0xFFFF9800).withValues(alpha: 0.9),
                     ),
                   ),
                 ),
@@ -369,7 +369,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     return FadeTransition(
       opacity: _logoFade,
       child: ShaderMask(
-        shaderCallback: (b) => LinearGradient(
+        shaderCallback: (b) => const LinearGradient(
           colors: [Colors.white, Color(0xFFFFD180)],
         ).createShader(b),
         child: Text(
@@ -450,7 +450,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(6.r),
-                            gradient: LinearGradient(
+                            gradient: const LinearGradient(
                               colors: [
                                 Color(0xFFFF9800),
                                 Color(0xFFFFD180),
@@ -468,7 +468,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
 
               // Status
               AnimatedSwitcher(
-                duration: Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
                 child: Text(
                   _status,
                   key: ValueKey(_status),

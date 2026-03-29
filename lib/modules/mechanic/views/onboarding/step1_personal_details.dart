@@ -83,7 +83,7 @@ class Step1PersonalDetails extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFFFF9800),
+                    color: const Color(0xFFFF9800),
                   ),
                 ),
                 Text(
@@ -102,7 +102,9 @@ class Step1PersonalDetails extends StatelessWidget {
                 value: c.currentStep.value / 6,
                 minHeight: 6.h,
                 backgroundColor: Colors.grey.shade200,
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF9800)),
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  Color(0xFFFF9800),
+                ),
               ),
             ),
           ],
@@ -147,9 +149,9 @@ class Step1PersonalDetails extends StatelessWidget {
                 height: 120.h,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Color(0xFFFF9800).withOpacity(0.1),
+                  color: const Color(0xFFFF9800).withOpacity(0.1),
                   border: Border.all(
-                    color: Color(0xFFFF9800).withOpacity(0.3),
+                    color: const Color(0xFFFF9800).withOpacity(0.3),
                     width: 3.w,
                   ),
                   image: c.profilePhoto.value != null
@@ -160,7 +162,11 @@ class Step1PersonalDetails extends StatelessWidget {
                       : null,
                 ),
                 child: c.profilePhoto.value == null
-                    ? Icon(Iconsax.user, size: 50.w, color: Color(0xFFFF9800))
+                    ? Icon(
+                        Iconsax.user,
+                        size: 50.w,
+                        color: const Color(0xFFFF9800),
+                      )
                     : null,
               ),
               Positioned(
@@ -168,7 +174,7 @@ class Step1PersonalDetails extends StatelessWidget {
                 right: 0,
                 child: Container(
                   padding: EdgeInsets.all(8.w),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Color(0xFFFF9800),
                     shape: BoxShape.circle,
                   ),
@@ -205,7 +211,11 @@ class Step1PersonalDetails extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(Iconsax.calendar, color: Color(0xFFFF9800), size: 22.w),
+              Icon(
+                Iconsax.calendar,
+                color: const Color(0xFFFF9800),
+                size: 22.w,
+              ),
               SizedBox(width: 14.w),
               Expanded(
                 child: Text(
@@ -237,7 +247,11 @@ class Step1PersonalDetails extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(Iconsax.profile_2user, color: Color(0xFFFF9800), size: 22.w),
+            Icon(
+              Iconsax.profile_2user,
+              color: const Color(0xFFFF9800),
+              size: 22.w,
+            ),
             SizedBox(width: 14.w),
             Expanded(
               child: DropdownButtonHideUnderline(
@@ -288,11 +302,11 @@ class Step1PersonalDetails extends StatelessWidget {
           onPressed: () {
             c.nextStep();
             if (c.currentStep.value == 2) {
-              Get.to(() => Step2ProfessionalDetails());
+              Get.to(() => const Step2ProfessionalDetails());
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFFFF9800),
+            backgroundColor: const Color(0xFFFF9800),
             foregroundColor: Colors.white,
             elevation: 0,
             shape: RoundedRectangleBorder(

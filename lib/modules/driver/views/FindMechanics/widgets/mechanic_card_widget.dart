@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 
 import '../../../controllers/favorites_controller.dart';
 import '../mechanic_profile_detail_view.dart';
@@ -172,7 +173,7 @@ class MechanicCardWidget extends StatelessWidget {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(Iconsax.location, color: _accent, size: 14),
+                        const Icon(Iconsax.location, color: _accent, size: 14),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
@@ -413,14 +414,14 @@ class MechanicCardWidget extends StatelessWidget {
 
   void _callMechanic(String phone) async {
     if (phone.isEmpty) {
-      Get.snackbar("Error", "Phone number not available");
+      AppSnackbar.error('Phone number not available');
       return;
     }
     final url = Uri.parse('tel:$phone');
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
     } else {
-      Get.snackbar("Error", "Could not launch phone dialer");
+      AppSnackbar.error('Could not launch phone dialer');
     }
   }
 }

@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
+import '../../../utils/helpers/app_snackbar.dart';
+
 /// Controller for the Driver History screen.
 /// Fetches past requests (completed / cancelled) and joins with
 /// completedJobs data for rich detail.
@@ -87,7 +89,7 @@ class DriverHistoryController extends GetxController {
       cancelledCount.value = cancelled;
     } catch (e) {
       debugPrint(' Error fetching driver history: $e');
-      Get.snackbar('Error', 'Failed to load history');
+      AppSnackbar.error('Failed to load history');
     } finally {
       isLoading.value = false;
     }

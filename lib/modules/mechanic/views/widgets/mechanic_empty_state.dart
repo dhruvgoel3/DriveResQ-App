@@ -8,7 +8,7 @@ class MechanicEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return EmptyStateWidget(
+    return const EmptyStateWidget(
       icon: Iconsax.setting_2,
       iconColor: Color(0xFFFF9800),
       title: 'No Nearby Requests',

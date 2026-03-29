@@ -227,7 +227,7 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: AppRadius.largeAll,
-          side: BorderSide(color: AppColors.darkSurfaceVariant),
+          side: const BorderSide(color: AppColors.darkSurfaceVariant),
         ),
       ),
 
@@ -256,11 +256,11 @@ class AppTheme {
         ),
         border: OutlineInputBorder(
           borderRadius: AppRadius.mediumAll,
-          borderSide: BorderSide(color: AppColors.darkSurfaceVariant),
+          borderSide: const BorderSide(color: AppColors.darkSurfaceVariant),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: AppRadius.mediumAll,
-          borderSide: BorderSide(color: AppColors.darkSurfaceVariant),
+          borderSide: const BorderSide(color: AppColors.darkSurfaceVariant),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: AppRadius.mediumAll,

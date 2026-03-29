@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 
 class MechanicOnboardingController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -82,8 +83,8 @@ class MechanicOnboardingController extends GetxController {
   final baseChargeController = TextEditingController();
   final perKmChargeController = TextEditingController();
   final emergencySurchargeController = TextEditingController();
-  var workingHoursStart = TimeOfDay(hour: 9, minute: 0).obs;
-  var workingHoursEnd = TimeOfDay(hour: 18, minute: 0).obs;
+  var workingHoursStart = const TimeOfDay(hour: 9, minute: 0).obs;
+  var workingHoursEnd = const TimeOfDay(hour: 18, minute: 0).obs;
 
   static List<String> allDays = [
     'Monday',
@@ -124,14 +125,7 @@ class MechanicOnboardingController extends GetxController {
   void nextStep() {
     final error = _validateCurrentStep();
     if (error != null) {
-      Get.snackbar(
-        "Required",
-        error,
-        backgroundColor: Colors.orange.withOpacity(0.1),
-        colorText: Colors.orange.shade800,
-        snackPosition: SnackPosition.BOTTOM,
-        margin: EdgeInsets.all(16.w),
-      );
+      AppSnackbar.warning(error, title: 'Required');
       return;
     }
     if (currentStep.value < 6) {
@@ -259,7 +253,7 @@ class MechanicOnboardingController extends GetxController {
                   ),
                 ),
                 ListTile(
-                  leading: Icon(Iconsax.camera, color: Color(0xFFFF9800)),
+                  leading: const Icon(Iconsax.camera, color: Color(0xFFFF9800)),
                   title: Text(
                     'Take Photo',
                     style: GoogleFonts.poppins(color: Colors.black87),
@@ -275,7 +269,10 @@ class MechanicOnboardingController extends GetxController {
                   },
                 ),
                 ListTile(
-                  leading: Icon(Iconsax.gallery, color: Color(0xFFFF9800)),
+                  leading: const Icon(
+                    Iconsax.gallery,
+                    color: Color(0xFFFF9800),
+                  ),
                   title: Text(
                     'Choose from Gallery',
                     style: GoogleFonts.poppins(color: Colors.black87),
@@ -330,11 +327,11 @@ class MechanicOnboardingController extends GetxController {
       context: context,
       initialDate: dob.value ?? DateTime(2000, 1, 1),
       firstDate: DateTime(1950),
-      lastDate: DateTime.now().subtract(Duration(days: 365 * 18)),
+      lastDate: DateTime.now().subtract(const Duration(days: 365 * 18)),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(primary: Color(0xFFFF9800)),
+            colorScheme: const ColorScheme.light(primary: Color(0xFFFF9800)),
           ),
           child: child!,
         );
@@ -350,7 +347,7 @@ class MechanicOnboardingController extends GetxController {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(primary: Color(0xFFFF9800)),
+            colorScheme: const ColorScheme.light(primary: Color(0xFFFF9800)),
           ),
           child: child!,
         );
@@ -366,7 +363,7 @@ class MechanicOnboardingController extends GetxController {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(primary: Color(0xFFFF9800)),
+            colorScheme: const ColorScheme.light(primary: Color(0xFFFF9800)),
           ),
           child: child!,
         );
@@ -398,12 +395,7 @@ class MechanicOnboardingController extends GetxController {
   Future<void> submitOnboarding() async {
     final error = _validateCurrentStep();
     if (error != null) {
-      Get.snackbar(
-        "Required",
-        error,
-        backgroundColor: Colors.orange.withOpacity(0.1),
-        colorText: Colors.orange.shade800,
-      );
+      AppSnackbar.warning(error, title: 'Required');
       return;
     }
 
@@ -548,12 +540,7 @@ class MechanicOnboardingController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       debugPrint(' Onboarding submit error: $e');
-      Get.snackbar(
-        "Error",
-        "Failed to submit. Please try again.",
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Failed to submit. Please try again.');
     }
   }
 }

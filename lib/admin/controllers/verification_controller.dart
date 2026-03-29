@@ -4,6 +4,8 @@ import '../../modules/notifications/services/notification_sender.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../utils/helpers/app_snackbar.dart';
+
 class VerificationController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -149,11 +151,9 @@ class VerificationController extends GetxController {
 
       isLoading.value = false;
 
-      Get.snackbar(
-        '✅ Approved',
+      AppSnackbar.success(
         '$mechanicName has been approved',
-        backgroundColor: Colors.green.shade50,
-        colorText: Colors.green.shade700,
+        title: '✅ Approved',
       );
 
       // Refresh list
@@ -161,12 +161,7 @@ class VerificationController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       debugPrint(' Approve error: $e');
-      Get.snackbar(
-        'Error',
-        'Failed to approve: $e',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Failed to approve: $e');
     }
   }
 
@@ -216,23 +211,16 @@ class VerificationController extends GetxController {
 
       isLoading.value = false;
 
-      Get.snackbar(
-        'Rejected',
+      AppSnackbar.warning(
         '$mechanicName application rejected',
-        backgroundColor: Colors.orange.shade50,
-        colorText: Colors.orange.shade700,
+        title: 'Rejected',
       );
 
       fetchMechanics(currentFilter.value);
     } catch (e) {
       isLoading.value = false;
       debugPrint(' Reject error: $e');
-      Get.snackbar(
-        'Error',
-        'Failed to reject: $e',
-        backgroundColor: Colors.red.shade50,
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Failed to reject: $e');
     }
   }
 
@@ -241,12 +229,7 @@ class VerificationController extends GetxController {
       await _firestore.collection('users').doc(uid).update({
         'adminNotes': adminNotesController.text.trim(),
       });
-      Get.snackbar(
-        'Saved',
-        'Notes saved',
-        backgroundColor: Colors.blue.shade50,
-        colorText: Colors.blue,
-      );
+      AppSnackbar.info('Notes saved', title: 'Saved');
     } catch (e) {
       debugPrint(' Save notes error: $e');
     }

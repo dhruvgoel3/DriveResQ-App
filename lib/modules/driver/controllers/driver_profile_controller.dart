@@ -1,10 +1,12 @@
 import 'package:iconsax/iconsax.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+
+import '../../../utils/helpers/app_snackbar.dart';
+import '../../../utils/helpers/app_dialogs.dart';
 
 class DriverProfileController extends GetxController {
   final _auth = FirebaseAuth.instance;
@@ -48,7 +50,7 @@ class DriverProfileController extends GetxController {
     try {
       final uid = _auth.currentUser?.uid;
       if (uid == null) {
-        Get.snackbar('Error', 'User not logged in');
+        AppSnackbar.error('User not logged in');
         return;
       }
 
@@ -120,12 +122,7 @@ class DriverProfileController extends GetxController {
   // ─── Save profile ───
   Future<void> saveBasicInfo() async {
     if (nameController.text.trim().isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Name cannot be empty',
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Name cannot be empty');
       return;
     }
 
@@ -146,16 +143,11 @@ class DriverProfileController extends GetxController {
       isLoading.value = false;
       isEditMode.value = false;
 
-      Get.snackbar(
-        'Success',
-        'Profile updated',
-        backgroundColor: Colors.green.withOpacity(0.1),
-        colorText: Colors.green,
-      );
+      AppSnackbar.success('Profile updated');
     } catch (e) {
       isLoading.value = false;
       debugPrint(' Save error: $e');
-      Get.snackbar('Error', 'Failed to update profile');
+      AppSnackbar.error('Failed to update profile');
     }
   }
 
@@ -191,133 +183,35 @@ class DriverProfileController extends GetxController {
   // ─── Logout ───
   Future<void> logout() async {
     try {
-      final confirmed = await Get.dialog<bool>(
-        AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          title: Row(
-            children: [
-              Icon(Iconsax.logout, color: Colors.red),
-              SizedBox(width: 8.w),
-              Text('Logout'),
-            ],
-          ),
-          content: Text('Are you sure you want to logout?'),
-          actions: [
-            TextButton(
-              onPressed: () => Get.back(result: false),
-              child: Text('Cancel', style: TextStyle(color: Colors.grey)),
-            ),
-            ElevatedButton(
-              onPressed: () => Get.back(result: true),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-              ),
-              child: Text('Yes, Logout'),
-            ),
-          ],
-        ),
-        barrierDismissible: false,
+      final confirmed = await AppDialogs.confirm(
+        title: 'Logout',
+        message: 'Are you sure you want to logout?',
+        confirmText: 'Yes, Logout',
+        cancelText: 'Cancel',
+        icon: Iconsax.logout,
+        iconColor: Colors.red,
+        isDangerous: true,
       );
 
       if (confirmed != true) return;
 
       // Loading
-      Get.dialog(
-        PopScope(
-          canPop: false,
-          child: Center(
-            child: Container(
-              width: 260.w,
-              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 28.h),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.r),
-                gradient: LinearGradient(
-                  colors: [Color(0xFFFFFFFF), Color(0xFFF8F9FF)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 20,
-                    spreadRadius: 2,
-                    offset: Offset(0, 10),
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Animated Loader Container
-                  Container(
-                    padding: EdgeInsets.all(16.w),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color(0xFF6C63FF).withOpacity(0.1),
-                    ),
-                    child: CircularProgressIndicator(
-                      strokeWidth: 3,
-                      color: Color(0xFF6C63FF),
-                    ),
-                  ),
+      AppDialogs.loading(message: 'Logging out...');
 
-                  SizedBox(height: 20.h),
-
-                  // Title
-                  Text(
-                    'Logging Out',
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-
-                  SizedBox(height: 8.h),
-
-                  // Subtitle
-                  Text(
-                    'Please wait while we securely log you out...',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13.sp,
-                      color: Colors.grey[600],
-                      height: 1.4,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        barrierDismissible: false,
-      );
-
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
       await _auth.signOut();
-      Get.back();
+      if (Get.isDialogOpen ?? false) Get.back();
       Get.deleteAll(force: true);
       Get.reset();
 
-      Get.snackbar(
-        'Success',
-        'Logged out successfully',
-        backgroundColor: Colors.green.withOpacity(0.1),
-        colorText: Colors.green,
-      );
+      AppSnackbar.success('Logged out successfully');
 
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
       SystemNavigator.pop();
     } catch (e) {
       if (Get.isDialogOpen ?? false) Get.back();
       debugPrint(' Logout error: $e');
-      Get.snackbar('Error', 'Logout failed. Please try again.');
+      AppSnackbar.error('Logout failed. Please try again.');
     }
   }
 }

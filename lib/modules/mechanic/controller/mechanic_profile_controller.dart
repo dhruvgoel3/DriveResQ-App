@@ -4,7 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
+import 'package:driveresq_app/utils/helpers/app_dialogs.dart';
 
 class MechanicProfileController extends GetxController {
   final _auth = FirebaseAuth.instance;
@@ -53,7 +54,7 @@ class MechanicProfileController extends GetxController {
     try {
       final uid = _auth.currentUser?.uid;
       if (uid == null) {
-        Get.snackbar("Error", "User not logged in");
+        AppSnackbar.error('User not logged in');
         return;
       }
 
@@ -78,7 +79,7 @@ class MechanicProfileController extends GetxController {
       }
     } catch (e) {
       debugPrint(" Error fetching profile: $e");
-      Get.snackbar("Error", "Failed to load profile");
+      AppSnackbar.error('Failed to load profile');
     }
   }
 
@@ -159,12 +160,7 @@ class MechanicProfileController extends GetxController {
 
   Future<void> saveProfileInfo() async {
     if (nameController.text.trim().isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Name cannot be empty",
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Name cannot be empty');
       return;
     }
 
@@ -187,21 +183,11 @@ class MechanicProfileController extends GetxController {
       isLoading.value = false;
       isEditMode.value = false;
 
-      Get.snackbar(
-        "Success",
-        "Profile updated successfully",
-        backgroundColor: Colors.green.withOpacity(0.1),
-        colorText: Colors.green,
-      );
+      AppSnackbar.success('Profile updated successfully');
     } catch (e) {
       isLoading.value = false;
       debugPrint(" Error saving profile: $e");
-      Get.snackbar(
-        "Error",
-        "Failed to update profile",
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Failed to update profile');
     }
   }
 
@@ -229,7 +215,7 @@ class MechanicProfileController extends GetxController {
     final status = userData.value?['verificationStatus'] ?? 'pending';
     switch (status) {
       case 'approved':
-        return Color(0xFF4CAF50);
+        return const Color(0xFF4CAF50);
       case 'pending':
         return Colors.orange;
       case 'rejected':
@@ -267,90 +253,34 @@ class MechanicProfileController extends GetxController {
 
   Future<void> logout() async {
     try {
-      final confirmed = await showDialog<bool>(
-        context: Get.context!,
-        builder: (context) => AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          title: Row(
-            children: [
-              Icon(Iconsax.logout, color: Colors.red),
-              SizedBox(width: 8.w),
-              Text("Logout"),
-            ],
-          ),
-          content: Text("Are you sure you want to logout?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text("Cancel", style: TextStyle(color: Colors.grey)),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context, true),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-              ),
-              child: Text("Logout"),
-            ),
-          ],
-        ),
+      final confirmed = await AppDialogs.confirm(
+        title: 'Logout',
+        message: 'Are you sure you want to logout?',
+        confirmText: 'Yes, Logout',
+        cancelText: 'Cancel',
+        icon: Iconsax.logout,
+        iconColor: Colors.red,
+        isDangerous: true,
       );
 
       if (confirmed != true) return;
 
-      showDialog(
-        context: Get.context!,
-        barrierDismissible: false,
-        builder: (context) => PopScope(
-          canPop: false,
-          child: Center(
-            child: Container(
-              padding: EdgeInsets.all(20.w),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircularProgressIndicator(color: Color(0xFF6C63FF)),
-                  SizedBox(height: 16.h),
-                  Text("Logging out..."),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
+      AppDialogs.loading(message: 'Logging out...');
 
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
       await _auth.signOut();
-      Navigator.pop(Get.context!);
+      if (Get.isDialogOpen ?? false) Get.back();
       Get.deleteAll(force: true);
       Get.reset();
 
-      Get.snackbar(
-        "Success",
-        "Logged out successfully",
-        backgroundColor: Colors.green.withOpacity(0.1),
-        colorText: Colors.green,
-      );
+      AppSnackbar.success('Logged out successfully');
 
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
       SystemNavigator.pop();
     } catch (e) {
-      if (Navigator.canPop(Get.context!)) {
-        Navigator.pop(Get.context!);
-      }
+      if (Get.isDialogOpen ?? false) Get.back();
       debugPrint(" Logout error: $e");
-      Get.snackbar(
-        "Error",
-        "Logout failed. Please try again.",
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+      AppSnackbar.error('Logout failed. Please try again.');
     }
   }
 }

@@ -27,7 +27,7 @@ class DriverDashboardView extends StatelessWidget {
 
     // Pre-build tab pages once (not rebuilt on tab switch)
     final pages = [
-      DriverHomeView(),
+      const DriverHomeView(),
       FindMechanicsView(),
       const ChatListView(),
       const DriverProfileView(),

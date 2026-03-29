@@ -85,7 +85,7 @@ class Step5Availability extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFFFF9800),
+                    color: const Color(0xFFFF9800),
                   ),
                 ),
                 Text(
@@ -104,7 +104,9 @@ class Step5Availability extends StatelessWidget {
                 value: c.currentStep.value / 6,
                 minHeight: 6.h,
                 backgroundColor: Colors.grey.shade200,
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF9800)),
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  Color(0xFFFF9800),
+                ),
               ),
             ),
           ],
@@ -165,7 +167,7 @@ class Step5Availability extends StatelessWidget {
               ),
             ),
             SizedBox(width: 16.w),
-            Icon(Iconsax.arrow_right, color: Color(0xFFFF9800)),
+            const Icon(Iconsax.arrow_right, color: Color(0xFFFF9800)),
             SizedBox(width: 16.w),
             Expanded(
               child: Obx(
@@ -211,7 +213,7 @@ class Step5Availability extends StatelessWidget {
               style: GoogleFonts.poppins(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFFFF9800),
+                color: const Color(0xFFFF9800),
               ),
             ),
           ],
@@ -242,17 +244,19 @@ class Step5Availability extends StatelessWidget {
               return GestureDetector(
                 onTap: () => c.toggleDay(day),
                 child: AnimatedContainer(
-                  duration: Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 200),
                   padding: EdgeInsets.symmetric(
                     horizontal: 16.w,
                     vertical: 10.h,
                   ),
                   decoration: BoxDecoration(
-                    color: selected ? Color(0xFFFF9800) : Colors.grey.shade50,
+                    color: selected
+                        ? const Color(0xFFFF9800)
+                        : Colors.grey.shade50,
                     borderRadius: BorderRadius.circular(25.r),
                     border: Border.all(
                       color: selected
-                          ? Color(0xFFFF9800)
+                          ? const Color(0xFFFF9800)
                           : Colors.grey.shade300,
                       width: 1.5,
                     ),
@@ -312,7 +316,7 @@ class Step5Availability extends StatelessWidget {
                       style: GoogleFonts.poppins(
                         fontSize: 20.sp,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFFFF9800),
+                        color: const Color(0xFFFF9800),
                       ),
                     ),
                     Text(
@@ -325,7 +329,7 @@ class Step5Availability extends StatelessWidget {
                   ],
                 ),
                 SliderTheme(
-                  data: SliderThemeData(
+                  data: const SliderThemeData(
                     activeTrackColor: Color(0xFFFF9800),
                     inactiveTrackColor: Color(0xFFFFE0B2),
                     thumbColor: Color(0xFFFF9800),
@@ -443,11 +447,11 @@ class Step5Availability extends StatelessWidget {
           onPressed: () {
             c.nextStep();
             if (c.currentStep.value == 6) {
-              Get.to(() => Step6Terms());
+              Get.to(() => const Step6Terms());
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFFFF9800),
+            backgroundColor: const Color(0xFFFF9800),
             foregroundColor: Colors.white,
             elevation: 0,
             shape: RoundedRectangleBorder(

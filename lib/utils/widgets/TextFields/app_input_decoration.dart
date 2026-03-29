@@ -21,7 +21,7 @@ InputDecoration AppInputDecoration({
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14.r),
-      borderSide: BorderSide(color: Colors.deepPurple, width: 1.5),
+      borderSide: const BorderSide(color: Colors.deepPurple, width: 1.5),
     ),
   );
 }

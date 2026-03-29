@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 
 import '../../controllers/favorites_controller.dart';
 import '../HomePage/create_request_view.dart';
@@ -212,7 +213,11 @@ class MechanicProfileDetailView extends StatelessWidget {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(Iconsax.clock, color: _accent, size: 16),
+                                  const Icon(
+                                    Iconsax.clock,
+                                    color: _accent,
+                                    size: 16,
+                                  ),
                                   const SizedBox(width: 6),
                                   Text(
                                     "$exp Years Exp.",
@@ -545,10 +550,9 @@ class MechanicProfileDetailView extends StatelessWidget {
       }
     } catch (_) {}
     Get.to(() => CreateRequestView());
-    Get.snackbar(
-      "Direct Request",
-      "You are creating a request. (Preferred Mechanic: $mechName)",
-      snackPosition: SnackPosition.TOP,
+    AppSnackbar.info(
+      'You are creating a request. (Preferred Mechanic: $mechName)',
+      title: 'Direct Request',
     );
   }
 }

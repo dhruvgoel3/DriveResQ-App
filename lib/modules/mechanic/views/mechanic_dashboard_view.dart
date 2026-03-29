@@ -25,10 +25,10 @@ class MechanicDashboardView extends StatelessWidget {
 
     // Pre-build tab pages once
     final pages = [
-      CurrentRequestView(),
+      const CurrentRequestView(),
       const MechanicHistoryView(),
-      ChatListView(),
-      MechanicProfileView(),
+      const ChatListView(),
+      const MechanicProfileView(),
     ];
 
     return Scaffold(

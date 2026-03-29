@@ -33,7 +33,7 @@ class CreateRequestView extends StatelessWidget {
         elevation: 0,
         surfaceTintColor: AppColors.surface,
         leading: IconButton(
-          icon: Icon(Iconsax.arrow_left, color: AppColors.textPrimary),
+          icon: const Icon(Iconsax.arrow_left, color: AppColors.textPrimary),
           onPressed: () => Get.back(),
         ),
         title: Text(
@@ -48,7 +48,7 @@ class CreateRequestView extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(color: AppColors.primary),
+                const CircularProgressIndicator(color: AppColors.primary),
                 SizedBox(height: 16.h),
                 Text(
                   "Submitting your request...",
@@ -140,7 +140,7 @@ class CreateRequestView extends StatelessWidget {
               Container(
                 decoration: _cardDecoration(),
                 child: DropdownButtonFormField<String>(
-                  value: controller.selectedVehicle.value.isEmpty
+                  initialValue: controller.selectedVehicle.value.isEmpty
                       ? null
                       : controller.selectedVehicle.value,
                   hint: Text(
@@ -405,7 +405,7 @@ class CreateRequestView extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14.r),
-            borderSide: BorderSide(color: AppColors.primary, width: 1.5),
+            borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
           ),
           contentPadding: EdgeInsets.symmetric(
             horizontal: 16.w,
