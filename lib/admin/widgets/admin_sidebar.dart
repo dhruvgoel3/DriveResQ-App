@@ -74,10 +74,18 @@ class AdminSidebar extends StatelessWidget {
           _menuItem(Iconsax.category, 'Dashboard', '/admin/dashboard'),
           Obx(
             () => _menuItem(
-              Iconsax.clock,
-              'Pending Verifications',
+              Iconsax.user_tick,
+              'Mechanic Verifications',
               '/admin/pending',
-              badge: dashC.pendingCount.value,
+              badge: dashC.pendingMechanicsCount.value,
+            ),
+          ),
+          Obx(
+            () => _menuItem(
+              Iconsax.driver,
+              'Driver Verifications',
+              '/admin/drivers-pending',
+              badge: dashC.pendingDriversCount.value,
             ),
           ),
           _menuItem(

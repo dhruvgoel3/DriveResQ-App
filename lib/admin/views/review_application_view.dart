@@ -25,7 +25,9 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 6, vsync: this);
+    final c = Get.find<VerificationController>();
+    final isDriver = c.selectedApplication.value?['role'] == 'driver';
+    _tabController = TabController(length: isDriver ? 3 : 6, vsync: this);
   }
 
   @override
@@ -41,7 +43,7 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
       body: Obx(() {
-        final m = c.selectedMechanic.value;
+        final m = c.selectedApplication.value;
         if (m == null || c.isLoading.value) {
           return const Center(
             child: CircularProgressIndicator(color: Color(0xFFFF9800)),
@@ -79,10 +81,14 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
                       controller: _tabController,
                       children: [
                         PersonalTab(mechanicData: m),
-                        ProfessionalTab(mechanicData: m),
-                        DocumentsTab(mechanicData: m),
-                        BankTab(mechanicData: m),
-                        AvailabilityTab(mechanicData: m),
+                        if (m['role'] == 'mechanic') ...[
+                          ProfessionalTab(mechanicData: m),
+                          DocumentsTab(userData: m),
+                          BankTab(mechanicData: m),
+                          AvailabilityTab(mechanicData: m),
+                        ] else ...[
+                          DocumentsTab(userData: m),
+                        ],
                         ReviewDecisionTab(mechanicData: m, controller: c),
                       ],
                     ),
@@ -260,13 +266,18 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
           fontWeight: FontWeight.w600,
         ),
         unselectedLabelStyle: GoogleFonts.poppins(fontSize: 13),
-        tabs: const [
-          Tab(text: 'Personal'),
-          Tab(text: 'Professional'),
-          Tab(text: 'Documents'),
-          Tab(text: 'Bank Details'),
-          Tab(text: 'Availability'),
-          Tab(text: 'Review & Decision'),
+        tabs: [
+          const Tab(text: 'Personal'),
+          if (Get.find<VerificationController>().selectedApplication.value?['role'] ==
+              'mechanic') ...[
+            const Tab(text: 'Professional'),
+            const Tab(text: 'Documents'),
+            const Tab(text: 'Bank Details'),
+            const Tab(text: 'Availability'),
+          ] else ...[
+            const Tab(text: 'Documents'),
+          ],
+          const Tab(text: 'Review & Decision'),
         ],
       ),
     );

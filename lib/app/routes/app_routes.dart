@@ -24,6 +24,7 @@ import '../../admin/views/pending_verifications_view.dart';
 import '../../admin/views/rejected_applications_view.dart';
 import '../../admin/views/review_application_view.dart';
 import '../../admin/views/admin_settings_view.dart';
+import '../../admin/views/driver_verifications_view.dart';
 import '../../admin/controllers/admin_settings_controller.dart';
 import '../../modules/auth/views/enter_phone_number_view.dart';
 import '../../modules/auth/views/otp_verification_view.dart';
@@ -129,6 +130,21 @@ class AppPages {
     GetPage(
       name: Routes.ADMIN_PENDING,
       page: () => const PendingVerificationsView(),
+      binding: BindingsBuilder(() {
+        if (!Get.isRegistered<AdminAuthController>()) {
+          Get.put(AdminAuthController());
+        }
+        if (!Get.isRegistered<AdminDashboardController>()) {
+          Get.lazyPut<AdminDashboardController>(
+            () => AdminDashboardController(),
+          );
+        }
+        Get.lazyPut<VerificationController>(() => VerificationController());
+      }),
+    ),
+    GetPage(
+      name: Routes.ADMIN_DRIVERS_PENDING,
+      page: () => const DriverVerificationsView(),
       binding: BindingsBuilder(() {
         if (!Get.isRegistered<AdminAuthController>()) {
           Get.put(AdminAuthController());

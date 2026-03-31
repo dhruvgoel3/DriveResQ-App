@@ -151,7 +151,12 @@ class _CompleteJobVerificationDialogState
           topRight: Radius.circular(24.r),
         ),
       ),
-      child: _isSuccess ? _buildSuccess() : _buildForm(),
+      child: AnimatedSize(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        alignment: Alignment.topCenter,
+        child: _isSuccess ? _buildSuccess() : _buildForm(),
+      ),
     );
   }
 
@@ -159,30 +164,70 @@ class _CompleteJobVerificationDialogState
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(height: 16.h),
+        // Drag handle
         Container(
-          padding: EdgeInsets.all(20.w),
+          width: 40.w,
+          height: 4.h,
           decoration: BoxDecoration(
-            color: _green.withOpacity(0.1),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(Iconsax.tick_circle, color: _green, size: 56.w),
-        ),
-        SizedBox(height: 20.h),
-        Text(
-          "Job Completed!",
-          style: GoogleFonts.poppins(
-            fontSize: 22.sp,
-            fontWeight: FontWeight.bold,
-            color: _green,
+            color: Colors.grey.shade300,
+            borderRadius: BorderRadius.circular(2.r),
           ),
         ),
-        SizedBox(height: 8.h),
-        Text(
-          "Great work! The driver has been notified.",
-          style: GoogleFonts.poppins(
-            fontSize: 14.sp,
-            color: Colors.grey.shade600,
+        SizedBox(height: 24.h),
+        Container(
+          padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 20.w),
+          decoration: BoxDecoration(
+            color: _green.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(20.r),
+            border: Border.all(color: _green.withOpacity(0.2)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(10.w),
+                    decoration: const BoxDecoration(
+                      color: _green,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Iconsax.tick_circle, color: Colors.white, size: 28.w),
+                  ),
+                  SizedBox(width: 16.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Verification Successful",
+                          style: GoogleFonts.poppins(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green.shade800,
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          "Navigating to job summary...",
+                          style: GoogleFonts.poppins(
+                            fontSize: 13.sp,
+                            color: Colors.green.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20.h),
+              LinearProgressIndicator(
+                backgroundColor: _green.withOpacity(0.15),
+                valueColor: const AlwaysStoppedAnimation<Color>(_green),
+                minHeight: 4.h,
+                borderRadius: BorderRadius.circular(4.r),
+              ),
+            ],
           ),
         ),
         SizedBox(height: 16.h),

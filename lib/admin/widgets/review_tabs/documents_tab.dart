@@ -5,50 +5,82 @@ import 'package:iconsax/iconsax.dart';
 import 'review_helpers.dart';
 
 class DocumentsTab extends StatelessWidget {
-  final Map<String, dynamic> mechanicData;
+  final Map<String, dynamic> userData;
 
-  const DocumentsTab({super.key, required this.mechanicData});
+  const DocumentsTab({super.key, required this.userData});
 
   @override
   Widget build(BuildContext context) {
+    final isDriver = userData['role'] == 'driver';
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Aadhaar
-          ReviewHelpers.buildCard([
-            Text(
-              'Aadhaar Card',
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
+          // ── Aadhaar/Identity ──
+          if (isDriver)
+            ReviewHelpers.buildCard([
+              Text(
+                'Identity Documents (${userData['govtIdType'] ?? 'ID'})',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            ReviewHelpers.buildField(
-              'Aadhaar Number',
-              mechanicData['aadhaarNumber'] ?? 'N/A',
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                if ((mechanicData['aadhaarFrontUrl'] ?? '').isNotEmpty)
-                  Expanded(
-                    child: _docImage('Front', mechanicData['aadhaarFrontUrl']),
-                  ),
-                const SizedBox(width: 16),
-                if ((mechanicData['aadhaarBackUrl'] ?? '').isNotEmpty)
-                  Expanded(
-                    child: _docImage('Back', mechanicData['aadhaarBackUrl']),
-                  ),
-              ],
-            ),
-          ]),
+              const SizedBox(height: 8),
+              ReviewHelpers.buildField(
+                'ID Number',
+                userData['govtIdNumber'] ?? 'N/A',
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  if ((userData['idFrontUrl'] ?? '').isNotEmpty)
+                    Expanded(
+                      child: _docImage('Front Side', userData['idFrontUrl']),
+                    ),
+                  const SizedBox(width: 16),
+                  if ((userData['idBackUrl'] ?? '').isNotEmpty)
+                    Expanded(
+                      child: _docImage('Back Side', userData['idBackUrl']),
+                    ),
+                ],
+              ),
+            ])
+          else
+            ReviewHelpers.buildCard([
+              Text(
+                'Aadhaar Card',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 8),
+              ReviewHelpers.buildField(
+                'Aadhaar Number',
+                userData['aadhaarNumber'] ?? 'N/A',
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  if ((userData['aadhaarFrontUrl'] ?? '').isNotEmpty)
+                    Expanded(
+                      child: _docImage('Front', userData['aadhaarFrontUrl']),
+                    ),
+                  const SizedBox(width: 16),
+                  if ((userData['aadhaarBackUrl'] ?? '').isNotEmpty)
+                    Expanded(
+                      child: _docImage('Back', userData['aadhaarBackUrl']),
+                    ),
+                ],
+              ),
+            ]),
           const SizedBox(height: 20),
 
-          // PAN
-          if ((mechanicData['panCardUrl'] ?? '').isNotEmpty)
+          // ── PAN (Mechanic Only) ──
+          if (!isDriver && (userData['panCardUrl'] ?? '').isNotEmpty)
             ReviewHelpers.buildCard([
               Text(
                 'PAN Card',
@@ -58,10 +90,11 @@ class DocumentsTab extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              _docImage('PAN Card', mechanicData['panCardUrl']),
+              _docImage('PAN Card', userData['panCardUrl']),
             ]),
 
-          if ((mechanicData['tradeLicenseUrl'] ?? '').isNotEmpty) ...[
+          // ── Trade License (Mechanic Only) ──
+          if (!isDriver && (userData['tradeLicenseUrl'] ?? '').isNotEmpty) ...[
             const SizedBox(height: 20),
             ReviewHelpers.buildCard([
               Text(
@@ -72,7 +105,7 @@ class DocumentsTab extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              _docImage('Trade License', mechanicData['tradeLicenseUrl']),
+              _docImage('Trade License', userData['tradeLicenseUrl']),
             ]),
           ],
         ],
@@ -91,18 +124,56 @@ class DocumentsTab extends StatelessWidget {
         const SizedBox(height: 6),
         GestureDetector(
           onTap: () => _showZoomDialog(url, label),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-              url,
-              height: 180,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                height: 180,
-                color: Colors.grey.shade100,
-                child: const Center(
-                  child: Icon(Iconsax.image, size: 40, color: Colors.grey),
+          child: Container(
+            height: 180,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                url,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    color: Colors.grey.shade50,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                        strokeWidth: 2,
+                        color: const Color(0xFFFF9800),
+                      ),
+                    ),
+                  );
+                },
+                errorBuilder: (_, __, ___) => Container(
+                  color: Colors.grey.shade100,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Iconsax.image, size: 40, color: Colors.grey),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Failed to load',
+                        style: GoogleFonts.poppins(
+                          fontSize: 10,
+                          color: Colors.grey.shade400,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

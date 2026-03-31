@@ -12,7 +12,7 @@ class RejectedApplicationsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = Get.find<VerificationController>();
-    c.fetchMechanics('rejected');
+    c.fetchApplications('rejected');
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
@@ -55,7 +55,7 @@ class RejectedApplicationsView extends StatelessWidget {
                       );
                     }
 
-                    if (c.mechanics.isEmpty) {
+                    if (c.applications.isEmpty) {
                       return Center(
                         child: Padding(
                           padding: const EdgeInsets.all(60),
@@ -83,14 +83,14 @@ class RejectedApplicationsView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${c.mechanics.length} rejected',
+                          '${c.applications.length} rejected',
                           style: GoogleFonts.poppins(
                             fontSize: 13,
                             color: Colors.grey.shade500,
                           ),
                         ),
                         const SizedBox(height: 16),
-                        ...c.mechanics.map((m) => _rejectedCard(m, c)),
+                        ...c.applications.map((m) => _rejectedCard(m, c)),
                       ],
                     );
                   }),
@@ -112,7 +112,7 @@ class RejectedApplicationsView extends StatelessWidget {
             mechanic: m,
             actionLabel: 'View Details',
             onReview: () {
-              c.loadMechanicDetails(m['uid']);
+              c.loadApplicationDetails(m['uid']);
               Get.toNamed('/admin/review', arguments: m['uid']);
             },
           ),

@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:driveresq_app/app/routes/app_pages.dart';
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -147,8 +148,28 @@ class FCMService {
     log('Got a message whilst in the foreground!');
     log('Message data: ${message.data}');
 
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) return;
+
+    // 🛡️ SECURITY & SINGLE-DEVICE FILTERING
+    final recipientId = message.data['recipientId'];
+    final senderId = message.data['senderId'];
+
+    // 1. If notification is for a different user, ignore it.
+    // (Crucial for single-device testing where one device has many accounts)
+    if (recipientId != null && recipientId != currentUser.uid) {
+      log('Ignoring notification: Recipient ID mismatch. Intended for $recipientId, but current user is ${currentUser.uid}');
+      return;
+    }
+
+    // 2. If notification is from the current user (e.g. sender), ignore it.
+    if (senderId != null && senderId == currentUser.uid) {
+      log('Ignoring notification: Current user is the sender. (Recursive alert)');
+      return;
+    }
+
     if (message.notification != null) {
-      log('Message also contained a notification: ${message.notification}');
+      log('Displaying foreground notification: ${message.notification?.title}');
 
       _localNotifications.show(
         id: message.hashCode,
@@ -190,7 +211,10 @@ class FCMService {
   }
 
   static void _navigateFromPayload(String? route) {
-    if (route == null || route.isEmpty) return;
+    if (route == null || route.isEmpty) {
+      Get.toNamed(Routes.NOTIFICATIONS);
+      return;
+    }
     // Navigate to specific routes based on payload
     Get.toNamed(route);
   }

@@ -52,6 +52,8 @@ class NotificationSender {
             'type': 'new_request',
             'requestId': requestId,
             'driverId': driverId,
+            'senderId': driverId, // ✅ Added for filtering
+            'recipientId': doc.id, // ✅ Added for client-side filtering
             'problem': problem,
             'location': location,
             'route': '/mechanic/requests',
@@ -87,6 +89,28 @@ class NotificationSender {
         'mechanicName': mechanicName,
         'mechanicPhone': mechanicPhone,
         'route': '/driver/active-request',
+      },
+    );
+  }
+
+  /// Notifies a mechanic when the driver approves/confirms their acceptance.
+  static Future<void> notifyMechanicDriverApproved({
+    required String requestId,
+    required String mechanicId,
+    required String driverName,
+    required String driverPhone,
+  }) async {
+    await _enqueueNotification(
+      recipientId: mechanicId,
+      type: 'driver_approved',
+      title: '✅ Driver Approved You!',
+      body: '$driverName has confirmed your help. Head to their location now!',
+      payload: {
+        'type': 'driver_approved',
+        'requestId': requestId,
+        'driverName': driverName,
+        'driverPhone': driverPhone,
+        'route': '/mechanic',
       },
     );
   }
@@ -140,13 +164,14 @@ class NotificationSender {
 
   /// Updates a mechanic on their registration approval or rejection.
   static Future<void> notifyVerificationStatus({
-    required String mechanicId,
+    required String recipientId,
+    required String role,
     required String status,
     required String reason,
   }) async {
     final approved = (status == 'approved');
     await _enqueueNotification(
-      recipientId: mechanicId,
+      recipientId: recipientId,
       type: approved ? 'verification_approved' : 'verification_rejected',
       title: approved ? 'Account Approved' : 'Profile Update Required',
       body: approved
@@ -155,7 +180,9 @@ class NotificationSender {
       payload: {
         'type': approved ? 'verification_approved' : 'verification_rejected',
         'reason': reason,
-        'route': approved ? '/mechanic/dashboard' : '/mechanic/resubmit',
+        'route': approved 
+            ? (role == 'driver' ? '/driver' : '/mechanic') 
+            : (role == 'driver' ? '/driver/onboarding' : '/mechanic/resubmit'),
       },
     );
   }
@@ -222,7 +249,10 @@ class NotificationSender {
         'priority': priority,
         'createdAt': FieldValue.serverTimestamp(),
         'processed': false,
-        'data': payload,
+        'data': {
+          ...payload,
+          'recipientId': recipientId, // ✅ Added for client-side filtering
+        },
       });
     } catch (e) {
       debugPrint('NotificationSender Engine Failure: $e');

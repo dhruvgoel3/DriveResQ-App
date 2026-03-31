@@ -1,6 +1,8 @@
 import 'package:iconsax/iconsax.dart';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,6 +13,7 @@ import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 class DriverOnboardingController extends GetxController {
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
+  final _storage = FirebaseStorage.instance;
   final _picker = ImagePicker();
 
   // Step management
@@ -179,6 +182,19 @@ class DriverOnboardingController extends GetxController {
     if (picked != null) dob.value = picked;
   }
 
+  // ── Firebase Upload ──
+  Future<String?> _uploadImage(File file, String path) async {
+    try {
+      final ref = _storage.ref().child(path);
+      final uploadTask = ref.putFile(file);
+      final snapshot = await uploadTask;
+      return await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      debugPrint(' Upload error for $path: $e');
+      return null;
+    }
+  }
+
   Future<void> submitOnboarding() async {
     final error = _validateCurrentStep();
     if (error != null) {
@@ -196,6 +212,24 @@ class DriverOnboardingController extends GetxController {
           ? '${'X' * (rawId.length - 4)}${rawId.substring(rawId.length - 4)}'
           : rawId;
 
+      // Upload images
+      String? idFrontUrl;
+      String? idBackUrl;
+
+      if (idFrontPath.value.isNotEmpty) {
+        idFrontUrl = await _uploadImage(
+          File(idFrontPath.value),
+          'drivers/$uid/documents/id_front.jpg',
+        );
+      }
+
+      if (idBackPath.value.isNotEmpty) {
+        idBackUrl = await _uploadImage(
+          File(idBackPath.value),
+          'drivers/$uid/documents/id_back.jpg',
+        );
+      }
+
       await _firestore.collection('users').doc(uid).update({
         'fullName': nameController.text.trim(),
         'email': emailController.text.trim(),
@@ -204,6 +238,9 @@ class DriverOnboardingController extends GetxController {
         'dob': dob.value?.toIso8601String() ?? '',
         'govtIdType': selectedIdType.value,
         'govtIdNumber': maskedId,
+        'idFrontUrl': idFrontUrl ?? '',
+        'idBackUrl': idBackUrl ?? '',
+        'verificationStatus': 'pending',
         'driverOnboardingCompleted': true,
         'onboardingCompletedAt': FieldValue.serverTimestamp(),
       });

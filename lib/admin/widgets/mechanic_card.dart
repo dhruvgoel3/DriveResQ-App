@@ -17,12 +17,13 @@ class MechanicCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDriver = mechanic['role'] == 'driver';
     final name = mechanic['fullName'] ?? 'Unknown';
-    final shop = mechanic['shopName'] ?? 'No shop';
+    final subTitle = isDriver ? 'Verified Driver' : (mechanic['shopName'] ?? 'No shop');
     final phone = mechanic['phone'] ?? '';
     final email = mechanic['email'] ?? '';
     final photoUrl = mechanic['profilePhotoUrl'] ?? '';
-    final submittedAt = mechanic['onboardingSubmittedAt'];
+    final submittedAt = mechanic['onboardingSubmittedAt'] ?? mechanic['onboardingCompletedAt'];
     final status = mechanic['verificationStatus'] ?? 'pending';
 
     String daysPending = '';
@@ -52,9 +53,7 @@ class MechanicCard extends StatelessWidget {
           CircleAvatar(
             radius: 28,
             backgroundColor: const Color(0xFFFF9800).withOpacity(0.1),
-            backgroundImage: photoUrl.isNotEmpty
-                ? NetworkImage(photoUrl)
-                : null,
+            backgroundImage: photoUrl.isNotEmpty ? NetworkImage(photoUrl) : null,
             child: photoUrl.isEmpty
                 ? Text(
                     name.isNotEmpty ? name[0].toUpperCase() : '?',
@@ -83,7 +82,7 @@ class MechanicCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  shop,
+                  subTitle,
                   style: GoogleFonts.poppins(
                     fontSize: 13,
                     color: Colors.grey.shade600,

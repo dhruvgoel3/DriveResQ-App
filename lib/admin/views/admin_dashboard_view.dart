@@ -35,7 +35,7 @@ class AdminDashboardView extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Welcome back! Here\'s an overview of mechanic verifications.',
+                    'Welcome back! Here\'s an overview of mechanic and driver verifications.',
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       color: Colors.grey.shade500,
@@ -62,11 +62,31 @@ class AdminDashboardView extends StatelessWidget {
                         SizedBox(
                           width: 280,
                           child: StatCard(
-                            icon: Iconsax.clock,
-                            label: 'Pending Verifications',
-                            value: '${c.pendingCount.value}',
+                            icon: Iconsax.driver,
+                            label: 'Total Drivers',
+                            value: '${c.totalDrivers.value}',
+                            color: Colors.indigo.shade700,
+                            bgColor: Colors.indigo.shade50,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 280,
+                          child: StatCard(
+                            icon: Iconsax.user_tick,
+                            label: 'Mechanic Pendings',
+                            value: '${c.pendingMechanicsCount.value}',
                             color: Colors.orange.shade700,
                             bgColor: Colors.orange.shade50,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 280,
+                          child: StatCard(
+                            icon: Iconsax.driver,
+                            label: 'Driver Pendings',
+                            value: '${c.pendingDriversCount.value}',
+                            color: Colors.amber.shade700,
+                            bgColor: Colors.amber.shade50,
                           ),
                         ),
                         SizedBox(
@@ -109,9 +129,9 @@ class AdminDashboardView extends StatelessWidget {
                     children: [
                       ElevatedButton.icon(
                         onPressed: () => Get.offAllNamed('/admin/pending'),
-                        icon: const Icon(Iconsax.clock, size: 18),
+                        icon: const Icon(Iconsax.user_tick, size: 18),
                         label: Text(
-                          'View Pending Applications',
+                          'Mechanic Applications',
                           style: GoogleFonts.poppins(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
@@ -119,6 +139,30 @@ class AdminDashboardView extends StatelessWidget {
                         ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFFF9800),
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 14,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      ElevatedButton.icon(
+                        onPressed: () => Get.offAllNamed('/admin/drivers-pending'),
+                        icon: const Icon(Iconsax.driver, size: 18),
+                        label: Text(
+                          'Driver Applications',
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF673AB7),
                           foregroundColor: Colors.white,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(
@@ -228,7 +272,7 @@ class AdminDashboardView extends StatelessWidget {
                               ),
                             ),
                             title: Text(
-                              '${isApproval ? "Approved" : "Rejected"} ${action['mechanicName'] ?? 'Unknown'}',
+                              '${isApproval ? "Approved" : "Rejected"} ${action['mechanicName'] ?? action['driverName'] ?? 'Unknown'}',
                               style: GoogleFonts.poppins(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,

@@ -24,7 +24,7 @@
     </queries>
 
     <application
-        android:label="driveresq_app"
+        android:label="DriveResQ"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 

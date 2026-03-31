@@ -6,7 +6,9 @@ class AdminDashboardController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   var totalMechanics = 0.obs;
-  var pendingCount = 0.obs;
+  var totalDrivers = 0.obs;
+  var pendingMechanicsCount = 0.obs;
+  var pendingDriversCount = 0.obs;
   var approvedToday = 0.obs;
   var rejectedToday = 0.obs;
   var recentActions = <Map<String, dynamic>>[].obs;
@@ -21,13 +23,24 @@ class AdminDashboardController extends GetxController {
   }
 
   void _listenToPendingCount() {
+    // Listen to mechanics
     _firestore
         .collection('users')
         .where('role', isEqualTo: 'mechanic')
         .where('verificationStatus', isEqualTo: 'pending')
         .snapshots()
         .listen((snap) {
-          pendingCount.value = snap.docs.length;
+          pendingMechanicsCount.value = snap.docs.length;
+        });
+
+    // Listen to drivers
+    _firestore
+        .collection('users')
+        .where('role', isEqualTo: 'driver')
+        .where('verificationStatus', isEqualTo: 'pending')
+        .snapshots()
+        .listen((snap) {
+          pendingDriversCount.value = snap.docs.length;
         });
   }
 
@@ -35,13 +48,22 @@ class AdminDashboardController extends GetxController {
     try {
       isLoading.value = true;
 
-      // Total mechanics (simple single-field query)
+      // Total mechanics
       final allMechanics = await _firestore
           .collection('users')
           .where('role', isEqualTo: 'mechanic')
           .get();
       totalMechanics.value = allMechanics.docs
           .where((d) => d.data()['onboardingCompleted'] == true)
+          .length;
+
+      // Total drivers
+      final allDrivers = await _firestore
+          .collection('users')
+          .where('role', isEqualTo: 'driver')
+          .get();
+      totalDrivers.value = allDrivers.docs
+          .where((d) => d.data()['driverOnboardingCompleted'] == true)
           .length;
 
       // Today's actions — fetch all recent and filter client-side

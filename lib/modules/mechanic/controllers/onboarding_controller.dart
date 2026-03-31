@@ -373,14 +373,20 @@ class MechanicOnboardingController extends GetxController {
   }
 
   // ── Firebase Upload ──
-  Future<String?> _uploadImage(File file, String path) async {
+  Future<String?> _uploadImage(File? file, String path) async {
+    if (file == null || !file.existsSync()) {
+      debugPrint(' Skipping upload for $path: File does not exist');
+      return null;
+    }
     try {
       final ref = _storage.ref().child(path);
       final uploadTask = ref.putFile(file);
 
       uploadTask.snapshotEvents.listen((event) {
-        uploadProgress.value =
-            event.bytesTransferred.toDouble() / event.totalBytes.toDouble();
+        if (event.totalBytes > 0) {
+          uploadProgress.value =
+              event.bytesTransferred.toDouble() / event.totalBytes.toDouble();
+        }
       });
 
       final snapshot = await uploadTask;

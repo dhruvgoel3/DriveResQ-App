@@ -87,62 +87,85 @@ class AppSnackbar {
     Duration duration = const Duration(seconds: 3),
   }) {
     FlashyFlushbar(
-      leadingWidget: Container(
-        width: 42,
-        height: 42,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            colors: [
-              gradientStart,
-              gradientEnd.withValues(alpha: 0.7),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: gradientStart.withValues(alpha: 0.4),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Icon(icon, color: Colors.white, size: 22),
-      ),
-      title: title,
-      titleStyle: GoogleFonts.poppins(
-        fontSize: 14,
-        fontWeight: FontWeight.w700,
-        color: gradientStart,
-        letterSpacing: 0.2,
-      ),
-      message: message,
-      messageStyle: GoogleFonts.poppins(
-        fontSize: 12.5,
-        fontWeight: FontWeight.w400,
-        color: Colors.grey.shade700,
-        height: 1.3,
-      ),
       duration: duration,
-      trailingWidget: GestureDetector(
-        onTap: () => FlashyFlushbar.cancel(),
-        child: Container(
-          width: 30,
-          height: 30,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.grey.shade100,
-          ),
-          child: Icon(
-            Icons.close_rounded,
-            color: Colors.grey.shade500,
-            size: 16,
-          ),
-        ),
-      ),
       backgroundColor: Colors.white,
       isDismissible: true,
+      customWidget: Row(
+        children: [
+          // Icon/Leading
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [
+                  gradientStart,
+                  gradientEnd.withValues(alpha: 0.7),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: gradientStart.withValues(alpha: 0.4),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Icon(icon, color: Colors.white, size: 22),
+          ),
+          const SizedBox(width: 12),
+
+          // Content (Title + Message)
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: gradientStart,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+                Text(
+                  message,
+                  style: GoogleFonts.poppins(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey.shade700,
+                    height: 1.3,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+
+          // Close Button
+          GestureDetector(
+            onTap: () => FlashyFlushbar.cancel(),
+            child: Container(
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.grey.shade100,
+              ),
+              child: Icon(
+                Icons.close_rounded,
+                color: Colors.grey.shade500,
+                size: 16,
+              ),
+            ),
+          ),
+        ],
+      ),
     ).show();
   }
 }

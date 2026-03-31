@@ -2,7 +2,6 @@ import 'package:iconsax/iconsax.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../../utils/helpers/app_snackbar.dart';
@@ -195,23 +194,29 @@ class DriverProfileController extends GetxController {
 
       if (confirmed != true) return;
 
-      // Loading
       AppDialogs.loading(message: 'Logging out...');
 
-      await Future.delayed(const Duration(milliseconds: 500));
+      // 1. Sign out from Firebase
       await _auth.signOut();
-      if (Get.isDialogOpen ?? false) Get.back();
-      Get.deleteAll(force: true);
-      Get.reset();
+      
+      // 2. Small delay to ensure Firebase state updates
+      await Future.delayed(const Duration(milliseconds: 300));
 
+      // 3. Close the loading dialog
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
+
+      // 4. Navigate to role selection and clear all previous routes
+      Get.offAllNamed('/role');
+      
       AppSnackbar.success('Logged out successfully');
-
-      await Future.delayed(const Duration(milliseconds: 500));
-      SystemNavigator.pop();
     } catch (e) {
-      if (Get.isDialogOpen ?? false) Get.back();
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
       debugPrint(' Logout error: $e');
-      AppSnackbar.error('Logout failed. Please try again.');
+      AppSnackbar.error('Logout failed: ${e.toString()}');
     }
   }
 }

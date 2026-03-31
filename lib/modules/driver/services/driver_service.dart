@@ -45,6 +45,13 @@ class DriverService {
   static Future<void> approveMechanic(String requestId) async {
     final otpCode = _generateSecureOtp();
 
+    // Fetch request data to get mechanicId and driver info
+    final requestDoc = await _firestore
+        .collection('requests')
+        .doc(requestId)
+        .get();
+    final requestData = requestDoc.data();
+
     await _firestore.collection('requests').doc(requestId).update({
       'status': 'accepted',
       'driverApprovedAt': FieldValue.serverTimestamp(),
@@ -52,6 +59,22 @@ class DriverService {
       'verificationAttempts': 0,
       'codeGeneratedAt': FieldValue.serverTimestamp(),
     });
+
+    // Notify the mechanic that the driver approved them
+    if (requestData != null) {
+      final mechanicId = requestData['mechanicId'] as String?;
+      final driverName = requestData['driverName'] ?? 'Driver';
+      final driverPhone = requestData['driverPhone'] ?? '';
+
+      if (mechanicId != null && mechanicId.isNotEmpty) {
+        await NotificationSender.notifyMechanicDriverApproved(
+          requestId: requestId,
+          mechanicId: mechanicId,
+          driverName: driverName,
+          driverPhone: driverPhone,
+        );
+      }
+    }
   }
 
   /// Declines an assigned mechanic and releases the request back to 'open' status.

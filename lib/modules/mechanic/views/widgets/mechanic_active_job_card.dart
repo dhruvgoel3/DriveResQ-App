@@ -105,6 +105,18 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
     }
   }
 
+  /// Current job status
+  String get _jobStatus => widget.job['status'] ?? '';
+
+  /// Whether the mechanic accepted but driver hasn't approved yet
+  bool get _isWaitingForDriverApproval =>
+      widget.isActive && _jobStatus == 'mechanic_accepted';
+
+  /// Whether the driver has approved the mechanic
+  bool get _isDriverApproved =>
+      widget.isActive &&
+      (_jobStatus == 'accepted' || _jobStatus == 'verified');
+
   IconData _problemIcon(String? problem) {
     final p = (problem ?? '').toLowerCase();
     if (p.contains('tire') || p.contains('tyre') || p.contains('flat')) {
@@ -147,6 +159,11 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildHeader(),
+
+              // Driver approval status banner
+              if (_isWaitingForDriverApproval) _buildWaitingForApprovalBanner(),
+              if (_isDriverApproved) _buildDriverApprovedBanner(),
+
               Padding(
                 padding: EdgeInsets.all(16.w),
                 child: Column(
@@ -165,9 +182,12 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                       _buildTimestamp(),
                     ],
                     SizedBox(height: 16.h),
-                    widget.isActive
-                        ? _buildActiveJobButtons()
-                        : _buildOpenRequestButtons(),
+                    if (widget.isActive)
+                      _isWaitingForDriverApproval
+                          ? _buildWaitingButtons()
+                          : _buildActiveJobButtons()
+                    else
+                      _buildOpenRequestButtons(),
                   ],
                 ),
               ),
@@ -178,16 +198,132 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
     );
   }
 
-  // ─── HEADER ───────────────────────────────────────────────
-  Widget _buildHeader() {
+  // ─── WAITING FOR DRIVER APPROVAL BANNER ─────────────────────
+  Widget _buildWaitingForApprovalBanner() {
     return Container(
+      width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: widget.isActive
-              ? [_green, _green.withGreen(180)]
-              : [_orange, _orange.withRed(230)],
+          colors: [
+            _orange.withOpacity(0.08),
+            _orange.withOpacity(0.04),
+          ],
         ),
+        border: Border(
+          bottom: BorderSide(color: _orange.withOpacity(0.15)),
+        ),
+      ),
+      child: Row(
+        children: [
+          _PulsingDot(color: _orange, size: 10.w),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Waiting for Driver Approval",
+                  style: GoogleFonts.poppins(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.orange.shade800,
+                  ),
+                ),
+                SizedBox(height: 2.h),
+                Text(
+                  "The driver is reviewing your profile before confirming.",
+                  style: GoogleFonts.poppins(
+                    fontSize: 11.sp,
+                    color: Colors.orange.shade600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ─── DRIVER APPROVED BANNER ─────────────────────────────────
+  Widget _buildDriverApprovedBanner() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            _green.withOpacity(0.10),
+            _green.withOpacity(0.04),
+          ],
+        ),
+        border: Border(
+          bottom: BorderSide(color: _green.withOpacity(0.2)),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(6.w),
+            decoration: BoxDecoration(
+              color: _green.withOpacity(0.15),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Iconsax.tick_circle, color: _green, size: 18.w),
+          ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Driver Approved You! 🎉",
+                  style: GoogleFonts.poppins(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.green.shade800,
+                  ),
+                ),
+                SizedBox(height: 2.h),
+                Text(
+                  "Head towards the driver's location. You can call or message them.",
+                  style: GoogleFonts.poppins(
+                    fontSize: 11.sp,
+                    color: Colors.green.shade600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ─── HEADER ───────────────────────────────────────────────
+  Widget _buildHeader() {
+    String statusText;
+    List<Color> gradientColors;
+
+    if (_isWaitingForDriverApproval) {
+      statusText = "AWAITING APPROVAL";
+      gradientColors = [_orange, const Color(0xFFF57C00)];
+    } else if (_isDriverApproved) {
+      statusText = _jobStatus == 'verified' ? "IN PROGRESS" : "APPROVED";
+      gradientColors = [_green, const Color(0xFF388E3C)];
+    } else if (widget.isActive) {
+      statusText = "IN PROGRESS";
+      gradientColors = [_green, const Color(0xFF388E3C)];
+    } else {
+      statusText = _isUrgent ? "URGENT" : "OPEN";
+      gradientColors = [_orange, const Color(0xFFF57C00)];
+    }
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: gradientColors),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20.r),
           topRight: Radius.circular(20.r),
@@ -195,7 +331,6 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
       ),
       child: Row(
         children: [
-          // Location
           Icon(Iconsax.location, color: Colors.white, size: 18.w),
           SizedBox(width: 6.w),
           Expanded(
@@ -221,15 +356,14 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (_isUrgent && !widget.isActive)
+                if ((_isUrgent && !widget.isActive) ||
+                    _isWaitingForDriverApproval)
                   _PulsingDot(color: Colors.white, size: 8.w),
-                if (_isUrgent && !widget.isActive) SizedBox(width: 4.w),
+                if ((_isUrgent && !widget.isActive) ||
+                    _isWaitingForDriverApproval)
+                  SizedBox(width: 4.w),
                 Text(
-                  widget.isActive
-                      ? "IN PROGRESS"
-                      : _isUrgent
-                      ? "URGENT"
-                      : "OPEN",
+                  statusText,
                   style: GoogleFonts.poppins(
                     fontSize: 10.sp,
                     fontWeight: FontWeight.bold,
@@ -409,7 +543,9 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                 ],
               ),
             ),
-            if (widget.job['driverPhone'] != null)
+            // Show call button only when driver has approved
+            if (widget.job['driverPhone'] != null &&
+                !_isWaitingForDriverApproval)
               GestureDetector(
                 onTap: _callDriver,
                 child: Container(
@@ -491,7 +627,34 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
     );
   }
 
-  // ─── BUTTONS: ACTIVE JOB ─────────────────────────────────
+  // ─── BUTTONS: WAITING FOR APPROVAL ────────────────────────
+  Widget _buildWaitingButtons() {
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: widget.onCancel,
+            icon: Icon(Iconsax.close_square, size: 18.w),
+            label: Text(
+              "Cancel Request",
+              style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+            ),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: _red,
+              side: BorderSide(color: _red, width: 1.5),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 13.h),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ─── BUTTONS: ACTIVE JOB (DRIVER APPROVED) ────────────────
   Widget _buildActiveJobButtons() {
     return Column(
       children: [
@@ -529,7 +692,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: _red,
-                  side: const BorderSide(color: _red, width: 1.5),
+                  side: BorderSide(color: _red, width: 1.5),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.r),
                   ),
@@ -543,7 +706,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [_green, _green.withGreen(180)],
+                    colors: [_green, const Color(0xFF388E3C)],
                   ),
                   borderRadius: BorderRadius.circular(12.r),
                   boxShadow: [
@@ -588,7 +751,6 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
           child: OutlinedButton.icon(
             onPressed: () {
               HapticFeedback.mediumImpact();
-              // Reject = dismiss from view (no Firestore action needed)
             },
             icon: Icon(Iconsax.close_square, size: 18.w),
             label: Text(
@@ -600,7 +762,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
             ),
             style: OutlinedButton.styleFrom(
               foregroundColor: _red,
-              side: const BorderSide(color: _red, width: 1.5),
+              side: BorderSide(color: _red, width: 1.5),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r),
               ),
@@ -745,7 +907,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
   }
 }
 
-/// Pulsing dot indicator for urgent requests
+/// Pulsing dot indicator for urgent/waiting states
 class _PulsingDot extends StatefulWidget {
   final Color color;
   final double size;

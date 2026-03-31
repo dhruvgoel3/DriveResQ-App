@@ -10,10 +10,11 @@ class VerificationController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  var mechanics = <Map<String, dynamic>>[].obs;
-  var selectedMechanic = Rxn<Map<String, dynamic>>();
+  var applications = <Map<String, dynamic>>[].obs;
+  var selectedApplication = Rxn<Map<String, dynamic>>();
   var isLoading = false.obs;
   var currentFilter = 'pending'.obs;
+  var currentRole = 'mechanic'.obs;
 
   // Review state
   final adminNotesController = TextEditingController();
@@ -53,15 +54,20 @@ class VerificationController extends GetxController {
     super.onClose();
   }
 
-  Future<void> fetchMechanics(String status) async {
+  Future<void> fetchApplications(String status, {String role = 'mechanic'}) async {
     try {
       isLoading.value = true;
       currentFilter.value = status;
+      currentRole.value = role;
+
+      final onboardingField = role == 'mechanic' 
+          ? 'onboardingCompleted' 
+          : 'driverOnboardingCompleted';
 
       Query query = _firestore
           .collection('users')
-          .where('role', isEqualTo: 'mechanic')
-          .where('onboardingCompleted', isEqualTo: true);
+          .where('role', isEqualTo: role)
+          .where(onboardingField, isEqualTo: true);
 
       if (status != 'all') {
         query = query.where('verificationStatus', isEqualTo: status);
@@ -69,16 +75,16 @@ class VerificationController extends GetxController {
 
       final snap = await query.get();
 
-      mechanics.value = snap.docs.map((doc) {
+      applications.value = snap.docs.map((doc) {
         final data = doc.data() as Map<String, dynamic>;
         data['uid'] = doc.id;
         return data;
       }).toList();
 
       // Sort by submission date (newest first)
-      mechanics.sort((a, b) {
-        final aTime = a['onboardingSubmittedAt'] as Timestamp?;
-        final bTime = b['onboardingSubmittedAt'] as Timestamp?;
+      applications.sort((a, b) {
+        final aTime = (a['onboardingSubmittedAt'] ?? a['onboardingCompletedAt']) as Timestamp?;
+        final bTime = (b['onboardingSubmittedAt'] ?? b['onboardingCompletedAt']) as Timestamp?;
         if (aTime == null || bTime == null) return 0;
         return bTime.compareTo(aTime);
       });
@@ -86,18 +92,18 @@ class VerificationController extends GetxController {
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      debugPrint(' Fetch mechanics error: $e');
+      debugPrint(' Fetch applications error: $e');
     }
   }
 
-  Future<void> loadMechanicDetails(String uid) async {
+  Future<void> loadApplicationDetails(String uid) async {
     try {
       isLoading.value = true;
       final doc = await _firestore.collection('users').doc(uid).get();
       if (doc.exists) {
         final data = doc.data()!;
         data['uid'] = doc.id;
-        selectedMechanic.value = data;
+        selectedApplication.value = data;
 
         // Load admin notes
         adminNotesController.text = data['adminNotes'] ?? '';
@@ -110,20 +116,21 @@ class VerificationController extends GetxController {
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      debugPrint(' Load mechanic details error: $e');
+      debugPrint(' Load application details error: $e');
     }
   }
 
   Future<void> approveMechanic(
     String uid,
-    String mechanicName, {
+    String userName, {
     String? welcomeMessage,
   }) async {
     try {
       isLoading.value = true;
       final adminUser = _auth.currentUser;
+      final role = selectedApplication.value?['role'] ?? 'mechanic';
 
-      // Update mechanic status
+      // Update user status
       await _firestore.collection('users').doc(uid).update({
         'verificationStatus': 'approved',
         'reviewedAt': FieldValue.serverTimestamp(),
@@ -135,8 +142,9 @@ class VerificationController extends GetxController {
       await _firestore.collection('adminActions').add({
         'adminId': adminUser?.uid ?? 'unknown',
         'adminEmail': adminUser?.email ?? 'unknown',
-        'mechanicId': uid,
-        'mechanicName': mechanicName,
+        'userId': uid,
+        'userName': userName,
+        'userRole': role,
         'action': 'approved',
         'notes': welcomeMessage ?? '',
         'timestamp': FieldValue.serverTimestamp(),
@@ -144,7 +152,8 @@ class VerificationController extends GetxController {
 
       // 🔔 Notification
       await NotificationSender.notifyVerificationStatus(
-        mechanicId: uid,
+        recipientId: uid,
+        role: role,
         status: 'approved',
         reason: welcomeMessage ?? 'You are good to go!',
       );
@@ -152,12 +161,12 @@ class VerificationController extends GetxController {
       isLoading.value = false;
 
       AppSnackbar.success(
-        '$mechanicName has been approved',
+        '$userName has been approved',
         title: '✅ Approved',
       );
 
       // Refresh list
-      fetchMechanics(currentFilter.value);
+      fetchApplications(currentFilter.value, role: currentRole.value);
     } catch (e) {
       isLoading.value = false;
       debugPrint(' Approve error: $e');
@@ -167,7 +176,7 @@ class VerificationController extends GetxController {
 
   Future<void> rejectMechanic(
     String uid,
-    String mechanicName, {
+    String userName, {
     required String reason,
     String? notes,
     bool allowResubmission = true,
@@ -175,6 +184,7 @@ class VerificationController extends GetxController {
     try {
       isLoading.value = true;
       final adminUser = _auth.currentUser;
+      final role = selectedApplication.value?['role'] ?? 'mechanic';
 
       final currentDoc = await _firestore.collection('users').doc(uid).get();
       final currentCount = currentDoc.data()?['resubmissionCount'] ?? 0;
@@ -193,8 +203,9 @@ class VerificationController extends GetxController {
       await _firestore.collection('adminActions').add({
         'adminId': adminUser?.uid ?? 'unknown',
         'adminEmail': adminUser?.email ?? 'unknown',
-        'mechanicId': uid,
-        'mechanicName': mechanicName,
+        'userId': uid,
+        'userName': userName,
+        'userRole': role,
         'action': 'rejected',
         'reason': reason,
         'notes': notes ?? '',
@@ -204,7 +215,8 @@ class VerificationController extends GetxController {
 
       // 🔔 Notification
       await NotificationSender.notifyVerificationStatus(
-        mechanicId: uid,
+        recipientId: uid,
+        role: role,
         status: 'rejected',
         reason: reason,
       );
@@ -212,11 +224,11 @@ class VerificationController extends GetxController {
       isLoading.value = false;
 
       AppSnackbar.warning(
-        '$mechanicName application rejected',
+        '$userName application rejected',
         title: 'Rejected',
       );
 
-      fetchMechanics(currentFilter.value);
+      fetchApplications(currentFilter.value, role: currentRole.value);
     } catch (e) {
       isLoading.value = false;
       debugPrint(' Reject error: $e');

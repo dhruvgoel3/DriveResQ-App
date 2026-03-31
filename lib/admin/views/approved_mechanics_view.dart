@@ -12,7 +12,7 @@ class ApprovedMechanicsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = Get.find<VerificationController>();
-    c.fetchMechanics('approved');
+    c.fetchApplications('approved');
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
@@ -55,7 +55,7 @@ class ApprovedMechanicsView extends StatelessWidget {
                       );
                     }
 
-                    if (c.mechanics.isEmpty) {
+                    if (c.applications.isEmpty) {
                       return Center(
                         child: Padding(
                           padding: const EdgeInsets.all(60),
@@ -83,19 +83,19 @@ class ApprovedMechanicsView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${c.mechanics.length} mechanic${c.mechanics.length > 1 ? 's' : ''}',
+                          '${c.applications.length} mechanic${c.applications.length > 1 ? 's' : ''}',
                           style: GoogleFonts.poppins(
                             fontSize: 13,
                             color: Colors.grey.shade500,
                           ),
                         ),
                         const SizedBox(height: 16),
-                        ...c.mechanics.map(
+                        ...c.applications.map(
                           (m) => MechanicCard(
                             mechanic: m,
                             actionLabel: 'View Profile',
                             onReview: () {
-                              c.loadMechanicDetails(m['uid']);
+                              c.loadApplicationDetails(m['uid']);
                               Get.toNamed('/admin/review', arguments: m['uid']);
                             },
                           ),

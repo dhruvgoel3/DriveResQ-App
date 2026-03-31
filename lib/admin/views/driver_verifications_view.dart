@@ -6,19 +6,20 @@ import '../controllers/verification_controller.dart';
 import '../widgets/admin_sidebar.dart';
 import '../widgets/mechanic_card.dart';
 
-class PendingVerificationsView extends StatelessWidget {
-  const PendingVerificationsView({super.key});
+class DriverVerificationsView extends StatelessWidget {
+  const DriverVerificationsView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final c = Get.find<VerificationController>();
-    c.fetchApplications('pending');
+    // Fetch specifically for drivers
+    c.fetchApplications('pending', role: 'driver');
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
       body: Row(
         children: [
-          const AdminSidebar(currentRoute: '/admin/pending'),
+          const AdminSidebar(currentRoute: '/admin/drivers-pending'),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(32),
@@ -32,7 +33,7 @@ class PendingVerificationsView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Pending Verifications',
+                            'Driver Verifications',
                             style: GoogleFonts.poppins(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
@@ -41,7 +42,7 @@ class PendingVerificationsView extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Review and approve mechanic applications',
+                            'Review and approve driver identity documents',
                             style: GoogleFonts.poppins(
                               fontSize: 14,
                               color: Colors.grey.shade500,
@@ -50,7 +51,7 @@ class PendingVerificationsView extends StatelessWidget {
                         ],
                       ),
                       ElevatedButton.icon(
-                        onPressed: () => c.fetchApplications('pending'),
+                        onPressed: () => c.fetchApplications('pending', role: 'driver'),
                         icon: const Icon(Iconsax.refresh, size: 18),
                         label: Text(
                           'Refresh',
@@ -90,7 +91,7 @@ class PendingVerificationsView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${c.applications.length} application${c.applications.length > 1 ? 's' : ''} pending',
+                          '${c.applications.length} driver application${c.applications.length > 1 ? 's' : ''} pending',
                           style: GoogleFonts.poppins(
                             fontSize: 13,
                             color: Colors.grey.shade500,
@@ -100,8 +101,9 @@ class PendingVerificationsView extends StatelessWidget {
                         const SizedBox(height: 16),
                         ...c.applications.map(
                           (m) => MechanicCard(
+                            // Reusing MechanicCard as it's generic enough for now (shows name, email, etc.)
                             mechanic: m,
-                            actionLabel: 'Review Application',
+                            actionLabel: 'Review Identity',
                             onReview: () {
                               c.loadApplicationDetails(m['uid']);
                               Get.toNamed('/admin/review', arguments: m['uid']);
@@ -126,10 +128,10 @@ class PendingVerificationsView extends StatelessWidget {
         padding: const EdgeInsets.all(60),
         child: Column(
           children: [
-            Icon(Iconsax.tick_circle, size: 72, color: Colors.green.shade300),
+            Icon(Iconsax.verify, size: 72, color: Colors.indigo.shade200),
             const SizedBox(height: 16),
             Text(
-              'All caught up! 🎉',
+              'No pending drivers! 🚗',
               style: GoogleFonts.poppins(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
@@ -138,7 +140,7 @@ class PendingVerificationsView extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'No pending verifications at the moment.',
+              'All driver applications have been processed.',
               style: GoogleFonts.poppins(
                 fontSize: 14,
                 color: Colors.grey.shade400,

@@ -57,12 +57,8 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
         elevation: 0,
         title: Row(
           children: [
-            Image.asset(
-              "assets/—Pngtree—vector car repair tools illustration_5458319.png",
-              height: 30.h,
-              width: 30.w,
-            ),
-            SizedBox(width: 10.w),
+
+            SizedBox(width: 5.w),
             Text(
               "DriveResQ",
               style: GoogleFonts.poppins(
