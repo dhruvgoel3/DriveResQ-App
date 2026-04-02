@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import '../../chat/services/chat_service.dart';
 import '../../notifications/services/notification_sender.dart';
 import '../../../shared/services/connectivity_service.dart';
+import '../../../utils/helpers/throttle_helper.dart';
 
 /// A comprehensive service handling all core logic for the Mechanic's operations.
 ///
@@ -25,98 +26,103 @@ class MechanicService {
   /// Throws an [Exception] if the user is unauthorized, already has a job,
   /// or if the request is invalid/taken.
   static Future<void> acceptRequest(String requestId, bool hasActiveJob) async {
-    // 1. Pre-flight checks
-    await ConnectivityService.requireConnection();
+    await ThrottleHelper.asyncAction('accept_req_$requestId', () async {
+      // 1. Pre-flight checks
+      await ConnectivityService.requireConnection();
 
-    final user = _auth.currentUser;
-    if (user == null) {
-      throw Exception('Unauthenticated: Please log in to accept requests.');
-    }
-    if (hasActiveJob) {
-      throw Exception('Action Denied: You already have an active request.');
-    }
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw Exception('Unauthenticated: Please log in to accept requests.');
+      }
+      if (hasActiveJob) {
+        throw Exception('Action Denied: You already have an active request.');
+      }
 
-    // Attempt to pull the phone from Auth. If absent, it will be pulled from Firestore.
-    String? mechanicPhone = user.phoneNumber;
-    final mechanicDocContent = await _firestore
-        .collection('users')
-        .doc(user.uid)
-        .get();
-    final mechanicData = mechanicDocContent.data() ?? {};
+      // Attempt to pull the phone from Auth. If absent, it will be pulled from Firestore.
+      String? mechanicPhone = user.phoneNumber;
+      final mechanicDocContent = await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      final mechanicData = mechanicDocContent.data() ?? {};
 
-    mechanicPhone ??= mechanicData['phone'];
-    if (mechanicPhone == null || mechanicPhone.isEmpty) {
-      throw Exception('Missing Data: Phone number is required to accept jobs.');
-    }
+      mechanicPhone ??= mechanicData['phone'];
+      if (mechanicPhone == null || mechanicPhone.isEmpty) {
+        throw Exception('Missing Data: Phone number is required to accept jobs.');
+      }
 
-    // 2. Request validation
-    final requestDoc = await _firestore
-        .collection('requests')
-        .doc(requestId)
-        .get();
-    if (!requestDoc.exists) {
-      throw Exception('Not Found: This request no longer exists.');
-    }
+      // 2. Request validation
+      final requestDoc = await _firestore
+          .collection('requests')
+          .doc(requestId)
+          .get();
+      if (!requestDoc.exists) {
+        throw Exception('Not Found: This request no longer exists.');
+      }
 
-    final requestData = requestDoc.data();
-    if (requestData == null || requestData['status'] != 'open') {
-      throw Exception(
-        'Too Late: This request has already been accepted or closed.',
+      final requestData = requestDoc.data();
+      if (requestData == null || requestData['status'] != 'open') {
+        throw Exception(
+          'Too Late: This request has already been accepted or closed.',
+        );
+      }
+
+      if (requestData['driverLat'] == null ||
+          requestData['driverPhone'] == null) {
+        throw Exception(
+          'Data Error: The request has incomplete driver information.',
+        );
+      }
+
+      // 3. Mark request as accepted
+      await _firestore.collection('requests').doc(requestId).update({
+        'status': 'mechanic_accepted',
+        'mechanicId': user.uid,
+        'mechanicPhone': mechanicPhone,
+        'acceptedAt': FieldValue.serverTimestamp(),
+      });
+
+      // 4. Fire-and-forget background tasks (Chat & Notifications)
+      _initializePostAcceptanceTasks(
+        requestId: requestId,
+        mechanicId: user.uid,
+        mechanicPhone: mechanicPhone,
+        mechanicData: mechanicData,
+        requestData: requestData,
       );
-    }
-
-    if (requestData['driverLat'] == null ||
-        requestData['driverPhone'] == null) {
-      throw Exception(
-        'Data Error: The request has incomplete driver information.',
-      );
-    }
-
-    // 3. Mark request as accepted
-    await _firestore.collection('requests').doc(requestId).update({
-      'status': 'mechanic_accepted',
-      'mechanicId': user.uid,
-      'mechanicPhone': mechanicPhone,
-      'acceptedAt': FieldValue.serverTimestamp(),
-    });
-
-    // 4. Fire-and-forget background tasks (Chat & Notifications)
-    _initializePostAcceptanceTasks(
-      requestId: requestId,
-      mechanicId: user.uid,
-      mechanicPhone: mechanicPhone,
-      mechanicData: mechanicData,
-      requestData: requestData,
-    );
+    })();
   }
 
   /// Safely cancels an active job, resets the request, and notifies the driver.
   static Future<void> cancelActiveJob(Map<String, dynamic> activeJob) async {
-    await ConnectivityService.requireConnection();
     final jobId = activeJob['id'];
     if (jobId == null) return;
+    
+    await ThrottleHelper.asyncAction('cancel_job_$jobId', () async {
+      await ConnectivityService.requireConnection();
 
-    // Reset the request fields to make it available again
-    await _firestore.collection('requests').doc(jobId).update({
-      'status': 'open',
-      'mechanicId': FieldValue.delete(),
-      'mechanicPhone': FieldValue.delete(),
-      'acceptedAt': FieldValue.delete(),
-      'verificationCode': FieldValue.delete(),
-      'verificationAttempts': FieldValue.delete(),
-      'codeGeneratedAt': FieldValue.delete(),
-    });
+      // Reset the request fields to make it available again
+      await _firestore.collection('requests').doc(jobId).update({
+        'status': 'open',
+        'mechanicId': FieldValue.delete(),
+        'mechanicPhone': FieldValue.delete(),
+        'acceptedAt': FieldValue.delete(),
+        'verificationCode': FieldValue.delete(),
+        'verificationAttempts': FieldValue.delete(),
+        'codeGeneratedAt': FieldValue.delete(),
+      });
 
-    // Notify the driver
-    final driverId = activeJob['driverId'];
-    if (driverId != null) {
-      await NotificationSender.notifyRequestCancelled(
-        requestId: jobId,
-        recipientId: driverId,
-        reason:
-            'Mechanic cancelled the request. You can wait for another mechanic.',
-      );
-    }
+      // Notify the driver
+      final driverId = activeJob['driverId'];
+      if (driverId != null) {
+        await NotificationSender.notifyRequestCancelled(
+          requestId: jobId,
+          recipientId: driverId,
+          reason:
+              'Mechanic cancelled the request. You can wait for another mechanic.',
+        );
+      }
+    })();
   }
 
   /// Marks a job as completed and immediately notifies the driver.
@@ -124,25 +130,27 @@ class MechanicService {
     final jobId = activeJob['id'];
     if (jobId == null) return;
 
-    // Mark completed
-    await _firestore.collection('requests').doc(jobId).update({
-      'status': 'completed',
-      'completedAt': FieldValue.serverTimestamp(),
-    });
+    await ThrottleHelper.asyncAction('complete_job_$jobId', () async {
+      // Mark completed
+      await _firestore.collection('requests').doc(jobId).update({
+        'status': 'completed',
+        'completedAt': FieldValue.serverTimestamp(),
+      });
 
-    // Notify driver
-    final driverId = activeJob['driverId'];
-    if (driverId != null) {
-      final user = _auth.currentUser;
-      final mechName = user?.displayName ?? 'Your Mechanic';
+      // Notify driver
+      final driverId = activeJob['driverId'];
+      if (driverId != null) {
+        final user = _auth.currentUser;
+        final mechName = user?.displayName ?? 'Your Mechanic';
 
-      await NotificationSender.notifyDriverJobCompleted(
-        requestId: jobId,
-        driverId: driverId,
-        mechanicName: mechName,
-        totalAmount: 0.0,
-      );
-    }
+        await NotificationSender.notifyDriverJobCompleted(
+          requestId: jobId,
+          driverId: driverId,
+          mechanicName: mechName,
+          totalAmount: 0.0,
+        );
+      }
+    })();
   }
 
   // ---------------------------------------------------------------------------

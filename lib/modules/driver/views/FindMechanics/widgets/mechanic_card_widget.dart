@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../controllers/favorites_controller.dart';
 import '../mechanic_profile_detail_view.dart';
@@ -77,7 +78,7 @@ class MechanicCardWidget extends StatelessWidget {
                       ),
                       image: profilePhoto.isNotEmpty
                           ? DecorationImage(
-                              image: NetworkImage(profilePhoto),
+                              image: CachedNetworkImageProvider(profilePhoto),
                               fit: BoxFit.cover,
                             )
                           : null,

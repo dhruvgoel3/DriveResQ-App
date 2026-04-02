@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'review_helpers.dart';
 
 class ProfessionalTab extends StatelessWidget {
@@ -61,11 +62,12 @@ class ProfessionalTab extends StatelessWidget {
           const SizedBox(height: 8),
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              mechanicData['shopPhotoUrl'],
+            child: CachedNetworkImage(
+              imageUrl: mechanicData['shopPhotoUrl'],
               width: 400,
               height: 250,
               fit: BoxFit.cover,
+              placeholder: (c,u) => Container(width: 400, height: 250, color: Colors.grey.shade200, child: const Center(child: CircularProgressIndicator())),
             ),
           ),
         ],

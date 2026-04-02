@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
@@ -133,7 +134,7 @@ class HistoryDrawer extends StatelessWidget {
                       radius: 28.r,
                       backgroundColor: Colors.white.withOpacity(0.25),
                       backgroundImage: photoUrl.isNotEmpty
-                          ? NetworkImage(photoUrl)
+                          ? CachedNetworkImageProvider(photoUrl)
                           : null,
                       child: photoUrl.isEmpty
                           ? Icon(Iconsax.user, size: 28.w, color: Colors.white)

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../controllers/chat_controller.dart';
 import '../models/message_model.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class MessageBubble extends StatelessWidget {
   final MessageModel message;
@@ -166,22 +167,19 @@ class MessageBubble extends StatelessWidget {
                   ),
                   child: GestureDetector(
                     onTap: () => _showFullImage(context),
-                    child: Image.network(
-                      message.imageUrl ?? '',
+                    child: CachedNetworkImage(
+                      imageUrl: message.imageUrl ?? '',
                       width: 240.w,
                       height: 180.h,
                       fit: BoxFit.cover,
-                      loadingBuilder: (_, child, progress) {
-                        if (progress == null) return child;
-                        return SizedBox(
-                          height: 180.h,
-                          width: 240.w,
-                          child: const Center(
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                        );
-                      },
-                      errorBuilder: (_, __, ___) => SizedBox(
+                      placeholder: (context, url) => SizedBox(
+                        height: 180.h,
+                        width: 240.w,
+                        child: const Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => SizedBox(
                         height: 100.h,
                         child: Center(
                           child: Icon(
@@ -419,7 +417,7 @@ class MessageBubble extends StatelessWidget {
         backgroundColor: Colors.transparent,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(12.r),
-          child: Image.network(message.imageUrl!, fit: BoxFit.contain),
+          child: CachedNetworkImage(imageUrl: message.imageUrl!, fit: BoxFit.contain),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'review_helpers.dart';
 
 class PersonalTab extends StatelessWidget {
@@ -24,11 +25,12 @@ class PersonalTab extends StatelessWidget {
           const SizedBox(height: 8),
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              mechanicData['profilePhotoUrl'],
+            child: CachedNetworkImage(
+              imageUrl: mechanicData['profilePhotoUrl'],
               width: 200,
               height: 200,
               fit: BoxFit.cover,
+              placeholder: (c,u) => Container(width: 200, height: 200, color: Colors.grey.shade200, child: const Center(child: CircularProgressIndicator())),
             ),
           ),
         ],

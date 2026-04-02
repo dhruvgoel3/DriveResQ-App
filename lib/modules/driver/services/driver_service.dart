@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../notifications/services/notification_sender.dart';
+import '../../../utils/helpers/throttle_helper.dart';
 
 /// A service that manages all driver-side operations and interactions with mechanics.
 ///
@@ -17,25 +18,27 @@ class DriverService {
   ///
   /// The status is set to 'cancelled', and a cancellation timestamp is recorded.
   static Future<void> cancelActiveRequest(String requestId) async {
-    final snapshot = await _firestore
-        .collection('requests')
-        .doc(requestId)
-        .get();
-    final data = snapshot.data();
-    final mechanicId = data?['mechanicId'];
+    await ThrottleHelper.asyncAction('cancel_$requestId', () async {
+      final snapshot = await _firestore
+          .collection('requests')
+          .doc(requestId)
+          .get();
+      final data = snapshot.data();
+      final mechanicId = data?['mechanicId'];
 
-    await _firestore.collection('requests').doc(requestId).update({
-      'status': 'cancelled',
-      'cancelledAt': FieldValue.serverTimestamp(),
-    });
+      await _firestore.collection('requests').doc(requestId).update({
+        'status': 'cancelled',
+        'cancelledAt': FieldValue.serverTimestamp(),
+      });
 
-    if (mechanicId != null) {
-      await NotificationSender.notifyRequestCancelled(
-        requestId: requestId,
-        recipientId: mechanicId,
-        reason: 'The driver cancelled the rescue request.',
-      );
-    }
+      if (mechanicId != null) {
+        await NotificationSender.notifyRequestCancelled(
+          requestId: requestId,
+          recipientId: mechanicId,
+          reason: 'The driver cancelled the rescue request.',
+        );
+      }
+    })();
   }
 
   /// Finalizes the choice of a mechanic by generating a verification OTP.
@@ -43,38 +46,43 @@ class DriverService {
   /// This moves the request status to 'accepted', which triggers the mechanic's
   /// navigation to the driver's location.
   static Future<void> approveMechanic(String requestId) async {
-    final otpCode = _generateSecureOtp();
+    await ThrottleHelper.asyncAction('approve_mech_$requestId', () async {
+      final otpCode = _generateSecureOtp();
 
-    // Fetch request data to get mechanicId and driver info
-    final requestDoc = await _firestore
-        .collection('requests')
-        .doc(requestId)
-        .get();
-    final requestData = requestDoc.data();
+      // Fetch request data to get mechanicId and driver info
+      final requestDoc = await _firestore
+          .collection('requests')
+          .doc(requestId)
+          .get();
+      final requestData = requestDoc.data();
 
-    await _firestore.collection('requests').doc(requestId).update({
-      'status': 'accepted',
-      'driverApprovedAt': FieldValue.serverTimestamp(),
-      'verificationCode': otpCode,
-      'verificationAttempts': 0,
-      'codeGeneratedAt': FieldValue.serverTimestamp(),
-    });
+      // Ensure not already accepted
+      if (requestData?['status'] == 'accepted') return;
 
-    // Notify the mechanic that the driver approved them
-    if (requestData != null) {
-      final mechanicId = requestData['mechanicId'] as String?;
-      final driverName = requestData['driverName'] ?? 'Driver';
-      final driverPhone = requestData['driverPhone'] ?? '';
+      await _firestore.collection('requests').doc(requestId).update({
+        'status': 'accepted',
+        'driverApprovedAt': FieldValue.serverTimestamp(),
+        'verificationCode': otpCode,
+        'verificationAttempts': 0,
+        'codeGeneratedAt': FieldValue.serverTimestamp(),
+      });
 
-      if (mechanicId != null && mechanicId.isNotEmpty) {
-        await NotificationSender.notifyMechanicDriverApproved(
-          requestId: requestId,
-          mechanicId: mechanicId,
-          driverName: driverName,
-          driverPhone: driverPhone,
-        );
+      // Notify the mechanic that the driver approved them
+      if (requestData != null) {
+        final mechanicId = requestData['mechanicId'] as String?;
+        final driverName = requestData['driverName'] ?? 'Driver';
+        final driverPhone = requestData['driverPhone'] ?? '';
+
+        if (mechanicId != null && mechanicId.isNotEmpty) {
+          await NotificationSender.notifyMechanicDriverApproved(
+            requestId: requestId,
+            mechanicId: mechanicId,
+            driverName: driverName,
+            driverPhone: driverPhone,
+          );
+        }
       }
-    }
+    })();
   }
 
   /// Declines an assigned mechanic and releases the request back to 'open' status.

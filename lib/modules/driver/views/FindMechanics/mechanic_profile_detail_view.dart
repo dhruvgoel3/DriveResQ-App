@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../controllers/favorites_controller.dart';
 import '../HomePage/create_request_view.dart';
@@ -78,8 +79,8 @@ class MechanicProfileDetailView extends StatelessWidget {
             ],
             flexibleSpace: FlexibleSpaceBar(
               background: profilePhoto.isNotEmpty
-                  ? Image.network(
-                      profilePhoto,
+                  ? CachedNetworkImage(
+                      imageUrl: profilePhoto,
                       fit: BoxFit.cover,
                       color: Colors.black.withOpacity(0.3),
                       colorBlendMode: BlendMode.darken,

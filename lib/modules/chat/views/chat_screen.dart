@@ -6,6 +6,7 @@ import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../controllers/chat_controller.dart';
 import '../widgets/message_bubble.dart';
@@ -125,7 +126,7 @@ class _ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
           CircleAvatar(
             radius: 18.r,
             backgroundImage: controller.otherUserPhoto.isNotEmpty
-                ? NetworkImage(controller.otherUserPhoto)
+                ? CachedNetworkImageProvider(controller.otherUserPhoto)
                 : null,
             backgroundColor: AppColors.surface.withOpacity(0.24),
             child: controller.otherUserPhoto.isEmpty

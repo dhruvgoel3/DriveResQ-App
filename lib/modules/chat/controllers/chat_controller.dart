@@ -11,6 +11,7 @@ import '../models/message_model.dart';
 import '../services/chat_service.dart';
 import '../../../shared/services/error_handler.dart';
 import '../../../utils/helpers/app_snackbar.dart';
+import '../../../utils/helpers/throttle_helper.dart';
 
 class ChatController extends GetxController {
   final String chatId;
@@ -123,24 +124,26 @@ class ChatController extends GetxController {
 
   // ─── Send text message ───
   Future<void> sendMessage() async {
-    final text = textController.text.trim();
-    if (text.isEmpty) return;
+    await ThrottleHelper.asyncAction('send_msg_$chatId', () async {
+      final text = textController.text.trim();
+      if (text.isEmpty) return;
 
-    textController.clear();
-    isSending.value = true;
+      textController.clear();
+      isSending.value = true;
 
-    try {
-      await ChatService.sendMessage(
-        chatId: chatId,
-        content: text,
-        senderRole: myRole,
-      );
-    } catch (e) {
-      debugPrint(' Send error: $e');
-      ErrorHandler.handle(e);
-    }
+      try {
+        await ChatService.sendMessage(
+          chatId: chatId,
+          content: text,
+          senderRole: myRole,
+        );
+      } catch (e) {
+        debugPrint(' Send error: $e');
+        ErrorHandler.handle(e);
+      }
 
-    isSending.value = false;
+      isSending.value = false;
+    })();
   }
 
   // ─── Send quick reply ───

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../controller/mechanic_profile_controller.dart';
 
@@ -179,7 +180,7 @@ class MechanicProfileView extends StatelessWidget {
   ImageProvider? _profileImage(Map<String, dynamic> data) {
     final url = data['profilePhotoUrl'] ?? data['photoUrl'];
     if (url != null && url.toString().isNotEmpty) {
-      return NetworkImage(url);
+      return CachedNetworkImageProvider(url);
     }
     return null;
   }
@@ -340,11 +341,16 @@ class MechanicProfileView extends StatelessWidget {
                         SizedBox(height: 6.h),
                         ClipRRect(
                           borderRadius: BorderRadius.circular(10.r),
-                          child: Image.network(
-                            data['shopPhotoUrl'],
+                          child: CachedNetworkImage(
+                            imageUrl: data['shopPhotoUrl'],
                             height: 100.h,
                             width: double.infinity,
                             fit: BoxFit.cover,
+                            placeholder: (context, url) => Container(
+                              height: 100.h,
+                              color: Colors.grey.shade200,
+                              child: const Center(child: CircularProgressIndicator()),
+                            ),
                           ),
                         ),
                       ],

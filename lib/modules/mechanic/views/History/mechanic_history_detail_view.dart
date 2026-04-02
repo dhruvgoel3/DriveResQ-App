@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../../shared/widgets/history_invoice_viewer.dart';
 
@@ -230,7 +231,7 @@ class MechanicHistoryDetailView extends StatelessWidget {
               CircleAvatar(
                 radius: 24.r,
                 backgroundColor: AppColors.primary.withOpacity(0.15),
-                backgroundImage: photo.isNotEmpty ? NetworkImage(photo) : null,
+                backgroundImage: photo.isNotEmpty ? CachedNetworkImageProvider(photo) : null,
                 child: photo.isEmpty
                     ? const Icon(Iconsax.user, color: AppColors.primary)
                     : null,

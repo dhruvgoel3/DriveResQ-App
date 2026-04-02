@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../controllers/verification_controller.dart';
 import '../widgets/review_tabs/decision_dialogs.dart';
 import '../widgets/review_tabs/personal_tab.dart';
@@ -121,7 +122,7 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
           CircleAvatar(
             radius: 30,
             backgroundColor: const Color(0xFFFF9800).withOpacity(0.1),
-            backgroundImage: photo.isNotEmpty ? NetworkImage(photo) : null,
+            backgroundImage: photo.isNotEmpty ? CachedNetworkImageProvider(photo) : null,
             child: photo.isEmpty
                 ? Text(
                     name[0].toUpperCase(),

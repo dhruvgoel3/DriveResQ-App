@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'review_helpers.dart';
 
 class DocumentsTab extends StatelessWidget {
@@ -139,26 +140,19 @@ class DocumentsTab extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                url,
+              child: CachedNetworkImage(
+                imageUrl: url,
                 fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Container(
-                    color: Colors.grey.shade50,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                            : null,
-                        strokeWidth: 2,
-                        color: const Color(0xFFFF9800),
-                      ),
+                placeholder: (context, url) => Container(
+                  color: Colors.grey.shade50,
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Color(0xFFFF9800),
                     ),
-                  );
-                },
-                errorBuilder: (_, __, ___) => Container(
+                  ),
+                ),
+                errorWidget: (context, url, error) => Container(
                   color: Colors.grey.shade100,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -224,7 +218,7 @@ class DocumentsTab extends StatelessWidget {
                 child: InteractiveViewer(
                   minScale: 0.5,
                   maxScale: 4.0,
-                  child: Image.network(url, fit: BoxFit.contain),
+                  child: CachedNetworkImage(imageUrl: url, fit: BoxFit.contain),
                 ),
               ),
               const SizedBox(height: 16),
