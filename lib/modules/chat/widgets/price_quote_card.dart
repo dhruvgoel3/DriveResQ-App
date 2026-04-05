@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/message_model.dart';
 import '../controllers/chat_controller.dart';
+import 'package:driveresq_app/theme/app_colors.dart';
+import 'package:driveresq_app/theme/app_text_styles.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:driveresq_app/utils/helpers/app_dialogs.dart';
 
@@ -74,8 +76,7 @@ class PriceQuoteCard extends StatelessWidget {
                   SizedBox(width: 8.w),
                   Text(
                     'Service Estimate',
-                    style: GoogleFonts.poppins(
-                      fontSize: 13.sp,
+                    style: AppTextStyles.body2.copyWith(
                       fontWeight: FontWeight.w600,
                       color: _statusColor(status),
                     ),
@@ -95,15 +96,13 @@ class PriceQuoteCard extends StatelessWidget {
                   if (service.isNotEmpty) ...[
                     Text(
                       'Service',
-                      style: GoogleFonts.poppins(
-                        fontSize: 10.sp,
-                        color: Colors.grey.shade500,
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.textHint,
                       ),
                     ),
                     Text(
                       service,
-                      style: GoogleFonts.poppins(
-                        fontSize: 14.sp,
+                      style: AppTextStyles.body2.copyWith(
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -118,17 +117,14 @@ class PriceQuoteCard extends StatelessWidget {
                         children: [
                           Text(
                             'Estimated Cost',
-                            style: GoogleFonts.poppins(
-                              fontSize: 10.sp,
-                              color: Colors.grey.shade500,
+                            style: AppTextStyles.caption.copyWith(
+                              color: AppColors.textHint,
                             ),
                           ),
                           Text(
                             '₹${cost.toStringAsFixed(0)}',
-                            style: GoogleFonts.poppins(
-                              fontSize: 24.sp,
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xFF4CAF50),
+                            style: AppTextStyles.h1.copyWith(
+                              color: AppColors.success,
                             ),
                           ),
                         ],
@@ -140,15 +136,13 @@ class PriceQuoteCard extends StatelessWidget {
                           children: [
                             Text(
                               'Time',
-                              style: GoogleFonts.poppins(
-                                fontSize: 10.sp,
-                                color: Colors.grey.shade500,
+                              style: AppTextStyles.caption.copyWith(
+                                color: AppColors.textHint,
                               ),
                             ),
                             Text(
                               time,
-                              style: GoogleFonts.poppins(
-                                fontSize: 14.sp,
+                              style: AppTextStyles.body2.copyWith(
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -162,9 +156,8 @@ class PriceQuoteCard extends StatelessWidget {
                     SizedBox(height: 10.h),
                     Text(
                       'Parts Needed',
-                      style: GoogleFonts.poppins(
-                        fontSize: 10.sp,
-                        color: Colors.grey.shade500,
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.textHint,
                       ),
                     ),
                     SizedBox(height: 4.h),
@@ -197,9 +190,8 @@ class PriceQuoteCard extends StatelessWidget {
                     SizedBox(height: 8.h),
                     Text(
                       notes,
-                      style: GoogleFonts.poppins(
-                        fontSize: 12.sp,
-                        color: Colors.grey.shade600,
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.textSecondary,
                         fontStyle: FontStyle.italic,
                       ),
                     ),
@@ -224,10 +216,9 @@ class PriceQuoteCard extends StatelessWidget {
                           SizedBox(width: 6.w),
                           Text(
                             'Counter: ₹${counterOffer.toStringAsFixed(0)}',
-                            style: GoogleFonts.poppins(
-                              fontSize: 13.sp,
+                            style: AppTextStyles.body2.copyWith(
                               fontWeight: FontWeight.w600,
-                              color: Colors.orange,
+                              color: AppColors.warning,
                             ),
                           ),
                         ],
@@ -255,8 +246,7 @@ class PriceQuoteCard extends StatelessWidget {
                             ),
                             child: Text(
                               'Reject',
-                              style: GoogleFonts.poppins(
-                                fontSize: 12.sp,
+                              style: AppTextStyles.caption.copyWith(
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -276,8 +266,7 @@ class PriceQuoteCard extends StatelessWidget {
                             ),
                             child: Text(
                               'Negotiate',
-                              style: GoogleFonts.poppins(
-                                fontSize: 12.sp,
+                              style: AppTextStyles.caption.copyWith(
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -301,8 +290,7 @@ class PriceQuoteCard extends StatelessWidget {
                             ),
                             child: Text(
                               'Accept',
-                              style: GoogleFonts.poppins(
-                                fontSize: 12.sp,
+                              style: AppTextStyles.caption.copyWith(
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -358,13 +346,13 @@ class PriceQuoteCard extends StatelessWidget {
   Color _statusColor(String status) {
     switch (status) {
       case 'accepted':
-        return const Color(0xFF4CAF50);
+        return AppColors.success;
       case 'rejected':
-        return Colors.red;
+        return AppColors.error;
       case 'negotiated':
-        return Colors.orange;
+        return AppColors.warning;
       default:
-        return const Color(0xFF6C63FF);
+        return AppColors.primary;
     }
   }
 
@@ -391,8 +379,7 @@ class PriceQuoteCard extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: GoogleFonts.poppins(
-          fontSize: 10.sp,
+        style: AppTextStyles.caption.copyWith(
           fontWeight: FontWeight.w600,
           color: _statusColor(status),
         ),

@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../controllers/auth_controller.dart';
+
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/theme/app_colors.dart';
 
 class OnboardingView extends StatefulWidget {
   const OnboardingView({super.key});
@@ -78,8 +79,7 @@ class _OnboardingViewState extends State<OnboardingView>
     await prefs.setBool('hasSeenOnboarding', true);
 
     if (role != null) {
-      Get.put(AuthController()).selectRole(role);
-      Get.offAllNamed('/login');
+      Get.offAllNamed('/login', arguments: {'role': role});
     } else {
       Get.offAllNamed('/role');
     }
@@ -180,7 +180,7 @@ class _OnboardingViewState extends State<OnboardingView>
                 height: 8.h,
                 decoration: BoxDecoration(
                   color: isActive
-                      ? const Color(0xFF6C63FF)
+                      ? AppColors.primary
                       : Colors.grey.shade300,
                   borderRadius: BorderRadius.circular(4.r),
                 ),
@@ -195,14 +195,14 @@ class _OnboardingViewState extends State<OnboardingView>
             onTap: _nextPage,
             child: Container(
               padding: EdgeInsets.all(14.w),
-              decoration: const BoxDecoration(
-                color: Color(0xFF6C63FF),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Color(0x406C63FF),
+                    color: AppColors.primaryLight.withOpacity(0.4),
                     blurRadius: 12,
-                    offset: Offset(0, 4),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -222,22 +222,41 @@ class _OnboardingViewState extends State<OnboardingView>
       opacity: _fadeAnimations[0],
       child: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF6C63FF), Color(0xFF8B7CFF)],
-          ),
+          gradient: AppColors.primaryGradient,
         ),
         child: SafeArea(
           child: Column(
             children: [
               const Spacer(flex: 2),
-              // Animated illustration
-              _animatedIcon(
-                Iconsax.car,
-                120,
-                Colors.white,
-                bgColor: Colors.white.withOpacity(0.15),
+              // Animated logo illustration
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.5, end: 1.0),
+                duration: const Duration(milliseconds: 800),
+                curve: Curves.elasticOut,
+                builder: (_, val, child) =>
+                    Transform.scale(scale: val, child: child),
+                child: Container(
+                  width: 140.w,
+                  height: 140.h,
+                  padding: EdgeInsets.all(20.w),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.15),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.2),
+                        blurRadius: 30,
+                        spreadRadius: 5,
+                      ),
+                    ],
+                  ),
+                  child: Image.asset(
+                    'assets/logo.png',
+                    color: Colors.white,
+                    colorBlendMode: BlendMode.srcIn,
+                    fit: BoxFit.contain,
+                  ),
+                ),
               ),
               SizedBox(height: 40.h),
               Text(
@@ -287,7 +306,7 @@ class _OnboardingViewState extends State<OnboardingView>
       opacity: _fadeAnimations[1],
       child: _whiteSlide(
         icon: Iconsax.location,
-        iconColor: const Color(0xFF2196F3),
+        iconColor: AppColors.info,
         title: 'Stuck on the Road?',
         subtitle: 'Create a request and find nearby mechanics instantly',
         features: [
@@ -307,7 +326,7 @@ class _OnboardingViewState extends State<OnboardingView>
       opacity: _fadeAnimations[2],
       child: _whiteSlide(
         icon: Iconsax.setting_2,
-        iconColor: const Color(0xFFFF9800),
+        iconColor: AppColors.mechanicPrimary,
         title: 'Grow Your Business',
         subtitle: 'Get instant job requests in your area',
         features: [
@@ -327,7 +346,7 @@ class _OnboardingViewState extends State<OnboardingView>
       opacity: _fadeAnimations[3],
       child: _whiteSlide(
         icon: Iconsax.shield,
-        iconColor: const Color(0xFF4CAF50),
+        iconColor: AppColors.success,
         title: 'Safe & Secure',
         subtitle: 'Verified mechanics, secure payments, 24/7 support',
         features: [
@@ -376,7 +395,7 @@ class _OnboardingViewState extends State<OnboardingView>
                   icon: Iconsax.car,
                   title: 'I need help',
                   subtitle: 'Find a mechanic near you',
-                  color: const Color(0xFF2196F3),
+                  color: AppColors.info,
                   onTap: () => _completeOnboarding(role: 'driver'),
                 ),
                 SizedBox(height: 16.h),
@@ -386,7 +405,7 @@ class _OnboardingViewState extends State<OnboardingView>
                   icon: Iconsax.setting_2,
                   title: "I'm a mechanic",
                   subtitle: 'Help drivers & earn money',
-                  color: const Color(0xFFFF9800),
+                  color: AppColors.mechanicPrimary,
                   onTap: () => _completeOnboarding(role: 'mechanic'),
                 ),
 
@@ -404,7 +423,7 @@ class _OnboardingViewState extends State<OnboardingView>
                       height: 8.h,
                       decoration: BoxDecoration(
                         color: isActive
-                            ? const Color(0xFF6C63FF)
+                            ? AppColors.primary
                             : Colors.grey.shade300,
                         borderRadius: BorderRadius.circular(4.r),
                       ),
@@ -544,10 +563,10 @@ class _OnboardingViewState extends State<OnboardingView>
           Container(
             padding: EdgeInsets.all(10.w),
             decoration: BoxDecoration(
-              color: const Color(0xFF6C63FF).withOpacity(0.08),
+              color: AppColors.primary.withOpacity(0.08),
               borderRadius: BorderRadius.circular(10.r),
             ),
-            child: Icon(icon, color: const Color(0xFF6C63FF), size: 20.w),
+            child: Icon(icon, color: AppColors.primary, size: 20.w),
           ),
           SizedBox(width: 14.w),
           Text(

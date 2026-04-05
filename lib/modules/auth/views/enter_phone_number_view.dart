@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../controllers/auth_controller.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:driveresq_app/utils/helpers/form_validators.dart';
+import 'package:driveresq_app/theme/app_colors.dart';
 
 class PhoneNumberView extends StatefulWidget {
   const PhoneNumberView({super.key});
@@ -15,9 +16,6 @@ class PhoneNumberView extends StatefulWidget {
 }
 
 class _PhoneNumberViewState extends State<PhoneNumberView> {
-  static const _primary = Color(0xFF6C63FF);
-  static const _green = Color(0xFF4CAF50);
-  static const _red = Color(0xFFF44336);
 
   String? _phoneError;
   bool _hasInteracted = false;
@@ -53,8 +51,8 @@ class _PhoneNumberViewState extends State<PhoneNumberView> {
       Get.find<AuthController>().phoneController.text.isNotEmpty;
 
   Color get _borderColor {
-    if (_hasInteracted && _phoneError != null) return _red;
-    if (_isPhoneValid) return _green;
+    if (_hasInteracted && _phoneError != null) return AppColors.error;
+    if (_isPhoneValid) return AppColors.success;
     return Colors.grey.shade300;
   }
 
@@ -180,7 +178,7 @@ class _PhoneNumberViewState extends State<PhoneNumberView> {
                                 vertical: 8.h,
                               ),
                               decoration: BoxDecoration(
-                                color: _primary.withValues(alpha: 0.1),
+                                color: AppColors.primary.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8.r),
                               ),
                               child: Text(
@@ -188,7 +186,7 @@ class _PhoneNumberViewState extends State<PhoneNumberView> {
                                 style: GoogleFonts.poppins(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
-                                  color: _primary,
+                                  color: AppColors.primary,
                                 ),
                               ),
                             ),
@@ -243,7 +241,7 @@ class _PhoneNumberViewState extends State<PhoneNumberView> {
                                   children: [
                                     Icon(
                                       Iconsax.close_circle,
-                                      color: _red,
+                                      color: AppColors.error,
                                       size: 14.w,
                                     ),
                                     SizedBox(width: 4.w),
@@ -252,7 +250,7 @@ class _PhoneNumberViewState extends State<PhoneNumberView> {
                                         _phoneError!,
                                         style: GoogleFonts.poppins(
                                           fontSize: 12.sp,
-                                          color: _red,
+                                          color: AppColors.error,
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
@@ -276,7 +274,7 @@ class _PhoneNumberViewState extends State<PhoneNumberView> {
                                 ? null
                                 : controller.sendOTP,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: _primary,
+                              backgroundColor: AppColors.primary,
                               foregroundColor: Colors.white,
                               disabledBackgroundColor: Colors.grey.shade300,
                               elevation: 0,
@@ -321,13 +319,13 @@ class _PhoneNumberViewState extends State<PhoneNumberView> {
     if (_isPhoneValid) {
       return Padding(
         padding: EdgeInsets.only(right: 4.w),
-        child: Icon(Iconsax.tick_circle, color: _green, size: 22.w),
+        child: Icon(Iconsax.tick_circle, color: AppColors.success, size: 22.w),
       );
     }
     if (_phoneError != null) {
       return Padding(
         padding: EdgeInsets.only(right: 4.w),
-        child: Icon(Iconsax.close_square, color: _red, size: 22.w),
+        child: Icon(Iconsax.close_square, color: AppColors.error, size: 22.w),
       );
     }
     return null;

@@ -1,9 +1,10 @@
 import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/job_completion_controller.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/theme/app_colors.dart';
+import 'package:driveresq_app/theme/app_text_styles.dart';
 
 class RatingView extends StatelessWidget {
   const RatingView({super.key});
@@ -21,29 +22,26 @@ class RatingView extends StatelessWidget {
           // Driver avatar
           CircleAvatar(
             radius: 40.r,
-            backgroundColor: const Color(0xFF4CAF50).withOpacity(0.1),
+            backgroundColor: AppColors.success.withOpacity(0.1),
             child: Icon(
               Iconsax.user,
               size: 44.w,
-              color: const Color(0xFF4CAF50),
+              color: AppColors.success,
             ),
           ),
           SizedBox(height: 16.h),
 
           Text(
             'Rate Your Customer',
-            style: GoogleFonts.poppins(
-              fontSize: 22.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+            style: AppTextStyles.h2.copyWith(
+              color: AppColors.textPrimary,
             ),
           ),
           SizedBox(height: 4.h),
           Text(
             'How was your experience with the driver?',
-            style: GoogleFonts.poppins(
-              fontSize: 14.sp,
-              color: Colors.grey.shade500,
+            style: AppTextStyles.body2.copyWith(
+              color: AppColors.textSecondary,
             ),
           ),
 
@@ -52,10 +50,9 @@ class RatingView extends StatelessWidget {
           // Star Rating
           Text(
             'Overall Experience',
-            style: GoogleFonts.poppins(
-              fontSize: 14.sp,
+            style: AppTextStyles.body2.copyWith(
               fontWeight: FontWeight.w500,
-              color: Colors.grey.shade600,
+              color: AppColors.textPrimary,
             ),
           ),
           SizedBox(height: 12.h),
@@ -72,9 +69,7 @@ class RatingView extends StatelessWidget {
                     child: Icon(
                       filled ? Iconsax.star : Iconsax.star,
                       size: 48.w,
-                      color: filled
-                          ? const Color(0xFFFFB300)
-                          : Colors.grey.shade300,
+                      color: filled ? AppColors.warning : AppColors.border,
                     ),
                   ),
                 );
@@ -84,12 +79,11 @@ class RatingView extends StatelessWidget {
           Obx(
             () => Text(
               _ratingLabel(c.mechanicRating.value),
-              style: GoogleFonts.poppins(
-                fontSize: 14.sp,
+              style: AppTextStyles.body2.copyWith(
                 fontWeight: FontWeight.w600,
                 color: c.mechanicRating.value > 0
-                    ? const Color(0xFFFFB300)
-                    : Colors.grey.shade400,
+                    ? AppColors.warning
+                    : AppColors.textHint,
               ),
             ),
           ),
@@ -101,16 +95,16 @@ class RatingView extends StatelessWidget {
             width: double.infinity,
             padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
-              color: Colors.grey.shade50,
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(14.r),
+              border: Border.all(color: AppColors.border),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Quick Tags',
-                  style: GoogleFonts.poppins(
-                    fontSize: 14.sp,
+                  style: AppTextStyles.body2.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -125,21 +119,20 @@ class RatingView extends StatelessWidget {
                         selected: selected,
                         label: Text(
                           tag,
-                          style: GoogleFonts.poppins(
-                            fontSize: 12.sp,
+                          style: AppTextStyles.caption.copyWith(
                             color: selected
-                                ? Colors.white
-                                : Colors.grey.shade700,
+                                ? AppColors.surface
+                                : AppColors.textSecondary,
                           ),
                         ),
                         onSelected: (_) => c.toggleTag(tag),
-                        selectedColor: const Color(0xFF4CAF50),
-                        backgroundColor: Colors.white,
-                        checkmarkColor: Colors.white,
+                        selectedColor: AppColors.success,
+                        backgroundColor: AppColors.surface,
+                        checkmarkColor: AppColors.surface,
                         side: BorderSide(
                           color: selected
-                              ? const Color(0xFF4CAF50)
-                              : Colors.grey.shade300,
+                              ? AppColors.success
+                              : AppColors.border,
                         ),
                       );
                     }).toList(),
@@ -156,19 +149,19 @@ class RatingView extends StatelessWidget {
             controller: c.reviewController,
             maxLines: 3,
             maxLength: 500,
-            style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black87),
+            style: AppTextStyles.body2.copyWith(color: AppColors.textPrimary),
             decoration: InputDecoration(
               hintText: 'Write a review (optional)',
-              hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400),
-              filled: false,
-              fillColor: Colors.grey.shade50,
+              hintStyle: AppTextStyles.body2.copyWith(color: AppColors.textHint),
+              filled: true,
+              fillColor: AppColors.surface,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14.r),
-                borderSide: BorderSide(color: Colors.grey.shade200),
+                borderSide: BorderSide(color: AppColors.border),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14.r),
-                borderSide: BorderSide(color: Colors.grey.shade200),
+                borderSide: BorderSide(color: AppColors.border),
               ),
             ),
           ),
@@ -182,8 +175,8 @@ class RatingView extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: () => c.prevStep(),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.grey.shade700,
-                    side: BorderSide(color: Colors.grey.shade300),
+                    foregroundColor: AppColors.textSecondary,
+                    side: BorderSide(color: AppColors.border),
                     padding: EdgeInsets.symmetric(vertical: 16.h),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14.r),
@@ -191,7 +184,7 @@ class RatingView extends StatelessWidget {
                   ),
                   child: Text(
                     'Back',
-                    style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                    style: AppTextStyles.body2.copyWith(fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -204,9 +197,9 @@ class RatingView extends StatelessWidget {
                         ? null
                         : () => c.submitCompletion(),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF4CAF50),
-                      foregroundColor: Colors.white,
-                      disabledBackgroundColor: Colors.grey.shade300,
+                      backgroundColor: AppColors.success,
+                      foregroundColor: AppColors.surface,
+                      disabledBackgroundColor: AppColors.border,
                       padding: EdgeInsets.symmetric(vertical: 16.h),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -218,15 +211,15 @@ class RatingView extends StatelessWidget {
                             height: 20.h,
                             width: 20.w,
                             child: const CircularProgressIndicator(
-                              color: Colors.white,
+                              color: AppColors.surface,
                               strokeWidth: 2,
                             ),
                           )
                         : Text(
                             'Submit & Complete',
-                            style: GoogleFonts.poppins(
-                              fontSize: 15.sp,
+                            style: AppTextStyles.body2.copyWith(
                               fontWeight: FontWeight.w600,
+                              color: AppColors.surface,
                             ),
                           ),
                   ),
@@ -242,9 +235,8 @@ class RatingView extends StatelessWidget {
             onPressed: c.isLoading.value ? null : () => c.submitCompletion(),
             child: Text(
               'Skip Rating',
-              style: GoogleFonts.poppins(
-                color: Colors.grey.shade400,
-                fontSize: 13.sp,
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.textHint,
               ),
             ),
           ),

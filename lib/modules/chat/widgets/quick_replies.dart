@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:driveresq_app/theme/app_colors.dart';
+import 'package:driveresq_app/theme/app_text_styles.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 class QuickRepliesBar extends StatelessWidget {
@@ -17,8 +18,8 @@ class QuickRepliesBar extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 8.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Colors.grey.shade200)),
+        color: AppColors.surface,
+        border: Border(top: BorderSide(color: AppColors.border)),
       ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -30,14 +31,14 @@ class QuickRepliesBar extends StatelessWidget {
                   child: ActionChip(
                     label: Text(
                       r,
-                      style: GoogleFonts.poppins(
-                        fontSize: 12.sp,
-                        color: const Color(0xFF6C63FF),
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    backgroundColor: const Color(0xFF6C63FF).withOpacity(0.08),
+                    backgroundColor: AppColors.primary.withOpacity(0.08),
                     side: BorderSide(
-                      color: const Color(0xFF6C63FF).withOpacity(0.2),
+                      color: AppColors.primary.withOpacity(0.2),
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.r),

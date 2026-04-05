@@ -1,10 +1,11 @@
 import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../controllers/chat_controller.dart';
 import '../models/message_model.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/theme/app_colors.dart';
+import 'package:driveresq_app/theme/app_text_styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class MessageBubble extends StatelessWidget {
@@ -15,36 +16,27 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // System message
     if (message.type == 'system') {
       return _systemBubble();
     }
-
-    // Voice message
     if (message.type == 'voice') {
       return _voiceBubble(context);
     }
-
-    // Image message
     if (message.type == 'image') {
       return _imageBubble(context);
     }
-
-    // Regular text bubble
     return _textBubble();
   }
 
-  // ─── Sender name label (shown for other user's messages) ───
   Widget _senderLabel() {
     if (isMe || message.senderName.isEmpty) return const SizedBox.shrink();
     return Padding(
       padding: EdgeInsets.only(left: 16.w, bottom: 2.h),
       child: Text(
         message.senderName,
-        style: GoogleFonts.poppins(
-          fontSize: 11.sp,
+        style: AppTextStyles.caption.copyWith(
           fontWeight: FontWeight.w600,
-          color: const Color(0xFF6C63FF),
+          color: AppColors.primary,
         ),
       ),
     );
@@ -52,9 +44,7 @@ class MessageBubble extends StatelessWidget {
 
   Widget _textBubble() {
     return Column(
-      crossAxisAlignment: isMe
-          ? CrossAxisAlignment.end
-          : CrossAxisAlignment.start,
+      crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         _senderLabel(),
         Align(
@@ -69,7 +59,7 @@ class MessageBubble extends StatelessWidget {
             ),
             padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
             decoration: BoxDecoration(
-              color: isMe ? const Color(0xFF6C63FF) : Colors.white,
+              color: isMe ? AppColors.primary : AppColors.surface,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(18.r),
                 topRight: Radius.circular(18.r),
@@ -85,16 +75,12 @@ class MessageBubble extends StatelessWidget {
               ],
             ),
             child: Column(
-              crossAxisAlignment: isMe
-                  ? CrossAxisAlignment.end
-                  : CrossAxisAlignment.start,
+              crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: [
                 Text(
                   message.content,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14.sp,
-                    color: isMe ? Colors.white : Colors.black87,
-                    height: 1.4,
+                  style: AppTextStyles.body2.copyWith(
+                    color: isMe ? AppColors.surface : AppColors.textPrimary,
                   ),
                 ),
                 SizedBox(height: 4.h),
@@ -103,21 +89,16 @@ class MessageBubble extends StatelessWidget {
                   children: [
                     Text(
                       _formatTime(message.timestamp),
-                      style: GoogleFonts.poppins(
-                        fontSize: 10.sp,
-                        color: isMe ? Colors.white60 : Colors.grey.shade400,
+                      style: AppTextStyles.caption.copyWith(
+                        color: isMe ? AppColors.surface.withOpacity(0.7) : AppColors.textHint,
                       ),
                     ),
                     if (isMe) ...[
                       SizedBox(width: 4.w),
                       Icon(
-                        message.read
-                            ? Iconsax.tick_circle
-                            : Iconsax.tick_circle,
+                        Iconsax.tick_circle,
                         size: 14.w,
-                        color: message.read
-                            ? Colors.lightBlueAccent
-                            : Colors.white54,
+                        color: message.read ? AppColors.info : AppColors.surface.withOpacity(0.5),
                       ),
                     ],
                   ],
@@ -132,9 +113,7 @@ class MessageBubble extends StatelessWidget {
 
   Widget _imageBubble(BuildContext context) {
     return Column(
-      crossAxisAlignment: isMe
-          ? CrossAxisAlignment.end
-          : CrossAxisAlignment.start,
+      crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         _senderLabel(),
         Align(
@@ -148,7 +127,7 @@ class MessageBubble extends StatelessWidget {
               bottom: 3.h,
             ),
             decoration: BoxDecoration(
-              color: isMe ? const Color(0xFF6C63FF) : Colors.white,
+              color: isMe ? AppColors.primary : AppColors.surface,
               borderRadius: BorderRadius.circular(16.r),
               boxShadow: [
                 BoxShadow(
@@ -176,7 +155,7 @@ class MessageBubble extends StatelessWidget {
                         height: 180.h,
                         width: 240.w,
                         child: const Center(
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                          child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary),
                         ),
                       ),
                       errorWidget: (context, url, error) => SizedBox(
@@ -185,7 +164,7 @@ class MessageBubble extends StatelessWidget {
                           child: Icon(
                             Iconsax.image,
                             size: 40.w,
-                            color: Colors.grey,
+                            color: AppColors.textHint,
                           ),
                         ),
                       ),
@@ -200,9 +179,8 @@ class MessageBubble extends StatelessWidget {
                     ),
                     child: Text(
                       message.content,
-                      style: GoogleFonts.poppins(
-                        fontSize: 13.sp,
-                        color: isMe ? Colors.white : Colors.black87,
+                      style: AppTextStyles.body2.copyWith(
+                        color: isMe ? AppColors.surface : AppColors.textPrimary,
                       ),
                     ),
                   ),
@@ -214,9 +192,8 @@ class MessageBubble extends StatelessWidget {
                   ),
                   child: Text(
                     _formatTime(message.timestamp),
-                    style: GoogleFonts.poppins(
-                      fontSize: 10.sp,
-                      color: isMe ? Colors.white60 : Colors.grey.shade400,
+                    style: AppTextStyles.caption.copyWith(
+                      color: isMe ? AppColors.surface.withOpacity(0.7) : AppColors.textHint,
                     ),
                   ),
                 ),
@@ -235,9 +212,7 @@ class MessageBubble extends StatelessWidget {
         '${(duration ~/ 60).toString().padLeft(2, '0')}:${(duration % 60).toString().padLeft(2, '0')}';
 
     return Column(
-      crossAxisAlignment: isMe
-          ? CrossAxisAlignment.end
-          : CrossAxisAlignment.start,
+      crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         _senderLabel(),
         Align(
@@ -252,7 +227,7 @@ class MessageBubble extends StatelessWidget {
             ),
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
             decoration: BoxDecoration(
-              color: isMe ? const Color(0xFF6C63FF) : Colors.white,
+              color: isMe ? AppColors.primary : AppColors.surface,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(18.r),
                 topRight: Radius.circular(18.r),
@@ -275,79 +250,44 @@ class MessageBubble extends StatelessWidget {
               return Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Play/Pause button
                   GestureDetector(
-                    onTap: () =>
-                        c.playVoice(message.id, message.audioUrl ?? ''),
+                    onTap: () => c.playVoice(message.id, message.audioUrl ?? ''),
                     child: Container(
                       width: 38.w,
                       height: 38.w,
                       decoration: BoxDecoration(
-                        color: isMe
-                            ? Colors.white.withOpacity(0.2)
-                            : const Color(0xFF6C63FF).withOpacity(0.1),
+                        color: isMe ? AppColors.surface.withOpacity(0.2) : AppColors.primary.withOpacity(0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
                         isThisPlaying ? Iconsax.pause : Iconsax.play,
-                        color: isMe ? Colors.white : const Color(0xFF6C63FF),
+                        color: isMe ? AppColors.surface : AppColors.primary,
                         size: 22.w,
                       ),
                     ),
                   ),
                   SizedBox(width: 10.w),
-
-                  // Waveform progress bar
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Waveform bars
                         SizedBox(
                           height: 24.h,
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: List.generate(20, (i) {
-                              // Generate pseudo-random heights for waveform look
-                              final heights = [
-                                0.4,
-                                0.7,
-                                0.5,
-                                0.9,
-                                0.6,
-                                0.8,
-                                0.3,
-                                1.0,
-                                0.5,
-                                0.7,
-                                0.6,
-                                0.9,
-                                0.4,
-                                0.8,
-                                0.5,
-                                0.7,
-                                0.3,
-                                0.6,
-                                0.8,
-                                0.5,
-                              ];
+                              final heights = [0.4,0.7,0.5,0.9,0.6,0.8,0.3,1.0,0.5,0.7,0.6,0.9,0.4,0.8,0.5,0.7,0.3,0.6,0.8,0.5];
                               final barProgress = (i + 1) / 20;
                               final isActive = barProgress <= progress;
 
                               return Expanded(
                                 child: Container(
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal: 0.5.w,
-                                  ),
+                                  margin: EdgeInsets.symmetric(horizontal: 0.5.w),
                                   height: 24.h * heights[i],
                                   decoration: BoxDecoration(
                                     color: isActive
-                                        ? (isMe
-                                              ? Colors.white
-                                              : const Color(0xFF6C63FF))
-                                        : (isMe
-                                              ? Colors.white.withOpacity(0.3)
-                                              : Colors.grey.shade300),
+                                        ? (isMe ? AppColors.surface : AppColors.primary)
+                                        : (isMe ? AppColors.surface.withOpacity(0.3) : AppColors.border),
                                     borderRadius: BorderRadius.circular(2.r),
                                   ),
                                 ),
@@ -356,17 +296,14 @@ class MessageBubble extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 4.h),
-                        // Duration + time
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               durationStr,
-                              style: GoogleFonts.poppins(
+                              style: AppTextStyles.caption.copyWith(
+                                color: isMe ? AppColors.surface.withOpacity(0.7) : AppColors.textHint,
                                 fontSize: 10.sp,
-                                color: isMe
-                                    ? Colors.white60
-                                    : Colors.grey.shade500,
                               ),
                             ),
                             Row(
@@ -374,23 +311,17 @@ class MessageBubble extends StatelessWidget {
                               children: [
                                 Text(
                                   _formatTime(message.timestamp),
-                                  style: GoogleFonts.poppins(
+                                  style: AppTextStyles.caption.copyWith(
+                                    color: isMe ? AppColors.surface.withOpacity(0.7) : AppColors.textHint,
                                     fontSize: 10.sp,
-                                    color: isMe
-                                        ? Colors.white60
-                                        : Colors.grey.shade400,
                                   ),
                                 ),
                                 if (isMe) ...[
                                   SizedBox(width: 4.w),
                                   Icon(
-                                    message.read
-                                        ? Iconsax.tick_circle
-                                        : Iconsax.tick_circle,
+                                    Iconsax.tick_circle,
                                     size: 14.w,
-                                    color: message.read
-                                        ? Colors.lightBlueAccent
-                                        : Colors.white54,
+                                    color: message.read ? AppColors.info : AppColors.surface.withOpacity(0.5),
                                   ),
                                 ],
                               ],
@@ -429,15 +360,15 @@ class MessageBubble extends StatelessWidget {
         margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 40.w),
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
+          color: AppColors.surface,
+          border: Border.all(color: AppColors.border),
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: Text(
           message.content,
           textAlign: TextAlign.center,
-          style: GoogleFonts.poppins(
-            fontSize: 12.sp,
-            color: Colors.grey.shade600,
+          style: AppTextStyles.caption.copyWith(
+            color: AppColors.textSecondary,
             fontStyle: FontStyle.italic,
           ),
         ),

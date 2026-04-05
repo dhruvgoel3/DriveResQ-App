@@ -21,6 +21,14 @@ class AuthController extends GetxController {
   final otpController = TextEditingController();
 
   @override
+  void onInit() {
+    super.onInit();
+    if (Get.arguments != null && Get.arguments is Map && Get.arguments['role'] != null) {
+      selectedRole.value = Get.arguments['role'] as String;
+    }
+  }
+
+  @override
   void onClose() {
     phoneController.dispose();
     otpController.dispose();

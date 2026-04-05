@@ -1,4 +1,3 @@
-import 'package:iconsax/iconsax.dart';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,20 +16,30 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
-  late AnimationController _logoCtrl;
-  late AnimationController _pulseCtrl;
-  late AnimationController _progressCtrl;
-  late AnimationController _taglineCtrl;
-  late AnimationController _carCtrl;
-  late AnimationController _exitCtrl;
-
+  // Logo slide-in from left to center
+  late AnimationController _logoSlideCtrl;
+  late Animation<Offset> _logoSlide;
   late Animation<double> _logoFade;
-  late Animation<double> _logoScale;
+
+  // Logo pulse (breathing effect after arrival)
+  late AnimationController _pulseCtrl;
   late Animation<double> _pulse;
+
+  // Progress bar
+  late AnimationController _progressCtrl;
   late Animation<double> _progress;
+
+  // Tagline
+  late AnimationController _taglineCtrl;
   late Animation<Offset> _taglineSlide;
   late Animation<double> _taglineFade;
-  late Animation<double> _carPos;
+
+  // Moving logo at the bottom (replaces the car icon)
+  late AnimationController _movingLogoCtrl;
+  late Animation<double> _movingLogoPos;
+
+  // Exit animation
+  late AnimationController _exitCtrl;
   late Animation<double> _exitFade;
   late Animation<double> _exitScale;
 
@@ -41,39 +50,44 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    // Logo
-    _logoCtrl = AnimationController(
+    // ─── Logo slide from left to center ───
+    _logoSlideCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1400),
     );
-    _logoFade = CurvedAnimation(parent: _logoCtrl, curve: Curves.easeOut);
-    _logoScale = Tween<double>(
-      begin: 0.3,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _logoCtrl, curve: Curves.elasticOut));
+    _logoSlide = Tween<Offset>(
+      begin: const Offset(-2.5, 0), // start off-screen left
+      end: Offset.zero, // center
+    ).animate(
+      CurvedAnimation(parent: _logoSlideCtrl, curve: Curves.elasticOut),
+    );
+    _logoFade = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _logoSlideCtrl,
+        curve: const Interval(0.0, 0.4, curve: Curves.easeOut),
+      ),
+    );
 
-    // Pulse
+    // ─── Pulse ───
     _pulseCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     )..repeat(reverse: true);
-    _pulse = Tween<double>(
-      begin: 1.0,
-      end: 1.08,
-    ).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
+    _pulse = Tween<double>(begin: 1.0, end: 1.08).animate(
+      CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut),
+    );
 
-    // Progress
+    // ─── Progress ───
     _progressCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 3500),
     );
-    _progress = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(parent: _progressCtrl, curve: Curves.easeInOut));
+    _progress = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _progressCtrl, curve: Curves.easeInOut),
+    );
     _progressCtrl.addListener(_updateStatus);
 
-    // Tagline
+    // ─── Tagline ───
     _taglineCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -82,31 +96,29 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
       begin: const Offset(0, 0.5),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _taglineCtrl, curve: Curves.easeOut));
-    _taglineFade = CurvedAnimation(parent: _taglineCtrl, curve: Curves.easeOut);
+    _taglineFade =
+        CurvedAnimation(parent: _taglineCtrl, curve: Curves.easeOut);
 
-    // Car
-    _carCtrl = AnimationController(
+    // ─── Moving logo (bottom) ───
+    _movingLogoCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2500),
     )..repeat();
-    _carPos = Tween<double>(
-      begin: -1.2,
-      end: 1.2,
-    ).animate(CurvedAnimation(parent: _carCtrl, curve: Curves.easeInOut));
+    _movingLogoPos = Tween<double>(begin: -1.2, end: 1.2).animate(
+      CurvedAnimation(parent: _movingLogoCtrl, curve: Curves.easeInOut),
+    );
 
-    // Exit
+    // ─── Exit ───
     _exitCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _exitFade = Tween<double>(
-      begin: 1,
-      end: 0,
-    ).animate(CurvedAnimation(parent: _exitCtrl, curve: Curves.easeIn));
-    _exitScale = Tween<double>(
-      begin: 1,
-      end: 1.1,
-    ).animate(CurvedAnimation(parent: _exitCtrl, curve: Curves.easeIn));
+    _exitFade = Tween<double>(begin: 1, end: 0).animate(
+      CurvedAnimation(parent: _exitCtrl, curve: Curves.easeIn),
+    );
+    _exitScale = Tween<double>(begin: 1, end: 1.1).animate(
+      CurvedAnimation(parent: _exitCtrl, curve: Curves.easeIn),
+    );
 
     _startSequence();
   }
@@ -117,10 +129,10 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     final newStatus = v < 0.3
         ? 'Initializing...'
         : v < 0.6
-        ? 'Checking connection...'
-        : v < 0.9
-        ? 'Loading your data...'
-        : 'Almost ready...';
+            ? 'Checking connection...'
+            : v < 0.9
+                ? 'Loading your data...'
+                : 'Almost ready...';
     if (newStatus != _status) {
       setState(() => _status = newStatus);
     }
@@ -129,7 +141,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
   Future<void> _startSequence() async {
     await Future.delayed(const Duration(milliseconds: 200));
     if (!mounted) return;
-    _logoCtrl.forward();
+    _logoSlideCtrl.forward();
 
     await Future.delayed(const Duration(milliseconds: 800));
     if (!mounted) return;
@@ -210,11 +222,11 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _logoCtrl.dispose();
+    _logoSlideCtrl.dispose();
     _pulseCtrl.dispose();
     _progressCtrl.dispose();
     _taglineCtrl.dispose();
-    _carCtrl.dispose();
+    _movingLogoCtrl.dispose();
     _exitCtrl.dispose();
     super.dispose();
   }
@@ -259,8 +271,8 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                     child: _circle(120, 0.04),
                   ),
 
-                  // Car
-                  _movingCar(sz),
+                  // Moving logo at the bottom (replaces car)
+                  _movingLogoWidget(sz),
 
                   // Main content
                   SafeArea(
@@ -288,76 +300,78 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
   }
 
   Widget _circle(double s, double o) => Container(
-    width: s,
-    height: s,
-    decoration: BoxDecoration(
-      shape: BoxShape.circle,
-      color: Colors.white.withValues(alpha: o),
-    ),
-  );
+        width: s,
+        height: s,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white.withValues(alpha: o),
+        ),
+      );
 
-  Widget _movingCar(Size sz) {
+  /// Moving logo at the bottom — slides across the screen like the old car icon
+  Widget _movingLogoWidget(Size sz) {
     return Positioned(
       bottom: sz.height * 0.22,
       left: 0,
       right: 0,
       child: AnimatedBuilder(
-        animation: _carPos,
+        animation: _movingLogoPos,
         builder: (_, __) => Transform.translate(
-          offset: Offset(_carPos.value * sz.width * 0.5, 0),
-          child: Icon(
-            Iconsax.car,
-            size: 22.w,
-            color: Colors.white.withValues(alpha: 0.25),
+          offset: Offset(_movingLogoPos.value * sz.width * 0.5, 0),
+          child: Opacity(
+            opacity: 0.25,
+            child: Image.asset(
+              'assets/logo.png',
+              width: 28.w,
+              height: 28.h,
+              color: Colors.white.withValues(alpha: 0.9),
+              colorBlendMode: BlendMode.srcIn,
+            ),
           ),
         ),
       ),
     );
   }
 
+  /// Main logo — slides in from the left to center with elastic bounce
   Widget _logo() {
     return AnimatedBuilder(
-      animation: Listenable.merge([_logoCtrl, _pulseCtrl]),
-      builder: (_, __) => Opacity(
-        opacity: _logoFade.value,
-        child: Transform.scale(
-          scale: _logoScale.value * _pulse.value,
-          child: Container(
-            width: 120.w,
-            height: 120.h,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF6C63FF).withValues(alpha: 0.4),
-                  blurRadius: 40,
-                  spreadRadius: 5,
-                ),
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.15),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Icon(Iconsax.car, size: 40.w, color: const Color(0xFF6C63FF)),
-                Positioned(
-                  right: 22.w,
-                  bottom: 24.h,
-                  child: Transform.rotate(
-                    angle: -0.4,
-                    child: Icon(
-                      Iconsax.setting_2,
-                      size: 22.w,
-                      color: const Color(0xFFFF9800).withValues(alpha: 0.9),
-                    ),
+      animation: Listenable.merge([_logoSlideCtrl, _pulseCtrl]),
+      builder: (_, __) => FadeTransition(
+        opacity: _logoFade,
+        child: SlideTransition(
+          position: _logoSlide,
+          child: Transform.scale(
+            scale: _pulse.value,
+            child: Container(
+              width: 200.w,
+              height: 200.h,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFF5B52E5),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF6C63FF).withValues(alpha: 0.5),
+                    blurRadius: 40,
+                    spreadRadius: 8,
                   ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Image.asset(
+                  'assets/logo.png',
+                  width: 130.w,
+                  height: 130.h,
+                  fit: BoxFit.contain,
+                  color: Colors.white,
+                  colorBlendMode: BlendMode.srcIn,
                 ),
-              ],
+              ),
             ),
           ),
         ),

@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:driveresq_app/theme/app_colors.dart';
 import 'package:intl/intl.dart';
 
 class NotificationsView extends StatelessWidget {
@@ -37,7 +38,7 @@ class NotificationsView extends StatelessWidget {
           IconButton(
             icon: Icon(
               Iconsax.tick_circle,
-              color: const Color(0xFF6C63FF),
+              color: AppColors.primary,
               size: 22.w,
             ),
             tooltip: 'Mark all as read',
@@ -55,7 +56,7 @@ class NotificationsView extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-              child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
+              child: CircularProgressIndicator(color: AppColors.primary),
             );
           }
           if (snapshot.hasError) {
@@ -149,7 +150,7 @@ class NotificationsView extends StatelessWidget {
             child: Icon(
               Iconsax.notification,
               size: 36.w,
-              color: const Color(0xFF6C63FF),
+              color: AppColors.primary,
             ),
           ),
           SizedBox(height: 20.h),
@@ -185,7 +186,7 @@ class NotificationsView extends StatelessWidget {
             Icon(
               Iconsax.info_circle,
               size: 48.w,
-              color: const Color(0xFF6C63FF),
+              color: AppColors.primary,
             ),
             SizedBox(height: 16.h),
             Text(
@@ -307,7 +308,7 @@ class NotificationsView extends StatelessWidget {
                             width: 7.w,
                             height: 7.w,
                             decoration: const BoxDecoration(
-                              color: Color(0xFF6C63FF),
+                              color: AppColors.primary,
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -387,23 +388,23 @@ class NotificationsView extends StatelessWidget {
       case 'new_request':
         return const _NotifConfig(Iconsax.warning_2, Color(0xFFFF6B35));
       case 'request_accepted':
-        return const _NotifConfig(Iconsax.tick_circle, Color(0xFF22C55E));
+        return const _NotifConfig(Iconsax.tick_circle, AppColors.success);
       case 'mechanic_nearby':
         return const _NotifConfig(Iconsax.location, Color(0xFF3B82F6));
       case 'job_completed':
-        return const _NotifConfig(Iconsax.task_square, Color(0xFF22C55E));
+        return const _NotifConfig(Iconsax.task_square, AppColors.success);
       case 'payment_received':
         return const _NotifConfig(Iconsax.wallet_2, Color(0xFF10B981));
       case 'request_cancelled':
-        return const _NotifConfig(Iconsax.close_circle, Color(0xFFEF4444));
+        return const _NotifConfig(Iconsax.close_circle, AppColors.error);
       case 'chat_message':
-        return const _NotifConfig(Iconsax.message, Color(0xFF6C63FF));
+        return const _NotifConfig(Iconsax.message, AppColors.primary);
       case 'rating_received':
         return const _NotifConfig(Iconsax.star1, Color(0xFFF59E0B));
       case 'verification_approved':
-        return const _NotifConfig(Iconsax.verify, Color(0xFF22C55E));
+        return const _NotifConfig(Iconsax.verify, AppColors.success);
       case 'verification_rejected':
-        return const _NotifConfig(Iconsax.info_circle, Color(0xFFEF4444));
+        return const _NotifConfig(Iconsax.info_circle, AppColors.error);
       default:
         return const _NotifConfig(Iconsax.notification, Color(0xFF8E92A4));
     }

@@ -1,7 +1,8 @@
 import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:driveresq_app/theme/app_colors.dart';
+import 'package:driveresq_app/theme/app_text_styles.dart';
 import '../controllers/job_completion_controller.dart';
 import 'completion/step1_job_summary.dart';
 import 'completion/step3_rating.dart';
@@ -30,7 +31,7 @@ class JobCompletionPage extends StatelessWidget {
         return c.currentStep.value == 0; // Only allow back on step 0
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.background,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(100),
           child: Obx(() => _buildAppBar(c)),
@@ -58,7 +59,7 @@ class JobCompletionPage extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(top: MediaQuery.of(Get.context!).padding.top),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
@@ -77,7 +78,7 @@ class JobCompletionPage extends StatelessWidget {
               children: [
                 if (!isSuccess)
                   IconButton(
-                    icon: const Icon(Iconsax.arrow_left, color: Colors.black87),
+                    icon: const Icon(Iconsax.arrow_left, color: AppColors.textPrimary),
                     onPressed: () {
                       if (step > 0) {
                         c.prevStep();
@@ -91,10 +92,9 @@ class JobCompletionPage extends StatelessWidget {
                 Expanded(
                   child: Text(
                     isSuccess ? 'Completed!' : _stepTitle(step),
-                    style: GoogleFonts.poppins(
-                      fontSize: 18.sp,
+                    style: AppTextStyles.h3.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                      color: AppColors.textPrimary,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -117,8 +117,8 @@ class JobCompletionPage extends StatelessWidget {
                       margin: EdgeInsets.symmetric(horizontal: 3.w),
                       decoration: BoxDecoration(
                         color: active
-                            ? const Color(0xFF4CAF50)
-                            : Colors.grey.shade200,
+                            ? AppColors.success
+                            : AppColors.surface,
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),

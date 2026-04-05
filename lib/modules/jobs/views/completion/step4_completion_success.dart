@@ -1,11 +1,12 @@
 import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/job_completion_controller.dart';
 import '../../services/invoice_generator.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
+import 'package:driveresq_app/theme/app_colors.dart';
+import 'package:driveresq_app/theme/app_text_styles.dart';
 
 class CompletionSuccessView extends StatelessWidget {
   const CompletionSuccessView({super.key});
@@ -32,17 +33,17 @@ class CompletionSuccessView extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
-                  colors: [Colors.green.shade400, Colors.green.shade600],
+                  colors: [AppColors.success.withOpacity(0.8), AppColors.success],
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.green.withOpacity(0.3),
+                    color: AppColors.success.withOpacity(0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   ),
                 ],
               ),
-              child: Icon(Iconsax.check, color: Colors.white, size: 64.w),
+              child: Icon(Iconsax.check, color: AppColors.surface, size: 64.w),
             ),
           ),
 
@@ -57,18 +58,15 @@ class CompletionSuccessView extends StatelessWidget {
               children: [
                 Text(
                   'Job Completed! 🎉',
-                  style: GoogleFonts.poppins(
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                  style: AppTextStyles.h1.copyWith(
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 SizedBox(height: 6.h),
                 Text(
                   'Great work! Job marked as complete.',
-                  style: GoogleFonts.poppins(
-                    fontSize: 14.sp,
-                    color: Colors.grey.shade500,
+                  style: AppTextStyles.body2.copyWith(
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ],
@@ -82,8 +80,9 @@ class CompletionSuccessView extends StatelessWidget {
             width: double.infinity,
             padding: EdgeInsets.all(20.w),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(16.r),
+              border: Border.all(color: AppColors.border),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.05),
@@ -97,35 +96,34 @@ class CompletionSuccessView extends StatelessWidget {
                 _summaryRow(
                   'Amount Earned',
                   '₹${c.totalAmount.value.toStringAsFixed(0)}',
-                  Colors.green.shade700,
+                  AppColors.success,
                   true,
                 ),
-                Divider(color: Colors.grey.shade100, height: 24.h),
+                Divider(color: AppColors.border, height: 24.h),
                 _summaryRow(
                   'Settlement',
                   c.cashCollected.value
                       ? 'Cash Collected ✓'
                       : 'Settle with driver',
-                  Colors.blue.shade700,
+                  AppColors.primary,
                   false,
                 ),
-                Divider(color: Colors.grey.shade100, height: 24.h),
+                Divider(color: AppColors.border, height: 24.h),
                 _summaryRow(
                   'Invoice',
                   c.invoiceNumber.value,
-                  Colors.purple.shade700,
+                  AppColors.textPrimary,
                   false,
                 ),
                 if (c.mechanicRating.value > 0) ...[
-                  Divider(color: Colors.grey.shade100, height: 24.h),
+                  Divider(color: AppColors.border, height: 24.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         'Rating Given',
-                        style: GoogleFonts.poppins(
-                          fontSize: 13.sp,
-                          color: Colors.grey.shade600,
+                        style: AppTextStyles.caption.copyWith(
+                          color: AppColors.textSecondary,
                         ),
                       ),
                       Row(
@@ -135,7 +133,7 @@ class CompletionSuccessView extends StatelessWidget {
                             i < c.mechanicRating.value
                                 ? Iconsax.star
                                 : Iconsax.star,
-                            color: const Color(0xFFFFB300),
+                            color: AppColors.warning,
                             size: 20.w,
                           ),
                         ),
@@ -158,14 +156,14 @@ class CompletionSuccessView extends StatelessWidget {
               icon: Icon(Iconsax.document_download, size: 20.w),
               label: Text(
                 'Download Invoice',
-                style: GoogleFonts.poppins(
-                  fontSize: 15.sp,
+                style: AppTextStyles.body1.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: AppColors.surface,
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4CAF50),
-                foregroundColor: Colors.white,
+                backgroundColor: AppColors.success,
+                foregroundColor: AppColors.surface,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14.r),
@@ -184,14 +182,14 @@ class CompletionSuccessView extends StatelessWidget {
               icon: Icon(Iconsax.share, size: 20.w),
               label: Text(
                 'Share Invoice',
-                style: GoogleFonts.poppins(
-                  fontSize: 15.sp,
+                style: AppTextStyles.body1.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: AppColors.success,
                 ),
               ),
               style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF4CAF50),
-                side: const BorderSide(color: Color(0xFF4CAF50)),
+                foregroundColor: AppColors.success,
+                side: const BorderSide(color: AppColors.success),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14.r),
                 ),
@@ -209,8 +207,8 @@ class CompletionSuccessView extends StatelessWidget {
                 Get.until((route) => route.isFirst);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey.shade800,
-                foregroundColor: Colors.white,
+                backgroundColor: AppColors.textPrimary,
+                foregroundColor: AppColors.surface,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14.r),
@@ -218,9 +216,9 @@ class CompletionSuccessView extends StatelessWidget {
               ),
               child: Text(
                 'Go to Dashboard',
-                style: GoogleFonts.poppins(
-                  fontSize: 15.sp,
+                style: AppTextStyles.body1.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: AppColors.surface,
                 ),
               ),
             ),
@@ -238,15 +236,13 @@ class CompletionSuccessView extends StatelessWidget {
       children: [
         Text(
           label,
-          style: GoogleFonts.poppins(
-            fontSize: 13.sp,
-            color: Colors.grey.shade600,
+          style: AppTextStyles.caption.copyWith(
+            color: AppColors.textSecondary,
           ),
         ),
         Text(
           value,
-          style: GoogleFonts.poppins(
-            fontSize: bold ? 20 : 14,
+          style: AppTextStyles.body1.copyWith(
             fontWeight: bold ? FontWeight.bold : FontWeight.w600,
             color: valueColor,
           ),

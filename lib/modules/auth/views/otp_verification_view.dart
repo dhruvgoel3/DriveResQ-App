@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 import '../controllers/auth_controller.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
+import 'package:driveresq_app/theme/app_colors.dart';
 
 class OTPVerificationView extends StatefulWidget {
   const OTPVerificationView({super.key});
@@ -15,8 +16,6 @@ class OTPVerificationView extends StatefulWidget {
 
 class _OTPVerificationViewState extends State<OTPVerificationView>
     with SingleTickerProviderStateMixin {
-  static const _primary = Color(0xFF6C63FF);
-  static const _red = Color(0xFFF44336);
 
   bool _hasError = false;
   String? _errorMessage;
@@ -113,7 +112,7 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: _primary, width: 2),
+        border: Border.all(color: AppColors.primary, width: 2),
       ),
     );
 
@@ -126,9 +125,9 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
         color: Colors.black,
       ),
       decoration: BoxDecoration(
-        color: _primary.withValues(alpha: 0.1),
+        color: AppColors.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: _primary),
+        border: Border.all(color: AppColors.primary),
       ),
     );
 
@@ -138,12 +137,12 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
       textStyle: GoogleFonts.poppins(
         fontSize: 20.sp,
         fontWeight: FontWeight.w600,
-        color: _red,
+        color: AppColors.error,
       ),
       decoration: BoxDecoration(
-        color: _red.withOpacity(0.05),
+        color: AppColors.error.withOpacity(0.05),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: _red, width: 2),
+        border: Border.all(color: AppColors.error, width: 2),
       ),
     );
 
@@ -203,7 +202,7 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
                         child: Container(
                           padding: EdgeInsets.all(18.w),
                           decoration: BoxDecoration(
-                            color: (_hasError ? _red : _primary).withOpacity(
+                            color: (_hasError ? AppColors.error : AppColors.primary).withOpacity(
                               0.1,
                             ),
                             shape: BoxShape.circle,
@@ -211,7 +210,7 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
                           child: Icon(
                             _hasError ? Iconsax.close_circle : Iconsax.mobile,
                             size: 48.w,
-                            color: _hasError ? _red : _primary,
+                            color: _hasError ? AppColors.error : AppColors.primary,
                           ),
                         ),
                       ),
@@ -264,7 +263,7 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
                                       vertical: 8.h,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: _red.withOpacity(0.08),
+                                      color: AppColors.error.withOpacity(0.08),
                                       borderRadius: BorderRadius.circular(10.r),
                                     ),
                                     child: Row(
@@ -272,7 +271,7 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
                                       children: [
                                         Icon(
                                           Iconsax.close_circle,
-                                          color: _red,
+                                          color: AppColors.error,
                                           size: 16.w,
                                         ),
                                         SizedBox(width: 6.w),
@@ -280,7 +279,7 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
                                           _errorMessage!,
                                           style: GoogleFonts.poppins(
                                             fontSize: 13.sp,
-                                            color: _red,
+                                            color: AppColors.error,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
@@ -302,7 +301,7 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
                             "Didn't receive code? Resend",
                             style: GoogleFonts.poppins(
                               fontSize: 14.sp,
-                              color: _primary,
+                              color: AppColors.primary,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -327,7 +326,7 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
                                     }
                                   },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: _primary,
+                              backgroundColor: AppColors.primary,
                               foregroundColor: Colors.white,
                               disabledBackgroundColor: Colors.grey.shade300,
                               elevation: 0,

@@ -31,6 +31,7 @@ import '../../modules/auth/views/otp_verification_view.dart';
 import '../../modules/auth/views/role_selection_view.dart';
 import '../../modules/auth/views/splash_view.dart';
 import '../../modules/auth/views/onboarding_view.dart';
+import '../../modules/auth/bindings/auth_bindings.dart';
 import '../../modules/notifications/views/notifications_view.dart';
 import 'app_pages.dart';
 
@@ -48,18 +49,21 @@ class AppPages {
     GetPage(
       name: Routes.ROLE,
       page: () => const RoleSelectionView(),
+      binding: AuthBinding(),
       transition: Transition.fadeIn,
       transitionDuration: _dur,
     ),
     GetPage(
       name: Routes.LOGIN,
       page: () => const PhoneNumberView(),
+      binding: AuthBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: _dur,
     ),
     GetPage(
       name: Routes.OTP,
       page: () => const OTPVerificationView(),
+      binding: AuthBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: _dur,
     ),
