@@ -22,13 +22,16 @@ class JobCompletionPage extends StatelessWidget {
       c.initJob(args['job'], args['jobId']);
     }
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
         if (c.currentStep.value > 0 && c.currentStep.value < 2) {
           c.prevStep();
-          return false;
+        } else if (c.currentStep.value == 0) {
+          Get.back();
         }
-        return c.currentStep.value == 0; // Only allow back on step 0
+        // On success step (2), block back entirely
       },
       child: Scaffold(
         backgroundColor: AppColors.background,

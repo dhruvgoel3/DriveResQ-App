@@ -7,7 +7,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 
 class LiveTrackingController extends GetxController {
   final String requestId;
