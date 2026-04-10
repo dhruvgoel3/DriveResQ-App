@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 
 /// A robust service responsible for dispatching in-app and push notifications.
 ///
@@ -63,9 +62,9 @@ class NotificationSender {
       }
 
       if (counter > 0) await batch.commit();
-      debugPrint('NotificationSender: Alerted $counter nearby mechanics.');
+      /* print stripped */
     } catch (e) {
-      debugPrint('NotificationSender Error (nearby): $e');
+      /* print stripped */
     }
   }
 
@@ -255,7 +254,7 @@ class NotificationSender {
         },
       });
     } catch (e) {
-      debugPrint('NotificationSender Engine Failure: $e');
+      /* print stripped */
     }
   }
 

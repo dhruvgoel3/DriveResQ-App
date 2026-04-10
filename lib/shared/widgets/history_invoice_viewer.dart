@@ -25,7 +25,7 @@ class HistoryInvoiceViewer {
         XFile(file.path),
       ], text: 'DriveResQ Invoice ${completionData['invoiceNumber'] ?? ''}');
     } catch (e) {
-      debugPrint(' Invoice generation error: $e');
+      /* print stripped */
       AppSnackbar.error('Failed to generate invoice');
     }
   }

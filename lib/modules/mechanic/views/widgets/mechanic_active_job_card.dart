@@ -642,7 +642,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
             ),
             style: OutlinedButton.styleFrom(
               foregroundColor: _red,
-              side: BorderSide(color: _red, width: 1.5),
+              side: const BorderSide(color: _red, width: 1.5),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r),
               ),
@@ -692,7 +692,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: _red,
-                  side: BorderSide(color: _red, width: 1.5),
+                  side: const BorderSide(color: _red, width: 1.5),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.r),
                   ),
@@ -705,8 +705,8 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
               flex: 3,
               child: Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [_green, const Color(0xFF388E3C)],
+                  gradient: const LinearGradient(
+                    colors: [_green, Color(0xFF388E3C)],
                   ),
                   borderRadius: BorderRadius.circular(12.r),
                   boxShadow: [
@@ -762,7 +762,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
             ),
             style: OutlinedButton.styleFrom(
               foregroundColor: _red,
-              side: BorderSide(color: _red, width: 1.5),
+              side: const BorderSide(color: _red, width: 1.5),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r),
               ),

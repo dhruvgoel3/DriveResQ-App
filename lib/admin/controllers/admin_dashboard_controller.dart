@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AdminDashboardController extends GetxController {
@@ -97,7 +96,7 @@ class AdminDashboardController extends GetxController {
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      debugPrint(' Stats fetch error: $e');
+      /* print stripped */
     }
   }
 
@@ -115,7 +114,7 @@ class AdminDashboardController extends GetxController {
         return data;
       }).toList();
     } catch (e) {
-      debugPrint(' Recent actions fetch error: $e');
+      /* print stripped */
     }
   }
 }

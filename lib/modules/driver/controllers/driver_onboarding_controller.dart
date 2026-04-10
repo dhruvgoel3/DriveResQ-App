@@ -190,7 +190,7 @@ class DriverOnboardingController extends GetxController {
       final snapshot = await uploadTask;
       return await snapshot.ref.getDownloadURL();
     } catch (e) {
-      debugPrint(' Upload error for $path: $e');
+      /* print stripped */
       return null;
     }
   }
@@ -250,7 +250,7 @@ class DriverOnboardingController extends GetxController {
       AppSnackbar.success('Profile setup complete 🎉', title: 'Welcome!');
     } catch (e) {
       isLoading.value = false;
-      debugPrint(' Driver onboarding error: $e');
+      /* print stripped */
       AppSnackbar.error('Failed to submit. Please try again.');
     }
   }

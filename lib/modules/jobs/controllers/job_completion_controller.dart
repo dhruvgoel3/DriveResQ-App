@@ -279,7 +279,7 @@ class JobCompletionController extends GetxController {
             reviewText: reviewController.text.trim(),
           );
         } catch (e) {
-          debugPrint('Failed to submit driver rating: $e');
+          /* print stripped */
         }
       }
 
@@ -300,7 +300,7 @@ class JobCompletionController extends GetxController {
       currentStep.value = 2; // Go to success screen
     } catch (e) {
       isLoading.value = false;
-      debugPrint(' Completion error: $e');
+      /* print stripped */
       AppSnackbar.error('Failed to complete job: $e');
     }
   }

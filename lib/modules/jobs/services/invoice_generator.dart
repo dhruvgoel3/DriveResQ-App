@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -26,10 +25,10 @@ class InvoiceGenerator {
       final file = File('${dir.path}/$fileName');
 
       await file.writeAsBytes(bytes);
-      debugPrint('InvoiceGenerator: Saved invoice to ${file.path}');
+      /* print stripped */
       return file;
     } catch (e) {
-      debugPrint('InvoiceGenerator Error (Save): $e');
+      /* print stripped */
       rethrow;
     }
   }
@@ -42,7 +41,7 @@ class InvoiceGenerator {
         XFile(file.path),
       ], text: 'DriveResQ Service Invoice - #${c.invoiceNumber.value}');
     } catch (e) {
-      debugPrint('InvoiceGenerator Error (Share): $e');
+      /* print stripped */
     }
   }
 

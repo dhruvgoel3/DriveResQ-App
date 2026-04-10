@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 import '../../../utils/helpers/app_snackbar.dart';
@@ -63,7 +62,7 @@ class DriverHistoryController extends GetxController {
               data['completionData'] = completedDoc.data();
             }
           } catch (e) {
-            debugPrint('️ Failed to fetch completion data for ${doc.id}: $e');
+            /* print stripped */
           }
         } else if (data['status'] == 'cancelled') {
           cancelled++;
@@ -88,7 +87,7 @@ class DriverHistoryController extends GetxController {
       rescuedCount.value = completed;
       cancelledCount.value = cancelled;
     } catch (e) {
-      debugPrint(' Error fetching driver history: $e');
+      /* print stripped */
       AppSnackbar.error('Failed to load history');
     } finally {
       isLoading.value = false;

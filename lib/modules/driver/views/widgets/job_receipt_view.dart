@@ -37,7 +37,7 @@ class JobReceiptView extends StatelessWidget {
           .doc(request['id'])
           .update({'status': 'closed', 'driverArchived': true});
     } catch (e) {
-      debugPrint("Error archiving closed job: $e");
+      /* print stripped */
     }
 
     // Immediately clear the driver controller state so UI transitions instantly

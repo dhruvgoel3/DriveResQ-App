@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 
 import '../../chat/services/chat_service.dart';
 import '../../notifications/services/notification_sender.dart';
@@ -198,7 +197,7 @@ class MechanicService {
 
       return null;
     } catch (e) {
-      debugPrint('Error verifying job OTP: $e');
+      /* print stripped */
       return 'Network or system error. Please try again.';
     }
   }
@@ -242,7 +241,7 @@ class MechanicService {
         mechanicPhoto: mechanicData['profilePhotoUrl'] ?? '',
       );
     } catch (e) {
-      debugPrint('️ Non-critical failure during post-acceptance sync: $e');
+      /* print stripped */
     }
   }
 }

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driveresq_app/modules/driver/services/location_service.dart';
-import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
@@ -80,7 +79,7 @@ class FindMechanicsController extends GetxController {
       driverLng.value = locData['lng'];
       locationName.value = locData['locationName'] ?? 'Unknown Location';
     } catch (e) {
-      debugPrint("Error fetching location: $e");
+      /* print stripped */
       locationName.value = "Location disabled";
     }
 
@@ -122,7 +121,7 @@ class FindMechanicsController extends GetxController {
             isLoading.value = false;
           },
           onError: (error) {
-            debugPrint(' Error listening to mechanics: $error');
+            /* print stripped */
             isLoading.value = false;
           },
         );

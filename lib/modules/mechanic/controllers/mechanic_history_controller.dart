@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 import '../../../utils/helpers/app_snackbar.dart';
@@ -71,7 +70,7 @@ class MechanicHistoryController extends GetxController {
                   : 0);
             }
           } catch (e) {
-            debugPrint('️ Failed to fetch completion data for ${doc.id}: $e');
+            /* print stripped */
           }
         }
 
@@ -95,7 +94,7 @@ class MechanicHistoryController extends GetxController {
       totalEarnings.value = earnings;
       totalDistance.value = distance;
     } catch (e) {
-      debugPrint(' Error fetching mechanic history: $e');
+      /* print stripped */
       AppSnackbar.error('Failed to load history');
     } finally {
       isLoading.value = false;

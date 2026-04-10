@@ -109,7 +109,7 @@ class MechanicController extends GetxController {
           desiredAccuracy: LocationAccuracy.high,
         ).timeout(const Duration(seconds: 10));
       } catch (_) {
-        debugPrint("High accuracy failed, trying medium...");
+        /* print stripped */
         position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.medium,
         ).timeout(const Duration(seconds: 10));
@@ -120,11 +120,9 @@ class MechanicController extends GetxController {
       isLocationLoaded.value = true;
       locationError.value = null;
 
-      debugPrint(
-        "Mechanic Location: ${mechanicLat.value}, ${mechanicLng.value}",
-      );
+      /* print stripped */
     } catch (e) {
-      debugPrint("Location Error: $e");
+      /* print stripped */
       locationError.value = "Could not fetch location";
       AppSnackbar.error(
         'Could not get your location. Pull down to retry.',
@@ -157,7 +155,7 @@ class MechanicController extends GetxController {
               // 🚀 START LOCATION TRACKING when job is active
               MechanicLocationService.startTracking();
 
-              debugPrint("Active job found: ${activeJob.value!['id']}");
+              /* print stripped */
             } else {
               hasActiveJob.value = false;
               activeJob.value = null;
@@ -165,11 +163,11 @@ class MechanicController extends GetxController {
               // 🛑 STOP LOCATION TRACKING when no active job
               MechanicLocationService.stopTracking();
 
-              debugPrint("No active job");
+              /* print stripped */
             }
           },
           onError: (error) {
-            debugPrint("Error listening to active job: $error");
+            /* print stripped */
             AppSnackbar.error('Failed to load active job');
           },
         );
@@ -198,7 +196,7 @@ class MechanicController extends GetxController {
 
               // Validate location data
               if (driverLat == null || driverLng == null) {
-                debugPrint("Request ${doc.id} has missing location data");
+                /* print stripped */
                 continue;
               }
 
@@ -222,9 +220,7 @@ class MechanicController extends GetxController {
                   });
                 }
               } catch (e) {
-                debugPrint(
-                  "Error calculating distance for request ${doc.id}: $e",
-                );
+                /* print stripped */
                 continue;
               }
             }
@@ -241,10 +237,10 @@ class MechanicController extends GetxController {
             });
 
             openRequests.value = nearbyList;
-            debugPrint("Found ${nearbyList.length} nearby open requests");
+            /* print stripped */
           },
           onError: (error) {
-            debugPrint("Error listening to requests: $error");
+            /* print stripped */
             AppSnackbar.error('Failed to load requests');
           },
         );
@@ -260,9 +256,9 @@ class MechanicController extends GetxController {
       changeInnerTab(1); // Switch to "Accepted Requests" tab
 
       // Location tracking will auto-start via _listenToActiveJob
-      debugPrint("Request $requestId accepted successfully");
+      /* print stripped */
     } catch (e) {
-      debugPrint("Error accepting request: $e");
+      /* print stripped */
 
       // More specific error messages
       if (e.toString().contains('permission')) {
@@ -287,11 +283,11 @@ class MechanicController extends GetxController {
 
       AppSnackbar.warning('Job cancelled successfully', title: 'Cancelled');
 
-      debugPrint("Job cancelled: ${activeJob.value!['id']}");
+      /* print stripped */
 
       // Location tracking will auto-stop via _listenToActiveJob
     } catch (e) {
-      debugPrint("Error cancelling job: $e");
+      /* print stripped */
       AppSnackbar.error('Failed to cancel job: $e');
     }
   }
@@ -308,11 +304,11 @@ class MechanicController extends GetxController {
 
       AppSnackbar.success('Job completed successfully! Great work!');
 
-      debugPrint("Job completed: ${activeJob.value!['id']}");
+      /* print stripped */
 
       // Location tracking will auto-stop via _listenToActiveJob
     } catch (e) {
-      debugPrint("Error completing job: $e");
+      /* print stripped */
       AppSnackbar.error('Failed to complete job: $e');
     }
   }
@@ -357,7 +353,7 @@ class MechanicController extends GetxController {
         'Code verified! Complete the job details now.',
         title: 'Verified!',
       );
-      debugPrint('Job verified: $jobId');
+      /* print stripped */
       return null;
     } else {
       return errorMsg;

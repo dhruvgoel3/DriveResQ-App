@@ -22,10 +22,10 @@ class ConnectivityService {
 
       return result.isNotEmpty && result.first.rawAddress.isNotEmpty;
     } on SocketException catch (_) {
-      debugPrint('Connectivity: No route to host (SocketException)');
+      /* print stripped */
       return false;
     } catch (e) {
-      debugPrint('Connectivity Error: $e');
+      /* print stripped */
       return false;
     }
   }

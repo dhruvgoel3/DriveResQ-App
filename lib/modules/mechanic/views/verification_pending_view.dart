@@ -83,7 +83,7 @@ class VerificationPendingView extends StatelessWidget {
         }
       }
     } catch (e) {
-      debugPrint('Error manually checking status: $e');
+      /* print stripped */
     }
   }
 

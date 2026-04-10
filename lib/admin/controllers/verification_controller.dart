@@ -92,7 +92,7 @@ class VerificationController extends GetxController {
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      debugPrint(' Fetch applications error: $e');
+      /* print stripped */
     }
   }
 
@@ -116,7 +116,7 @@ class VerificationController extends GetxController {
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      debugPrint(' Load application details error: $e');
+      /* print stripped */
     }
   }
 
@@ -169,7 +169,7 @@ class VerificationController extends GetxController {
       fetchApplications(currentFilter.value, role: currentRole.value);
     } catch (e) {
       isLoading.value = false;
-      debugPrint(' Approve error: $e');
+      /* print stripped */
       AppSnackbar.error('Failed to approve: $e');
     }
   }
@@ -231,7 +231,7 @@ class VerificationController extends GetxController {
       fetchApplications(currentFilter.value, role: currentRole.value);
     } catch (e) {
       isLoading.value = false;
-      debugPrint(' Reject error: $e');
+      /* print stripped */
       AppSnackbar.error('Failed to reject: $e');
     }
   }
@@ -243,7 +243,7 @@ class VerificationController extends GetxController {
       });
       AppSnackbar.info('Notes saved', title: 'Saved');
     } catch (e) {
-      debugPrint(' Save notes error: $e');
+      /* print stripped */
     }
   }
 

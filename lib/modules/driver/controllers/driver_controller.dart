@@ -41,7 +41,7 @@ class DriverController extends GetxController {
   void listenToActiveRequest() {
     final uid = _auth.currentUser?.uid;
     if (uid == null) {
-      debugPrint('No authenticated user - skipping request listener');
+      /* print stripped */
       isLoadingRequest.value = false;
       return;
     }
@@ -79,7 +79,7 @@ class DriverController extends GetxController {
           },
           onError: (error) {
             isLoadingRequest.value = false;
-            debugPrint('Error listening to active request: $error');
+            /* print stripped */
           },
         );
   }
@@ -94,14 +94,14 @@ class DriverController extends GetxController {
         return;
       }
 
-      debugPrint('Cancelling request: $requestId');
+      /* print stripped */
 
       await DriverService.cancelActiveRequest(requestId);
 
-      debugPrint('Request cancelled successfully');
+      /* print stripped */
       AppSnackbar.warning('Your request has been cancelled.', title: 'Cancelled');
     } catch (e) {
-      debugPrint('Error cancelling request: $e');
+      /* print stripped */
       AppSnackbar.error('Failed to cancel request. Please try again.');
     }
   }
@@ -118,7 +118,7 @@ class DriverController extends GetxController {
       await DriverService.approveMechanic(requestId);
       AppSnackbar.success('Mechanic confirmed. OTP generated.', title: 'Approved!');
     } catch (e) {
-      debugPrint('Error approving mechanic: $e');
+      /* print stripped */
       AppSnackbar.error('Failed to approve. Please try again.');
     }
   }
@@ -138,7 +138,7 @@ class DriverController extends GetxController {
         title: 'Declined',
       );
     } catch (e) {
-      debugPrint('Error declining mechanic: $e');
+      /* print stripped */
       AppSnackbar.error('Failed to decline. Please try again.');
     }
   }

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 
@@ -42,7 +41,7 @@ class SettingsController extends GetxController {
         });
       }
     } catch (e) {
-      debugPrint("Error loading settings: $e");
+      /* print stripped */
     } finally {
       isLoading.value = false;
     }

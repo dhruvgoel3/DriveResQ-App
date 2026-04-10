@@ -11,7 +11,6 @@ import '../models/message_model.dart';
 import '../services/chat_service.dart';
 import '../../../shared/services/error_handler.dart';
 import '../../../utils/helpers/app_snackbar.dart';
-import '../../../utils/helpers/throttle_helper.dart';
 
 class ChatController extends GetxController {
   final String chatId;
@@ -137,7 +136,7 @@ class ChatController extends GetxController {
         senderRole: myRole,
       );
     } catch (e) {
-      debugPrint(' Send error: $e');
+      /* print stripped */
       ErrorHandler.handle(e);
     }
 
@@ -172,13 +171,13 @@ class ChatController extends GetxController {
           senderRole: myRole,
         );
       } catch (e) {
-        debugPrint(' Image send error: $e');
+        /* print stripped */
         ErrorHandler.handle(e);
       } finally {
         isSending.value = false;
       }
     } catch (e) {
-      debugPrint(' Image picker error: $e');
+      /* print stripped */
       ErrorHandler.handle(e);
       isSending.value = false;
     }
@@ -223,7 +222,7 @@ class ChatController extends GetxController {
         );
       }
     } catch (e) {
-      debugPrint(' Recording error: $e');
+      /* print stripped */
       AppSnackbar.error('Could not start recording');
     }
   }
@@ -253,7 +252,7 @@ class ChatController extends GetxController {
         durationSeconds: recordingDuration.value,
       );
     } catch (e) {
-      debugPrint(' Voice send error: $e');
+      /* print stripped */
       ErrorHandler.handle(e);
     }
 
@@ -292,7 +291,7 @@ class ChatController extends GetxController {
       isPlaying.value = true;
       await audioPlayer.play(UrlSource(url));
     } catch (e) {
-      debugPrint(' Playback error: $e');
+      /* print stripped */
       isPlaying.value = false;
       currentlyPlayingId.value = '';
     }
@@ -317,7 +316,7 @@ class ChatController extends GetxController {
         parts: parts,
       );
     } catch (e) {
-      debugPrint(' Estimate error: $e');
+      /* print stripped */
       AppSnackbar.error('Failed to send estimate');
     }
     isSending.value = false;
@@ -339,7 +338,7 @@ class ChatController extends GetxController {
         reason: reason,
       );
     } catch (e) {
-      debugPrint(' Quote response error: $e');
+      /* print stripped */
     }
   }
 

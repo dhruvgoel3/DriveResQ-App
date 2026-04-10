@@ -375,7 +375,7 @@ class MechanicOnboardingController extends GetxController {
   // ── Firebase Upload ──
   Future<String?> _uploadImage(File? file, String path) async {
     if (file == null || !file.existsSync()) {
-      debugPrint(' Skipping upload for $path: File does not exist');
+      /* print stripped */
       return null;
     }
     try {
@@ -392,7 +392,7 @@ class MechanicOnboardingController extends GetxController {
       final snapshot = await uploadTask;
       return await snapshot.ref.getDownloadURL();
     } catch (e) {
-      debugPrint(' Upload error for $path: $e');
+      /* print stripped */
       return null;
     }
   }
@@ -532,11 +532,11 @@ class MechanicOnboardingController extends GetxController {
               },
               'createdAt': FieldValue.serverTimestamp(),
             });
-            debugPrint(' Triggered admin email notification to $adminEmail');
+            /* print stripped */
           }
         }
       } catch (mailError) {
-        debugPrint('️ Failed to trigger admin email: $mailError');
+        /* print stripped */
         // Do not block onboarding on email failure
       }
 
@@ -545,7 +545,7 @@ class MechanicOnboardingController extends GetxController {
       Get.offAllNamed('/mechanic-verification');
     } catch (e) {
       isLoading.value = false;
-      debugPrint(' Onboarding submit error: $e');
+      /* print stripped */
       AppSnackbar.error('Failed to submit. Please try again.');
     }
   }

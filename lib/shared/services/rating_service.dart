@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 import '../../modules/notifications/services/notification_sender.dart';
 
@@ -60,9 +59,9 @@ class RatingService {
         mechanicId: targetUserId,
         rating: newRating,
         review: reviewText,
-      ).catchError((e) => debugPrint('️ Rating Notification Failed: $e'));
+      ).catchError((e) => /* print stripped */);
     } catch (e) {
-      debugPrint("RatingService Error: $e");
+      /* print stripped */
       rethrow;
     }
   }
