@@ -214,6 +214,30 @@ class _OnboardingViewState extends State<OnboardingView>
     );
   }
 
+  // ─── Utility for Responsive Slides ───
+  Widget _buildScrollableCentered({
+    required List<Widget> children,
+    EdgeInsetsGeometry? padding,
+  }) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: padding,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: constraints.maxHeight,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: children,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   // ═══════════════════════════════════════════
   //  SLIDE 0: WELCOME
   // ═══════════════════════════════════════════
@@ -225,9 +249,9 @@ class _OnboardingViewState extends State<OnboardingView>
           gradient: AppColors.primaryGradient,
         ),
         child: SafeArea(
-          child: Column(
+          child: _buildScrollableCentered(
             children: [
-              const Spacer(flex: 2),
+              SizedBox(height: 20.h),
               // Animated logo illustration
               TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0.5, end: 1.0),
@@ -290,7 +314,7 @@ class _OnboardingViewState extends State<OnboardingView>
                   color: Colors.white.withOpacity(0.8),
                 ),
               ),
-              const Spacer(flex: 3),
+              SizedBox(height: 40.h),
             ],
           ),
         ),
@@ -369,9 +393,9 @@ class _OnboardingViewState extends State<OnboardingView>
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.w),
-            child: Column(
+            child: _buildScrollableCentered(
               children: [
-                const Spacer(flex: 2),
+                SizedBox(height: 20.h),
                 Text(
                   "Let's Get Started!",
                   style: GoogleFonts.poppins(
@@ -409,7 +433,7 @@ class _OnboardingViewState extends State<OnboardingView>
                   onTap: () => _completeOnboarding(role: 'mechanic'),
                 ),
 
-                const Spacer(flex: 3),
+                SizedBox(height: 40.h),
 
                 // Bottom dots (no controls on last page)
                 Row(
@@ -430,7 +454,7 @@ class _OnboardingViewState extends State<OnboardingView>
                     );
                   }),
                 ),
-                SizedBox(height: MediaQuery.of(context).padding.bottom + 20),
+                SizedBox(height: 20.h),
               ],
             ),
           ),
@@ -517,9 +541,9 @@ class _OnboardingViewState extends State<OnboardingView>
       child: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 28.w),
-          child: Column(
+          child: _buildScrollableCentered(
             children: [
-              const Spacer(flex: 2),
+              SizedBox(height: 20.h),
               _animatedIcon(
                 icon,
                 90,
@@ -547,7 +571,7 @@ class _OnboardingViewState extends State<OnboardingView>
               ),
               SizedBox(height: 36.h),
               ...features.map((f) => _featureRow(f.icon, f.label)),
-              const Spacer(flex: 3),
+              SizedBox(height: 20.h),
             ],
           ),
         ),

@@ -13,6 +13,7 @@ class AuthController extends GetxController {
 
   // Observable states
   var isLoading = false.obs;
+  var loadingMessage = ''.obs;
   var selectedRole = ''.obs;
 
   // Phone auth
@@ -77,6 +78,7 @@ class AuthController extends GetxController {
 
     try {
       isLoading.value = true;
+      loadingMessage.value = 'Securing setup... (may take up to 15s)';
 
       final phone = '+91$sanitized';
       debugPrint("Sending OTP to: $phone");
@@ -144,6 +146,7 @@ class AuthController extends GetxController {
 
     try {
       isLoading.value = true;
+      loadingMessage.value = 'Verifying code...';
 
       debugPrint("Verifying OTP for verificationId: $verificationId");
 

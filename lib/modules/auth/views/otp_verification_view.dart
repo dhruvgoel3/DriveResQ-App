@@ -335,13 +335,30 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
                               ),
                             ),
                             child: controller.isLoading.value
-                                ? SizedBox(
-                                    height: 20.h,
-                                    width: 20.w,
-                                    child: const CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 2,
-                                    ),
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        height: 20.h,
+                                        width: 20.w,
+                                        child: const CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      ),
+                                      SizedBox(width: 12.w),
+                                      Flexible( // To prevent overflow if text is long on small screens
+                                        child: Text(
+                                          controller.loadingMessage.value,
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
                                   )
                                 : Text(
                                     "Verify & Continue",
