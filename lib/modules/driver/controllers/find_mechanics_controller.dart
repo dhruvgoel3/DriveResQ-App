@@ -91,6 +91,8 @@ class FindMechanicsController extends GetxController {
     _mechanicsSubscription = _firestore
         .collection('users')
         .where('role', isEqualTo: 'mechanic')
+        .where('verificationStatus', isEqualTo: 'approved')
+        .where('isOnline', isEqualTo: true)
         .snapshots()
         .listen(
           (snapshot) {

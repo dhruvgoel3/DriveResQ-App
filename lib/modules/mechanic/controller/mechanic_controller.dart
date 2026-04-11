@@ -176,9 +176,14 @@ class MechanicController extends GetxController {
   // 🎧 Listen to nearby OPEN requests only (Real-time)
   void _listenToNearbyRequests() {
     // FIX: Only show 'open' requests (not accepted ones)
+    final minLat = mechanicLat.value - 0.2; // ~22km boundary
+    final maxLat = mechanicLat.value + 0.2;
+
     _requestsSubscription = _firestore
         .collection('requests')
         .where('status', isEqualTo: 'open') // ✅ FIXED: Only open requests
+        .where('driverLat', isGreaterThanOrEqualTo: minLat)
+        .where('driverLat', isLessThanOrEqualTo: maxLat)
         .snapshots()
         .listen(
           (snapshot) {
@@ -326,6 +331,11 @@ class MechanicController extends GetxController {
   // Refresh location manually
   Future<void> refreshLocation() async {
     await _getMechanicLocation();
+    
+    // Reboot the stream with the newly anchored bounding box
+    _requestsSubscription?.cancel();
+    _listenToNearbyRequests();
+    
     AppSnackbar.success('Location refreshed');
   }
 

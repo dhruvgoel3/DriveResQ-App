@@ -43,17 +43,10 @@ class MechanicHistoryController extends GetxController {
           .where('status', whereIn: ['completed', 'cancelled'])
           .get();
 
-      List<Map<String, dynamic>> items = [];
-      int completed = 0;
-      double earnings = 0;
-      double distance = 0;
-
-      for (var doc in snapshot.docs) {
+      final futures = snapshot.docs.map((doc) async {
         final data = {...doc.data(), 'id': doc.id};
 
         if (data['status'] == 'completed') {
-          completed++;
-
           // Try to fetch rich completedJobs data
           try {
             final completedDoc = await _firestore
@@ -63,18 +56,31 @@ class MechanicHistoryController extends GetxController {
             if (completedDoc.exists) {
               final cData = completedDoc.data()!;
               data['completionData'] = cData;
-              earnings += (cData['totalAmount'] ?? 0).toDouble();
-              distance += (cData['travelCost'] != null
-                  ? (cData['travelCost'] as num).toDouble() /
-                        15.0 // ₹15/km
-                  : 0);
             }
           } catch (e) {
             /* print stripped */
           }
         }
+        return data;
+      });
 
-        items.add(data);
+      List<Map<String, dynamic>> items = (await Future.wait(futures)).toList();
+
+      int completed = 0;
+      double earnings = 0;
+      double distance = 0;
+
+      for (var data in items) {
+        if (data['status'] == 'completed') {
+          completed++;
+          final cData = data['completionData'];
+          if (cData != null) {
+              earnings += (cData['totalAmount'] ?? 0).toDouble();
+              distance += (cData['travelCost'] != null
+                  ? (cData['travelCost'] as num).toDouble() / 15.0
+                  : 0);
+          }
+        }
       }
 
       // Sort locally to bypass Firestore composite index requirement

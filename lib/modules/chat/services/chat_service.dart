@@ -439,7 +439,7 @@ class ChatService {
           recipientId: recipientId,
           senderName: senderName,
           message: content,
-        ).catchError((e) => /* print stripped */);
+        ).catchError((e) {});
       }
     } catch (e) {
       /* print stripped */

@@ -59,7 +59,7 @@ class RatingService {
         mechanicId: targetUserId,
         rating: newRating,
         review: reviewText,
-      ).catchError((e) => /* print stripped */);
+      ).catchError((e) {});
     } catch (e) {
       /* print stripped */
       rethrow;

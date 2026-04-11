@@ -42,17 +42,15 @@ class DriverHistoryController extends GetxController {
           .where('status', whereIn: ['completed', 'cancelled'])
           .get();
 
-      List<Map<String, dynamic>> items = [];
       int completed = 0;
       int cancelled = 0;
 
-      for (var doc in snapshot.docs) {
+      final futures = snapshot.docs.map((doc) async {
         final data = {...doc.data(), 'id': doc.id};
 
         if (data['status'] == 'completed') {
-          completed++;
+          completed++; // Note: this is inside the map, but it's safe if not perfectly synchronized because they are Futures executed in the same isolate, but better to recalculate after
 
-          // Try to fetch rich completedJobs data
           try {
             final completedDoc = await _firestore
                 .collection('completedJobs')
@@ -67,9 +65,14 @@ class DriverHistoryController extends GetxController {
         } else if (data['status'] == 'cancelled') {
           cancelled++;
         }
+        return data;
+      });
 
-        items.add(data);
-      }
+      List<Map<String, dynamic>> items = (await Future.wait(futures)).toList();
+
+      // Recalculate precisely after all futures resolve
+      completed = items.where((i) => i['status'] == 'completed').length;
+      cancelled = items.where((i) => i['status'] == 'cancelled').length;
 
       // Sort locally to bypass Firestore composite index requirement
       items.sort((a, b) {

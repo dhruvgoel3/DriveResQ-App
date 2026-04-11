@@ -89,26 +89,28 @@ class DriverService {
   ///
   /// This allows other nearby mechanics to see and accept the request again.
   static Future<void> declineMechanic(String requestId) async {
-    final snapshot = await _firestore
-        .collection('requests')
-        .doc(requestId)
-        .get();
-    final mechanicId = snapshot.data()?['mechanicId'];
+    await ThrottleHelper.asyncAction('decline_mech_$requestId', () async {
+      final snapshot = await _firestore
+          .collection('requests')
+          .doc(requestId)
+          .get();
+      final mechanicId = snapshot.data()?['mechanicId'];
 
-    await _firestore.collection('requests').doc(requestId).update({
-      'status': 'open',
-      'mechanicId': FieldValue.delete(),
-      'mechanicPhone': FieldValue.delete(),
-      'acceptedAt': FieldValue.delete(),
-    });
+      await _firestore.collection('requests').doc(requestId).update({
+        'status': 'open',
+        'mechanicId': FieldValue.delete(),
+        'mechanicPhone': FieldValue.delete(),
+        'acceptedAt': FieldValue.delete(),
+      });
 
-    if (mechanicId != null) {
-      await NotificationSender.notifyRequestCancelled(
-        requestId: requestId,
-        recipientId: mechanicId,
-        reason: 'The driver chose not to proceed with this assignment.',
-      );
-    }
+      if (mechanicId != null) {
+        await NotificationSender.notifyRequestCancelled(
+          requestId: requestId,
+          recipientId: mechanicId,
+          reason: 'The driver chose not to proceed with this assignment.',
+        );
+      }
+    })();
   }
 
   // ---------------------------------------------------------------------------

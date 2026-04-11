@@ -11,6 +11,7 @@ import '../models/message_model.dart';
 import '../services/chat_service.dart';
 import '../../../shared/services/error_handler.dart';
 import '../../../utils/helpers/app_snackbar.dart';
+import '../../../utils/helpers/throttle_helper.dart';
 
 class ChatController extends GetxController {
   final String chatId;
@@ -130,11 +131,13 @@ class ChatController extends GetxController {
     isSending.value = true;
 
     try {
-      await ChatService.sendMessage(
-        chatId: chatId,
-        content: text,
-        senderRole: myRole,
-      );
+      await ThrottleHelper.asyncAction('send_message_$chatId', () async {
+        await ChatService.sendMessage(
+          chatId: chatId,
+          content: text,
+          senderRole: myRole,
+        );
+      })();
     } catch (e) {
       /* print stripped */
       ErrorHandler.handle(e);
@@ -165,11 +168,13 @@ class ChatController extends GetxController {
 
       isSending.value = true;
       try {
-        await ChatService.sendImage(
-          chatId: chatId,
-          localPath: picked.path,
-          senderRole: myRole,
-        );
+        await ThrottleHelper.asyncAction('send_image_$chatId', () async {
+          await ChatService.sendImage(
+            chatId: chatId,
+            localPath: picked.path,
+            senderRole: myRole,
+          );
+        })();
       } catch (e) {
         /* print stripped */
         ErrorHandler.handle(e);
@@ -245,12 +250,14 @@ class ChatController extends GetxController {
       }
 
       isSending.value = true;
-      await ChatService.sendVoiceMessage(
-        chatId: chatId,
-        audioPath: path,
-        senderRole: myRole,
-        durationSeconds: recordingDuration.value,
-      );
+      await ThrottleHelper.asyncAction('send_voice_$chatId', () async {
+        await ChatService.sendVoiceMessage(
+          chatId: chatId,
+          audioPath: path,
+          senderRole: myRole,
+          durationSeconds: recordingDuration.value,
+        );
+      })();
     } catch (e) {
       /* print stripped */
       ErrorHandler.handle(e);
@@ -307,14 +314,16 @@ class ChatController extends GetxController {
   }) async {
     isSending.value = true;
     try {
-      await ChatService.sendPriceQuote(
-        chatId: chatId,
-        service: service,
-        estimatedCost: cost,
-        estimatedTime: time,
-        notes: notes,
-        parts: parts,
-      );
+      await ThrottleHelper.asyncAction('send_estimate_$chatId', () async {
+        await ChatService.sendPriceQuote(
+          chatId: chatId,
+          service: service,
+          estimatedCost: cost,
+          estimatedTime: time,
+          notes: notes,
+          parts: parts,
+        );
+      })();
     } catch (e) {
       /* print stripped */
       AppSnackbar.error('Failed to send estimate');
@@ -330,13 +339,15 @@ class ChatController extends GetxController {
     String? reason,
   }) async {
     try {
-      await ChatService.respondToQuote(
-        chatId: chatId,
-        messageId: messageId,
-        responseStatus: response,
-        counterOffer: counterOffer,
-        reason: reason,
-      );
+      await ThrottleHelper.asyncAction('respond_quote_$messageId', () async {
+        await ChatService.respondToQuote(
+          chatId: chatId,
+          messageId: messageId,
+          responseStatus: response,
+          counterOffer: counterOffer,
+          reason: reason,
+        );
+      })();
     } catch (e) {
       /* print stripped */
     }
