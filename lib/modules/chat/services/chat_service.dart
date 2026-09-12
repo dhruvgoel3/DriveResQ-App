@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../notifications/services/notification_sender.dart';
 import '../models/message_model.dart';
@@ -66,7 +67,7 @@ class ChatService {
         }
       }
     } catch (e) {
-      /* print stripped */
+      debugPrint('ChatService.createChat: failed to resolve names: $e');
     }
 
     await chatRef.set({
@@ -442,7 +443,7 @@ class ChatService {
         ).catchError((e) {});
       }
     } catch (e) {
-      /* print stripped */
+      debugPrint('ChatService: failed to send chat notification: $e');
     }
   }
 }

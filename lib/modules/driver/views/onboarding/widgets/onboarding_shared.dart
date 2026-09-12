@@ -37,7 +37,7 @@ class OnboardingShared {
             borderRadius: BorderRadius.circular(14.r),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -56,7 +56,7 @@ class OnboardingShared {
               prefixIcon: Icon(
                 icon,
                 size: 20.w,
-                color: AppColors.primary.withOpacity(0.8),
+                color: AppColors.primary.withValues(alpha: 0.8),
               ),
               filled: true,
               fillColor: AppColors.surface,
@@ -101,12 +101,12 @@ class OnboardingShared {
         width: double.infinity,
         decoration: BoxDecoration(
           color: hasPhoto
-              ? AppColors.primary.withOpacity(0.05)
+              ? AppColors.primary.withValues(alpha: 0.05)
               : AppColors.background,
           borderRadius: BorderRadius.circular(14.r),
           border: Border.all(
             color: hasPhoto
-                ? AppColors.primary.withOpacity(0.3)
+                ? AppColors.primary.withValues(alpha: 0.3)
                 : AppColors.border,
             width: 1.5,
           ),

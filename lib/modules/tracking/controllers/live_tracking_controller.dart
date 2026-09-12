@@ -64,7 +64,7 @@ class LiveTrackingController extends GetxController {
   Future<void> _getDriverLocation() async {
     try {
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
       );
       driverLatLng = LatLng(position.latitude, position.longitude);
       _updateDriverMarker();
@@ -77,7 +77,7 @@ class LiveTrackingController extends GetxController {
   Future<void> _getMechanicLocation() async {
     try {
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
       );
       mechanicLatLng = LatLng(position.latitude, position.longitude);
       _updateMechanicMarker();

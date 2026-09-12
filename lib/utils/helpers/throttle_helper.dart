@@ -14,7 +14,6 @@ class ThrottleHelper {
       ) {
     return () async {
       if (_isRunningList[key] ?? false) {
-        /* print stripped */
         return;
       }
       _isRunningList[key] = true;
@@ -33,7 +32,6 @@ class ThrottleHelper {
   static void throttle(String key, VoidCallback action, {int ms = 1000}) {
     if (_throttleTimers.containsKey(key)) {
       if (_throttleTimers[key]!.isActive) {
-        /* print stripped */
         return;
       }
     }

@@ -375,7 +375,6 @@ class MechanicOnboardingController extends GetxController {
   // ── Firebase Upload ──
   Future<String?> _uploadImage(File? file, String path) async {
     if (file == null || !file.existsSync()) {
-      /* print stripped */
       return null;
     }
     try {
@@ -392,7 +391,6 @@ class MechanicOnboardingController extends GetxController {
       final snapshot = await uploadTask;
       return await snapshot.ref.getDownloadURL();
     } catch (e) {
-      /* print stripped */
       return null;
     }
   }
@@ -532,11 +530,9 @@ class MechanicOnboardingController extends GetxController {
               },
               'createdAt': FieldValue.serverTimestamp(),
             });
-            /* print stripped */
           }
         }
       } catch (mailError) {
-        /* print stripped */
         // Do not block onboarding on email failure
       }
 
@@ -545,7 +541,6 @@ class MechanicOnboardingController extends GetxController {
       Get.offAllNamed('/mechanic-verification');
     } catch (e) {
       isLoading.value = false;
-      /* print stripped */
       AppSnackbar.error('Failed to submit. Please try again.');
     }
   }

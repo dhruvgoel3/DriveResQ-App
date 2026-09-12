@@ -48,7 +48,7 @@ class ProfileHeader extends StatelessWidget {
                   ),
                   child: CircleAvatar(
                     radius: 42.r,
-                    backgroundColor: AppColors.surface.withOpacity(0.24),
+                    backgroundColor: AppColors.surface.withValues(alpha: 0.24),
                     child: Text(
                       controller.displayName.isNotEmpty
                           ? controller.displayName[0].toUpperCase()
@@ -69,7 +69,7 @@ class ProfileHeader extends StatelessWidget {
                 Text(
                   controller.phone,
                   style: AppTextStyles.body2.copyWith(
-                    color: AppColors.surface.withOpacity(0.7),
+                    color: AppColors.surface.withValues(alpha: 0.7),
                   ),
                 ),
                 SizedBox(height: 8.h),
@@ -79,7 +79,7 @@ class ProfileHeader extends StatelessWidget {
                     vertical: 4.h,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.surface.withOpacity(0.2),
+                    color: AppColors.surface.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(20.r),
                   ),
                   child: Row(

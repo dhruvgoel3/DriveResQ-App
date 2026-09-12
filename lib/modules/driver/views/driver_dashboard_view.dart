@@ -53,21 +53,21 @@ class DriverDashboardView extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.surface,
               boxShadow: [
-                BoxShadow(blurRadius: 20, color: Colors.black.withOpacity(.1)),
+                BoxShadow(blurRadius: 20, color: Colors.black.withValues(alpha: .1)),
               ],
             ),
             child: SafeArea(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 8.h),
                 child: GNav(
-                  rippleColor: AppColors.primary.withOpacity(0.2),
-                  hoverColor: AppColors.primary.withOpacity(0.1),
+                  rippleColor: AppColors.primary.withValues(alpha: 0.2),
+                  hoverColor: AppColors.primary.withValues(alpha: 0.1),
                   gap: 8,
                   activeColor: AppColors.primary,
                   iconSize: 24,
                   padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                   duration: const Duration(milliseconds: 400),
-                  tabBackgroundColor: AppColors.primary.withOpacity(0.1),
+                  tabBackgroundColor: AppColors.primary.withValues(alpha: 0.1),
                   color: AppColors.textHint,
                   textStyle: AppTextStyles.body2.copyWith(
                     fontWeight: FontWeight.w600,

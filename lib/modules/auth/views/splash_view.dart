@@ -207,7 +207,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
         await _goTo('/role');
       }
     } catch (e) {
-      /* print stripped */
       if (mounted && !_navigated) await _goTo('/role');
     }
   }

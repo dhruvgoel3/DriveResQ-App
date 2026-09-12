@@ -1,0 +1,98 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function to check if user is an admin
+    function isAdmin() {
+      return request.auth != null &&
+        (exists(/databases/$(database)/documents/admin/$(request.auth.uid)) ||
+         exists(/databases/$(database)/documents/adminUsers/$(request.auth.uid)));
+    }
+
+    // ─── USERS ───
+    // Anyone authenticated can read user profiles (needed for chats, names, FCM tokens)
+    // Only the owner can write to their own user document
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow delete: if false;
+    }
+
+    // ─── REQUESTS ───
+    // Drivers create requests; both drivers and mechanics can read
+    // Mechanics can update status (accept/complete); drivers can update (cancel)
+    match /requests/{requestId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if false;
+    }
+
+    // ─── COMPLETED JOBS ───
+    match /completedJobs/{jobId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if false;
+    }
+
+    // ─── CHATS ───
+    // Only participants can read/write chat documents
+    // Messages subcollection follows same participant rules
+    match /chats/{chatId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null
+                  && request.auth.uid in resource.data.participants;
+      allow update: if request.auth != null
+                   && request.auth.uid in resource.data.participants;
+      allow delete: if false;
+
+      match /messages/{messageId} {
+        allow create: if request.auth != null;
+        allow read: if request.auth != null;
+        allow update: if request.auth != null;
+        allow delete: if false;
+      }
+    }
+
+    // ─── NOTIFICATIONS ───
+    // Any authenticated user can create notifications
+    // Recipients can read and update (mark as read) their own notifications
+    // Cloud Functions update processed status (via Admin SDK, bypasses rules)
+    match /notifications/{notificationId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    // ─── ADMIN ───
+    match /admin/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+    match /adminUsers/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+    match /adminSettings/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+
+    match /adminActions/{document=**} {
+      allow read, write: if isAdmin();
+    }
+
+    match /mail/{document=**} {
+      allow create: if request.auth != null;
+      allow read: if isAdmin();
+    }
+
+    // ─── MECHANIC APPLICATIONS / ONBOARDING ───
+    match /mechanic_applications/{docId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if false;
+    }
+  }
+}

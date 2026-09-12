@@ -68,7 +68,7 @@ class MessageBubble extends StatelessWidget {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
+                  color: Colors.black.withValues(alpha: 0.04),
                   blurRadius: 6,
                   offset: const Offset(0, 2),
                 ),
@@ -90,7 +90,7 @@ class MessageBubble extends StatelessWidget {
                     Text(
                       _formatTime(message.timestamp),
                       style: AppTextStyles.caption.copyWith(
-                        color: isMe ? AppColors.surface.withOpacity(0.7) : AppColors.textHint,
+                        color: isMe ? AppColors.surface.withValues(alpha: 0.7) : AppColors.textHint,
                       ),
                     ),
                     if (isMe) ...[
@@ -98,7 +98,7 @@ class MessageBubble extends StatelessWidget {
                       Icon(
                         Iconsax.tick_circle,
                         size: 14.w,
-                        color: message.read ? AppColors.info : AppColors.surface.withOpacity(0.5),
+                        color: message.read ? AppColors.info : AppColors.surface.withValues(alpha: 0.5),
                       ),
                     ],
                   ],
@@ -131,7 +131,7 @@ class MessageBubble extends StatelessWidget {
               borderRadius: BorderRadius.circular(16.r),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
+                  color: Colors.black.withValues(alpha: 0.04),
                   blurRadius: 6,
                   offset: const Offset(0, 2),
                 ),
@@ -193,7 +193,7 @@ class MessageBubble extends StatelessWidget {
                   child: Text(
                     _formatTime(message.timestamp),
                     style: AppTextStyles.caption.copyWith(
-                      color: isMe ? AppColors.surface.withOpacity(0.7) : AppColors.textHint,
+                      color: isMe ? AppColors.surface.withValues(alpha: 0.7) : AppColors.textHint,
                     ),
                   ),
                 ),
@@ -236,7 +236,7 @@ class MessageBubble extends StatelessWidget {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
+                  color: Colors.black.withValues(alpha: 0.04),
                   blurRadius: 6,
                   offset: const Offset(0, 2),
                 ),
@@ -256,7 +256,7 @@ class MessageBubble extends StatelessWidget {
                       width: 38.w,
                       height: 38.w,
                       decoration: BoxDecoration(
-                        color: isMe ? AppColors.surface.withOpacity(0.2) : AppColors.primary.withOpacity(0.1),
+                        color: isMe ? AppColors.surface.withValues(alpha: 0.2) : AppColors.primary.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -287,7 +287,7 @@ class MessageBubble extends StatelessWidget {
                                   decoration: BoxDecoration(
                                     color: isActive
                                         ? (isMe ? AppColors.surface : AppColors.primary)
-                                        : (isMe ? AppColors.surface.withOpacity(0.3) : AppColors.border),
+                                        : (isMe ? AppColors.surface.withValues(alpha: 0.3) : AppColors.border),
                                     borderRadius: BorderRadius.circular(2.r),
                                   ),
                                 ),
@@ -302,7 +302,7 @@ class MessageBubble extends StatelessWidget {
                             Text(
                               durationStr,
                               style: AppTextStyles.caption.copyWith(
-                                color: isMe ? AppColors.surface.withOpacity(0.7) : AppColors.textHint,
+                                color: isMe ? AppColors.surface.withValues(alpha: 0.7) : AppColors.textHint,
                                 fontSize: 10.sp,
                               ),
                             ),
@@ -312,7 +312,7 @@ class MessageBubble extends StatelessWidget {
                                 Text(
                                   _formatTime(message.timestamp),
                                   style: AppTextStyles.caption.copyWith(
-                                    color: isMe ? AppColors.surface.withOpacity(0.7) : AppColors.textHint,
+                                    color: isMe ? AppColors.surface.withValues(alpha: 0.7) : AppColors.textHint,
                                     fontSize: 10.sp,
                                   ),
                                 ),
@@ -321,7 +321,7 @@ class MessageBubble extends StatelessWidget {
                                   Icon(
                                     Iconsax.tick_circle,
                                     size: 14.w,
-                                    color: message.read ? AppColors.info : AppColors.surface.withOpacity(0.5),
+                                    color: message.read ? AppColors.info : AppColors.surface.withValues(alpha: 0.5),
                                   ),
                                 ],
                               ],

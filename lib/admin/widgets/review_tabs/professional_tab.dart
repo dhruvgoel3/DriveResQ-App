@@ -34,7 +34,7 @@ class ProfessionalTab extends StatelessWidget {
               .map(
                 (s) => Chip(
                   label: Text(s, style: GoogleFonts.poppins(fontSize: 12)),
-                  backgroundColor: const Color(0xFFFF9800).withOpacity(0.1),
+                  backgroundColor: const Color(0xFFFF9800).withValues(alpha: 0.1),
                   side: BorderSide.none,
                 ),
               )

@@ -35,7 +35,7 @@ class LocationService {
 
       // 2. Fetch precise position
       final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
       );
 
       // 3. Convert to human-readable address
@@ -50,7 +50,6 @@ class LocationService {
         'lng': position.longitude,
       };
     } catch (e) {
-      /* print stripped */
       rethrow;
     }
   }
@@ -94,7 +93,6 @@ class LocationService {
 
       return 'Current Location';
     } catch (e) {
-      /* print stripped */
       return 'Current Location';
     }
   }
@@ -113,7 +111,7 @@ class LocationService {
     }
 
     return await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
+      locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
     );
   }
 }

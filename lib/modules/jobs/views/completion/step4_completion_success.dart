@@ -33,11 +33,11 @@ class CompletionSuccessView extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
-                  colors: [AppColors.success.withOpacity(0.8), AppColors.success],
+                  colors: [AppColors.success.withValues(alpha: 0.8), AppColors.success],
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.success.withOpacity(0.3),
+                    color: AppColors.success.withValues(alpha: 0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   ),
@@ -85,7 +85,7 @@ class CompletionSuccessView extends StatelessWidget {
               border: Border.all(color: AppColors.border),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),

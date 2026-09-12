@@ -22,10 +22,8 @@ class ConnectivityService {
 
       return result.isNotEmpty && result.first.rawAddress.isNotEmpty;
     } on SocketException catch (_) {
-      /* print stripped */
       return false;
     } catch (e) {
-      /* print stripped */
       return false;
     }
   }

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -25,10 +26,8 @@ class InvoiceGenerator {
       final file = File('${dir.path}/$fileName');
 
       await file.writeAsBytes(bytes);
-      /* print stripped */
       return file;
     } catch (e) {
-      /* print stripped */
       rethrow;
     }
   }
@@ -37,11 +36,14 @@ class InvoiceGenerator {
   static Future<void> generateAndShare(JobCompletionController c) async {
     try {
       final file = await generateAndSave(c);
-      await Share.shareXFiles([
-        XFile(file.path),
-      ], text: 'DriveResQ Service Invoice - #${c.invoiceNumber.value}');
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(file.path)],
+          text: 'DriveResQ Service Invoice - #${c.invoiceNumber.value}',
+        ),
+      );
     } catch (e) {
-      /* print stripped */
+      debugPrint('InvoiceGenerator.generateAndShare failed: $e');
     }
   }
 

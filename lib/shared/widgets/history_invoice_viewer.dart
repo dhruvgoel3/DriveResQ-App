@@ -21,11 +21,13 @@ class HistoryInvoiceViewer {
       AppSnackbar.info('Generating invoice...', title: 'Please Wait');
 
       final file = await _generatePdf(completionData);
-      await Share.shareXFiles([
-        XFile(file.path),
-      ], text: 'DriveResQ Invoice ${completionData['invoiceNumber'] ?? ''}');
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(file.path)],
+          text: 'DriveResQ Invoice ${completionData['invoiceNumber'] ?? ''}',
+        ),
+      );
     } catch (e) {
-      /* print stripped */
       AppSnackbar.error('Failed to generate invoice');
     }
   }

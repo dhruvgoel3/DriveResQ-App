@@ -14,7 +14,6 @@ class OpenRequestCard extends StatelessWidget {
 
   static const _primary = Color(0xFF6C63FF);
   static const _orange = Color(0xFFFF9800);
-  static const _green = Color(0xFF4CAF50);
   static const _red = Color(0xFFF44336);
 
   const OpenRequestCard({
@@ -90,11 +89,11 @@ class OpenRequestCard extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(16.r),
           border: _isUrgent
-              ? Border.all(color: _red.withOpacity(0.4), width: 1.5)
+              ? Border.all(color: _red.withValues(alpha: 0.4), width: 1.5)
               : null,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 3),
             ),
@@ -106,7 +105,7 @@ class OpenRequestCard extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(10.w),
               decoration: BoxDecoration(
-                color: _orange.withOpacity(0.1),
+                color: _orange.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Icon(_problemIcon(problem), color: _orange, size: 22.w),
@@ -138,7 +137,7 @@ class OpenRequestCard extends StatelessWidget {
                             vertical: 2.h,
                           ),
                           decoration: BoxDecoration(
-                            color: _red.withOpacity(0.1),
+                            color: _red.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(6.r),
                           ),
                           child: Text(
@@ -256,7 +255,7 @@ class OpenRequestCard extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(12.w),
                   decoration: BoxDecoration(
-                    color: _orange.withOpacity(0.1),
+                    color: _orange.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(14.r),
                   ),
                   child: Icon(
@@ -296,7 +295,7 @@ class OpenRequestCard extends StatelessWidget {
                       vertical: 4.h,
                     ),
                     decoration: BoxDecoration(
-                      color: _red.withOpacity(0.1),
+                      color: _red.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Text(

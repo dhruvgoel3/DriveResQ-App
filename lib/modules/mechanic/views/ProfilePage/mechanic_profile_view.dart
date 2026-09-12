@@ -100,14 +100,14 @@ class MechanicProfileView extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.4),
+                      color: Colors.white.withValues(alpha: 0.4),
                       width: 3.w,
                     ),
                   ),
                   child: CircleAvatar(
                     radius: 46.r,
                     backgroundImage: _profileImage(data),
-                    backgroundColor: Colors.white.withOpacity(0.15),
+                    backgroundColor: Colors.white.withValues(alpha: 0.15),
                     child: _profileImage(data) == null
                         ? Icon(Iconsax.user, size: 46.w, color: Colors.white70)
                         : null,
@@ -140,10 +140,10 @@ class MechanicProfileView extends StatelessWidget {
                     vertical: 4.h,
                   ),
                   decoration: BoxDecoration(
-                    color: c.verificationColor.withOpacity(0.2),
+                    color: c.verificationColor.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(20.r),
                     border: Border.all(
-                      color: c.verificationColor.withOpacity(0.5),
+                      color: c.verificationColor.withValues(alpha: 0.5),
                     ),
                   ),
                   child: Row(
@@ -230,7 +230,7 @@ class MechanicProfileView extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(14.r),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8),
           ],
         ),
         child: Column(
@@ -438,7 +438,7 @@ class MechanicProfileView extends StatelessWidget {
                                       vertical: 4.h,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: _accent.withOpacity(0.08),
+                                      color: _accent.withValues(alpha: 0.08),
                                       borderRadius: BorderRadius.circular(8.r),
                                     ),
                                     child: Text(
@@ -595,7 +595,7 @@ class MechanicProfileView extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -655,7 +655,7 @@ class MechanicProfileView extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(8.w),
       decoration: BoxDecoration(
-        color: _accent.withOpacity(0.08),
+        color: _accent.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(10.r),
       ),
       child: Icon(icon, size: 18.w, color: _accent),
@@ -698,9 +698,9 @@ class MechanicProfileView extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: color.withOpacity(0.25)),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
       child: Text(
         label,
@@ -719,7 +719,7 @@ class MechanicProfileView extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(8.w),
           decoration: BoxDecoration(
-            color: (verified ? Colors.green : Colors.grey).withOpacity(0.1),
+            color: (verified ? Colors.green : Colors.grey).withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(10.r),
           ),
           child: Icon(

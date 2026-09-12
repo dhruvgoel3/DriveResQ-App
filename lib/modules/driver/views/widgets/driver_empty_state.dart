@@ -67,7 +67,7 @@ class _DriverEmptyStateState extends State<DriverEmptyState>
           end: Alignment.bottomRight,
           colors: [
             AppColors.background,
-            AppColors.primary.withOpacity(0.03),
+            AppColors.primary.withValues(alpha: 0.03),
             AppColors.background,
           ],
         ),
@@ -90,8 +90,8 @@ class _DriverEmptyStateState extends State<DriverEmptyState>
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
                       colors: [
-                        AppColors.primary.withOpacity(0.2),
-                        AppColors.primary.withOpacity(0.0),
+                        AppColors.primary.withValues(alpha: 0.2),
+                        AppColors.primary.withValues(alpha: 0.0),
                       ],
                       radius: 0.8,
                     ),
@@ -107,12 +107,12 @@ class _DriverEmptyStateState extends State<DriverEmptyState>
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primary.withOpacity(0.15),
+                              color: AppColors.primary.withValues(alpha: 0.15),
                               blurRadius: 24,
                               offset: const Offset(0, 10),
                             ),
                             BoxShadow(
-                              color: AppColors.primary.withOpacity(0.05),
+                              color: AppColors.primary.withValues(alpha: 0.05),
                               blurRadius: 4,
                               spreadRadius: 2,
                             ),
@@ -184,7 +184,7 @@ class _DriverEmptyStateState extends State<DriverEmptyState>
                     borderRadius: BorderRadius.circular(16.r),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primary.withOpacity(0.3),
+                        color: AppColors.primary.withValues(alpha: 0.3),
                         blurRadius: 20,
                         offset: const Offset(0, 8),
                       ),
@@ -253,10 +253,10 @@ class _DriverEmptyStateState extends State<DriverEmptyState>
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(24.r),
-        border: Border.all(color: AppColors.border.withOpacity(0.5)),
+        border: Border.all(color: AppColors.border.withValues(alpha: 0.5)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -294,7 +294,7 @@ class _DriverEmptyStateState extends State<DriverEmptyState>
         Container(
           padding: EdgeInsets.all(10.w),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: color, size: 24.w),

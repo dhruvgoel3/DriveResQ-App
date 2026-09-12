@@ -36,7 +36,6 @@ class AdminSettingsController extends GetxController {
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      /* print stripped */
     }
   }
 

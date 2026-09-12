@@ -106,7 +106,7 @@ class _MechanicFilterBottomSheetState extends State<MechanicFilterBottomSheet> {
             min: 1,
             max: 100,
             activeColor: _accent,
-            inactiveColor: _accent.withOpacity(0.2),
+            inactiveColor: _accent.withValues(alpha: 0.2),
             onChanged: (val) => setState(() => _distance = val),
           ),
 

@@ -132,7 +132,7 @@ class HistoryDrawer extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 28.r,
-                      backgroundColor: Colors.white.withOpacity(0.25),
+                      backgroundColor: Colors.white.withValues(alpha: 0.25),
                       backgroundImage: photoUrl.isNotEmpty
                           ? CachedNetworkImageProvider(photoUrl)
                           : null,
@@ -170,7 +170,7 @@ class HistoryDrawer extends StatelessWidget {
                               vertical: 3.h,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(20.r),
                             ),
                             child: Text(
@@ -224,7 +224,7 @@ class _DrawerTile extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(10.w),
                   decoration: BoxDecoration(
-                    color: accentColor.withOpacity(0.1),
+                    color: accentColor.withValues(alpha: 0.1),
                     borderRadius: AppRadius.mediumAll,
                   ),
                   child: Icon(icon, color: accentColor, size: 22.w),

@@ -35,7 +35,7 @@ class ChatScreen extends StatelessWidget {
                       Icon(
                         Iconsax.message,
                         size: 64.w,
-                        color: AppColors.textHint.withOpacity(0.5),
+                        color: AppColors.textHint.withValues(alpha: 0.5),
                       ),
                       SizedBox(height: 12.h),
                       Text(
@@ -128,11 +128,11 @@ class _ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
             backgroundImage: controller.otherUserPhoto.isNotEmpty
                 ? CachedNetworkImageProvider(controller.otherUserPhoto)
                 : null,
-            backgroundColor: AppColors.surface.withOpacity(0.24),
+            backgroundColor: AppColors.surface.withValues(alpha: 0.24),
             child: controller.otherUserPhoto.isEmpty
                 ? Icon(
                     Iconsax.user,
-                    color: AppColors.surface.withOpacity(0.7),
+                    color: AppColors.surface.withValues(alpha: 0.7),
                     size: 18.w,
                   )
                 : null,
@@ -152,7 +152,7 @@ class _ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Text(
                   controller.myRole == 'driver' ? 'Mechanic' : 'Driver',
                   style: AppTextStyles.caption.copyWith(
-                    color: AppColors.surface.withOpacity(0.7),
+                    color: AppColors.surface.withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -189,9 +189,9 @@ class _ChatRecordingOverlay extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
       decoration: BoxDecoration(
-        color: AppColors.error.withOpacity(0.1),
+        color: AppColors.error.withValues(alpha: 0.1),
         border: Border(
-          top: BorderSide(color: AppColors.error.withOpacity(0.2), width: 1),
+          top: BorderSide(color: AppColors.error.withValues(alpha: 0.2), width: 1),
         ),
       ),
       child: Row(
@@ -225,7 +225,7 @@ class _ChatRecordingOverlay extends StatelessWidget {
               controller.formatRecordingDuration(),
               style: AppTextStyles.body2.copyWith(
                 fontWeight: FontWeight.w500,
-                color: AppColors.error.withOpacity(0.8),
+                color: AppColors.error.withValues(alpha: 0.8),
               ),
             ),
           ),
@@ -235,7 +235,7 @@ class _ChatRecordingOverlay extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
               decoration: BoxDecoration(
-                color: AppColors.error.withOpacity(0.2),
+                color: AppColors.error.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(20.r),
               ),
               child: Row(
@@ -291,7 +291,7 @@ class _ChatInputBar extends StatelessWidget {
         color: AppColors.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -476,7 +476,7 @@ class _ChatInputBar extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(14.w),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: color, size: 26.w),

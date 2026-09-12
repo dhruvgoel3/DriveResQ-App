@@ -61,7 +61,6 @@ class RatingService {
         review: reviewText,
       ).catchError((e) {});
     } catch (e) {
-      /* print stripped */
       rethrow;
     }
   }

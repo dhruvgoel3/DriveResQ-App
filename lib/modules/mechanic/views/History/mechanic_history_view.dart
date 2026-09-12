@@ -82,7 +82,7 @@ class MechanicHistoryView extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(24.w),
             decoration: BoxDecoration(
-              color: AppColors.mechanicPrimary.withOpacity(0.08),
+              color: AppColors.mechanicPrimary.withValues(alpha: 0.08),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -169,16 +169,16 @@ class _StatCard extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 14.w),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
+          color: color.withValues(alpha: 0.08),
           borderRadius: AppRadius.largeAll,
-          border: Border.all(color: color.withOpacity(0.15)),
+          border: Border.all(color: color.withValues(alpha: 0.15)),
         ),
         child: Row(
           children: [
             Container(
               padding: EdgeInsets.all(10.w),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.12),
+                color: color.withValues(alpha: 0.12),
                 borderRadius: AppRadius.mediumAll,
               ),
               child: Icon(icon, color: color, size: 22.w),
@@ -248,10 +248,10 @@ class _HistoryJobCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: AppRadius.largeAll,
-          border: Border.all(color: AppColors.border.withOpacity(0.5)),
+          border: Border.all(color: AppColors.border.withValues(alpha: 0.5)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Colors.black.withValues(alpha: 0.03),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -271,8 +271,8 @@ class _HistoryJobCard extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: isCompleted
-                        ? AppColors.success.withOpacity(0.1)
-                        : AppColors.error.withOpacity(0.1),
+                        ? AppColors.success.withValues(alpha: 0.1)
+                        : AppColors.error.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20.r),
                   ),
                   child: Row(
@@ -422,7 +422,7 @@ class _HistoryJobCard extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.mechanicPrimary,
                     side: BorderSide(
-                      color: AppColors.mechanicPrimary.withOpacity(0.5),
+                      color: AppColors.mechanicPrimary.withValues(alpha: 0.5),
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),

@@ -241,7 +241,7 @@ class CreateRequestView extends StatelessWidget {
                     decoration: _cardDecoration().copyWith(
                       border: Border.all(
                         color: controller.imageFile.value != null
-                            ? AppColors.success.withOpacity(0.4)
+                            ? AppColors.success.withValues(alpha: 0.4)
                             : AppColors.border,
                         width: 1.5,
                       ),
@@ -288,7 +288,7 @@ class CreateRequestView extends StatelessWidget {
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
                     elevation: 2,
-                    shadowColor: AppColors.primary.withOpacity(0.3),
+                    shadowColor: AppColors.primary.withValues(alpha: 0.3),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14.r),
                     ),
@@ -345,7 +345,7 @@ class CreateRequestView extends StatelessWidget {
       border: Border.all(color: AppColors.border),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.03),
+          color: Colors.black.withValues(alpha: 0.03),
           blurRadius: 8,
           offset: const Offset(0, 2),
         ),
@@ -358,7 +358,7 @@ class CreateRequestView extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(10.w),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
+        color: AppColors.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(10.r),
       ),
       child: Icon(icon, color: AppColors.primary, size: 22.w),

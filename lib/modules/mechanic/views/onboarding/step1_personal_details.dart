@@ -149,9 +149,9 @@ class Step1PersonalDetails extends StatelessWidget {
                 height: 120.h,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xFFFF9800).withOpacity(0.1),
+                  color: const Color(0xFFFF9800).withValues(alpha: 0.1),
                   border: Border.all(
-                    color: const Color(0xFFFF9800).withOpacity(0.3),
+                    color: const Color(0xFFFF9800).withValues(alpha: 0.3),
                     width: 3.w,
                   ),
                   image: c.profilePhoto.value != null

@@ -116,7 +116,7 @@ class CreateRequestController extends GetxController {
           driverPhoto = data['profilePhotoUrl'] ?? data['photoUrl'] ?? '';
         }
       } catch (e) {
-        /* print stripped */
+        debugPrint('CreateRequestController: failed to fetch driver details: $e');
       }
 
       // 🧠 SAVE REQUEST (WITH COORDINATES)

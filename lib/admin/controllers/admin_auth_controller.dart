@@ -35,7 +35,7 @@ class AdminAuthController extends GetxController {
         isFirstSetup.value = true;
       }
     } catch (e) {
-      /* print stripped */
+      debugPrint('AdminAuthController._checkFirstSetup failed: $e');
     }
   }
 
@@ -77,7 +77,6 @@ class AdminAuthController extends GetxController {
       }
       return false;
     } catch (e) {
-      /* print stripped */
       return false;
     }
   }

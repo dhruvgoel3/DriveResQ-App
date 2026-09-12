@@ -43,3 +43,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Ad-hoc debug/analysis dumps
+/*.txt
+/android/*.txt
+/functions/*.txt
+config.bat
+node_modules

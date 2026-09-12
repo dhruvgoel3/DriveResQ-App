@@ -139,7 +139,6 @@ class ChatController extends GetxController {
         );
       })();
     } catch (e) {
-      /* print stripped */
       ErrorHandler.handle(e);
     }
 
@@ -176,13 +175,11 @@ class ChatController extends GetxController {
           );
         })();
       } catch (e) {
-        /* print stripped */
         ErrorHandler.handle(e);
       } finally {
         isSending.value = false;
       }
     } catch (e) {
-      /* print stripped */
       ErrorHandler.handle(e);
       isSending.value = false;
     }
@@ -227,7 +224,6 @@ class ChatController extends GetxController {
         );
       }
     } catch (e) {
-      /* print stripped */
       AppSnackbar.error('Could not start recording');
     }
   }
@@ -259,7 +255,6 @@ class ChatController extends GetxController {
         );
       })();
     } catch (e) {
-      /* print stripped */
       ErrorHandler.handle(e);
     }
 
@@ -298,7 +293,6 @@ class ChatController extends GetxController {
       isPlaying.value = true;
       await audioPlayer.play(UrlSource(url));
     } catch (e) {
-      /* print stripped */
       isPlaying.value = false;
       currentlyPlayingId.value = '';
     }
@@ -325,7 +319,6 @@ class ChatController extends GetxController {
         );
       })();
     } catch (e) {
-      /* print stripped */
       AppSnackbar.error('Failed to send estimate');
     }
     isSending.value = false;
@@ -349,7 +342,7 @@ class ChatController extends GetxController {
         );
       })();
     } catch (e) {
-      /* print stripped */
+      debugPrint('ChatController.respondToQuote failed: $e');
     }
   }
 

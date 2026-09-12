@@ -17,8 +17,6 @@ import 'theme/app_theme.dart';
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  /* print stripped */
-  /* print stripped */
 }
 
 void main() async {
@@ -42,7 +40,7 @@ void main() async {
   try {
     await FCMService.initialize();
   } catch (e) {
-    /* print stripped */
+    debugPrint('main: FCMService.initialize failed: $e');
   }
 }
 

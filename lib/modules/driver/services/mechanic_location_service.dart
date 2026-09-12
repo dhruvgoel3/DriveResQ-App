@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 
 /// A background service responsible for tracking and broadcasting the
@@ -18,7 +19,6 @@ class MechanicLocationService {
   /// mechanic moves by at least 10 meters.
   static Future<void> startTracking() async {
     if (_isTrackingActive) {
-      /* print stripped */
       return;
     }
 
@@ -34,7 +34,6 @@ class MechanicLocationService {
 
       if (permission == LocationPermission.denied ||
           permission == LocationPermission.deniedForever) {
-        /* print stripped */
         return;
       }
 
@@ -53,9 +52,8 @@ class MechanicLocationService {
           });
 
       _isTrackingActive = true;
-      /* print stripped */
     } catch (e) {
-      /* print stripped */
+      debugPrint('MechanicLocationService.startTracking failed: $e');
     }
   }
 
@@ -74,7 +72,7 @@ class MechanicLocationService {
         'speed': position.speed,
       });
     } catch (e) {
-      /* print stripped */
+      debugPrint('MechanicLocationService._syncPositionToCloud failed: $e');
     }
   }
 
@@ -83,7 +81,6 @@ class MechanicLocationService {
     _positionSubscription?.cancel();
     _positionSubscription = null;
     _isTrackingActive = false;
-    /* print stripped */
   }
 
   /// Indicates whether the tracking service is currently running.

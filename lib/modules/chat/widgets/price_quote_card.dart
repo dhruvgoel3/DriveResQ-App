@@ -45,12 +45,12 @@ class PriceQuoteCard extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
-            color: _statusColor(status).withOpacity(0.3),
+            color: _statusColor(status).withValues(alpha: 0.3),
             width: 1.5,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -63,7 +63,7 @@ class PriceQuoteCard extends StatelessWidget {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
               decoration: BoxDecoration(
-                color: _statusColor(status).withOpacity(0.08),
+                color: _statusColor(status).withValues(alpha: 0.08),
                 borderRadius: BorderRadius.vertical(top: Radius.circular(14.r)),
               ),
               child: Row(
@@ -203,7 +203,7 @@ class PriceQuoteCard extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.all(8.w),
                       decoration: BoxDecoration(
-                        color: Colors.orange.withOpacity(0.1),
+                        color: Colors.orange.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: Row(
@@ -374,7 +374,7 @@ class PriceQuoteCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2),
       decoration: BoxDecoration(
-        color: _statusColor(status).withOpacity(0.12),
+        color: _statusColor(status).withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(6.r),
       ),
       child: Text(

@@ -36,9 +36,9 @@ class QuickRepliesBar extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    backgroundColor: AppColors.primary.withOpacity(0.08),
+                    backgroundColor: AppColors.primary.withValues(alpha: 0.08),
                     side: BorderSide(
-                      color: AppColors.primary.withOpacity(0.2),
+                      color: AppColors.primary.withValues(alpha: 0.2),
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.r),

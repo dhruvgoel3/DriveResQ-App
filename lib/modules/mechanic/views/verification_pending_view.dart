@@ -83,7 +83,7 @@ class VerificationPendingView extends StatelessWidget {
         }
       }
     } catch (e) {
-      /* print stripped */
+      debugPrint('VerificationPendingView: status check failed: $e');
     }
   }
 
@@ -101,7 +101,7 @@ class VerificationPendingView extends StatelessWidget {
             height: 140.h,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFFFF9800).withOpacity(0.1),
+              color: const Color(0xFFFF9800).withValues(alpha: 0.1),
             ),
             child: Stack(
               alignment: Alignment.center,
@@ -111,7 +111,7 @@ class VerificationPendingView extends StatelessWidget {
                   height: 100.h,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color(0xFFFF9800).withOpacity(0.15),
+                    color: const Color(0xFFFF9800).withValues(alpha: 0.15),
                   ),
                 ),
                 Icon(Iconsax.timer, size: 56.w, color: const Color(0xFFFF9800)),
