@@ -127,9 +127,9 @@ class JobSummaryView extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
-              color: AppColors.success.withOpacity(0.08),
+              color: AppColors.success.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(14.r),
-              border: Border.all(color: AppColors.success.withOpacity(0.3)),
+              border: Border.all(color: AppColors.success.withValues(alpha: 0.3)),
             ),
             child: Obx(
               () => CheckboxListTile(
@@ -194,7 +194,7 @@ class JobSummaryView extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: AppColors.primary.withValues(alpha: 0.3),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -215,7 +215,7 @@ class JobSummaryView extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: AppColors.surface.withOpacity(0.2),
+                  color: AppColors.surface.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Text(
@@ -243,11 +243,11 @@ class JobSummaryView extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 6.h),
       child: Row(
         children: [
-          Icon(icon, size: 16.w, color: AppColors.surface.withOpacity(0.7)),
+          Icon(icon, size: 16.w, color: AppColors.surface.withValues(alpha: 0.7)),
           SizedBox(width: 8.w),
           Text(
             '$label: ',
-            style: AppTextStyles.caption.copyWith(color: AppColors.surface.withOpacity(0.7)),
+            style: AppTextStyles.caption.copyWith(color: AppColors.surface.withValues(alpha: 0.7)),
           ),
           Expanded(
             child: Text(

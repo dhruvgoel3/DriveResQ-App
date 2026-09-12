@@ -333,7 +333,7 @@ class Step2ProfessionalDetails extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: selected
-                        ? const Color(0xFFFF9800).withOpacity(0.15)
+                        ? const Color(0xFFFF9800).withValues(alpha: 0.15)
                         : Colors.grey.shade50,
                     borderRadius: BorderRadius.circular(25.r),
                     border: Border.all(

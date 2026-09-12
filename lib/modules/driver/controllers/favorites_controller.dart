@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 import '../../../utils/helpers/app_snackbar.dart';
@@ -48,7 +49,8 @@ class FavoritesController extends GetxController {
         title: 'Added to Favorites',
       );
     } catch (e) {
-      /* print stripped */
+      debugPrint('FavoritesController.addFavorite failed: $e');
+      AppSnackbar.error('Could not add to favorites');
     }
   }
 
@@ -60,7 +62,8 @@ class FavoritesController extends GetxController {
         'favoriteMechanics': FieldValue.arrayRemove([mechanicId]),
       });
     } catch (e) {
-      /* print stripped */
+      debugPrint('FavoritesController.removeFavorite failed: $e');
+      AppSnackbar.error('Could not remove from favorites');
     }
   }
 

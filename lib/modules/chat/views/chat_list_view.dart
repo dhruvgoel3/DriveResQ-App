@@ -46,7 +46,7 @@ class ChatListView extends StatelessWidget {
                   Icon(
                     Iconsax.close_circle,
                     size: 64.w,
-                    color: AppColors.error.withOpacity(0.7),
+                    color: AppColors.error.withValues(alpha: 0.7),
                   ),
                   SizedBox(height: 12.h),
                   Text(
@@ -112,7 +112,7 @@ class ChatListView extends StatelessWidget {
             separatorBuilder: (_, __) => Divider(
               height: 1,
               indent: 76.w,
-              color: AppColors.border.withOpacity(0.5),
+              color: AppColors.border.withValues(alpha: 0.5),
             ),
             itemBuilder: (_, i) {
               final chat = chats[i].data() as Map<String, dynamic>;
@@ -216,7 +216,7 @@ class _ChatTile extends StatelessWidget {
                         backgroundImage: otherPhoto.isNotEmpty
                             ? CachedNetworkImageProvider(otherPhoto)
                             : null,
-                        backgroundColor: AppColors.primary.withOpacity(0.1),
+                        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                         child: otherPhoto.isEmpty
                             ? Icon(
                                 Iconsax.user,

@@ -7,7 +7,6 @@ import '../controllers/driver_controller.dart';
 class DriverBinding extends Bindings {
   @override
   void dependencies() {
-    /* print stripped */
     Get.lazyPut<DriverController>(() => DriverController());
   }
 }

@@ -68,7 +68,7 @@ class DriverProfileController extends GetxController {
         dobController.text = data['dob'] ?? '';
       }
     } catch (e) {
-      /* print stripped */
+      debugPrint('DriverProfileController.fetchUserData failed: $e');
     }
   }
 
@@ -99,7 +99,7 @@ class DriverProfileController extends GetxController {
       completedRequests.value = completed;
       totalSpent.value = spent;
     } catch (e) {
-      /* print stripped */
+      debugPrint('DriverProfileController.fetchStats failed: $e');
     }
   }
 
@@ -145,7 +145,6 @@ class DriverProfileController extends GetxController {
       AppSnackbar.success('Profile updated');
     } catch (e) {
       isLoading.value = false;
-      /* print stripped */
       AppSnackbar.error('Failed to update profile');
     }
   }
@@ -215,7 +214,6 @@ class DriverProfileController extends GetxController {
       if (Get.isDialogOpen ?? false) {
         Get.back();
       }
-      /* print stripped */
       AppSnackbar.error('Logout failed: ${e.toString()}');
     }
   }

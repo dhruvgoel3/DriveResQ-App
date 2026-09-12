@@ -145,11 +145,11 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.r),
             border: _isUrgent && !widget.isActive
-                ? Border.all(color: _red.withOpacity(0.5), width: 2)
+                ? Border.all(color: _red.withValues(alpha: 0.5), width: 2)
                 : null,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.07),
+                color: Colors.black.withValues(alpha: 0.07),
                 blurRadius: 16,
                 offset: const Offset(0, 4),
               ),
@@ -206,12 +206,12 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            _orange.withOpacity(0.08),
-            _orange.withOpacity(0.04),
+            _orange.withValues(alpha: 0.08),
+            _orange.withValues(alpha: 0.04),
           ],
         ),
         border: Border(
-          bottom: BorderSide(color: _orange.withOpacity(0.15)),
+          bottom: BorderSide(color: _orange.withValues(alpha: 0.15)),
         ),
       ),
       child: Row(
@@ -254,12 +254,12 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            _green.withOpacity(0.10),
-            _green.withOpacity(0.04),
+            _green.withValues(alpha: 0.10),
+            _green.withValues(alpha: 0.04),
           ],
         ),
         border: Border(
-          bottom: BorderSide(color: _green.withOpacity(0.2)),
+          bottom: BorderSide(color: _green.withValues(alpha: 0.2)),
         ),
       ),
       child: Row(
@@ -267,7 +267,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
           Container(
             padding: EdgeInsets.all(6.w),
             decoration: BoxDecoration(
-              color: _green.withOpacity(0.15),
+              color: _green.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
             child: Icon(Iconsax.tick_circle, color: _green, size: 18.w),
@@ -350,7 +350,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.25),
+              color: Colors.white.withValues(alpha: 0.25),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -380,7 +380,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
             Container(
               padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.25),
+                color: Colors.white.withValues(alpha: 0.25),
                 borderRadius: BorderRadius.circular(10.r),
               ),
               child: Row(
@@ -420,7 +420,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
           Container(
             padding: EdgeInsets.all(10.w),
             decoration: BoxDecoration(
-              color: _orange.withOpacity(0.1),
+              color: _orange.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Icon(_problemIcon(problem), color: _orange, size: 24.w),
@@ -449,7 +449,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                           vertical: 2.h,
                         ),
                         decoration: BoxDecoration(
-                          color: _green.withOpacity(0.1),
+                          color: _green.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Text(
@@ -521,7 +521,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                         vertical: 2.h,
                       ),
                       decoration: BoxDecoration(
-                        color: _orange.withOpacity(0.15),
+                        color: _orange.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: Row(
@@ -554,7 +554,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                     vertical: 6.h,
                   ),
                   decoration: BoxDecoration(
-                    color: _primary.withOpacity(0.08),
+                    color: _primary.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Row(
@@ -711,7 +711,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                   borderRadius: BorderRadius.circular(12.r),
                   boxShadow: [
                     BoxShadow(
-                      color: _green.withOpacity(0.3),
+                      color: _green.withValues(alpha: 0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 3),
                     ),
@@ -781,7 +781,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
               borderRadius: BorderRadius.circular(12.r),
               boxShadow: [
                 BoxShadow(
-                  color: _orange.withOpacity(0.3),
+                  color: _orange.withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 3),
                 ),
@@ -945,7 +945,7 @@ class _PulsingDotState extends State<_PulsingDot>
         width: widget.size,
         height: widget.size,
         decoration: BoxDecoration(
-          color: widget.color.withOpacity(0.5 + _ctrl.value * 0.5),
+          color: widget.color.withValues(alpha: 0.5 + _ctrl.value * 0.5),
           shape: BoxShape.circle,
         ),
       ),

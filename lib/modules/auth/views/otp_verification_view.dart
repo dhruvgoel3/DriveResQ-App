@@ -140,7 +140,7 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
         color: AppColors.error,
       ),
       decoration: BoxDecoration(
-        color: AppColors.error.withOpacity(0.05),
+        color: AppColors.error.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: AppColors.error, width: 2),
       ),
@@ -202,9 +202,8 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
                         child: Container(
                           padding: EdgeInsets.all(18.w),
                           decoration: BoxDecoration(
-                            color: (_hasError ? AppColors.error : AppColors.primary).withOpacity(
-                              0.1,
-                            ),
+                            color: (_hasError ? AppColors.error : AppColors.primary)
+                                .withValues(alpha: 0.1),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
@@ -263,7 +262,7 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
                                       vertical: 8.h,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: AppColors.error.withOpacity(0.08),
+                                      color: AppColors.error.withValues(alpha: 0.08),
                                       borderRadius: BorderRadius.circular(10.r),
                                     ),
                                     child: Row(

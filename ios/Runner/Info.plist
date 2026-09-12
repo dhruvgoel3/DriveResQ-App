@@ -52,5 +52,13 @@
 	</array>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>DriveResQ needs microphone access to send voice messages in chat.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>DriveResQ needs your location to match you with nearby mechanics or drivers and to track roadside assistance requests.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>DriveResQ needs your location in the background so mechanics can be tracked to the driver's location during an active job.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>DriveResQ needs camera access so you can take photos of the vehicle issue or documents.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>DriveResQ needs photo library access so you can attach photos to requests, chats, and documents.</string>
 </dict>
 </plist>

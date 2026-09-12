@@ -103,8 +103,8 @@ class MechanicHistoryDetailView extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isCompleted
-              ? [AppColors.success, AppColors.success.withOpacity(0.8)]
-              : [AppColors.error, AppColors.error.withOpacity(0.8)],
+              ? [AppColors.success, AppColors.success.withValues(alpha: 0.8)]
+              : [AppColors.error, AppColors.error.withValues(alpha: 0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -115,7 +115,7 @@ class MechanicHistoryDetailView extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: AppRadius.mediumAll,
             ),
             child: Icon(
@@ -230,7 +230,7 @@ class MechanicHistoryDetailView extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 24.r,
-                backgroundColor: AppColors.primary.withOpacity(0.15),
+                backgroundColor: AppColors.primary.withValues(alpha: 0.15),
                 backgroundImage: photo.isNotEmpty ? CachedNetworkImageProvider(photo) : null,
                 child: photo.isEmpty
                     ? const Icon(Iconsax.user, color: AppColors.primary)
@@ -259,7 +259,7 @@ class MechanicHistoryDetailView extends StatelessWidget {
                               vertical: 2.h,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColors.warning.withOpacity(0.15),
+                              color: AppColors.warning.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(8.r),
                             ),
                             child: Row(
@@ -352,10 +352,10 @@ class MechanicHistoryDetailView extends StatelessWidget {
               (s) => Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: AppColors.mechanicPrimary.withOpacity(0.08),
+                  color: AppColors.mechanicPrimary.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(20.r),
                   border: Border.all(
-                    color: AppColors.mechanicPrimary.withOpacity(0.15),
+                    color: AppColors.mechanicPrimary.withValues(alpha: 0.15),
                   ),
                 ),
                 child: Text(
@@ -391,7 +391,7 @@ class MechanicHistoryDetailView extends StatelessWidget {
           _CostRow(label: 'Travel Cost', amount: travelCost),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 8.h),
-            child: Divider(color: AppColors.border.withOpacity(0.5)),
+            child: Divider(color: AppColors.border.withValues(alpha: 0.5)),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -530,10 +530,10 @@ class _CardWrapper extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: AppRadius.largeAll,
-        border: Border.all(color: AppColors.border.withOpacity(0.5)),
+        border: Border.all(color: AppColors.border.withValues(alpha: 0.5)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -643,7 +643,7 @@ class _TimelineStep extends StatelessWidget {
                   Expanded(
                     child: Container(
                       width: 2,
-                      color: dotColor.withOpacity(0.3),
+                      color: dotColor.withValues(alpha: 0.3),
                     ),
                   ),
                 Container(
@@ -658,7 +658,7 @@ class _TimelineStep extends StatelessWidget {
                   Expanded(
                     child: Container(
                       width: 2,
-                      color: dotColor.withOpacity(0.3),
+                      color: dotColor.withValues(alpha: 0.3),
                     ),
                   ),
               ],

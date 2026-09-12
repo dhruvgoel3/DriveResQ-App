@@ -19,7 +19,7 @@ class ProfileStats extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -75,7 +75,7 @@ class ProfileStats extends StatelessWidget {
     return Container(
       width: 1,
       height: 40.h,
-      color: AppColors.border.withOpacity(0.5),
+      color: AppColors.border.withValues(alpha: 0.5),
     );
   }
 }

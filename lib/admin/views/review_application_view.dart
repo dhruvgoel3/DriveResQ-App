@@ -121,7 +121,7 @@ class _ReviewApplicationViewState extends State<ReviewApplicationView>
         children: [
           CircleAvatar(
             radius: 30,
-            backgroundColor: const Color(0xFFFF9800).withOpacity(0.1),
+            backgroundColor: const Color(0xFFFF9800).withValues(alpha: 0.1),
             backgroundImage: photo.isNotEmpty ? CachedNetworkImageProvider(photo) : null,
             child: photo.isEmpty
                 ? Text(

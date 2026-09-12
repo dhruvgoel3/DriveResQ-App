@@ -114,7 +114,7 @@ class DriverOnboardingController extends GetxController {
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: CircleAvatar(
-                backgroundColor: const Color(0xFF6C63FF).withOpacity(0.1),
+                backgroundColor: const Color(0xFF6C63FF).withValues(alpha: 0.1),
                 radius: 20.r,
                 child: Icon(
                   Iconsax.camera,
@@ -136,7 +136,7 @@ class DriverOnboardingController extends GetxController {
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: CircleAvatar(
-                backgroundColor: const Color(0xFF6C63FF).withOpacity(0.1),
+                backgroundColor: const Color(0xFF6C63FF).withValues(alpha: 0.1),
                 radius: 20.r,
                 child: Icon(
                   Iconsax.gallery,
@@ -190,7 +190,6 @@ class DriverOnboardingController extends GetxController {
       final snapshot = await uploadTask;
       return await snapshot.ref.getDownloadURL();
     } catch (e) {
-      /* print stripped */
       return null;
     }
   }
@@ -250,7 +249,6 @@ class DriverOnboardingController extends GetxController {
       AppSnackbar.success('Profile setup complete 🎉', title: 'Welcome!');
     } catch (e) {
       isLoading.value = false;
-      /* print stripped */
       AppSnackbar.error('Failed to submit. Please try again.');
     }
   }

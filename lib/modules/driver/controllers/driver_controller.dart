@@ -41,7 +41,6 @@ class DriverController extends GetxController {
   void listenToActiveRequest() {
     final uid = _auth.currentUser?.uid;
     if (uid == null) {
-      /* print stripped */
       isLoadingRequest.value = false;
       return;
     }
@@ -79,7 +78,6 @@ class DriverController extends GetxController {
           },
           onError: (error) {
             isLoadingRequest.value = false;
-            /* print stripped */
           },
         );
   }
@@ -94,14 +92,11 @@ class DriverController extends GetxController {
         return;
       }
 
-      /* print stripped */
 
       await DriverService.cancelActiveRequest(requestId);
 
-      /* print stripped */
       AppSnackbar.warning('Your request has been cancelled.', title: 'Cancelled');
     } catch (e) {
-      /* print stripped */
       AppSnackbar.error('Failed to cancel request. Please try again.');
     }
   }
@@ -118,7 +113,6 @@ class DriverController extends GetxController {
       await DriverService.approveMechanic(requestId);
       AppSnackbar.success('Mechanic confirmed. OTP generated.', title: 'Approved!');
     } catch (e) {
-      /* print stripped */
       AppSnackbar.error('Failed to approve. Please try again.');
     }
   }
@@ -138,7 +132,6 @@ class DriverController extends GetxController {
         title: 'Declined',
       );
     } catch (e) {
-      /* print stripped */
       AppSnackbar.error('Failed to decline. Please try again.');
     }
   }

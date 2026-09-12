@@ -22,7 +22,7 @@ class RatingView extends StatelessWidget {
           // Driver avatar
           CircleAvatar(
             radius: 40.r,
-            backgroundColor: AppColors.success.withOpacity(0.1),
+            backgroundColor: AppColors.success.withValues(alpha: 0.1),
             child: Icon(
               Iconsax.user,
               size: 44.w,

@@ -42,7 +42,7 @@ class MechanicCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -53,7 +53,7 @@ class MechanicCard extends StatelessWidget {
           // Photo
           CircleAvatar(
             radius: 28,
-            backgroundColor: const Color(0xFFFF9800).withOpacity(0.1),
+            backgroundColor: const Color(0xFFFF9800).withValues(alpha: 0.1),
             backgroundImage: photoUrl.isNotEmpty ? CachedNetworkImageProvider(photoUrl) : null,
             child: photoUrl.isEmpty
                 ? Text(

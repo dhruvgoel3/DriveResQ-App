@@ -233,12 +233,12 @@ DriveResQ reserves the right to modify these terms at any time. Continued use of
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
         decoration: BoxDecoration(
           color: value
-              ? const Color(0xFFFF9800).withOpacity(0.06)
+              ? const Color(0xFFFF9800).withValues(alpha: 0.06)
               : Colors.grey.shade50,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
             color: value
-                ? const Color(0xFFFF9800).withOpacity(0.4)
+                ? const Color(0xFFFF9800).withValues(alpha: 0.4)
                 : Colors.grey.shade200,
             width: 1.5,
           ),

@@ -127,7 +127,7 @@ class ProfilePersonalInfo extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.08),
+              color: AppColors.primary.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Icon(icon, size: 18.w, color: AppColors.primary),
@@ -161,7 +161,7 @@ class ProfilePersonalInfo extends StatelessWidget {
   Widget _sep() => Divider(
     height: 16.h,
     thickness: 0.5,
-    color: AppColors.border.withOpacity(0.5),
+    color: AppColors.border.withValues(alpha: 0.5),
   );
 
   Widget _editField(

@@ -79,7 +79,6 @@ class FindMechanicsController extends GetxController {
       driverLng.value = locData['lng'];
       locationName.value = locData['locationName'] ?? 'Unknown Location';
     } catch (e) {
-      /* print stripped */
       locationName.value = "Location disabled";
     }
 
@@ -123,7 +122,6 @@ class FindMechanicsController extends GetxController {
             isLoading.value = false;
           },
           onError: (error) {
-            /* print stripped */
             isLoading.value = false;
           },
         );

@@ -106,12 +106,11 @@ class MechanicController extends GetxController {
       Position position;
       try {
         position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
+          locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
         ).timeout(const Duration(seconds: 10));
       } catch (_) {
-        /* print stripped */
         position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.medium,
+          locationSettings: const LocationSettings(accuracy: LocationAccuracy.medium),
         ).timeout(const Duration(seconds: 10));
       }
 
@@ -120,9 +119,7 @@ class MechanicController extends GetxController {
       isLocationLoaded.value = true;
       locationError.value = null;
 
-      /* print stripped */
     } catch (e) {
-      /* print stripped */
       locationError.value = "Could not fetch location";
       AppSnackbar.error(
         'Could not get your location. Pull down to retry.',
@@ -155,7 +152,6 @@ class MechanicController extends GetxController {
               // 🚀 START LOCATION TRACKING when job is active
               MechanicLocationService.startTracking();
 
-              /* print stripped */
             } else {
               hasActiveJob.value = false;
               activeJob.value = null;
@@ -163,11 +159,9 @@ class MechanicController extends GetxController {
               // 🛑 STOP LOCATION TRACKING when no active job
               MechanicLocationService.stopTracking();
 
-              /* print stripped */
             }
           },
           onError: (error) {
-            /* print stripped */
             AppSnackbar.error('Failed to load active job');
           },
         );
@@ -201,7 +195,6 @@ class MechanicController extends GetxController {
 
               // Validate location data
               if (driverLat == null || driverLng == null) {
-                /* print stripped */
                 continue;
               }
 
@@ -225,7 +218,6 @@ class MechanicController extends GetxController {
                   });
                 }
               } catch (e) {
-                /* print stripped */
                 continue;
               }
             }
@@ -242,10 +234,8 @@ class MechanicController extends GetxController {
             });
 
             openRequests.value = nearbyList;
-            /* print stripped */
           },
           onError: (error) {
-            /* print stripped */
             AppSnackbar.error('Failed to load requests');
           },
         );
@@ -261,9 +251,7 @@ class MechanicController extends GetxController {
       changeInnerTab(1); // Switch to "Accepted Requests" tab
 
       // Location tracking will auto-start via _listenToActiveJob
-      /* print stripped */
     } catch (e) {
-      /* print stripped */
 
       // More specific error messages
       if (e.toString().contains('permission')) {
@@ -288,11 +276,9 @@ class MechanicController extends GetxController {
 
       AppSnackbar.warning('Job cancelled successfully', title: 'Cancelled');
 
-      /* print stripped */
 
       // Location tracking will auto-stop via _listenToActiveJob
     } catch (e) {
-      /* print stripped */
       AppSnackbar.error('Failed to cancel job: $e');
     }
   }
@@ -309,11 +295,9 @@ class MechanicController extends GetxController {
 
       AppSnackbar.success('Job completed successfully! Great work!');
 
-      /* print stripped */
 
       // Location tracking will auto-stop via _listenToActiveJob
     } catch (e) {
-      /* print stripped */
       AppSnackbar.error('Failed to complete job: $e');
     }
   }
@@ -351,8 +335,6 @@ class MechanicController extends GetxController {
       return 'No active job';
     }
 
-    final jobId = activeJob.value!['id'];
-
     final errorMsg = await MechanicService.verifyAndCompleteJob(
       activeJob.value!,
       code,
@@ -363,7 +345,6 @@ class MechanicController extends GetxController {
         'Code verified! Complete the job details now.',
         title: 'Verified!',
       );
-      /* print stripped */
       return null;
     } else {
       return errorMsg;

@@ -37,7 +37,7 @@ class JobReceiptView extends StatelessWidget {
           .doc(request['id'])
           .update({'status': 'closed', 'driverArchived': true});
     } catch (e) {
-      /* print stripped */
+      debugPrint('JobReceiptView._closeReceipt failed: $e');
     }
 
     // Immediately clear the driver controller state so UI transitions instantly
@@ -73,7 +73,7 @@ class JobReceiptView extends StatelessWidget {
             borderRadius: BorderRadius.circular(20.r),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.06),
+                color: Colors.black.withValues(alpha: 0.06),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),
@@ -89,7 +89,7 @@ class JobReceiptView extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.all(16.w),
                       decoration: BoxDecoration(
-                        color: AppColors.success.withOpacity(0.1),
+                        color: AppColors.success.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -126,7 +126,7 @@ class JobReceiptView extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 24.r,
-                      backgroundColor: AppColors.primary.withOpacity(0.1),
+                      backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                       child: const Icon(Iconsax.user, color: AppColors.primary),
                     ),
                     SizedBox(width: 12.w),
@@ -166,7 +166,7 @@ class JobReceiptView extends StatelessWidget {
                         vertical: 6.h,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.1),
+                        color: AppColors.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(20.r),
                       ),
                       child: Text(

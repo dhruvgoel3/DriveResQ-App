@@ -45,7 +45,7 @@ class _RatingDialogState extends State<RatingDialog> {
             // Icon header
             CircleAvatar(
               radius: 36,
-              backgroundColor: AppColors.primary.withOpacity(0.1),
+              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
               child: const Icon(
                 Iconsax.star1,
                 size: 36,
@@ -132,7 +132,7 @@ class _RatingDialogState extends State<RatingDialog> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
-                  disabledBackgroundColor: AppColors.primary.withOpacity(0.5),
+                  disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.5),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),

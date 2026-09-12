@@ -92,7 +92,6 @@ class VerificationController extends GetxController {
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      /* print stripped */
     }
   }
 
@@ -116,7 +115,6 @@ class VerificationController extends GetxController {
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      /* print stripped */
     }
   }
 
@@ -169,7 +167,6 @@ class VerificationController extends GetxController {
       fetchApplications(currentFilter.value, role: currentRole.value);
     } catch (e) {
       isLoading.value = false;
-      /* print stripped */
       AppSnackbar.error('Failed to approve: $e');
     }
   }
@@ -231,7 +228,6 @@ class VerificationController extends GetxController {
       fetchApplications(currentFilter.value, role: currentRole.value);
     } catch (e) {
       isLoading.value = false;
-      /* print stripped */
       AppSnackbar.error('Failed to reject: $e');
     }
   }
@@ -243,7 +239,8 @@ class VerificationController extends GetxController {
       });
       AppSnackbar.info('Notes saved', title: 'Saved');
     } catch (e) {
-      /* print stripped */
+      debugPrint('VerificationController.saveAdminNotes failed: $e');
+      AppSnackbar.error('Could not save notes');
     }
   }
 

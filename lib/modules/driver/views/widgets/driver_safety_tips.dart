@@ -20,14 +20,14 @@ class SafetyTipsSection extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                AppColors.warning.withOpacity(0.12),
-                AppColors.warning.withOpacity(0.04),
+                AppColors.warning.withValues(alpha: 0.12),
+                AppColors.warning.withValues(alpha: 0.04),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(color: AppColors.warning.withOpacity(0.25)),
+            border: Border.all(color: AppColors.warning.withValues(alpha: 0.25)),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +35,7 @@ class SafetyTipsSection extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(10.w),
                 decoration: BoxDecoration(
-                  color: AppColors.warning.withOpacity(0.15),
+                  color: AppColors.warning.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Icon(
@@ -130,14 +130,14 @@ class SafetyTipsSection extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                AppColors.primary.withOpacity(0.06),
-                AppColors.primary.withOpacity(0.02),
+                AppColors.primary.withValues(alpha: 0.06),
+                AppColors.primary.withValues(alpha: 0.02),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(20.r),
-            border: Border.all(color: AppColors.primary.withOpacity(0.12)),
+            border: Border.all(color: AppColors.primary.withValues(alpha: 0.12)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,7 +219,7 @@ class _SafetyTipCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(14.r),
         boxShadow: [
           BoxShadow(
-            color: iconColor.withOpacity(0.08),
+            color: iconColor.withValues(alpha: 0.08),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -233,7 +233,7 @@ class _SafetyTipCard extends StatelessWidget {
             width: 32.w,
             height: 32.h,
             decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.15),
+              color: iconColor.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Icon(icon, color: iconColor, size: 18.w),

@@ -69,7 +69,7 @@ class _AcceptedRequestIndicatorCardState
           borderRadius: BorderRadius.circular(18.r),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF6C63FF).withOpacity(0.3),
+              color: const Color(0xFF6C63FF).withValues(alpha: 0.3),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -96,7 +96,7 @@ class _AcceptedRequestIndicatorCardState
                     child: Container(
                       padding: EdgeInsets.all(12.w),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(14.r),
                       ),
                       child: Icon(
@@ -122,7 +122,7 @@ class _AcceptedRequestIndicatorCardState
                                 vertical: 3.h,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.25),
+                                color: Colors.white.withValues(alpha: 0.25),
                                 borderRadius: BorderRadius.circular(6.r),
                               ),
                               child: Text(
@@ -152,7 +152,7 @@ class _AcceptedRequestIndicatorCardState
                           "Tap to view details & navigate",
                           style: GoogleFonts.poppins(
                             fontSize: 12.sp,
-                            color: Colors.white.withOpacity(0.85),
+                            color: Colors.white.withValues(alpha: 0.85),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -166,7 +166,7 @@ class _AcceptedRequestIndicatorCardState
                     child: Container(
                       padding: EdgeInsets.all(8.w),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: Icon(

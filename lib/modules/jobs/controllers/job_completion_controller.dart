@@ -279,7 +279,7 @@ class JobCompletionController extends GetxController {
             reviewText: reviewController.text.trim(),
           );
         } catch (e) {
-          /* print stripped */
+          debugPrint('JobCompletionController: failed to submit rating: $e');
         }
       }
 
@@ -300,7 +300,6 @@ class JobCompletionController extends GetxController {
       currentStep.value = 2; // Go to success screen
     } catch (e) {
       isLoading.value = false;
-      /* print stripped */
       AppSnackbar.error('Failed to complete job: $e');
     }
   }

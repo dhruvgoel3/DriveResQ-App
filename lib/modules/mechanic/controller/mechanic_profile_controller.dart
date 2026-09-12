@@ -77,7 +77,6 @@ class MechanicProfileController extends GetxController {
         await _createBasicProfile(uid);
       }
     } catch (e) {
-      /* print stripped */
       AppSnackbar.error('Failed to load profile');
     }
   }
@@ -137,7 +136,7 @@ class MechanicProfileController extends GetxController {
         rating.value = ratingCount > 0 ? ratingSum / ratingCount : 0;
       }
     } catch (e) {
-      /* print stripped */
+      debugPrint('MechanicProfileController: failed to compute rating: $e');
     }
   }
 
@@ -185,7 +184,6 @@ class MechanicProfileController extends GetxController {
       AppSnackbar.success('Profile updated successfully');
     } catch (e) {
       isLoading.value = false;
-      /* print stripped */
       AppSnackbar.error('Failed to update profile');
     }
   }
@@ -286,7 +284,6 @@ class MechanicProfileController extends GetxController {
       if (Get.isDialogOpen ?? false) {
         Get.back();
       }
-      /* print stripped */
       AppSnackbar.error('Logout failed: ${e.toString()}');
     }
   }

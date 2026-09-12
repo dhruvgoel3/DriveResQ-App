@@ -1,9 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 
 class CallHelper {
   static Future<void> callNumber(String phone) async {
     if (phone.isEmpty) {
-      /* print stripped */
       return;
     }
 
@@ -13,10 +14,11 @@ class CallHelper {
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       } else {
-        /* print stripped */
+        AppSnackbar.error('Could not open the phone dialer');
       }
     } catch (e) {
-      /* print stripped */
+      debugPrint('CallHelper.callNumber failed: $e');
+      AppSnackbar.error('Could not open the phone dialer');
     }
   }
 }

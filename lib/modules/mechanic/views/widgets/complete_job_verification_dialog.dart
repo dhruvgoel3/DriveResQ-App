@@ -177,9 +177,9 @@ class _CompleteJobVerificationDialogState
         Container(
           padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 20.w),
           decoration: BoxDecoration(
-            color: _green.withOpacity(0.08),
+            color: _green.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(20.r),
-            border: Border.all(color: _green.withOpacity(0.2)),
+            border: Border.all(color: _green.withValues(alpha: 0.2)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -222,7 +222,7 @@ class _CompleteJobVerificationDialogState
               ),
               SizedBox(height: 20.h),
               LinearProgressIndicator(
-                backgroundColor: _green.withOpacity(0.15),
+                backgroundColor: _green.withValues(alpha: 0.15),
                 valueColor: const AlwaysStoppedAnimation<Color>(_green),
                 minHeight: 4.h,
                 borderRadius: BorderRadius.circular(4.r),
@@ -285,7 +285,7 @@ class _CompleteJobVerificationDialogState
         Container(
           padding: EdgeInsets.all(16.w),
           decoration: BoxDecoration(
-            color: _primary.withOpacity(0.08),
+            color: _primary.withValues(alpha: 0.08),
             shape: BoxShape.circle,
           ),
           child: Icon(Iconsax.verify, color: _primary, size: 32.w),
@@ -324,7 +324,7 @@ class _CompleteJobVerificationDialogState
                 ? errorTheme
                 : defaultTheme.copyWith(
                     decoration: BoxDecoration(
-                      color: _primary.withOpacity(0.08),
+                      color: _primary.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(color: _primary),
                     ),

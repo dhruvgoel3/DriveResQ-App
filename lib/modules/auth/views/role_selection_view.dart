@@ -154,7 +154,7 @@ class RoleSelectionView extends StatelessWidget {
         curve: Curves.easeInOut,
         padding: EdgeInsets.all(24.w),
         decoration: BoxDecoration(
-          color: isSelected ? color.withOpacity(0.1) : Colors.grey.shade50,
+          color: isSelected ? color.withValues(alpha: 0.1) : Colors.grey.shade50,
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
             color: isSelected ? color : Colors.grey.shade200,
@@ -163,7 +163,7 @@ class RoleSelectionView extends StatelessWidget {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: color.withOpacity(0.3),
+                    color: color.withValues(alpha: 0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   ),
@@ -175,7 +175,7 @@ class RoleSelectionView extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.2),
+                color: color.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(16.r),
               ),
               child: Icon(icon, size: 40.w, color: color),

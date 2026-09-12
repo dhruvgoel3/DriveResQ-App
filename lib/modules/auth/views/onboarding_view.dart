@@ -200,7 +200,7 @@ class _OnboardingViewState extends State<OnboardingView>
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primaryLight.withOpacity(0.4),
+                    color: AppColors.primaryLight.withValues(alpha: 0.4),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -264,11 +264,11 @@ class _OnboardingViewState extends State<OnboardingView>
                   height: 140.h,
                   padding: EdgeInsets.all(20.w),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
+                    color: Colors.white.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         blurRadius: 30,
                         spreadRadius: 5,
                       ),
@@ -311,7 +311,7 @@ class _OnboardingViewState extends State<OnboardingView>
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
                   fontSize: 15.sp,
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                 ),
               ),
               SizedBox(height: 40.h),
@@ -478,10 +478,10 @@ class _OnboardingViewState extends State<OnboardingView>
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(color: color.withOpacity(0.2), width: 2),
+          border: Border.all(color: color.withValues(alpha: 0.2), width: 2),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               blurRadius: 20,
               offset: const Offset(0, 6),
             ),
@@ -492,7 +492,7 @@ class _OnboardingViewState extends State<OnboardingView>
             Container(
               padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(16.r),
               ),
               child: Icon(icon, size: 36.w, color: color),
@@ -548,7 +548,7 @@ class _OnboardingViewState extends State<OnboardingView>
                 icon,
                 90,
                 iconColor,
-                bgColor: iconColor.withOpacity(0.1),
+                bgColor: iconColor.withValues(alpha: 0.1),
               ),
               SizedBox(height: 36.h),
               Text(
@@ -587,7 +587,7 @@ class _OnboardingViewState extends State<OnboardingView>
           Container(
             padding: EdgeInsets.all(10.w),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.08),
+              color: AppColors.primary.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(10.r),
             ),
             child: Icon(icon, color: AppColors.primary, size: 20.w),
@@ -619,11 +619,11 @@ class _OnboardingViewState extends State<OnboardingView>
       child: Container(
         padding: EdgeInsets.all(size * 0.3),
         decoration: BoxDecoration(
-          color: bgColor ?? color.withOpacity(0.1),
+          color: bgColor ?? color.withValues(alpha: 0.1),
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.2),
+              color: color.withValues(alpha: 0.2),
               blurRadius: 30,
               spreadRadius: 5,
             ),
