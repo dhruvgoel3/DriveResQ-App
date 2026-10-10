@@ -52,10 +52,10 @@
             android:name="flutterEmbedding"
             android:value="2"/>
 
-        <!-- 🗺️ GOOGLE MAPS -->
+        <!-- 🗺️ GOOGLE MAPS (key injected from android/local.properties, not committed) -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBHXjEt53uJh7ukbhXgVx7OxYmqQsIoR5Y"/>
+            android:value="${MAPS_API_KEY}"/>
 
         <!-- 🔔 FCM CONFIG -->
         <meta-data

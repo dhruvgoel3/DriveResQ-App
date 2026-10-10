@@ -1,5 +1,26 @@
 # Firebase Setup & Deployment Guide for DriveResQ
 
+## 0. Local Secrets Setup (required to build/run at all)
+
+API keys are no longer committed to git. Before running the app:
+
+1. Copy `.env.example` to `.env` and fill in the Firebase API keys for each
+   platform (Firebase Console → Project settings → General → Your apps).
+2. Add your Google Maps API key to `android/app/local.properties`
+   (create it from the Android SDK if missing) as:
+   ```
+   MAPS_API_KEY=your_google_maps_api_key
+   ```
+3. Place your own `google-services.json` in `android/app/` (see
+   `android/app/google-services.json.example` for the shape) and, for iOS,
+   your `GoogleService-Info.plist` in `ios/Runner/`.
+
+None of `.env`, `local.properties`, `google-services.json`, or
+`GoogleService-Info.plist` are committed — each developer/CI environment
+provides their own.
+
+---
+
 ## 1. Apply Firestore Security Rules (CRITICAL)
 
 This is the **#1 fix** for chat and job completion "permission denied" errors.

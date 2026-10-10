@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "your_project_number",
+    "project_id": "your_project_id",
+    "storage_bucket": "your_project_id.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "your_android_app_id",
+        "android_client_info": {
+          "package_name": "com.example.driveresq_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "your_android_api_key"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
