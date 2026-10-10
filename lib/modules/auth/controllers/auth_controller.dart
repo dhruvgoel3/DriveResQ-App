@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../notifications/services/fcm_service.dart';
+import '../../driver/controllers/driver_controller.dart';
+import '../../mechanic/controller/mechanic_controller.dart';
 import '../../../app/routes/app_pages.dart';
 import '../../../utils/helpers/app_snackbar.dart';
 
@@ -266,15 +268,42 @@ class AuthController extends GetxController {
   }
 
   // Sign out
+  // Sign out cleanly without triggering stream permission errors
   Future<void> signOut() async {
-    // Clear FCM token to prevent stale notifications
+    // 1. Clear FCM token to prevent stale notifications
     try {
       await FCMService.clearFCMToken();
     } catch (e) {
       debugPrint('AuthController.signOut: failed to clear FCM token: $e');
     }
-    await _auth.signOut();
+
+    // 2. Safely cancel all active listeners across controllers BEFORE revoking auth
+    try {
+      if (Get.isRegistered<MechanicController>()) {
+        Get.find<MechanicController>().cancelSubscriptions();
+      }
+    } catch (e) {
+      debugPrint('AuthController.signOut: error cancelling mechanic subscriptions: $e');
+    }
+
+    try {
+      if (Get.isRegistered<DriverController>()) {
+        Get.find<DriverController>().cancelSubscription();
+      }
+    } catch (e) {
+      debugPrint('AuthController.signOut: error cancelling driver subscriptions: $e');
+    }
+
+    // 3. Clear all GetX controllers and instances
     Get.deleteAll(force: true);
-    Get.offAllNamed('/role');
+
+    // 4. Sign out from Firebase Auth
+    await _auth.signOut();
+
+    // 5. Re-register AuthController so auth flow is ready
+    Get.put(AuthController(), permanent: true);
+
+    // 6. Navigate cleanly to role selection
+    Get.offAllNamed(Routes.ROLE);
   }
 }

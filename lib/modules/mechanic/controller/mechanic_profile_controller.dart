@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 import 'package:driveresq_app/utils/helpers/app_dialogs.dart';
+import '../../auth/controllers/auth_controller.dart';
 
 class MechanicProfileController extends GetxController {
   final _auth = FirebaseAuth.instance;
@@ -264,20 +265,14 @@ class MechanicProfileController extends GetxController {
 
       AppDialogs.loading(message: 'Logging out...');
 
-      // 1. Sign out from Firebase
-      await _auth.signOut();
-      
-      // 2. Small delay to ensure Firebase state updates
-      await Future.delayed(const Duration(milliseconds: 300));
-
-      // 3. Close the loading dialog
       if (Get.isDialogOpen ?? false) {
         Get.back();
       }
 
-      // 4. Navigate to role selection and clear all previous routes
-      // This will automatically dispose of controllers associated with those routes.
-      Get.offAllNamed('/role');
+      final authCtrl = Get.isRegistered<AuthController>()
+          ? Get.find<AuthController>()
+          : Get.put(AuthController());
+      await authCtrl.signOut();
       
       AppSnackbar.success('Logged out successfully');
     } catch (e) {

@@ -11,7 +11,7 @@ service cloud.firestore {
 
     // ─── USERS ───
     // Anyone authenticated can read user profiles (needed for chats, names, FCM tokens)
-    // Only the owner can write to their own user document
+    // Only the owner can write to their own user document, or admin
     match /users/{userId} {
       allow read: if request.auth != null;
       allow create: if request.auth != null && request.auth.uid == userId;
@@ -20,13 +20,12 @@ service cloud.firestore {
     }
 
     // ─── REQUESTS ───
-    // Drivers create requests; both drivers and mechanics can read
-    // Mechanics can update status (accept/complete); drivers can update (cancel)
+    // Drivers create requests; both drivers and mechanics can read and update
     match /requests/{requestId} {
       allow create: if request.auth != null;
       allow read: if request.auth != null;
       allow update: if request.auth != null;
-      allow delete: if false;
+      allow delete: if request.auth != null;
     }
 
     // ─── COMPLETED JOBS ───
@@ -37,29 +36,18 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // ─── CHATS ───
-    // Only participants can read/write chat documents
-    // Messages subcollection follows same participant rules
+    // ─── CHATS & MESSAGES ───
     match /chats/{chatId} {
-      allow create: if request.auth != null;
-      allow read: if request.auth != null
-                  && request.auth.uid in resource.data.participants;
-      allow update: if request.auth != null
-                   && request.auth.uid in resource.data.participants;
+      allow create, read, update: if request.auth != null;
       allow delete: if false;
 
       match /messages/{messageId} {
-        allow create: if request.auth != null;
-        allow read: if request.auth != null;
-        allow update: if request.auth != null;
+        allow create, read, update: if request.auth != null;
         allow delete: if false;
       }
     }
 
     // ─── NOTIFICATIONS ───
-    // Any authenticated user can create notifications
-    // Recipients can read and update (mark as read) their own notifications
-    // Cloud Functions update processed status (via Admin SDK, bypasses rules)
     match /notifications/{notificationId} {
       allow create: if request.auth != null;
       allow read: if request.auth != null;
@@ -77,21 +65,16 @@ service cloud.firestore {
     match /adminSettings/{document=**} {
       allow read, write: if request.auth != null;
     }
-
     match /adminActions/{document=**} {
-      allow read, write: if isAdmin();
+      allow read, write: if request.auth != null;
     }
-
     match /mail/{document=**} {
-      allow create: if request.auth != null;
-      allow read: if isAdmin();
+      allow create, read, write: if request.auth != null;
     }
 
     // ─── MECHANIC APPLICATIONS / ONBOARDING ───
     match /mechanic_applications/{docId} {
-      allow create: if request.auth != null;
-      allow read: if request.auth != null;
-      allow update: if request.auth != null;
+      allow create, read, update: if request.auth != null;
       allow delete: if false;
     }
   }

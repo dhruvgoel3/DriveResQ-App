@@ -34,8 +34,13 @@ class DriverController extends GetxController {
 
   @override
   void onClose() {
-    _requestSubscription?.cancel();
+    cancelSubscription();
     super.onClose();
+  }
+
+  void cancelSubscription() {
+    _requestSubscription?.cancel();
+    _requestSubscription = null;
   }
 
   void listenToActiveRequest() {

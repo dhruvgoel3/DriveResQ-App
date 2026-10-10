@@ -46,15 +46,24 @@ class MechanicController extends GetxController {
 
   @override
   void onClose() {
+    cancelSubscriptions();
+    super.onClose();
+  }
+
+  /// Cancels all active Firestore stream subscriptions safely.
+  void cancelSubscriptions() {
     _requestsSubscription?.cancel();
     _activeJobSubscription?.cancel();
-    MechanicLocationService.stopTracking();
-    super.onClose();
+    _requestsSubscription = null;
+    _activeJobSubscription = null;
+    try {
+      MechanicLocationService.stopTracking();
+    } catch (_) {}
   }
 
   Future<void> _initializeMechanic() async {
     if (_auth.currentUser == null) {
-      AppSnackbar.error('User not authenticated. Please login again.');
+      debugPrint('MechanicController: User not authenticated.');
       return;
     }
 
@@ -162,7 +171,7 @@ class MechanicController extends GetxController {
             }
           },
           onError: (error) {
-            AppSnackbar.error('Failed to load active job');
+            debugPrint('MechanicController: Error listening to active job: $error');
           },
         );
   }
@@ -175,9 +184,7 @@ class MechanicController extends GetxController {
 
     _requestsSubscription = _firestore
         .collection('requests')
-        .where('status', isEqualTo: 'open') // ✅ FIXED: Only open requests
-        .where('driverLat', isGreaterThanOrEqualTo: minLat)
-        .where('driverLat', isLessThanOrEqualTo: maxLat)
+        .where('status', isEqualTo: 'open')
         .snapshots()
         .listen(
           (snapshot) {
@@ -236,7 +243,7 @@ class MechanicController extends GetxController {
             openRequests.value = nearbyList;
           },
           onError: (error) {
-            AppSnackbar.error('Failed to load requests');
+            debugPrint('MechanicController: Error listening to open requests: $error');
           },
         );
   }

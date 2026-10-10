@@ -15,6 +15,14 @@
         { "fieldPath": "recipientId", "order": "ASCENDING" },
         { "fieldPath": "isRead", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "requests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "driverLat", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []
