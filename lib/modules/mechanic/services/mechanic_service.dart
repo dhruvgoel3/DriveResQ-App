@@ -6,6 +6,9 @@ import '../../chat/services/chat_service.dart';
 import '../../notifications/services/notification_sender.dart';
 import '../../../shared/services/connectivity_service.dart';
 import '../../../utils/helpers/throttle_helper.dart';
+import '../../pricing/models/travel_pricing_model.dart';
+import '../../pricing/services/distance_calculation_service.dart';
+import '../../pricing/services/pricing_config_service.dart';
 
 /// A comprehensive service handling all core logic for the Mechanic's operations.
 ///
@@ -22,10 +25,14 @@ class MechanicService {
   // ---------------------------------------------------------------------------
 
   /// Accepts a service request on behalf of the current mechanic.
-  ///
-  /// Throws an [Exception] if the user is unauthorized, already has a job,
-  /// or if the request is invalid/taken.
-  static Future<void> acceptRequest(String requestId, bool hasActiveJob) async {
+  /// Locks in transparent travel fee using driving distance calculation.
+  static Future<void> acceptRequest(
+    String requestId,
+    bool hasActiveJob, {
+    double? mechanicLat,
+    double? mechanicLng,
+    TravelFeeBreakdown? lockedTravelFee,
+  }) async {
     await ThrottleHelper.asyncAction('accept_req_$requestId', () async {
       // 1. Pre-flight checks
       await ConnectivityService.requireConnection();
@@ -73,13 +80,43 @@ class MechanicService {
         );
       }
 
-      // 3. Mark request as accepted
-      await _firestore.collection('requests').doc(requestId).update({
+      // 3. Mark request as accepted with locked travel fee
+      TravelFeeBreakdown? feeBreakdown = lockedTravelFee;
+      if (feeBreakdown == null && mechanicLat != null && mechanicLng != null) {
+        try {
+          final driverLat = (requestData['driverLat'] as num).toDouble();
+          final driverLng = (requestData['driverLng'] as num).toDouble();
+          final distResult = await DistanceCalculationService.calculateDrivingDistance(
+            originLat: mechanicLat,
+            originLng: mechanicLng,
+            destLat: driverLat,
+            destLng: driverLng,
+          );
+          final config = await PricingConfigService.fetchPricingConfig();
+          feeBreakdown = PricingConfigService.calculateTravelFee(
+            distanceKm: distResult.distanceKm,
+            config: config,
+            isDrivingDistance: distResult.isDrivingDistance,
+          );
+        } catch (e) {
+          debugPrint('MechanicService: Error calculating travel fee on accept: $e');
+        }
+      }
+
+      final updatePayload = <String, dynamic>{
         'status': 'mechanic_accepted',
         'mechanicId': user.uid,
         'mechanicPhone': mechanicPhone,
         'acceptedAt': FieldValue.serverTimestamp(),
-      });
+      };
+
+      if (feeBreakdown != null) {
+        updatePayload['lockedTravelFee'] = feeBreakdown.toMap();
+        updatePayload['travelFee'] = feeBreakdown.totalFee;
+        updatePayload['lockedDistanceKm'] = feeBreakdown.distanceKm;
+      }
+
+      await _firestore.collection('requests').doc(requestId).update(updatePayload);
 
       // 4. Fire-and-forget background tasks (Chat & Notifications)
       _initializePostAcceptanceTasks(
@@ -109,6 +146,9 @@ class MechanicService {
         'verificationCode': FieldValue.delete(),
         'verificationAttempts': FieldValue.delete(),
         'codeGeneratedAt': FieldValue.delete(),
+        'lockedTravelFee': FieldValue.delete(),
+        'travelFee': FieldValue.delete(),
+        'lockedDistanceKm': FieldValue.delete(),
       });
 
       // Notify the driver

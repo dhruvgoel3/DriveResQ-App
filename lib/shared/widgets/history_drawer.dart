@@ -8,6 +8,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/helpers/responsive_helper.dart';
+import 'package:get/get.dart';
+import '../../app/routes/app_pages.dart';
 
 /// Shared navigation drawer for both Driver and Mechanic dashboards.
 /// [userRole] — 'driver' or 'mechanic' (used for theming).
@@ -90,6 +92,16 @@ class _HistoryDrawerState extends State<HistoryDrawer> {
                     widget.onHistoryTap();
                   },
                 ),
+                if (!_isMechanic)
+                  _DrawerTile(
+                    icon: Iconsax.shield_security,
+                    label: 'Safety SOS',
+                    accentColor: const Color(0xFFDC2626),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Get.toNamed(Routes.SAFETY_SOS);
+                    },
+                  ),
               ],
             ),
           ),

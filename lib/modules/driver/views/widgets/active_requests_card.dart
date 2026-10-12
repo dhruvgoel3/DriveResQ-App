@@ -10,6 +10,8 @@ import 'package:driveresq_app/utils/helpers/app_dialogs.dart';
 import '../../../tracking/views/live_tracking_view.dart';
 import '../../controllers/active_request_card_controller.dart';
 import '../../controllers/driver_controller.dart';
+import '../../../pricing/models/travel_pricing_model.dart';
+import '../../../pricing/views/widgets/travel_fee_breakdown_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ActiveRequestCard extends StatelessWidget {
@@ -90,6 +92,15 @@ class ActiveRequestCard extends StatelessWidget {
               subtitle: "Nearby Landmark",
             ),
 
+          // 💰 LOCKED TRAVEL FEE (Transparent pricing)
+          if (request['lockedTravelFee'] is Map || request['travelFee'] != null) ...[
+            SizedBox(height: 12.h),
+            TravelFeeBreakdownWidget(
+              breakdown: _parseTravelFee(request),
+              isLocked: true,
+            ),
+          ],
+
           // 🔐 VERIFICATION CODE
           if ((status == 'accepted' || status == 'verified') &&
               request['verificationCode'] != null)
@@ -114,6 +125,30 @@ class ActiveRequestCard extends StatelessWidget {
             _WaitingMessage(),
         ],
       ),
+    );
+  }
+
+  TravelFeeBreakdown _parseTravelFee(Map<String, dynamic> req) {
+    if (req['lockedTravelFee'] is Map) {
+      return TravelFeeBreakdown.fromMap(
+        Map<String, dynamic>.from(req['lockedTravelFee'] as Map),
+      );
+    }
+    final dist = (req['lockedDistanceKm'] as num?)?.toDouble() ??
+        double.tryParse(req['distance']?.toString() ?? '0') ??
+        0.0;
+    final fee = (req['travelFee'] as num?)?.toDouble() ?? (50.0 + (dist * 20.0));
+    return TravelFeeBreakdown(
+      baseDispatchFee: 50.0,
+      perKmRate: 20.0,
+      distanceKm: dist,
+      fuelCost: dist * 2.30,
+      wearTearCost: dist * 1.50,
+      timeLaborCost: dist * 8.20,
+      distanceCharge: (dist * 20.0),
+      totalFee: fee,
+      isDrivingDistance: true,
+      calculatedAt: DateTime.now(),
     );
   }
 }
@@ -230,16 +265,41 @@ class _MapPreview extends StatelessWidget {
                       )
                     : Container(
                         color: AppColors.background,
+                        padding: EdgeInsets.all(16.w),
                         child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const CircularProgressIndicator(),
-                              SizedBox(height: 12.h),
+                              if (controller.locationState.value == MechanicLocationState.loading) ...[
+                                SizedBox(
+                                  width: 24.w,
+                                  height: 24.w,
+                                  child: const CircularProgressIndicator(strokeWidth: 2.5),
+                                ),
+                              ] else if (controller.locationState.value == MechanicLocationState.unavailable) ...[
+                                Icon(Iconsax.location_slash, size: 28.w, color: AppColors.textHint),
+                              ] else ...[
+                                Icon(Iconsax.warning_2, size: 28.w, color: AppColors.warning),
+                              ],
+                              SizedBox(height: 10.h),
                               Text(
-                                "Loading mechanic location...",
-                                style: AppTextStyles.caption,
+                                controller.statusMessage.value,
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles.caption.copyWith(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 12.sp,
+                                ),
                               ),
+                              if (controller.locationState.value == MechanicLocationState.unavailable) ...[
+                                SizedBox(height: 6.h),
+                                Text(
+                                  'Tap card to open full-screen tracker',
+                                  style: AppTextStyles.label.copyWith(
+                                    fontSize: 11.sp,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
                         ),
@@ -549,10 +609,13 @@ class _ActionButtons extends StatelessWidget {
                     size: 18.w,
                     color: AppColors.surface,
                   ),
-                  label: Text(
-                    "Call",
-                    style: AppTextStyles.button.copyWith(
-                      color: AppColors.surface,
+                  label: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      "Call",
+                      style: AppTextStyles.button.copyWith(
+                        color: AppColors.surface,
+                      ),
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -576,10 +639,13 @@ class _ActionButtons extends StatelessWidget {
                     size: 18.w,
                     color: AppColors.surface,
                   ),
-                  label: Text(
-                    "Chat",
-                    style: AppTextStyles.button.copyWith(
-                      color: AppColors.surface,
+                  label: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      "Chat",
+                      style: AppTextStyles.button.copyWith(
+                        color: AppColors.surface,
+                      ),
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -607,9 +673,12 @@ class _ActionButtons extends StatelessWidget {
               size: 18.w,
               color: AppColors.primary,
             ),
-            label: Text(
-              "Track Mechanic Live",
-              style: AppTextStyles.button.copyWith(color: AppColors.primary),
+            label: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                "Track Mechanic Live",
+                style: AppTextStyles.button.copyWith(color: AppColors.primary),
+              ),
             ),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.primary,
@@ -750,10 +819,13 @@ class _MechanicAcceptedMessage extends StatelessWidget {
                       }
                     },
                     icon: Icon(Iconsax.close_circle, size: 18.w),
-                    label: Text(
-                      "Decline",
-                      style: AppTextStyles.button.copyWith(
-                        color: AppColors.error,
+                    label: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        "Decline",
+                        style: AppTextStyles.button.copyWith(
+                          color: AppColors.error,
+                        ),
                       ),
                     ),
                     style: OutlinedButton.styleFrom(
@@ -777,10 +849,13 @@ class _MechanicAcceptedMessage extends StatelessWidget {
                       size: 18.w,
                       color: AppColors.surface,
                     ),
-                    label: Text(
-                      "Accept",
-                      style: AppTextStyles.button.copyWith(
-                        color: AppColors.surface,
+                    label: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        "Accept",
+                        style: AppTextStyles.button.copyWith(
+                          color: AppColors.surface,
+                        ),
                       ),
                     ),
                     style: ElevatedButton.styleFrom(

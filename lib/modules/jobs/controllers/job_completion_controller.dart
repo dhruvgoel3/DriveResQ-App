@@ -83,12 +83,24 @@ class JobCompletionController extends GetxController {
   void initJob(Map<String, dynamic> job, dynamic id) {
     jobData.value = job;
     jobId.value = (id ?? job['id'] ?? '').toString();
-    baseCharge.value = 200; // Default base charge
+    baseCharge.value = 0.0; // Base charges removed — travel cost + labor + parts only
 
-    // Calculate travel cost from distance
-    final dist = job['distance'];
-    if (dist != null) {
-      travelCost.value = (double.tryParse(dist.toString()) ?? 0) * 15; // ₹15/km
+    // Set travel cost from the locked travel fee or distance calculation
+    if (job['lockedTravelFee'] is Map) {
+      final f = (job['lockedTravelFee']['totalFee'] as num?)?.toDouble();
+      if (f != null) {
+        travelCost.value = f;
+      }
+    } else if (job['travelFee'] != null) {
+      travelCost.value = (job['travelFee'] as num).toDouble();
+    } else {
+      final dist = job['distance'];
+      if (dist != null) {
+        final d = double.tryParse(dist.toString()) ?? 0.0;
+        travelCost.value = 50.0 + (d * 20.0);
+      } else {
+        travelCost.value = 50.0;
+      }
     }
 
     // Generate invoice number
@@ -143,7 +155,6 @@ class JobCompletionController extends GetxController {
       (acc, p) => acc + (p['total'] as double? ?? 0),
     );
     subtotal.value =
-        baseCharge.value +
         laborCharges.value +
         partsTotal.value +
         travelCost.value;

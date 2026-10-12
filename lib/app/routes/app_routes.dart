@@ -35,6 +35,8 @@ import '../../modules/auth/bindings/auth_bindings.dart';
 import '../../modules/notifications/views/notifications_view.dart';
 import '../../modules/resq_assistant/bindings/resq_assistant_binding.dart';
 import '../../modules/resq_assistant/views/resq_assistant_screen.dart';
+import '../../modules/safety_sos/bindings/safety_sos_binding.dart';
+import '../../modules/safety_sos/views/safety_sos_screen.dart';
 import 'app_pages.dart';
 
 class AppPages {
@@ -262,6 +264,15 @@ class AppPages {
       name: Routes.RESQ_ASSISTANT,
       page: () => const ResQAssistantScreen(),
       binding: ResQAssistantBinding(),
+      transition: Transition.rightToLeft,
+      transitionDuration: _dur,
+    ),
+
+    // Safety SOS
+    GetPage(
+      name: Routes.SAFETY_SOS,
+      page: () => const SafetySosScreen(),
+      binding: SafetySosBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: _dur,
     ),

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DriveResQ — Live SOS Emergency Tracker</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Emergency Alert Bar */
+    .emergency-bar {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 16px rgba(220, 38, 38, 0.4);
+      z-index: 10;
+    }
+    .emergency-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pulse-dot {
+      width: 12px;
+      height: 12px;
+      background-color: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+    }
+    .emergency-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+    .status-badge {
+      background-color: rgba(0, 0, 0, 0.25);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #fef08a;
+    }
+
+    /* Map container */
+    #map {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background-color: #1e293b;
+    }
+
+    /* Floating Driver Info Card */
+    .driver-card {
+      position: absolute;
+      top: 60px;
+      left: 16px;
+      right: 16px;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 14px 16px;
+      z-index: 5;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+    .driver-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .driver-name {
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .driver-speed {
+      font-size: 12px;
+      font-weight: 700;
+      background: #10b981;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 8px;
+    }
+    .telemetry-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .telemetry-item strong {
+      color: #f1f5f9;
+    }
+
+    /* Bottom Action Bar */
+    .action-bar {
+      background: #0f172a;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px 16px;
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+    .btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px;
+      border-radius: 14px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-navigate {
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    }
+    .btn-navigate:active {
+      transform: scale(0.98);
+    }
+    .btn-police {
+      background: #dc2626;
+      color: white;
+      box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4);
+    }
+    .btn-police:active {
+      transform: scale(0.98);
+    }
+
+    /* Overlay loader */
+    #loader {
+      position: absolute;
+      inset: 0;
+      background: #0f172a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      z-index: 50;
+      padding: 20px;
+      text-align: center;
+    }
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 4px solid rgba(239, 68, 68, 0.2);
+      border-top-color: #ef4444;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+
+  <!-- Firebase App & Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div id="loader">
+    <div class="spinner"></div>
+    <h2 style="font-family:'Poppins'; font-size:18px;">Connecting to Live SOS Beacon...</h2>
+    <p style="color:#94a3b8; font-size:13px; max-width:300px;">
+      Connecting to the driver's real-time GPS stream. Please wait.
+    </p>
+  </div>
+
+  <!-- Top Alert Bar -->
+  <div class="emergency-bar">
+    <div class="emergency-badge">
+      <div class="pulse-dot"></div>
+      <span class="emergency-title">Live SOS Tracking</span>
+    </div>
+    <div class="status-badge" id="live-indicator">LIVE • STREAMING</div>
+  </div>
+
+  <!-- Driver Card -->
+  <div class="driver-card" id="driver-card" style="display:none;">
+    <div class="driver-header">
+      <span class="driver-name" id="driver-name">Driver in Distress</span>
+      <span class="driver-speed" id="driver-speed">0 km/h</span>
+    </div>
+    <div class="telemetry-row">
+      <div class="telemetry-item">
+        Updated: <strong id="time-ago">Just now</strong>
+      </div>
+      <div class="telemetry-item">
+        Accuracy: <strong id="accuracy">±5m</strong>
+      </div>
+      <div class="telemetry-item">
+        Status: <strong id="incident-status" style="color:#ef4444;">ACTIVE</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Map Canvas -->
+  <div id="map"></div>
+
+  <!-- Action Bar -->
+  <div class="action-bar">
+    <a href="tel:112" class="btn btn-police">
+      🚨 Call Police (112)
+    </a>
+    <a href="#" id="nav-btn" class="btn btn-navigate" target="_blank">
+      🧭 Navigate to Driver
+    </a>
+  </div>
+
+  <script>
+    // 1. Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBGQLmjBzK1fm5fXspm88auzy4GOv6oufU",
+      authDomain: "driveresq-app.firebaseapp.com",
+      projectId: "driveresq-app",
+      storageBucket: "driveresq-app.firebasestorage.app",
+      messagingSenderId: "704482320936",
+      appId: "1:704482320936:web:b10e1a185459554d980b1d"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const incidentId = urlParams.get('id');
+
+    let map = null;
+    let marker = null;
+    let accuracyCircle = null;
+    let trailPolyline = null;
+    let trailCoords = [];
+    let lastLat = null;
+    let lastLng = null;
+    let lastUpdateTime = null;
+
+    if (!incidentId) {
+      document.getElementById('loader').innerHTML = `
+        <h2 style="color:#ef4444; font-family:'Poppins';">Invalid SOS Link</h2>
+        <p style="color:#94a3b8; font-size:14px; margin-top:8px;">No incident ID was provided in this tracking link.</p>
+      `;
+    } else {
+      initMap();
+    }
+
+    function initMap() {
+      // Default center (India)
+      const defaultCenter = { lat: 28.6139, lng: 77.2090 };
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: defaultCenter,
+        zoom: 16,
+        disableDefaultUI: false,
+        zoomControl: true,
+        streetViewControl: false,
+        fullscreenControl: false,
+        mapTypeControl: false,
+        styles: [
+          { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+          { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+          { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+          { featureType: "road", elementType: "geometry", stylers: [{ color: "#38414e" }] },
+          { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#212a37" }] },
+          { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#9ca5b3" }] },
+          { featureType: "water", elementType: "geometry", stylers: [{ color: "#17263c" }] }
+        ]
+      });
+
+      trailPolyline = new google.maps.Polyline({
+        path: trailCoords,
+        geodesic: true,
+        strokeColor: "#ef4444",
+        strokeOpacity: 0.8,
+        strokeWeight: 4,
+        map: map
+      });
+
+      listenToIncident(incidentId);
+    }
+
+    function listenToIncident(id) {
+      db.collection('sos_incidents').doc(id).onSnapshot((doc) => {
+        if (!doc.exists) {
+          document.getElementById('loader').innerHTML = `
+            <h2 style="color:#ef4444; font-family:'Poppins';">Incident Not Found</h2>
+            <p style="color:#94a3b8; font-size:14px; margin-top:8px;">This SOS incident does not exist or has expired.</p>
+          `;
+          return;
+        }
+
+        const data = doc.data();
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('driver-card').style.display = 'block';
+
+        const lat = data.liveLatitude || data.latitude;
+        const lng = data.liveLongitude || data.longitude;
+        const speed = data.liveSpeed || 0;
+        const accuracy = data.liveAccuracy || data.locationAccuracy || 10;
+        const driverName = data.driverName || 'Driver';
+        const isTrackingActive = data.isLiveTrackingActive !== false && data.status !== 'resolved';
+
+        document.getElementById('driver-name').textContent = driverName;
+        document.getElementById('driver-speed').textContent = speed > 1 ? `${Math.round(speed * 3.6)} km/h` : 'Stationary';
+        document.getElementById('accuracy').textContent = `±${Math.round(accuracy)}m`;
+        document.getElementById('incident-status').textContent = isTrackingActive ? 'ACTIVE' : 'RESOLVED';
+        document.getElementById('incident-status').style.color = isTrackingActive ? '#ef4444' : '#10b981';
+
+        if (!isTrackingActive) {
+          document.getElementById('live-indicator').textContent = 'ENDED';
+          document.getElementById('live-indicator').style.backgroundColor = '#334155';
+          document.getElementById('live-indicator').style.color = '#94a3b8';
+        }
+
+        if (lat && lng) {
+          lastLat = lat;
+          lastLng = lng;
+          lastUpdateTime = new Date();
+          const currentPos = { lat: lat, lng: lng };
+
+          // Update navigation link
+          document.getElementById('nav-btn').href = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+
+          // Update or create marker
+          if (!marker) {
+            marker = new google.maps.Marker({
+              position: currentPos,
+              map: map,
+              title: driverName,
+              icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 10,
+                fillColor: "#ef4444",
+                fillOpacity: 1,
+                strokeColor: "#ffffff",
+                strokeWeight: 3
+              }
+            });
+
+            accuracyCircle = new google.maps.Circle({
+              map: map,
+              center: currentPos,
+              radius: accuracy,
+              fillColor: "#ef4444",
+              fillOpacity: 0.15,
+              strokeColor: "#ef4444",
+              strokeOpacity: 0.4,
+              strokeWeight: 1
+            });
+
+            map.panTo(currentPos);
+          } else {
+            marker.setPosition(currentPos);
+            accuracyCircle.setCenter(currentPos);
+            accuracyCircle.setRadius(accuracy);
+            map.panTo(currentPos);
+          }
+
+          // Add to path
+          trailCoords.push(currentPos);
+          trailPolyline.setPath(trailCoords);
+        }
+      }, (error) => {
+        console.error("Firestore listen error: ", error);
+        document.getElementById('loader').innerHTML = `
+          <h2 style="color:#ef4444; font-family:'Poppins';">Connection Error</h2>
+          <p style="color:#94a3b8; font-size:14px; margin-top:8px;">${error.message}</p>
+        `;
+      });
+    }
+
+    // Relative time counter
+    setInterval(() => {
+      if (lastUpdateTime) {
+        const diffSeconds = Math.round((new Date() - lastUpdateTime) / 1000);
+        if (diffSeconds < 5) {
+          document.getElementById('time-ago').textContent = 'Just now';
+        } else if (diffSeconds < 60) {
+          document.getElementById('time-ago').textContent = `${diffSeconds}s ago`;
+        } else {
+          document.getElementById('time-ago').textContent = `${Math.round(diffSeconds / 60)}m ago`;
+        }
+      }
+    }, 2000);
+  </script>
+
+  <!-- Load Google Maps API with device key -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBHXjEt53uJh7ukbhXgVx7OxYmqQsIoR5Y&callback=Function.prototype"></script>
+</body>
+</html>

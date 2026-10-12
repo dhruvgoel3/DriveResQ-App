@@ -22,6 +22,11 @@ service cloud.firestore {
       match /resq_chats/{messageId} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
       }
+
+      // Emergency contacts subcollection inside user profile
+      match /emergency_contacts/{contactId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
     }
 
     // ─── REQUESTS (ROADSIDE ASSISTANCE) ───
@@ -82,6 +87,46 @@ service cloud.firestore {
       allow create, read: if request.auth != null;
       allow update: if request.auth != null && (request.auth.uid == docId || isAdmin());
       allow delete: if isAdmin();
+    }
+
+    // ─── MECHANIC LIVE LOCATIONS ───
+    // Mechanics update their location; authenticated users can read for live tracking
+    match /mechanic_locations/{mechanicId} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null && (request.auth.uid == mechanicId || isAdmin());
+      allow delete: if request.auth != null && (request.auth.uid == mechanicId || isAdmin());
+    }
+
+    // ─── SAFETY SOS — EMERGENCY CONTACTS ───
+    // Each driver can only access their own emergency contacts.
+    match /emergency_contacts/{driverId} {
+      allow read, write: if request.auth != null && request.auth.uid == driverId;
+
+      match /contacts/{contactId} {
+        allow read, write: if request.auth != null && request.auth.uid == driverId;
+      }
+    }
+
+    // ─── SAFETY SOS — INCIDENTS ───
+    // Drivers can create incidents and update their own live location.
+    // Emergency contacts receiving the live tracking link on WhatsApp can read in real-time.
+    // Admins can manage all incidents.
+    match /sos_incidents/{incidentId} {
+      allow create: if request.auth != null
+                    && request.resource.data.driverId == request.auth.uid;
+      allow read: if resource.data.isLiveTrackingActive == true
+                  || resource.data.status in ['sent', 'active', 'resolved']
+                  || (request.auth != null && (resource.data.driverId == request.auth.uid || isAdmin()));
+      allow update: if request.auth != null
+                    && resource.data.driverId == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+
+    // ─── PRICING CONFIGURATION (DYNAMIC TRAVEL FEES) ───
+    // Authenticated users can read pricing rules; only admins can adjust rates
+    match /pricing_config/{configId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
     }
   }
 }

@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../controllers/mechanic_controller.dart';
+import '../../../pricing/models/travel_pricing_model.dart';
+import '../../../pricing/views/widgets/travel_fee_breakdown_widget.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 import 'package:driveresq_app/utils/helpers/app_dialogs.dart';
@@ -134,7 +136,19 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                 ),
               ),
 
-              SizedBox(height: 20.h),
+              SizedBox(height: 16.h),
+
+              // Transparent Travel Fee Card
+              if (job['lockedTravelFee'] is Map || job['travelFee'] != null) ...[
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: TravelFeeBreakdownWidget(
+                    breakdown: _parseBreakdown(job),
+                    isLocked: true,
+                  ),
+                ),
+                SizedBox(height: 16.h),
+              ],
 
               // Action Buttons
               _buildActionButtons(context, job, controller),
@@ -144,6 +158,28 @@ class ActiveRequestDetailsPage extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+
+  TravelFeeBreakdown _parseBreakdown(Map<String, dynamic> job) {
+    if (job['lockedTravelFee'] is Map) {
+      return TravelFeeBreakdown.fromMap(
+        Map<String, dynamic>.from(job['lockedTravelFee'] as Map),
+      );
+    }
+    final dist = double.tryParse(job['distance']?.toString() ?? '0') ?? 0.0;
+    final fee = (job['travelFee'] as num?)?.toDouble() ?? (50.0 + (dist * 20.0));
+    return TravelFeeBreakdown(
+      baseDispatchFee: 50.0,
+      perKmRate: 20.0,
+      distanceKm: dist,
+      fuelCost: dist * 2.30,
+      wearTearCost: dist * 1.50,
+      timeLaborCost: dist * 8.20,
+      distanceCharge: (dist * 20.0),
+      totalFee: fee,
+      isDrivingDistance: true,
+      calculatedAt: DateTime.now(),
     );
   }
 
@@ -574,10 +610,13 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () => _showCancelDialog(controller),
-                    icon: Icon(Iconsax.close_square, size: 20.w),
-                    label: Text(
-                      "Cancel Job",
-                      style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                    icon: Icon(Iconsax.close_square, size: 18.w),
+                    label: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        "Cancel Job",
+                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                      ),
                     ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.red,
@@ -585,18 +624,21 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14.r),
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 16.h),
+                      padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 8.w),
                     ),
                   ),
                 ),
-                SizedBox(width: 12.w),
+                SizedBox(width: 10.w),
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () => _showCompleteDialog(controller),
-                    icon: Icon(Iconsax.tick_circle, size: 20.w),
-                    label: Text(
-                      "Complete",
-                      style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                    icon: Icon(Iconsax.tick_circle, size: 18.w),
+                    label: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        "Complete",
+                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                      ),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
@@ -604,7 +646,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14.r),
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 16.h),
+                      padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 8.w),
                       elevation: 2,
                     ),
                   ),
@@ -625,10 +667,13 @@ class ActiveRequestDetailsPage extends StatelessWidget {
   }) {
     return ElevatedButton.icon(
       onPressed: onPressed,
-      icon: Icon(icon, size: 20.w),
-      label: Text(
-        label,
-        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+      icon: Icon(icon, size: 18.w),
+      label: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(
+          label,
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+        ),
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
@@ -636,7 +681,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14.r),
         ),
-        padding: EdgeInsets.symmetric(vertical: 16.h),
+        padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 8.w),
         elevation: 2,
       ),
     );

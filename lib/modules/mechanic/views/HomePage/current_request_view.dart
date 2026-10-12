@@ -6,6 +6,8 @@ import 'package:iconsax/iconsax.dart';
 
 import '../../../../shared/widgets/notification_bell_icon.dart';
 import '../../controllers/mechanic_controller.dart';
+import '../../../pricing/models/travel_pricing_model.dart';
+import '../../../pricing/views/widgets/travel_fee_breakdown_widget.dart';
 import '../widgets/accept_request_indicator_card.dart';
 import '../widgets/mechanic_active_job_card.dart';
 import '../widgets/mechanic_empty_state.dart';
@@ -244,12 +246,19 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
             ),
           ),
           child: Center(
-            child: Text(
-              text,
-              style: GoogleFonts.poppins(
-                color: isActive ? const Color(0xFF6C63FF) : Colors.grey,
-                fontWeight: FontWeight.w600,
-                fontSize: 15.sp,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 6.w),
+                child: Text(
+                  text,
+                  maxLines: 1,
+                  style: GoogleFonts.poppins(
+                    color: isActive ? const Color(0xFF6C63FF) : Colors.grey,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14.sp,
+                  ),
+                ),
               ),
             ),
           ),
@@ -357,8 +366,17 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
               (entry) => OpenRequestCard(
                 job: entry.value,
                 animationIndex: entry.key,
-                onAccept: () =>
-                    _showAcceptDialog(controller, entry.value['id']),
+                onAcceptWithFee: (fee) => _showAcceptDialog(
+                  controller,
+                  entry.value['id'],
+                  job: entry.value,
+                  fee: fee,
+                ),
+                onAccept: () => _showAcceptDialog(
+                  controller,
+                  entry.value['id'],
+                  job: entry.value,
+                ),
               ),
             ),
           ],
@@ -386,107 +404,150 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
   }
 
   // Accept Dialog — styled bottom sheet
-  void _showAcceptDialog(MechanicController controller, String requestId) {
+  void _showAcceptDialog(
+    MechanicController controller,
+    String requestId, {
+    Map<String, dynamic>? job,
+    TravelFeeBreakdown? fee,
+  }) {
+    TravelFeeBreakdown? currentFee = fee;
+
     Get.bottomSheet(
-      Container(
-        padding: EdgeInsets.all(24.w),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 40.w,
-              height: 4.h,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(2.r),
-              ),
-            ),
-            SizedBox(height: 24.h),
-            Container(
-              padding: EdgeInsets.all(16.w),
-              decoration: BoxDecoration(
-                color: const Color(0xFF6C63FF).withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Iconsax.tick_circle,
-                color: const Color(0xFF6C63FF),
-                size: 40.w,
-              ),
-            ),
-            SizedBox(height: 16.h),
-            Text(
-              "Accept This Request?",
-              style: GoogleFonts.poppins(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w700,
-                color: Colors.black87,
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              "You will be assigned to this driver and can start navigating to their location.",
-              textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
-                fontSize: 14.sp,
-                color: Colors.grey.shade600,
-                height: 1.4,
-              ),
-            ),
-            SizedBox(height: 24.h),
-            Row(
+      StatefulBuilder(
+        builder: (context, setState) => Container(
+          padding: EdgeInsets.all(24.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: SizedBox(
-                    height: 50.h,
-                    child: OutlinedButton(
-                      onPressed: () => Get.back(),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.grey.shade700,
-                        side: BorderSide(color: Colors.grey.shade300),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14.r),
-                        ),
-                      ),
-                      child: Text(
-                        "Cancel",
-                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-                      ),
-                    ),
+                Container(
+                  width: 40.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(2.r),
                   ),
                 ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: SizedBox(
-                    height: 50.h,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Get.back();
-                        controller.acceptRequest(requestId);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF6C63FF),
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14.r),
-                        ),
-                      ),
-                      child: Text(
-                        "Accept",
-                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-                      ),
-                    ),
+                SizedBox(height: 20.h),
+                Container(
+                  padding: EdgeInsets.all(16.w),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF6C63FF).withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Iconsax.tick_circle,
+                    color: const Color(0xFF6C63FF),
+                    size: 36.w,
                   ),
                 ),
+                SizedBox(height: 14.h),
+                Text(
+                  "Accept This Request?",
+                  style: GoogleFonts.poppins(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87,
+                  ),
+                ),
+                SizedBox(height: 6.h),
+                Text(
+                  "The travel fee will be locked and visible to the driver immediately.",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 13.sp,
+                    color: Colors.grey.shade600,
+                    height: 1.4,
+                  ),
+                ),
+                SizedBox(height: 16.h),
+                if (currentFee != null) ...[
+                  TravelFeeBreakdownWidget(
+                    breakdown: currentFee!,
+                    isLocked: true,
+                  ),
+                ] else if (job != null) ...[
+                  FutureBuilder<TravelFeeBreakdown>(
+                    future: controller.calculateFeeForRequest(job),
+                    builder: (ctx, snap) {
+                      if (snap.connectionState == ConnectionState.waiting) {
+                        return Container(
+                          padding: EdgeInsets.all(12.w),
+                          child: const Center(
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        );
+                      }
+                      if (snap.hasData && snap.data != null) {
+                        currentFee = snap.data;
+                        return TravelFeeBreakdownWidget(
+                          breakdown: snap.data!,
+                          isLocked: true,
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ],
+                SizedBox(height: 20.h),
+                Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 50.h,
+                        child: OutlinedButton(
+                          onPressed: () => Get.back(),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.grey.shade700,
+                            side: BorderSide(color: Colors.grey.shade300),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14.r),
+                            ),
+                          ),
+                          child: Text(
+                            "Cancel",
+                            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: SizedBox(
+                        height: 50.h,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Get.back();
+                            controller.acceptRequest(
+                              requestId,
+                              lockedTravelFee: currentFee,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF6C63FF),
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14.r),
+                            ),
+                          ),
+                          child: Text(
+                            "Accept & Lock",
+                            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8.h),
               ],
             ),
-            SizedBox(height: 8.h),
-          ],
+          ),
         ),
       ),
       isScrollControlled: true,

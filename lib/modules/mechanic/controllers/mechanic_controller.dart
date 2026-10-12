@@ -7,6 +7,9 @@ import 'package:geolocator/geolocator.dart';
 
 import '../../driver/services/mechanic_location_service.dart';
 import '../services/mechanic_service.dart';
+import '../../pricing/models/travel_pricing_model.dart';
+import '../../pricing/services/pricing_config_service.dart';
+import '../../pricing/services/distance_calculation_service.dart';
 import '../../../utils/helpers/app_snackbar.dart';
 import '../../../utils/role_change/dev_config.dart';
 
@@ -266,10 +269,19 @@ class MechanicController extends GetxController {
     openRequests.value = nearbyList;
   }
 
-  // ✅ Accept a request with validation
-  Future<void> acceptRequest(String requestId) async {
+  // ✅ Accept a request with transparent locked travel fee validation
+  Future<void> acceptRequest(
+    String requestId, {
+    TravelFeeBreakdown? lockedTravelFee,
+  }) async {
     try {
-      await MechanicService.acceptRequest(requestId, hasActiveJob.value);
+      await MechanicService.acceptRequest(
+        requestId,
+        hasActiveJob.value,
+        mechanicLat: isLocationLoaded.value ? mechanicLat.value : null,
+        mechanicLng: isLocationLoaded.value ? mechanicLng.value : null,
+        lockedTravelFee: lockedTravelFee,
+      );
 
       AppSnackbar.success('Request accepted! You can now chat with the driver.');
 
@@ -277,7 +289,6 @@ class MechanicController extends GetxController {
 
       // Location tracking will auto-start via _listenToActiveJob
     } catch (e) {
-
       // More specific error messages
       if (e.toString().contains('permission')) {
         AppSnackbar.error("You don't have permission to accept requests");
@@ -287,6 +298,46 @@ class MechanicController extends GetxController {
         AppSnackbar.error(e.toString().replaceFirst('Exception: ', ''));
       }
     }
+  }
+
+  /// Calculates or retrieves the transparent travel fee breakdown for a specific request.
+  Future<TravelFeeBreakdown> calculateFeeForRequest(
+    Map<String, dynamic> requestData,
+  ) async {
+    // If already locked in Firestore, return the locked breakdown
+    if (requestData['lockedTravelFee'] is Map) {
+      return TravelFeeBreakdown.fromMap(
+        Map<String, dynamic>.from(requestData['lockedTravelFee'] as Map),
+      );
+    }
+
+    final driverLat = (requestData['driverLat'] as num?)?.toDouble();
+    final driverLng = (requestData['driverLng'] as num?)?.toDouble();
+
+    final config = await PricingConfigService.fetchPricingConfig();
+
+    if (driverLat == null || driverLng == null) {
+      return PricingConfigService.calculateTravelFee(
+        distanceKm: 0.0,
+        config: config,
+      );
+    }
+
+    final originLat = isLocationLoaded.value ? mechanicLat.value : driverLat;
+    final originLng = isLocationLoaded.value ? mechanicLng.value : driverLng;
+
+    final distResult = await DistanceCalculationService.calculateDrivingDistance(
+      originLat: originLat,
+      originLng: originLng,
+      destLat: driverLat,
+      destLng: driverLng,
+    );
+
+    return PricingConfigService.calculateTravelFee(
+      distanceKm: distResult.distanceKm,
+      config: config,
+      isDrivingDistance: distResult.isDrivingDistance,
+    );
   }
 
   // ❌ Cancel active job with confirmation

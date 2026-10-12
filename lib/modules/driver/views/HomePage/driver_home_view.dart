@@ -18,6 +18,7 @@ import '../widgets/driver_dashboard_shimmer.dart';
 import '../widgets/driver_safety_tips.dart';
 import '../widgets/job_receipt_view.dart';
 import 'create_request_view.dart';
+import '../../../../modules/safety_sos/controllers/safety_sos_controller.dart';
 
 /// Redesigned, ultra-modern Driver Home Screen.
 /// Combines immediate emergency rescue action with intuitive service discovery,
@@ -898,6 +899,9 @@ class DriverHomeView extends StatelessWidget {
     final isVerifiedOrDone =
         request['status'] == 'verified' || request['status'] == 'completed';
 
+    // Sync Safety SOS controller with request status
+    _syncSosController(request);
+
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 32.h),
@@ -967,6 +971,10 @@ class DriverHomeView extends StatelessWidget {
           ),
           SizedBox(height: 16.h),
 
+          // ── Safety SOS Entry Point (visible only when mechanic accepted) ──
+          _buildSafetySOSEntry(request),
+          SizedBox(height: 12.h),
+
           // Primary Card (Receipt or Active Request Tracking Card)
           if (isCompleted)
             JobReceiptView(request: request)
@@ -976,6 +984,107 @@ class DriverHomeView extends StatelessWidget {
           SizedBox(height: 16.h),
           const SafetyTipsSection(),
         ],
+      ),
+    );
+  }
+
+  /// Keep SafetySosController in sync with the current request and its status.
+  void _syncSosController(Map<String, dynamic> request) {
+    try {
+      final sosController = Get.find<SafetySosController>();
+      sosController.onRequestStatusChanged(
+        requestId: request['id']?.toString(),
+        status: request['status']?.toString(),
+        mechanicId: request['mechanicId']?.toString(),
+      );
+    } catch (_) {
+      // SafetySosController may not be registered yet — safe to ignore
+    }
+  }
+
+  /// Safety SOS entry button shown in the active request layout.
+  Widget _buildSafetySOSEntry(Map<String, dynamic> request) {
+    final status = request['status']?.toString() ?? '';
+    final isMechanicAccepted =
+        status == 'mechanic_accepted' || status == 'accepted';
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          if (!Get.isRegistered<SafetySosController>()) {
+            Get.put(SafetySosController());
+          }
+          final sosController = Get.find<SafetySosController>();
+          sosController.onRequestStatusChanged(
+            requestId: request['id']?.toString(),
+            status: status,
+            mechanicId: request['mechanicId']?.toString(),
+          );
+          Get.toNamed(Routes.SAFETY_SOS);
+        },
+        borderRadius: BorderRadius.circular(14.r),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: isMechanicAccepted
+                  ? [const Color(0xFFDC2626), const Color(0xFFB91C1C)]
+                  : [const Color(0xFF94A3B8), const Color(0xFF64748B)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(14.r),
+            boxShadow: [
+              BoxShadow(
+                color: (isMechanicAccepted
+                        ? const Color(0xFFDC2626)
+                        : const Color(0xFF94A3B8))
+                    .withValues(alpha: 0.25),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(8.w),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.shield, size: 20.w, color: Colors.white),
+              ),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Safety SOS',
+                      style: GoogleFonts.poppins(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      isMechanicAccepted
+                          ? 'Active — Shake or tap to trigger emergency alert'
+                          : 'Waiting for mechanic acceptance',
+                      style: GoogleFonts.inter(
+                        fontSize: 11.5.sp,
+                        color: Colors.white.withValues(alpha: 0.85),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Iconsax.arrow_right_3, size: 16.w, color: Colors.white),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -64,9 +64,12 @@ class JobSummaryView extends StatelessWidget {
                 OutlinedButton.icon(
                   onPressed: () => c.addPart(),
                   icon: Icon(Iconsax.add, size: 18.w),
-                  label: Text(
-                    'Add Part',
-                    style: AppTextStyles.caption.copyWith(color: AppColors.success),
+                  label: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      'Add Part',
+                      style: AppTextStyles.caption.copyWith(color: AppColors.success),
+                    ),
                   ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.success,
@@ -170,11 +173,14 @@ class JobSummaryView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14.r),
                 ),
               ),
-              child: Text(
-                'Continue to Rating',
-                style: AppTextStyles.body1.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.surface,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  'Continue to Rating',
+                  style: AppTextStyles.body1.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.surface,
+                  ),
                 ),
               ),
             ),
@@ -414,10 +420,9 @@ class JobSummaryView extends StatelessWidget {
               ),
             ),
             SizedBox(height: 14.h),
-            _costRow('Base Service Charge', c.baseCharge.value),
-            _costRow('Labor Charges', c.laborCharges.value),
-            _costRow('Parts Cost', c.partsTotal.value),
             _costRow('Travel Cost', c.travelCost.value),
+            _costRow('Parts Cost', c.partsTotal.value),
+            _costRow('Labor Charges', c.laborCharges.value),
             Divider(color: AppColors.border, height: 24.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

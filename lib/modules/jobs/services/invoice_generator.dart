@@ -317,15 +317,14 @@ class InvoiceGenerator {
             _buildCell('Amount', isHeader: true, align: pw.TextAlign.right),
           ],
         ),
-        _buildDataRow('Standard Base Service Fee', '1', c.baseCharge.value),
+        if (c.travelCost.value > 0)
+          _buildDataRow('Travel & Dispatch Fee', '1', c.travelCost.value),
         if (c.laborCharges.value > 0)
           _buildDataRow(
             'Professional Labor/Technical Work',
             '1',
             c.laborCharges.value,
           ),
-        if (c.travelCost.value > 0)
-          _buildDataRow('Travel & Dispatch Fee', '1', c.travelCost.value),
         ...c.partsReplaced.map(
           (p) => _buildDataRow(
             'Part: ${p['name'] ?? 'Generic Part'}',

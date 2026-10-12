@@ -35,4 +35,7 @@ abstract class Routes {
 
   // ResQ AI Assistant
   static const RESQ_ASSISTANT = '/resq-assistant';
+
+  // Safety SOS
+  static const SAFETY_SOS = '/safety-sos';
 }

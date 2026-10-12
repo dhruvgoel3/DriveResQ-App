@@ -6,6 +6,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:get/get.dart';
 import '../../../chat/controllers/chat_controller.dart';
 import '../../../chat/views/chat_screen.dart';
+import '../../../pricing/models/travel_pricing_model.dart';
+import '../../../pricing/views/widgets/travel_fee_breakdown_widget.dart';
 import 'complete_job_verification_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
@@ -117,6 +119,32 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
       widget.isActive &&
       (_jobStatus == 'accepted' || _jobStatus == 'verified');
 
+  /// Parse locked or calculated travel fee breakdown
+  TravelFeeBreakdown? get _feeBreakdown {
+    if (widget.job['lockedTravelFee'] is Map) {
+      return TravelFeeBreakdown.fromMap(
+        Map<String, dynamic>.from(widget.job['lockedTravelFee'] as Map),
+      );
+    }
+    if (widget.job['travelFee'] != null) {
+      final dist = double.tryParse(widget.job['distance']?.toString() ?? '0') ?? 0.0;
+      final fee = (widget.job['travelFee'] as num).toDouble();
+      return TravelFeeBreakdown(
+        baseDispatchFee: 50.0,
+        perKmRate: 20.0,
+        distanceKm: dist,
+        fuelCost: dist * 2.30,
+        wearTearCost: dist * 1.50,
+        timeLaborCost: dist * 8.20,
+        distanceCharge: (dist * 20.0),
+        totalFee: fee,
+        isDrivingDistance: true,
+        calculatedAt: DateTime.now(),
+      );
+    }
+    return null;
+  }
+
   IconData _problemIcon(String? problem) {
     final p = (problem ?? '').toLowerCase();
     if (p.contains('tire') || p.contains('tyre') || p.contains('flat')) {
@@ -180,6 +208,13 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                     if (_timeAgo.isNotEmpty) ...[
                       SizedBox(height: 12.h),
                       _buildTimestamp(),
+                    ],
+                    if (widget.isActive && _feeBreakdown != null) ...[
+                      SizedBox(height: 14.h),
+                      TravelFeeBreakdownWidget(
+                        breakdown: _feeBreakdown!,
+                        isLocked: true,
+                      ),
                     ],
                     SizedBox(height: 16.h),
                     if (widget.isActive)
@@ -686,9 +721,12 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
               child: OutlinedButton.icon(
                 onPressed: widget.onCancel,
                 icon: Icon(Iconsax.close_square, size: 18.w),
-                label: Text(
-                  "Cancel",
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                label: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    "Cancel",
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                  ),
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: _red,
@@ -696,7 +734,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.r),
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 13.h),
+                  padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 6.w),
                 ),
               ),
             ),
@@ -719,10 +757,13 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                 ),
                 child: ElevatedButton.icon(
                   onPressed: _completeJob,
-                  icon: Icon(Iconsax.tick_circle, size: 20.w),
-                  label: Text(
-                    "Complete",
-                    style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
+                  icon: Icon(Iconsax.tick_circle, size: 18.w),
+                  label: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      "Complete",
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
+                    ),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,
@@ -731,7 +772,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 13.h),
+                    padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
                   ),
                 ),
               ),
@@ -753,11 +794,14 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
               HapticFeedback.mediumImpact();
             },
             icon: Icon(Iconsax.close_square, size: 18.w),
-            label: Text(
-              "Reject",
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w600,
-                fontSize: 14.sp,
+            label: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                "Reject",
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.sp,
+                ),
               ),
             ),
             style: OutlinedButton.styleFrom(
@@ -766,11 +810,11 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r),
               ),
-              padding: EdgeInsets.symmetric(vertical: 14.h),
+              padding: EdgeInsets.symmetric(vertical: 13.h, horizontal: 6.w),
             ),
           ),
         ),
-        SizedBox(width: 12.w),
+        SizedBox(width: 10.w),
         Expanded(
           flex: 3,
           child: Container(
@@ -792,12 +836,15 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                 HapticFeedback.mediumImpact();
                 widget.onAccept?.call();
               },
-              icon: Icon(Iconsax.tick_circle, size: 20.w),
-              label: Text(
-                "Accept Request",
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14.sp,
+              icon: Icon(Iconsax.tick_circle, size: 18.w),
+              label: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  "Accept Request",
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14.sp,
+                  ),
                 ),
               ),
               style: ElevatedButton.styleFrom(
@@ -807,7 +854,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.r),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 14.h),
+                padding: EdgeInsets.symmetric(vertical: 13.h, horizontal: 8.w),
               ),
             ),
           ),
@@ -824,12 +871,15 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
   ) {
     return ElevatedButton.icon(
       onPressed: onTap,
-      icon: Icon(icon, size: 18.w),
-      label: Text(
-        label,
-        style: GoogleFonts.poppins(
-          fontWeight: FontWeight.w600,
-          fontSize: 12.sp,
+      icon: Icon(icon, size: 16.w),
+      label: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(
+          label,
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            fontSize: 12.sp,
+          ),
         ),
       ),
       style: ElevatedButton.styleFrom(
@@ -838,7 +888,7 @@ class _MechanicActiveJobCardState extends State<MechanicActiveJobCard>
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.r),
         ),
-        padding: EdgeInsets.symmetric(vertical: 12.h),
+        padding: EdgeInsets.symmetric(vertical: 11.h, horizontal: 4.w),
         elevation: 1,
       ),
     );

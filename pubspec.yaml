@@ -52,6 +52,9 @@ dependencies:
   audioplayers: ^6.1.0
   permission_handler: ^11.3.1
 
+  # Sensors (Shake Detection)
+  sensors_plus: ^4.0.2
+
   # Utilities
   url_launcher: ^6.3.2
   shared_preferences: ^2.5.4

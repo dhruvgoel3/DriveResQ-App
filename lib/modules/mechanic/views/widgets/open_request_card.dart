@@ -4,22 +4,30 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import '../../controllers/mechanic_controller.dart';
+import '../../../pricing/models/travel_pricing_model.dart';
+import '../../../pricing/services/pricing_config_service.dart';
+import '../../../pricing/views/widgets/travel_fee_breakdown_widget.dart';
 
 /// Compact request card for the "All Requests" tab on the mechanic dashboard.
-/// Tapping opens a detailed bottom sheet with full info and Accept button.
+/// Tapping opens a detailed bottom sheet with full info, transparent travel fee breakdown, and Accept button.
 class OpenRequestCard extends StatelessWidget {
   final Map<String, dynamic> job;
   final VoidCallback? onAccept;
+  final void Function(TravelFeeBreakdown? fee)? onAcceptWithFee;
   final int animationIndex;
 
   static const _primary = Color(0xFF6C63FF);
   static const _orange = Color(0xFFFF9800);
   static const _red = Color(0xFFF44336);
+  static const _green = Color(0xFF10B981);
 
   const OpenRequestCard({
     super.key,
     required this.job,
     this.onAccept,
+    this.onAcceptWithFee,
     this.animationIndex = 0,
   });
 
@@ -58,6 +66,38 @@ class OpenRequestCard extends StatelessWidget {
     } catch (_) {
       return '';
     }
+  }
+
+  String? get _estimatedTravelFee {
+    if (job['lockedTravelFee'] is Map) {
+      final f = (job['lockedTravelFee']['totalFee'] as num?)?.toDouble();
+      if (f != null) return '₹${f.toStringAsFixed(0)}';
+    }
+    if (job['travelFee'] != null) {
+      final f = (job['travelFee'] as num).toDouble();
+      return '₹${f.toStringAsFixed(0)}';
+    }
+    final d = job['distance'];
+    if (d == null) return null;
+    try {
+      final dist = double.parse(d.toString());
+      final fee = 50.0 + (dist * 20.0);
+      return '₹${fee.toStringAsFixed(0)}';
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<TravelFeeBreakdown> _fetchFee() async {
+    if (Get.isRegistered<MechanicController>()) {
+      return Get.find<MechanicController>().calculateFeeForRequest(job);
+    }
+    final dist = double.tryParse(job['distance']?.toString() ?? '0') ?? 0.0;
+    final config = await PricingConfigService.fetchPricingConfig();
+    return PricingConfigService.calculateTravelFee(
+      distanceKm: dist,
+      config: config,
+    );
   }
 
   IconData _problemIcon(String? problem) {
@@ -152,54 +192,85 @@ class OpenRequestCard extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 4.h),
-                  Row(
+                  Wrap(
+                    spacing: 8.w,
+                    runSpacing: 4.h,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      Icon(
-                        Iconsax.car,
-                        color: Colors.grey.shade500,
-                        size: 13.w,
-                      ),
-                      SizedBox(width: 4.w),
-                      Flexible(
-                        child: Text(
-                          job['vehicleType'] ?? 'Vehicle',
-                          style: GoogleFonts.poppins(
-                            fontSize: 12.sp,
-                            color: Colors.grey.shade600,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (_distanceText.isNotEmpty) ...[
-                        SizedBox(width: 8.w),
-                        Icon(Iconsax.location, color: _primary, size: 13.w),
-                        SizedBox(width: 2.w),
-                        Text(
-                          _distanceText,
-                          style: GoogleFonts.poppins(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w600,
-                            color: _primary,
-                          ),
-                        ),
-                      ],
-                      if (_timeAgo.isNotEmpty) ...[
-                        SizedBox(width: 8.w),
-                        Icon(
-                          Iconsax.clock,
-                          color: Colors.grey.shade400,
-                          size: 13.w,
-                        ),
-                        SizedBox(width: 2.w),
-                        Text(
-                          _timeAgo,
-                          style: GoogleFonts.poppins(
-                            fontSize: 11.sp,
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Iconsax.car,
                             color: Colors.grey.shade500,
+                            size: 13.w,
+                          ),
+                          SizedBox(width: 4.w),
+                          Text(
+                            job['vehicleType'] ?? 'Vehicle',
+                            style: GoogleFonts.poppins(
+                              fontSize: 12.sp,
+                              color: Colors.grey.shade600,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                      if (_distanceText.isNotEmpty)
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Iconsax.location, color: _primary, size: 13.w),
+                            SizedBox(width: 2.w),
+                            Text(
+                              _distanceText,
+                              style: GoogleFonts.poppins(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                                color: _primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      if (_estimatedTravelFee != null)
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 6.w,
+                            vertical: 1.5.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: _green.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(6.r),
+                          ),
+                          child: Text(
+                            _estimatedTravelFee!,
+                            style: GoogleFonts.poppins(
+                              fontSize: 11.sp,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF047857),
+                            ),
                           ),
                         ),
-                      ],
+                      if (_timeAgo.isNotEmpty)
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Iconsax.clock,
+                              color: Colors.grey.shade400,
+                              size: 13.w,
+                            ),
+                            SizedBox(width: 2.w),
+                            Text(
+                              _timeAgo,
+                              style: GoogleFonts.poppins(
+                                fontSize: 11.sp,
+                                color: Colors.grey.shade500,
+                              ),
+                            ),
+                          ],
+                        ),
                     ],
                   ),
                 ],
@@ -221,21 +292,28 @@ class OpenRequestCard extends StatelessWidget {
   void _showDetails(BuildContext context) {
     HapticFeedback.lightImpact();
     final problem = job['problem'] ?? 'Not specified';
+    TravelFeeBreakdown? calculatedFee;
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-        ),
-        padding: EdgeInsets.all(24.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      builder: (_) => StatefulBuilder(
+        builder: (ctx, setSheetState) => Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.88,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+          ),
+          padding: EdgeInsets.all(24.w),
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
             // Handle bar
             Center(
               child: Container(
@@ -420,7 +498,54 @@ class OpenRequestCard extends StatelessWidget {
               ),
             ],
 
-            SizedBox(height: 24.h),
+            SizedBox(height: 16.h),
+
+            // Transparent Travel Fee Breakdown
+            FutureBuilder<TravelFeeBreakdown>(
+              future: _fetchFee(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container(
+                    padding: EdgeInsets.all(14.w),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8FAFC),
+                      borderRadius: BorderRadius.circular(14.r),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 14.w,
+                          height: 14.w,
+                          child: const CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                        SizedBox(width: 10.w),
+                        Text(
+                          "Calculating driving distance & travel fee...",
+                          style: GoogleFonts.inter(
+                            fontSize: 11.5.sp,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                if (snapshot.hasData && snapshot.data != null) {
+                  calculatedFee = snapshot.data!;
+                  return TravelFeeBreakdownWidget(
+                    breakdown: snapshot.data!,
+                    isLocked: false,
+                  );
+                }
+
+                return const SizedBox.shrink();
+              },
+            ),
+
+            SizedBox(height: 20.h),
 
             // Accept button
             SizedBox(
@@ -429,14 +554,21 @@ class OpenRequestCard extends StatelessWidget {
               child: ElevatedButton.icon(
                 onPressed: () {
                   Navigator.pop(context);
-                  onAccept?.call();
+                  if (onAcceptWithFee != null) {
+                    onAcceptWithFee!(calculatedFee);
+                  } else {
+                    onAccept?.call();
+                  }
                 },
                 icon: Icon(Iconsax.tick_circle, size: 20.w),
-                label: Text(
-                  "Accept Request",
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15.sp,
+                label: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    "Accept Request",
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15.sp,
+                    ),
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
@@ -453,7 +585,9 @@ class OpenRequestCard extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ),
+  ),
+);
   }
 
   Widget _detailRow(IconData icon, String label, String value) {
