@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../../shared/widgets/notification_bell_icon.dart';
-import '../../controller/mechanic_controller.dart';
+import '../../controllers/mechanic_controller.dart';
 import '../widgets/accept_request_indicator_card.dart';
 import '../widgets/mechanic_active_job_card.dart';
 import '../widgets/mechanic_empty_state.dart';

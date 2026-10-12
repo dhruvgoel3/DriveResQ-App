@@ -252,7 +252,7 @@ class AdminDashboardView extends StatelessWidget {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: c.recentActions.length,
-                        separatorBuilder: (_, __) =>
+                        separatorBuilder: (context, index) =>
                             Divider(color: Colors.grey.shade100, height: 1),
                         itemBuilder: (_, i) {
                           final action = c.recentActions[i];

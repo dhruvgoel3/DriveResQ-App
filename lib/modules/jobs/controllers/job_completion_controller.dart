@@ -140,7 +140,7 @@ class JobCompletionController extends GetxController {
   void _recalculate() {
     partsTotal.value = partsReplaced.fold(
       0.0,
-      (sum, p) => sum + (p['total'] as double? ?? 0),
+      (acc, p) => acc + (p['total'] as double? ?? 0),
     );
     subtotal.value =
         baseCharge.value +

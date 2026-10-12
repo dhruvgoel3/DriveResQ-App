@@ -56,17 +56,19 @@ class LiveTrackingView extends StatelessWidget {
             return Stack(
               children: [
                 // 🗺️ Google Map
-                GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target: controller.driverLatLng ?? controller.mechanicLatLng ?? const LatLng(0, 0),
-                    zoom: 14,
+                Obx(
+                  () => GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: controller.driverLatLng ?? controller.mechanicLatLng ?? const LatLng(0, 0),
+                      zoom: 14,
+                    ),
+                    markers: controller.markers.toSet(),
+                    polylines: controller.polylines.toSet(),
+                    onMapCreated: controller.onMapCreated,
+                    myLocationEnabled: true,
+                    myLocationButtonEnabled: false,
+                    zoomControlsEnabled: false,
                   ),
-                  markers: controller.markers.toSet(),
-                  polylines: controller.polylines.toSet(),
-                  onMapCreated: controller.onMapCreated,
-                  myLocationEnabled: true,
-                  myLocationButtonEnabled: false,
-                  zoomControlsEnabled: false,
                 ),
 
                 // 📊 Info Card at bottom
@@ -150,13 +152,15 @@ class LiveTrackingView extends StatelessWidget {
           SizedBox(height: 20.h),
 
           // Distance and ETA
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildStatItem(Iconsax.location, controller.distanceLabel.value, "Distance"),
-              Container(width: 1, height: 40.h, color: AppColors.border),
-              _buildStatItem(Iconsax.clock, controller.etaLabel.value, "ETA"),
-            ],
+          Obx(
+            () => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildStatItem(Iconsax.location, controller.distanceLabel.value, "Distance"),
+                Container(width: 1, height: 40.h, color: AppColors.border),
+                _buildStatItem(Iconsax.clock, controller.etaLabel.value, "ETA"),
+              ],
+            ),
           ),
 
           SizedBox(height: 20.h),

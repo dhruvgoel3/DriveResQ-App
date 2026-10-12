@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import '../controller/mechanic_controller.dart';
+import '../controllers/mechanic_controller.dart';
 
 class MechanicBinding extends Bindings {
   @override

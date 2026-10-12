@@ -12,7 +12,7 @@ import '../../utils/helpers/responsive_helper.dart';
 /// Shared navigation drawer for both Driver and Mechanic dashboards.
 /// [userRole] — 'driver' or 'mechanic' (used for theming).
 /// [onHistoryTap] — callback when the History tile is tapped.
-class HistoryDrawer extends StatelessWidget {
+class HistoryDrawer extends StatefulWidget {
   final String userRole;
   final VoidCallback onHistoryTap;
 
@@ -22,7 +22,31 @@ class HistoryDrawer extends StatelessWidget {
     required this.onHistoryTap,
   });
 
-  bool get _isMechanic => userRole == 'mechanic';
+  @override
+  State<HistoryDrawer> createState() => _HistoryDrawerState();
+}
+
+class _HistoryDrawerState extends State<HistoryDrawer> {
+  Stream<DocumentSnapshot>? _userStream;
+  String? _cachedUid;
+
+  @override
+  void initState() {
+    super.initState();
+    _initStream();
+  }
+
+  void _initStream() {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    _cachedUid = uid;
+    if (uid != null) {
+      _userStream = FirebaseFirestore.instance.collection('users').doc(uid).snapshots();
+    } else {
+      _userStream = null;
+    }
+  }
+
+  bool get _isMechanic => widget.userRole == 'mechanic';
 
   Color get _accentColor =>
       _isMechanic ? AppColors.mechanicPrimary : AppColors.primary;
@@ -38,6 +62,9 @@ class HistoryDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != _cachedUid || _userStream == null) {
+      _initStream();
+    }
 
     return Drawer(
       backgroundColor: AppColors.surface,
@@ -60,7 +87,7 @@ class HistoryDrawer extends StatelessWidget {
                   accentColor: _accentColor,
                   onTap: () {
                     Navigator.of(context).pop(); // close drawer
-                    onHistoryTap();
+                    widget.onHistoryTap();
                   },
                 ),
               ],
@@ -109,10 +136,7 @@ class HistoryDrawer extends StatelessWidget {
       child: uid == null
           ? const SizedBox.shrink()
           : StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(uid)
-                  .snapshots(),
+              stream: _userStream,
               builder: (context, snapshot) {
                 String name = _isMechanic ? 'Mechanic' : 'Driver';
                 String phone = '';

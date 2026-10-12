@@ -7,12 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:geocoding/geocoding.dart';
 import '../services/location_service.dart';
 import '../../notifications/services/notification_sender.dart';
 import '../../../shared/services/connectivity_service.dart';
 import '../../../shared/services/error_handler.dart';
 import '../../../utils/helpers/app_snackbar.dart';
 import '../../../utils/helpers/app_dialogs.dart';
+import 'driver_controller.dart';
+import '../../mechanic/controllers/mechanic_controller.dart';
 
 class CreateRequestController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -62,6 +65,15 @@ class CreateRequestController extends GetxController {
 
     if (result != null && result.isNotEmpty) {
       locationName.value = result;
+      try {
+        final locations = await locationFromAddress(result);
+        if (locations.isNotEmpty) {
+          driverLat = locations.first.latitude;
+          driverLng = locations.first.longitude;
+        }
+      } catch (e) {
+        debugPrint('Geocoding manual location failed: $e');
+      }
     }
   }
 
@@ -77,10 +89,28 @@ class CreateRequestController extends GetxController {
   Future<void> submitRequest() async {
     if (landmarkController.text.isEmpty ||
         selectedVehicle.value.isEmpty ||
-        problemController.text.isEmpty ||
-        driverLat == null ||
-        driverLng == null) {
+        problemController.text.isEmpty) {
       AppSnackbar.warning('Please fill all required fields');
+      return;
+    }
+
+    // If coordinates are missing, try geocoding locationName as a fallback
+    if (driverLat == null || driverLng == null) {
+      if (locationName.value.isNotEmpty &&
+          locationName.value != "Enable location to continue" &&
+          locationName.value != "Fetching location...") {
+        try {
+          final locations = await locationFromAddress(locationName.value);
+          if (locations.isNotEmpty) {
+            driverLat = locations.first.latitude;
+            driverLng = locations.first.longitude;
+          }
+        } catch (_) {}
+      }
+    }
+
+    if (driverLat == null || driverLng == null) {
+      AppSnackbar.warning('Please enable location or enter a valid location');
       return;
     }
 
@@ -105,6 +135,7 @@ class CreateRequestController extends GetxController {
       // 1️⃣ FETCH DRIVER DETAILS FOR CHAT display
       String driverName = 'Driver';
       String driverPhoto = '';
+      String driverPhone = _auth.currentUser?.phoneNumber ?? '';
       try {
         final doc = await _firestore
             .collection('users')
@@ -114,6 +145,9 @@ class CreateRequestController extends GetxController {
           final data = doc.data()!;
           driverName = data['fullName'] ?? data['name'] ?? 'Driver';
           driverPhoto = data['profilePhotoUrl'] ?? data['photoUrl'] ?? '';
+          if (driverPhone.isEmpty) {
+            driverPhone = data['phone'] ?? '';
+          }
         }
       } catch (e) {
         debugPrint('CreateRequestController: failed to fetch driver details: $e');
@@ -124,7 +158,7 @@ class CreateRequestController extends GetxController {
         'driverId': _auth.currentUser!.uid,
         'driverName': driverName,
         'driverPhoto': driverPhoto,
-        'driverPhone': _auth.currentUser!.phoneNumber,
+        'driverPhone': driverPhone,
         'status': 'open',
         'problem': problemController.text.trim(),
         'vehicleType': selectedVehicle.value,
@@ -137,6 +171,36 @@ class CreateRequestController extends GetxController {
         'imageUrl': imageUrl,
         'vehicleNumber': vehicleNumberController.text.trim(),
       });
+
+      // 🔔 Update DriverController immediately so UI transitions instantly
+      if (Get.isRegistered<DriverController>()) {
+        final dc = Get.find<DriverController>();
+        dc.hasActiveRequest.value = true;
+        dc.requestData.value = {
+          'id': requestRef.id,
+          'driverId': _auth.currentUser!.uid,
+          'driverName': driverName,
+          'driverPhoto': driverPhoto,
+          'driverPhone': driverPhone,
+          'status': 'open',
+          'problem': problemController.text.trim(),
+          'vehicleType': selectedVehicle.value,
+          'locationName': locationName.value,
+          'landmark': landmarkController.text.trim(),
+          'description': descriptionController.text.trim(),
+          'driverLat': driverLat,
+          'driverLng': driverLng,
+          'createdAt': Timestamp.now(),
+          'imageUrl': imageUrl,
+          'vehicleNumber': vehicleNumberController.text.trim(),
+        };
+        dc.listenToActiveRequest();
+      }
+
+      // 🔔 Update MechanicController if registered in dev mode
+      if (Get.isRegistered<MechanicController>()) {
+        Get.find<MechanicController>().refreshRequests();
+      }
 
       // 🔔 Send notification to nearby mechanics
       await NotificationSender.notifyNearbyMechanics(

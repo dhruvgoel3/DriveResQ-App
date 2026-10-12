@@ -1,5 +1,7 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+// Firebase Functions v4+ natively reads functions/.env at deployment time.
+// No dotenv package needed — process.env.OPENAI_API_KEY is available automatically.
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -188,3 +190,258 @@ function stringifyData(obj) {
   }
   return result;
 }
+
+// ─── RESQ ASSISTANT AI SAFETY CHATBOT ───
+
+// In-memory sliding window rate limiting (15 requests/minute per UID)
+const userRateLimits = new Map();
+
+function isRateLimited(uid) {
+  const now = Date.now();
+  const windowMs = 60 * 1000;
+  const maxRequests = 15;
+
+  let timestamps = userRateLimits.get(uid) || [];
+  timestamps = timestamps.filter((t) => now - t < windowMs);
+
+  if (timestamps.length >= maxRequests) {
+    userRateLimits.set(uid, timestamps);
+    return true;
+  }
+
+  timestamps.push(now);
+  userRateLimits.set(uid, timestamps);
+
+  // Periodically clean up old entries
+  if (userRateLimits.size > 2000) {
+    for (const [key, list] of userRateLimits.entries()) {
+      if (list.length === 0 || now - list[list.length - 1] > windowMs * 2) {
+        userRateLimits.delete(key);
+      }
+    }
+  }
+
+  return false;
+}
+
+const RESQ_SAFETY_SYSTEM_PROMPT = `You are ResQ Assistant, an AI Roadside Safety Guide for the DriveResQ breakdown app.
+Your highest and non-negotiable mission is DRIVER & PASSENGER SAFETY, NOT complex mechanical repairs.
+You provide calm, clear, low-risk guidance to stranded motorists while they wait for certified roadside mechanics or emergency services.
+
+STRICT SAFETY GUARDRAILS (HIGHEST PRIORITY):
+1. ROADSIDE SAFETY FIRST:
+   - First assess whether the user or vehicle is in a hazardous location (highway shoulder, blind curve, live lane, night traffic).
+   - Instruct the driver to move to a safe location away from moving traffic if they can do so safely.
+   - Instruct turning on hazard lights immediately.
+   - On highways, tell the user to stand safely BEHIND a crash barrier or guardrail, up on the embankment, away from the roadway.
+   - NEVER instruct the user to stand in front of, behind, or close to moving traffic.
+   - Do NOT assume the driver can safely exit in every traffic situation; if moving traffic is hazardous, stay buckled inside until assistance arrives.
+
+2. IMMEDIATE DANGEROUS SITUATIONS (EMERGENCY OVERRIDE):
+   - Smoke or Fire: Warn to evacuate all occupants immediately to a safe distance (at least 30-50m away, upwind). STRICTLY FORBID opening the hood (oxygen can cause a fireball). Call emergency services (112 in India / local emergency).
+   - Fuel Leak or Strong Petrol/Diesel Smell: Warn to keep distance, avoid all sparks, flames, or smoking. Do not turn the ignition. Call emergency services.
+   - Overheating Engine with Steam: STRICTLY FORBID opening the radiator cap or coolant expansion tank. Explain that pressurized boiling coolant causes severe 3rd-degree burns. Advise turning off the engine and waiting for complete cooldown.
+   - Brake or Steering Failure: STRICTLY FORBID attempting to continue driving. Advise pulling over safely, applying emergency parking brake, and waiting for flatbed tow.
+   - Vehicle Stopped in Live Traffic Lane: Personal survival is top priority. If unsafe to exit due to high-speed traffic, stay buckled with hazard lights and call emergency highway patrol immediately.
+   - Electrical / EV High-Voltage Hazard: STRICTLY FORBID touching orange high-voltage cables or damaged battery enclosures. Keep safe distance.
+   - Accidents with Injury: Immediately instruct calling emergency services (112). Do NOT provide medical diagnosis.
+
+3. ALLOWED LOW-RISK GUIDANCE:
+   - Check dashboard warning symbols and indicator lights.
+   - Check if gear selector is firmly in Park (P) or Neutral (N) before starting.
+   - Visually inspect tyre inflation from a safe, non-traffic stance.
+   - Consult the vehicle owner's manual.
+   - Collect vehicle symptoms (make/model, warning lights, strange sounds) to report accurately to the incoming mechanic.
+   - Explain what standard inspection steps the mechanic will perform upon arrival.
+
+4. STRICTLY PROHIBITED GUIDANCE (DO NOT INSTRUCT):
+   - Never instruct an untrained user to crawl under a vehicle or use makeshift jacks.
+   - Never instruct opening a hot cooling system.
+   - Never instruct roadside repairs on the side of moving traffic.
+   - Never instruct repairing fuel lines or electrical bypasses.
+   - Never instruct disabling airbags, brakes, or safety interlocks.
+   - Never instruct risky roadside jump-starts without verifying battery condition and absence of explosive hydrogen gas/swelling.
+   - Never encourage continuing to drive an unsafe or crippled vehicle.
+
+5. TONE, ROLE & LIMITATIONS:
+   - You are NOT a certified mechanic, roadside technician, or emergency dispatcher.
+   - Do not claim a mechanic is on the way or has been contacted unless verified in the provided application context.
+   - If questions are completely unrelated to automotive/roadside safety, politely decline and steer back to vehicle safety.
+   - If a user asks for dangerous DIY shortcuts, firmly refuse and offer the safe, defensive alternative.
+   - Format answers cleanly with short sentences, clear bullet points, and bold **WARNING** notices for critical safety steps. Keep guidance readable under stress.`;
+
+/**
+ * HTTPS Callable/REST Endpoint: askResQAssistant
+ * Authenticated via Firebase ID Token (Bearer token in Authorization header).
+ */
+exports.askResQAssistant = functions.https.onRequest(async (req, res) => {
+  // 1. CORS Headers
+  res.set("Access-Control-Allow-Origin", "*");
+  res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  if (req.method === "OPTIONS") {
+    return res.status(204).send("");
+  }
+
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      success: false,
+      error: "Method not allowed. Please use POST.",
+    });
+  }
+
+  // 2. Authentication Verification
+  const authHeader = req.headers.authorization || "";
+  if (!authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      success: false,
+      error: "Unauthorized: Missing or invalid Firebase authentication token.",
+    });
+  }
+
+  const idToken = authHeader.split("Bearer ")[1].trim();
+  let uid = null;
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    uid = decodedToken.uid;
+  } catch (authError) {
+    console.warn("Auth verification failed:", authError.message);
+    return res.status(401).json({
+      success: false,
+      error: "Unauthorized: Invalid or expired session. Please sign in again.",
+    });
+  }
+
+  // 3. Rate Limiting Check
+  if (isRateLimited(uid)) {
+    return res.status(429).json({
+      success: false,
+      error: "Rate limit reached. Please wait a moment before sending another message.",
+    });
+  }
+
+  // 4. Request Body Validation
+  const { message, conversationHistory, context } = req.body || {};
+
+  if (!message || typeof message !== "string" || message.trim().length === 0) {
+    return res.status(400).json({
+      success: false,
+      error: "Invalid request: message field cannot be empty.",
+    });
+  }
+
+  if (message.length > 1000) {
+    return res.status(400).json({
+      success: false,
+      error: "Message exceeds maximum permitted length of 1000 characters.",
+    });
+  }
+
+  // 5. OpenAI Secret Verification
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey || apiKey.trim().length === 0) {
+    console.error("OPENAI_API_KEY is not configured in server environment.");
+    return res.status(500).json({
+      success: false,
+      error: "ResQ Assistant is temporarily unavailable. Server API key is not configured.",
+    });
+  }
+
+  const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
+
+  // 6. Build Chat Payload with Server-Controlled System Instructions
+  const messages = [{ role: "system", content: RESQ_SAFETY_SYSTEM_PROMPT }];
+
+  // Optional contextual metadata
+  if (context && typeof context === "object") {
+    let ctxString = "CURRENT VERIFIED ROADSIDE CONTEXT:";
+    if (context.vehicleType) ctxString += ` Vehicle Type: ${context.vehicleType}.`;
+    if (context.breakdownCategory) ctxString += ` Reported Problem: ${context.breakdownCategory}.`;
+    if (context.requestStatus) ctxString += ` DriveResQ Status: ${context.requestStatus}.`;
+    messages.push({ role: "system", content: ctxString });
+  }
+
+  // Sanitize and limit recent conversation history (max 6 messages)
+  if (Array.isArray(conversationHistory)) {
+    const sanitizedHistory = conversationHistory
+      .slice(-6)
+      .filter((h) => h && (h.role === "user" || h.role === "assistant") && typeof h.content === "string")
+      .map((h) => ({
+        role: h.role,
+        content: String(h.content).substring(0, 500),
+      }));
+    messages.push(...sanitizedHistory);
+  }
+
+  // Add the current user query
+  messages.push({
+    role: "user",
+    content: message.trim(),
+  });
+
+  // 7. Invoke OpenAI API with Timeout Guard
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
+
+    const openAiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: model,
+        messages: messages,
+        temperature: 0.3, // Low temperature for high consistency and strict safety adherence
+        max_tokens: 600,
+      }),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!openAiResponse.ok) {
+      const errText = await openAiResponse.text();
+      console.error(`OpenAI API error [${openAiResponse.status}]:`, errText);
+
+      if (openAiResponse.status === 429) {
+        return res.status(429).json({
+          success: false,
+          error: "AI service is currently busy. Please try again in a few moments.",
+        });
+      }
+
+      return res.status(502).json({
+        success: false,
+        error: "ResQ Assistant is temporarily unavailable. Please try again or contact your mechanic directly.",
+      });
+    }
+
+    const data = await openAiResponse.json();
+    const replyText =
+      data.choices && data.choices[0] && data.choices[0].message
+        ? data.choices[0].message.content
+        : "Safety note: Please stay in a safe location away from moving traffic while you wait for your mechanic.";
+
+    return res.status(200).json({
+      success: true,
+      reply: replyText.trim(),
+      timestamp: Date.now(),
+    });
+  } catch (apiError) {
+    console.error("OpenAI invocation failed:", apiError.message);
+    if (apiError.name === "AbortError") {
+      return res.status(504).json({
+        success: false,
+        error: "Request timed out. Please check your connection and try again.",
+      });
+    }
+    return res.status(500).json({
+      success: false,
+      error: "ResQ Assistant is temporarily unavailable. Please contact your mechanic directly.",
+    });
+  }
+});
+

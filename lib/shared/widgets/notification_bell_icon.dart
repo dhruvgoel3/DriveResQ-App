@@ -9,20 +9,48 @@ import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
 /// Reusable notification bell icon with unread badge count.
 /// Use this in any AppBar's actions list.
-class NotificationBellIcon extends StatelessWidget {
+class NotificationBellIcon extends StatefulWidget {
   const NotificationBellIcon({super.key});
+
+  @override
+  State<NotificationBellIcon> createState() => _NotificationBellIconState();
+}
+
+class _NotificationBellIconState extends State<NotificationBellIcon> {
+  Stream<QuerySnapshot>? _notificationStream;
+  String? _currentUid;
+
+  @override
+  void initState() {
+    super.initState();
+    _initStream();
+  }
+
+  void _initStream() {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    _currentUid = uid;
+    if (uid != null) {
+      _notificationStream = FirebaseFirestore.instance
+          .collection('notifications')
+          .where('recipientId', isEqualTo: uid)
+          .where('isRead', isEqualTo: false)
+          .snapshots();
+    } else {
+      _notificationStream = null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return const SizedBox.shrink();
 
+    if (uid != _currentUid || _notificationStream == null) {
+      _initStream();
+    }
+
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('notifications')
-          .where('recipientId', isEqualTo: uid)
-          .where('isRead', isEqualTo: false)
-          .snapshots(),
+      stream: _notificationStream,
       builder: (context, snapshot) {
         int unreadCount = 0;
         if (snapshot.hasData) {

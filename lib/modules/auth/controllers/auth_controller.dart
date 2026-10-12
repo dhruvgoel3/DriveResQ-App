@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 import '../../notifications/services/fcm_service.dart';
 import '../../driver/controllers/driver_controller.dart';
-import '../../mechanic/controller/mechanic_controller.dart';
+import '../../mechanic/controllers/mechanic_controller.dart';
 import '../../../app/routes/app_pages.dart';
 import '../../../utils/helpers/app_snackbar.dart';
 

@@ -26,7 +26,7 @@ class AppTextField extends StatelessWidget {
       controller: controller,
       maxLines: maxLines,
       keyboardType: keyboardType,
-      decoration: AppInputDecoration(
+      decoration: appInputDecoration(
         label: isRequired ? "$label *" : label,
         icon: icon,
       ),

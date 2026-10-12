@@ -21,6 +21,7 @@ class FindMechanicsController extends GetxController {
 
   // Filters & Search
   var searchQuery = ''.obs;
+  var debouncedSearchQuery = ''.obs;
   var selectedService = 'All'.obs;
   var maxDistanceKm = 20.0.obs;
   var minimumRating = 0.0.obs;
@@ -51,7 +52,9 @@ class FindMechanicsController extends GetxController {
     // Debounce search to avoid re-filtering on every keystroke
     _searchDebounce = debounce(
       searchQuery,
-      (_) {}, // filteredMechanics is a computed getter, debounce triggers Obx
+      (val) {
+        debouncedSearchQuery.value = val;
+      },
       time: const Duration(milliseconds: 300),
     );
   }
@@ -159,8 +162,8 @@ class FindMechanicsController extends GetxController {
       }
 
       // Filter by search query
-      if (searchQuery.value.isNotEmpty) {
-        final q = searchQuery.value.toLowerCase();
+      if (debouncedSearchQuery.value.isNotEmpty) {
+        final q = debouncedSearchQuery.value.toLowerCase();
         final name = (mech['fullName'] ?? mech['name'] ?? '')
             .toString()
             .toLowerCase();

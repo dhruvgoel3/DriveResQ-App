@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 
-InputDecoration AppInputDecoration({
+InputDecoration appInputDecoration({
   required String label,
   required IconData icon,
 }) {

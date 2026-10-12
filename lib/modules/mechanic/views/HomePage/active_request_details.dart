@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../controller/mechanic_controller.dart';
+import '../../controllers/mechanic_controller.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
 import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 import 'package:driveresq_app/utils/helpers/app_dialogs.dart';

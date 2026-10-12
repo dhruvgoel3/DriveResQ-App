@@ -18,6 +18,9 @@ class ActiveRequestCardController extends GetxController {
 
   var mechanicLat = Rxn<double>();
   var mechanicLng = Rxn<double>();
+  var hasLocation = false.obs;
+  double? initialLat;
+  double? initialLng;
   var markers = <Marker>{}.obs;
 
   StreamSubscription? _requestStatusSubscription;
@@ -78,6 +81,11 @@ class ActiveRequestCardController extends GetxController {
           if (lat != null && lng != null) {
             mechanicLat.value = lat;
             mechanicLng.value = lng;
+            if (!hasLocation.value) {
+              initialLat = lat;
+              initialLng = lng;
+              hasLocation.value = true;
+            }
             _updateMarkers();
 
             mapController?.animateCamera(

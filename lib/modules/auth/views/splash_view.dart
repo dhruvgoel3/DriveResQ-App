@@ -237,7 +237,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     return Scaffold(
       body: AnimatedBuilder(
         animation: _exitCtrl,
-        builder: (_, __) => Opacity(
+        builder: (context, child) => Opacity(
           opacity: _exitFade.value,
           child: Transform.scale(
             scale: _exitScale.value,
@@ -315,7 +315,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
       right: 0,
       child: AnimatedBuilder(
         animation: _movingLogoPos,
-        builder: (_, __) => Transform.translate(
+        builder: (context, child) => Transform.translate(
           offset: Offset(_movingLogoPos.value * sz.width * 0.5, 0),
           child: Opacity(
             opacity: 0.25,
@@ -336,7 +336,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
   Widget _logo() {
     return AnimatedBuilder(
       animation: Listenable.merge([_logoSlideCtrl, _pulseCtrl]),
-      builder: (_, __) => FadeTransition(
+      builder: (context, child) => FadeTransition(
         opacity: _logoFade,
         child: SlideTransition(
           position: _logoSlide,
@@ -419,7 +419,7 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
   Widget _progressSection(Size sz) {
     return AnimatedBuilder(
       animation: _progressCtrl,
-      builder: (_, __) {
+      builder: (context, child) {
         final v = _progress.value;
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: sz.width * 0.15),

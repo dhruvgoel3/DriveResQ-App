@@ -67,10 +67,9 @@ class MechanicService {
         );
       }
 
-      if (requestData['driverLat'] == null ||
-          requestData['driverPhone'] == null) {
+      if (requestData['driverLat'] == null) {
         throw Exception(
-          'Data Error: The request has incomplete driver information.',
+          'Data Error: The request is missing location coordinates.',
         );
       }
 

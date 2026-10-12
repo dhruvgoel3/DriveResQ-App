@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import '../../controller/mechanic_profile_controller.dart';
+import '../../controllers/mechanic_profile_controller.dart';
 
 class MechanicProfileView extends StatelessWidget {
   static const _accent = Color(0xFF6C63FF);

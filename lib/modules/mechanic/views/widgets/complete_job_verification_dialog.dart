@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 import 'package:driveresq_app/utils/helpers/responsive_helper.dart';
-import '../../controller/mechanic_controller.dart';
+import '../../controllers/mechanic_controller.dart';
 import '../../../jobs/controllers/job_completion_controller.dart';
 import '../../../jobs/views/job_completion_page.dart';
 

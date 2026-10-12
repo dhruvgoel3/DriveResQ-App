@@ -8,7 +8,13 @@ import 'package:get/get.dart';
 import '../../controllers/create_request_controller.dart';
 
 class CreateRequestView extends StatelessWidget {
-  CreateRequestView({super.key});
+  final String? initialProblem;
+
+  CreateRequestView({super.key, this.initialProblem}) {
+    if (initialProblem != null && initialProblem!.isNotEmpty) {
+      controller.problemController.text = initialProblem!;
+    }
+  }
 
   final controller = Get.put(CreateRequestController());
 

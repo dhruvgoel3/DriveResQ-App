@@ -8,6 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../../app/routes/app_pages.dart';
 import '../../../shared/widgets/history_drawer.dart';
 import '../../../shared/widgets/exit_guard.dart';
 import '../controllers/driver_controller.dart';
@@ -49,6 +52,9 @@ class DriverDashboardView extends StatelessWidget {
             ),
           ),
           body: IndexedStack(index: controller.currentIndex.value, children: pages),
+          floatingActionButton: controller.currentIndex.value == 0
+              ? _buildResQAssistantFAB()
+              : null,
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
               color: AppColors.surface,
@@ -80,6 +86,73 @@ class DriverDashboardView extends StatelessWidget {
                     GButton(icon: Iconsax.search_normal, text: 'Find'),
                     GButton(icon: Iconsax.message, text: 'Chats'),
                     GButton(icon: Iconsax.profile_circle, text: 'Profile'),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildResQAssistantFAB() {
+    return Tooltip(
+      message: "ResQ Assistant — Vehicle Safety Guidance & AI Support",
+      child: Container(
+        margin: EdgeInsets.only(bottom: 6.h),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => Get.toNamed(Routes.RESQ_ASSISTANT),
+            borderRadius: BorderRadius.circular(28.r),
+            child: Ink(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [AppColors.primary, Color(0xFF4F46E5)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(28.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.4),
+                    blurRadius: 14,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.25),
+                  width: 1.2,
+                ),
+              ),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(4.w),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Iconsax.flash_15,
+                        size: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      "ResQ AI",
+                      style: GoogleFonts.poppins(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
                   ],
                 ),
               ),

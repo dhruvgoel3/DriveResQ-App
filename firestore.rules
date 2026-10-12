@@ -10,22 +10,27 @@ service cloud.firestore {
     }
 
     // ─── USERS ───
-    // Anyone authenticated can read user profiles (needed for chats, names, FCM tokens)
-    // Only the owner can write to their own user document, or admin
+    // Authenticated users can read profiles for chats, names, and mechanic listings
+    // Only the profile owner or admin can modify their document
     match /users/{userId} {
       allow read: if request.auth != null;
       allow create: if request.auth != null && request.auth.uid == userId;
       allow update: if request.auth != null && (request.auth.uid == userId || isAdmin());
-      allow delete: if false;
+      allow delete: if isAdmin();
+
+      // ResQ Assistant private chat history inside user profile
+      match /resq_chats/{messageId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
     }
 
-    // ─── REQUESTS ───
-    // Drivers create requests; both drivers and mechanics can read and update
+    // ─── REQUESTS (ROADSIDE ASSISTANCE) ───
+    // Drivers create requests; drivers and mechanics can read/update active status
     match /requests/{requestId} {
       allow create: if request.auth != null;
       allow read: if request.auth != null;
       allow update: if request.auth != null;
-      allow delete: if request.auth != null;
+      allow delete: if isAdmin();
     }
 
     // ─── COMPLETED JOBS ───
@@ -33,17 +38,17 @@ service cloud.firestore {
       allow create: if request.auth != null;
       allow read: if request.auth != null;
       allow update: if request.auth != null;
-      allow delete: if false;
+      allow delete: if isAdmin();
     }
 
     // ─── CHATS & MESSAGES ───
     match /chats/{chatId} {
       allow create, read, update: if request.auth != null;
-      allow delete: if false;
+      allow delete: if isAdmin();
 
       match /messages/{messageId} {
         allow create, read, update: if request.auth != null;
-        allow delete: if false;
+        allow delete: if isAdmin();
       }
     }
 
@@ -55,18 +60,18 @@ service cloud.firestore {
       allow delete: if request.auth != null;
     }
 
-    // ─── ADMIN ───
+    // ─── ADMIN ONLY COLLECTIONS (Secured with isAdmin) ───
     match /admin/{document=**} {
-      allow read, write: if request.auth != null;
+      allow read, write: if isAdmin();
     }
     match /adminUsers/{document=**} {
-      allow read, write: if request.auth != null;
+      allow read, write: if isAdmin();
     }
     match /adminSettings/{document=**} {
-      allow read, write: if request.auth != null;
+      allow read, write: if isAdmin();
     }
     match /adminActions/{document=**} {
-      allow read, write: if request.auth != null;
+      allow read, write: if isAdmin();
     }
     match /mail/{document=**} {
       allow create, read, write: if request.auth != null;
@@ -74,8 +79,9 @@ service cloud.firestore {
 
     // ─── MECHANIC APPLICATIONS / ONBOARDING ───
     match /mechanic_applications/{docId} {
-      allow create, read, update: if request.auth != null;
-      allow delete: if false;
+      allow create, read: if request.auth != null;
+      allow update: if request.auth != null && (request.auth.uid == docId || isAdmin());
+      allow delete: if isAdmin();
     }
   }
 }

@@ -49,9 +49,14 @@ app.*.map.json
 /android/*.txt
 /functions/*.txt
 config.bat
-node_modules
+node_modules/
+**/node_modules/
 
 # Secrets / environment config — never commit real values
+.env
+.env.*
+**/.env
+**/.env.*
 !.env.example
 android/app/google-services.json
 ios/Runner/GoogleService-Info.plist

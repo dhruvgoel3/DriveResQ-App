@@ -9,7 +9,7 @@ import 'package:iconsax/iconsax.dart';
 
 import '../../chat/views/chat_list_view.dart';
 import '../../../shared/widgets/exit_guard.dart';
-import '../controller/mechanic_controller.dart';
+import '../controllers/mechanic_controller.dart';
 import 'History/mechanic_history_view.dart';
 import 'HomePage/current_request_view.dart';
 

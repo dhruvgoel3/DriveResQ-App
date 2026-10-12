@@ -33,6 +33,8 @@ import '../../modules/auth/views/splash_view.dart';
 import '../../modules/auth/views/onboarding_view.dart';
 import '../../modules/auth/bindings/auth_bindings.dart';
 import '../../modules/notifications/views/notifications_view.dart';
+import '../../modules/resq_assistant/bindings/resq_assistant_binding.dart';
+import '../../modules/resq_assistant/views/resq_assistant_screen.dart';
 import 'app_pages.dart';
 
 class AppPages {
@@ -255,6 +257,13 @@ class AppPages {
           () => MechanicHistoryController(),
         );
       }),
+    ),
+    GetPage(
+      name: Routes.RESQ_ASSISTANT,
+      page: () => const ResQAssistantScreen(),
+      binding: ResQAssistantBinding(),
+      transition: Transition.rightToLeft,
+      transitionDuration: _dur,
     ),
   ];
 }

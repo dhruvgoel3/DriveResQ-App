@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../services/driver_service.dart';
+import '../services/location_service.dart';
 import '../../../utils/helpers/app_snackbar.dart';
 
 class DriverController extends GetxController {
@@ -25,15 +26,60 @@ class DriverController extends GetxController {
   var hasActiveRequest = false.obs;
   var requestData = Rxn<Map<String, dynamic>>();
   var isLoadingRequest = true.obs;
+  var driverName = 'Driver'.obs;
+  var driverPhotoUrl = ''.obs;
+  var currentLocationName = 'Live Location'.obs;
+
+  StreamSubscription? _authSubscription;
+  StreamSubscription? _userSubscription;
 
   @override
   void onInit() {
     super.onInit();
     listenToActiveRequest();
+    _listenToUserProfile();
+    fetchLocation();
+    _authSubscription = _auth.authStateChanges().listen((user) {
+      if (user != null) {
+        if (_requestSubscription == null) listenToActiveRequest();
+        if (_userSubscription == null) _listenToUserProfile();
+      }
+    });
+  }
+
+  Future<void> fetchLocation() async {
+    try {
+      final locData = await LocationService.getLocationData();
+      final name = locData['locationName']?.toString();
+      if (name != null && name.isNotEmpty) {
+        currentLocationName.value = name;
+      }
+    } catch (_) {
+      // Graceful fallback without noisy alerts
+    }
+  }
+
+  void _listenToUserProfile() {
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) return;
+    _userSubscription?.cancel();
+    _userSubscription = _firestore.collection('users').doc(uid).snapshots().listen((snap) {
+      if (snap.exists) {
+        final data = snap.data();
+        if (data != null) {
+          driverName.value = data['fullName'] ?? data['name'] ?? 'Driver';
+          driverPhotoUrl.value = data['profilePhotoUrl'] ?? '';
+        }
+      }
+    });
   }
 
   @override
   void onClose() {
+    _authSubscription?.cancel();
+    _authSubscription = null;
+    _userSubscription?.cancel();
+    _userSubscription = null;
     cancelSubscription();
     super.onClose();
   }
@@ -55,26 +101,40 @@ class DriverController extends GetxController {
     _requestSubscription = _firestore
         .collection('requests')
         .where('driverId', isEqualTo: uid)
-        .where(
-          'status',
-          whereIn: [
-            'open',
-            'mechanic_accepted',
-            'accepted',
-            'verified',
-            'completed',
-          ],
-        )
-        .limit(1)
         .snapshots()
         .listen(
           (snapshot) {
             isLoadingRequest.value = false;
-            if (snapshot.docs.isNotEmpty) {
+
+            const activeStatuses = [
+              'open',
+              'mechanic_accepted',
+              'accepted',
+              'verified',
+              'completed',
+            ];
+
+            final activeDocs = snapshot.docs.where((doc) {
+              final status = doc.data()['status'];
+              return activeStatuses.contains(status);
+            }).toList();
+
+            if (activeDocs.isNotEmpty) {
+              // Sort newest first: documents with pending server timestamps are treated as newest
+              activeDocs.sort((a, b) {
+                final aTs = a.data()['createdAt'] as Timestamp?;
+                final bTs = b.data()['createdAt'] as Timestamp?;
+                if (aTs == null && bTs == null) return 0;
+                if (aTs == null) return -1;
+                if (bTs == null) return 1;
+                return bTs.compareTo(aTs);
+              });
+
+              final latestDoc = activeDocs.first;
               hasActiveRequest.value = true;
               requestData.value = {
-                ...snapshot.docs.first.data(),
-                'id': snapshot.docs.first.id,
+                ...latestDoc.data(),
+                'id': latestDoc.id,
               };
             } else {
               hasActiveRequest.value = false;
@@ -82,6 +142,7 @@ class DriverController extends GetxController {
             }
           },
           onError: (error) {
+            debugPrint('DriverController: Error listening to active requests: $error');
             isLoadingRequest.value = false;
           },
         );

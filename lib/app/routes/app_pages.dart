@@ -32,4 +32,7 @@ abstract class Routes {
   // History
   static const DRIVER_HISTORY = '/driver/history';
   static const MECHANIC_HISTORY = '/mechanic/history';
+
+  // ResQ AI Assistant
+  static const RESQ_ASSISTANT = '/resq-assistant';
 }

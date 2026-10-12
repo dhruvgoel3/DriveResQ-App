@@ -209,18 +209,16 @@ class _MapPreview extends StatelessWidget {
           child: Stack(
             children: [
               Obx(
-                () =>
-                    controller.mechanicLat.value != null &&
-                        controller.mechanicLng.value != null
+                () => controller.hasLocation.value
                     ? GoogleMap(
                         initialCameraPosition: CameraPosition(
                           target: LatLng(
-                            controller.mechanicLat.value!,
-                            controller.mechanicLng.value!,
+                            controller.initialLat ?? 0.0,
+                            controller.initialLng ?? 0.0,
                           ),
                           zoom: 14,
                         ),
-                        markers: controller.markers,
+                        markers: controller.markers.toSet(),
                         onMapCreated: controller.setMapController,
                         myLocationEnabled: false,
                         zoomControlsEnabled: false,
@@ -286,8 +284,7 @@ class _MapPreview extends StatelessWidget {
               ),
               Obx(
                 () =>
-                    controller.mechanicLat.value != null &&
-                        controller.mechanicLng.value != null
+                    controller.hasLocation.value
                     ? Positioned(
                         left: 12.w,
                         bottom: 12.h,

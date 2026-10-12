@@ -6,3 +6,4 @@ linter:
     prefer_const_constructors: true
     prefer_const_declarations: true
     unnecessary_this: true
+    constant_identifier_names: false

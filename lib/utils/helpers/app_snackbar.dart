@@ -75,7 +75,8 @@ class AppSnackbar {
     );
   }
 
-  // ── Internal ──
+  static String? _lastMessage;
+  static DateTime? _lastShownTime;
 
   static void _show({
     required String message,
@@ -86,86 +87,104 @@ class AppSnackbar {
     required Color iconBgColor,
     Duration duration = const Duration(seconds: 3),
   }) {
-    FlashyFlushbar(
-      duration: duration,
-      backgroundColor: Colors.white,
-      isDismissible: true,
-      customWidget: Row(
-        children: [
-          // Icon/Leading
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [
-                  gradientStart,
-                  gradientEnd.withValues(alpha: 0.7),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: gradientStart.withValues(alpha: 0.4),
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Icon(icon, color: Colors.white, size: 22),
-          ),
-          const SizedBox(width: 12),
+    if (message.trim().isEmpty) return;
 
-          // Content (Title + Message)
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: gradientStart,
-                    letterSpacing: 0.2,
+    final now = DateTime.now();
+    if (_lastMessage == message &&
+        _lastShownTime != null &&
+        now.difference(_lastShownTime!) < const Duration(seconds: 2)) {
+      return;
+    }
+    _lastMessage = message;
+    _lastShownTime = now;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      try {
+        FlashyFlushbar.cancel();
+        FlashyFlushbar(
+          duration: duration,
+          backgroundColor: Colors.white,
+          isDismissible: true,
+          customWidget: Row(
+            children: [
+              // Icon/Leading
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      gradientStart,
+                      gradientEnd.withValues(alpha: 0.7),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: gradientStart.withValues(alpha: 0.4),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Icon(icon, color: Colors.white, size: 22),
+              ),
+              const SizedBox(width: 12),
+
+              // Content (Title + Message)
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: gradientStart,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                    Text(
+                      message,
+                      style: GoogleFonts.poppins(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey.shade700,
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+
+              // Close Button
+              GestureDetector(
+                onTap: () => FlashyFlushbar.cancel(),
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey.shade100,
+                  ),
+                  child: Icon(
+                    Icons.close_rounded,
+                    color: Colors.grey.shade500,
+                    size: 16,
                   ),
                 ),
-                Text(
-                  message,
-                  style: GoogleFonts.poppins(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.grey.shade700,
-                    height: 1.3,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-
-          // Close Button
-          GestureDetector(
-            onTap: () => FlashyFlushbar.cancel(),
-            child: Container(
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.grey.shade100,
               ),
-              child: Icon(
-                Icons.close_rounded,
-                color: Colors.grey.shade500,
-                size: 16,
-              ),
-            ),
+            ],
           ),
-        ],
-      ),
-    ).show();
+        ).show();
+      } catch (e) {
+        debugPrint('AppSnackbar: Exception showing flushbar: $e');
+      }
+    });
   }
 }
