@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -162,7 +163,7 @@ You agree to:
 
 4. PAYMENT TERMS
 • Payments will be processed within 24-48 hours of service completion
-• DriveResQ charges a platform fee of 10% on each transaction
+• DriveResQ charges a platform fee of ${dotenv.env['PLATFORM_COMMISSION_PERCENT'] ?? '10'}% on labor charges for cash transactions
 • All pricing must be transparent and disclosed before service begins
 
 5. LIABILITY

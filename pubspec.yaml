@@ -21,6 +21,10 @@ dependencies:
   cloud_firestore: ^5.6.8
   firebase_storage: ^12.4.5
   firebase_messaging: ^15.2.10
+  cloud_functions: ^5.3.3
+
+  # Payments
+  razorpay_flutter: ^1.4.1
 
   # Notifications
   flutter_local_notifications: ^21.0.0

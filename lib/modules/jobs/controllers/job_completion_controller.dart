@@ -189,6 +189,20 @@ class JobCompletionController extends GetxController {
       );
       return false;
     }
+    if (laborCharges.value <= 0) {
+      AppSnackbar.warning(
+        'Please enter the labor charges for this job',
+        title: 'Required',
+      );
+      return false;
+    }
+    if (!cashCollected.value) {
+      AppSnackbar.warning(
+        'Please confirm cash collection from the driver',
+        title: 'Mandatory',
+      );
+      return false;
+    }
     return true;
   }
 

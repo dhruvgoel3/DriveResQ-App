@@ -37,6 +37,8 @@ import '../../modules/resq_assistant/bindings/resq_assistant_binding.dart';
 import '../../modules/resq_assistant/views/resq_assistant_screen.dart';
 import '../../modules/safety_sos/bindings/safety_sos_binding.dart';
 import '../../modules/safety_sos/views/safety_sos_screen.dart';
+import '../../modules/dues/bindings/dues_binding.dart';
+import '../../modules/dues/views/dues_pay_view.dart';
 import 'app_pages.dart';
 
 class AppPages {
@@ -273,6 +275,15 @@ class AppPages {
       name: Routes.SAFETY_SOS,
       page: () => const SafetySosScreen(),
       binding: SafetySosBinding(),
+      transition: Transition.rightToLeft,
+      transitionDuration: _dur,
+    ),
+
+    // Platform Dues
+    GetPage(
+      name: Routes.MECHANIC_DUES,
+      page: () => const DuesPayView(),
+      binding: DuesBinding(),
       transition: Transition.rightToLeft,
       transitionDuration: _dur,
     ),

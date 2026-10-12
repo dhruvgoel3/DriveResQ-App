@@ -102,6 +102,10 @@ class FindMechanicsController extends GetxController {
 
             for (var doc in snapshot.docs) {
               final data = doc.data();
+              if (data['accountStatus'] == 'suspended' ||
+                  ((data['platformDueOutstanding'] as num?)?.toDouble() ?? 0) > 0) {
+                continue;
+              }
               final lat = data['latitude'];
               final lng = data['longitude'];
               double dist = 0.0;

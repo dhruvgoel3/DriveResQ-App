@@ -33,6 +33,10 @@ class NotificationSender {
 
       for (final doc in mechanicsGate.docs) {
         final data = doc.data();
+        if (data['accountStatus'] == 'suspended' ||
+            ((data['platformDueOutstanding'] as num?)?.toDouble() ?? 0) > 0) {
+          continue;
+        }
         if (data['fcmToken'] == null || (data['fcmToken'] as String).isEmpty) {
           continue;
         }

@@ -53,6 +53,11 @@ class MechanicService {
           .get();
       final mechanicData = mechanicDocContent.data() ?? {};
 
+      if (mechanicData['accountStatus'] == 'suspended' ||
+          ((mechanicData['platformDueOutstanding'] as num?)?.toDouble() ?? 0) > 0) {
+        throw Exception('Account paused: pay platform dues to accept new jobs.');
+      }
+
       mechanicPhone ??= mechanicData['phone'];
       if (mechanicPhone == null || mechanicPhone.isEmpty) {
         throw Exception('Missing Data: Phone number is required to accept jobs.');

@@ -38,4 +38,7 @@ abstract class Routes {
 
   // Safety SOS
   static const SAFETY_SOS = '/safety-sos';
+
+  // Platform Dues
+  static const MECHANIC_DUES = '/mechanic/dues';
 }

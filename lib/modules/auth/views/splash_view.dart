@@ -199,7 +199,11 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
         if (!onboarded) {
           await _goTo('/mechanic-onboarding');
         } else if (vs == 'approved') {
-          await _goTo('/mechanic');
+          if (data?['accountStatus'] == 'suspended') {
+            await _goTo('/mechanic/dues');
+          } else {
+            await _goTo('/mechanic');
+          }
         } else {
           await _goTo('/mechanic-verification');
         }

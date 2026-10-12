@@ -445,3 +445,461 @@ exports.askResQAssistant = functions.https.onRequest(async (req, res) => {
   }
 });
 
+// =============================================================================
+// 💰 PLATFORM DUES & RAZORPAY SETTLEMENT FUNCTIONS
+// =============================================================================
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
+
+/**
+ * 1. Cloud Function Trigger: onCompletedJobCreateDue
+ * Triggered whenever a job is completed and recorded in 'completedJobs/{jobId}'.
+ * Calculates platform commission on LABOR CHARGES ONLY (not parts or travel).
+ * Creates platformDues/{jobId} document and marks mechanic as suspended until cleared.
+ */
+/**
+ * Core processor for completed job platform dues.
+ * Idempotent: doc ID is jobId.
+ */
+async function processDueForJob(jobId, data, snapRef) {
+  if (!data) return false;
+
+  const mechanicId = data.mechanicId;
+  const laborCharges = Number(data.laborCharges) || 0;
+  const cashCollected = data.cashCollected === true;
+  const paymentMethod = data.paymentMethod || "";
+  const invoiceNumber = data.invoiceNumber || "";
+
+  // Dues only apply to Cash settled jobs with collected cash and labor charges > 0
+  const isCash =
+    paymentMethod.toLowerCase().includes("cash") ||
+    paymentMethod.toLowerCase().includes("settled directly");
+  if (!isCash || !cashCollected || laborCharges <= 0 || !mechanicId) {
+    console.log(
+      `[processDueForJob] Job ${jobId}: No commission due (cash: ${isCash}, collected: ${cashCollected}, labor: ${laborCharges})`
+    );
+    return false;
+  }
+
+  // Idempotency: verify if platformDues/{jobId} already exists
+  const dueDocRef = db.collection("platformDues").doc(jobId);
+  const existingDue = await dueDocRef.get();
+  if (existingDue.exists) {
+    console.log(`[processDueForJob] Due doc for job ${jobId} already exists. Skipping.`);
+    return false;
+  }
+
+  const percent = Number(
+    process.env.PLATFORM_COMMISSION_PERCENT ||
+      (functions.config().dues && functions.config().dues.percent) ||
+      10
+  );
+  const rawAmount = (laborCharges * percent) / 100;
+  const amount = Math.round(rawAmount * 100) / 100;
+  const amountPaise = Math.round(amount * 100);
+
+  console.log(
+    `[processDueForJob] Job ${jobId}: Labor ₹${laborCharges}, Rate: ${percent}%, Commission: ₹${amount} (${amountPaise} paise)`
+  );
+
+  // Minimum transaction handling: Razorpay minimum is ₹1 (100 paise)
+  if (amountPaise > 0 && amountPaise < 100) {
+    await dueDocRef.set({
+      id: jobId,
+      mechanicId,
+      jobId,
+      invoiceNumber,
+      laborCharges,
+      commissionPercent: percent,
+      amount,
+      amountPaise,
+      currency: "INR",
+      status: "paid",
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      paidAt: admin.firestore.FieldValue.serverTimestamp(),
+      note: "Auto-cleared below minimum ₹1 Razorpay threshold",
+    });
+
+    if (snapRef) {
+      await snapRef.set(
+        {
+          platformCommissionPercent: percent,
+          platformCommissionAmount: amount,
+          platformDueStatus: "paid",
+        },
+        { merge: true }
+      );
+    }
+    return true;
+  }
+
+  // Create platformDues/{jobId}
+  await dueDocRef.set({
+    id: jobId,
+    mechanicId,
+    jobId,
+    invoiceNumber,
+    laborCharges,
+    commissionPercent: percent,
+    amount,
+    amountPaise,
+    currency: "INR",
+    status: "unpaid",
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+
+  // Update user transactionally
+  await db.runTransaction(async (t) => {
+    const userRef = db.collection("users").doc(mechanicId);
+    const userSnap = await t.get(userRef);
+    if (!userSnap.exists) return;
+
+    const currentOutstanding = Number(userSnap.data().platformDueOutstanding || 0);
+    const newOutstanding = Math.round((currentOutstanding + amount) * 100) / 100;
+
+    t.update(userRef, {
+      platformDueOutstanding: newOutstanding,
+      accountStatus: newOutstanding > 0 ? "suspended" : "active",
+      suspendedReason: newOutstanding > 0 ? "unpaid_dues" : null,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+  });
+
+  // Merge financial ledger details onto completedJobs/{jobId}
+  if (snapRef) {
+    await snapRef.set(
+      {
+        platformCommissionPercent: percent,
+        platformCommissionAmount: amount,
+        platformDueStatus: "unpaid",
+      },
+      { merge: true }
+    );
+  }
+
+  console.log(`[processDueForJob] Successfully created due and updated mechanic ${mechanicId}`);
+  return true;
+}
+
+/**
+ * 1. Firestore Trigger: completedJobs/{jobId}.onCreate
+ */
+exports.onCompletedJobCreateDue = functions.firestore
+  .document("completedJobs/{jobId}")
+  .onCreate(async (snap, context) => {
+    const jobId = context.params.jobId;
+    const data = snap.data();
+    await processDueForJob(jobId, data, snap.ref);
+    return null;
+  });
+
+/**
+ * Sync / Backfill Callable: syncPendingDues
+ * Processes any completed jobs for the caller that have no platform dues ledger entry.
+ */
+exports.syncPendingDues = functions.https.onCall(async (data, context) => {
+  if (!context.auth || !context.auth.uid) {
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      "User must be authenticated."
+    );
+  }
+
+  const uid = context.auth.uid;
+  const jobsSnap = await db
+    .collection("completedJobs")
+    .where("mechanicId", "==", uid)
+    .get();
+
+  let count = 0;
+  for (const doc of jobsSnap.docs) {
+    const jobData = doc.data();
+    if (!jobData.platformDueStatus) {
+      const created = await processDueForJob(doc.id, jobData, doc.ref);
+      if (created) count++;
+    }
+  }
+
+  return { success: true, count };
+});
+
+/**
+ * Helper to initialize Razorpay SDK
+ */
+function getRazorpayInstance() {
+  const key_id =
+    process.env.RAZORPAY_KEY_ID ||
+    (functions.config().razorpay && functions.config().razorpay.key_id);
+  const key_secret =
+    process.env.RAZORPAY_KEY_SECRET ||
+    (functions.config().razorpay && functions.config().razorpay.key_secret);
+
+  if (!key_id || !key_secret) {
+    return {
+      error:
+        "Razorpay credentials not configured in environment (RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET).",
+    };
+  }
+
+  return {
+    client: new Razorpay({ key_id, key_secret }),
+    key_id,
+    key_secret,
+  };
+}
+
+/**
+ * 2. HTTPS Callable: createDuesOrder
+ * Sums unpaid platformDues for authenticated mechanic and creates Razorpay Order.
+ */
+exports.createDuesOrder = functions.https.onCall(async (data, context) => {
+  if (!context.auth || !context.auth.uid) {
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      "User must be authenticated to create order."
+    );
+  }
+
+  const uid = context.auth.uid;
+  const unpaidSnaps = await db
+    .collection("platformDues")
+    .where("mechanicId", "==", uid)
+    .where("status", "==", "unpaid")
+    .get();
+
+  if (unpaidSnaps.empty) {
+    throw new functions.https.HttpsError(
+      "failed-precondition",
+      "No unpaid platform dues found for this mechanic."
+    );
+  }
+
+  let totalPaise = 0;
+  const dueIds = [];
+  unpaidSnaps.forEach((doc) => {
+    const d = doc.data();
+    const paise = d.amountPaise || Math.round((d.amount || 0) * 100);
+    totalPaise += paise;
+    dueIds.push(doc.id);
+  });
+
+  if (totalPaise < 100) {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "Total outstanding amount is below ₹1 minimum payable limit."
+    );
+  }
+
+  const rzp = getRazorpayInstance();
+  if (rzp.error) {
+    throw new functions.https.HttpsError("unavailable", rzp.error);
+  }
+
+  try {
+    const options = {
+      amount: totalPaise,
+      currency: "INR",
+      receipt: `due_${uid.substring(0, 6)}_${Date.now().toString().slice(-6)}`,
+      notes: {
+        mechanicId: uid,
+        dueIds: dueIds.slice(0, 20).join(","),
+      },
+    };
+
+    const order = await rzp.client.orders.create(options);
+    console.log(
+      `[createDuesOrder] Created order ${order.id} for ₹${totalPaise / 100} (Mechanic: ${uid})`
+    );
+
+    return {
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      keyId: rzp.key_id,
+    };
+  } catch (err) {
+    console.error("[createDuesOrder] Error creating Razorpay order:", err);
+    throw new functions.https.HttpsError(
+      "internal",
+      err.message || "Failed to create Razorpay order."
+    );
+  }
+});
+
+/**
+ * 3. HTTPS Callable: verifyDuesPayment
+ * Verifies Razorpay payment signature HMAC SHA256 and clears platform dues upon validity.
+ */
+exports.verifyDuesPayment = functions.https.onCall(async (data, context) => {
+  if (!context.auth || !context.auth.uid) {
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      "User must be authenticated to verify payment."
+    );
+  }
+
+  const uid = context.auth.uid;
+  const { orderId, paymentId, signature } = data || {};
+
+  if (!orderId || !paymentId || !signature) {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "Missing orderId, paymentId, or signature."
+    );
+  }
+
+  const rzp = getRazorpayInstance();
+  if (rzp.error) {
+    throw new functions.https.HttpsError("unavailable", rzp.error);
+  }
+
+  // 1. Signature verification
+  const expectedSignature = crypto
+    .createHmac("sha256", rzp.key_secret)
+    .update(`${orderId}|${paymentId}`)
+    .digest("hex");
+
+  if (expectedSignature !== signature) {
+    console.error(
+      `[verifyDuesPayment] Signature mismatch. Expected: ${expectedSignature}, Got: ${signature}`
+    );
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "Payment verification failed: invalid signature."
+    );
+  }
+
+  // 2. Clear dues and reactivate account
+  try {
+    const unpaidSnaps = await db
+      .collection("platformDues")
+      .where("mechanicId", "==", uid)
+      .where("status", "==", "unpaid")
+      .get();
+
+    const batch = db.batch();
+
+    unpaidSnaps.forEach((doc) => {
+      batch.update(doc.ref, {
+        status: "paid",
+        paidAt: admin.firestore.FieldValue.serverTimestamp(),
+        razorpayOrderId: orderId,
+        razorpayPaymentId: paymentId,
+        razorpaySignature: signature,
+      });
+    });
+
+    // Reset mechanic profile outstanding and reactivate account
+    const userRef = db.collection("users").doc(uid);
+    batch.update(userRef, {
+      platformDueOutstanding: 0,
+      accountStatus: "active",
+      suspendedReason: null,
+      lastPaymentAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    // Record payment receipt log
+    const receiptRef = db.collection("dues_payments").doc(paymentId);
+    batch.set(receiptRef, {
+      mechanicId: uid,
+      orderId,
+      paymentId,
+      signature,
+      clearedDueCount: unpaidSnaps.size,
+      paidAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    await batch.commit();
+
+    console.log(
+      `[verifyDuesPayment] Payment ${paymentId} verified. Cleared ${unpaidSnaps.size} dues for mechanic ${uid}`
+    );
+
+    return {
+      success: true,
+      clearedCount: unpaidSnaps.size,
+      message: "Payment successfully verified. Your account is active!",
+    };
+  } catch (err) {
+    console.error("[verifyDuesPayment] Error updating dues on payment:", err);
+    throw new functions.https.HttpsError(
+      "internal",
+      err.message || "Failed to update dues ledger."
+    );
+  }
+});
+
+/**
+ * 4. Webhook: razorpayWebhook
+ * Handles server-to-server Razorpay webhooks as backup or asynchronous validation.
+ */
+exports.razorpayWebhook = functions.https.onRequest(async (req, res) => {
+  const webhookSecret =
+    process.env.RAZORPAY_WEBHOOK_SECRET ||
+    (functions.config().razorpay && functions.config().razorpay.webhook_secret);
+
+  if (webhookSecret) {
+    const signature = req.headers["x-razorpay-signature"];
+    const shasum = crypto.createHmac("sha256", webhookSecret);
+    shasum.update(
+      typeof req.rawBody !== "undefined" ? req.rawBody : JSON.stringify(req.body)
+    );
+    const digest = shasum.digest("hex");
+
+    if (digest !== signature) {
+      console.error("[razorpayWebhook] Invalid signature");
+      return res.status(400).send("Invalid webhook signature");
+    }
+  }
+
+  const event = req.body.event;
+  console.log(`[razorpayWebhook] Received event: ${event}`);
+
+  if (event === "payment.captured" || event === "order.paid") {
+    try {
+      const paymentEntity =
+        req.body.payload &&
+        req.body.payload.payment &&
+        req.body.payload.payment.entity;
+      const mechanicId =
+        paymentEntity && paymentEntity.notes && paymentEntity.notes.mechanicId;
+
+      if (mechanicId) {
+        const unpaidSnaps = await db
+          .collection("platformDues")
+          .where("mechanicId", "==", mechanicId)
+          .where("status", "==", "unpaid")
+          .get();
+
+        if (!unpaidSnaps.empty) {
+          const batch = db.batch();
+          unpaidSnaps.forEach((doc) => {
+            batch.update(doc.ref, {
+              status: "paid",
+              paidAt: admin.firestore.FieldValue.serverTimestamp(),
+              razorpayPaymentId: paymentEntity.id,
+              razorpayOrderId: paymentEntity.order_id,
+            });
+          });
+
+          const userRef = db.collection("users").doc(mechanicId);
+          batch.update(userRef, {
+            platformDueOutstanding: 0,
+            accountStatus: "active",
+            suspendedReason: null,
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          });
+
+          await batch.commit();
+          console.log(`[razorpayWebhook] Cleared dues for mechanic ${mechanicId}`);
+        }
+      }
+    } catch (e) {
+      console.error("[razorpayWebhook] Error processing payment webhook:", e);
+    }
+  }
+
+  return res.status(200).json({ status: "ok" });
+});
+

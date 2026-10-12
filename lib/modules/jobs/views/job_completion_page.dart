@@ -36,8 +36,11 @@ class JobCompletionPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(100),
-          child: Obx(() => _buildAppBar(c)),
+          preferredSize: Size.fromHeight(kToolbarHeight + 30.h),
+          child: SafeArea(
+            bottom: false,
+            child: Obx(() => _buildAppBar(c)),
+          ),
         ),
         body: Obx(() {
           switch (c.currentStep.value) {
@@ -60,7 +63,6 @@ class JobCompletionPage extends StatelessWidget {
     final step = c.currentStep.value;
 
     return Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(Get.context!).padding.top),
       decoration: BoxDecoration(
         color: AppColors.surface,
         boxShadow: [
@@ -76,7 +78,7 @@ class JobCompletionPage extends StatelessWidget {
         children: [
           // Title row
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
             child: Row(
               children: [
                 if (!isSuccess)
@@ -102,7 +104,14 @@ class JobCompletionPage extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                SizedBox(width: 48.w),
+                if (!isSuccess)
+                  IconButton(
+                    icon: const Icon(Icons.close, color: AppColors.textSecondary),
+                    tooltip: 'Cancel & Exit',
+                    onPressed: () => Get.back(),
+                  )
+                else
+                  SizedBox(width: 48.w),
               ],
             ),
           ),

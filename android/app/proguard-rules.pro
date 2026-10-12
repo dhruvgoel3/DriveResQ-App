@@ -20,3 +20,8 @@
 
 # Jackson & Models
 -keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
+
+# Razorpay
+-dontwarn com.razorpay.**
+-keep class com.razorpay.** { *; }
+-optimizations !method/inlining/*

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../../dues/widgets/platform_dues_card.dart';
 
 import '../../controllers/mechanic_profile_controller.dart';
 
@@ -47,6 +48,8 @@ class MechanicProfileView extends StatelessWidget {
                   _pricingCard(c, data),
                   SizedBox(height: 14.h),
                   _verificationCard(c, data),
+                  SizedBox(height: 14.h),
+                  const PlatformDuesCard(),
                   SizedBox(height: 20.h),
                   _logoutButton(c),
                   SizedBox(height: 24.h),

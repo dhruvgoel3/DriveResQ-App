@@ -24,7 +24,7 @@ class JobSummaryView extends StatelessWidget {
           SizedBox(height: 20.h),
 
           // Services Performed
-          _sectionTitle('Services Performed', Iconsax.setting_2),
+          _sectionTitle('Services Performed', Iconsax.setting_2, isRequired: true),
           SizedBox(height: 12.h),
           Obx(
             () => Wrap(
@@ -86,7 +86,7 @@ class JobSummaryView extends StatelessWidget {
           SizedBox(height: 24.h),
 
           // Labor Charges
-          _sectionTitle('Labor Charges', Iconsax.setting_2),
+          _sectionTitle('Labor Charges', Iconsax.setting_2, isRequired: true),
           SizedBox(height: 12.h),
           _currencyField(
             c.laborChargesController,
@@ -125,29 +125,55 @@ class JobSummaryView extends StatelessWidget {
 
           SizedBox(height: 24.h),
 
-          // Cash Collected Confirmation
+          // Cash Collected Confirmation (Mandatory)
           SizedBox(height: 8.h),
-          Container(
-            padding: EdgeInsets.all(16.w),
-            decoration: BoxDecoration(
-              color: AppColors.success.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(14.r),
-              border: Border.all(color: AppColors.success.withValues(alpha: 0.3)),
-            ),
-            child: Obx(
-              () => CheckboxListTile(
+          Obx(
+            () => Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                color: c.cashCollected.value
+                    ? AppColors.success.withValues(alpha: 0.08)
+                    : const Color(0xFFFFEBEE),
+                borderRadius: BorderRadius.circular(14.r),
+                border: Border.all(
+                  color: c.cashCollected.value
+                      ? AppColors.success.withValues(alpha: 0.4)
+                      : const Color(0xFFE53935),
+                  width: 1.2,
+                ),
+              ),
+              child: CheckboxListTile(
                 value: c.cashCollected.value,
                 onChanged: (v) => c.cashCollected.value = v ?? false,
-                title: Text(
-                  'Cash collected from driver',
-                  style: AppTextStyles.body2.copyWith(
-                    fontWeight: FontWeight.w500,
+                title: RichText(
+                  text: TextSpan(
+                    text: 'Cash collected from driver',
+                    style: AppTextStyles.body2.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: ' *',
+                        style: AppTextStyles.body2.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFFE53935),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 subtitle: Text(
-                  'Or settle via UPI/cash directly with the driver',
+                  c.cashCollected.value
+                      ? 'Payment settled directly with driver'
+                      : 'Mandatory: You must confirm cash collection to complete service',
                   style: AppTextStyles.caption.copyWith(
-                    color: AppColors.textSecondary,
+                    color: c.cashCollected.value
+                        ? AppColors.textSecondary
+                        : const Color(0xFFC62828),
+                    fontWeight: c.cashCollected.value
+                        ? FontWeight.normal
+                        : FontWeight.w500,
                   ),
                 ),
                 activeColor: AppColors.success,
@@ -470,16 +496,28 @@ class JobSummaryView extends StatelessWidget {
     );
   }
 
-  Widget _sectionTitle(String title, IconData icon) {
+  Widget _sectionTitle(String title, IconData icon, {bool isRequired = false}) {
     return Row(
       children: [
         Icon(icon, size: 20.w, color: AppColors.success),
         SizedBox(width: 8.w),
-        Text(
-          title,
-          style: AppTextStyles.body1.copyWith(
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
+        RichText(
+          text: TextSpan(
+            text: title,
+            style: AppTextStyles.body1.copyWith(
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+            children: [
+              if (isRequired)
+                TextSpan(
+                  text: ' *',
+                  style: AppTextStyles.body1.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFFE53935),
+                  ),
+                ),
+            ],
           ),
         ),
       ],

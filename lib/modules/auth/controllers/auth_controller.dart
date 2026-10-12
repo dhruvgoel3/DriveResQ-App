@@ -249,7 +249,11 @@ class AuthController extends GetxController {
             verificationStatus == 'rejected') {
           Get.offAllNamed(Routes.MECHANIC_VERIFICATION);
         } else if (verificationStatus == 'approved') {
-          Get.offAllNamed(Routes.MECHANIC);
+          if (data?['accountStatus'] == 'suspended') {
+            Get.offAllNamed(Routes.MECHANIC_DUES);
+          } else {
+            Get.offAllNamed(Routes.MECHANIC);
+          }
         } else {
           Get.offAllNamed(Routes.MECHANIC_ONBOARDING);
         }
