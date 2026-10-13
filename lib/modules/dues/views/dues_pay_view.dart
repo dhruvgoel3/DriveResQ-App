@@ -39,6 +39,11 @@ class DuesPayView extends StatelessWidget {
             : null,
         actions: [
           IconButton(
+            tooltip: 'Sync Dues',
+            icon: const Icon(Iconsax.refresh, color: Colors.black87),
+            onPressed: controller.refreshDues,
+          ),
+          IconButton(
             tooltip: 'Logout',
             icon: const Icon(Iconsax.logout, color: Colors.black54),
             onPressed: () {

@@ -42,23 +42,35 @@ class DuesService {
     return _firestore.collection('users').doc(uid).snapshots().map((doc) {
       if (!doc.exists) return null;
       final data = doc.data() ?? {};
+      final phone = (data['phoneNumber'] as String?) ??
+          (data['phone'] as String?) ??
+          _auth.currentUser?.phoneNumber ??
+          '';
       return {
         'platformDueOutstanding':
             (data['platformDueOutstanding'] as num?)?.toDouble() ?? 0.0,
         'accountStatus': (data['accountStatus'] as String?) ?? 'active',
         'suspendedReason': data['suspendedReason'] as String?,
-        'phoneNumber': data['phoneNumber'] as String? ?? '',
+        'phoneNumber': phone,
+        'email': (data['email'] as String?) ?? _auth.currentUser?.email ?? '',
         'name': data['name'] as String? ?? 'Mechanic',
       };
     });
   }
 
-  /// Fetch a single snapshot of user data for checkout details (e.g. phone)
+  /// Fetch a single snapshot of user data for checkout details (e.g. phone, email)
   static Future<Map<String, dynamic>?> getUserProfile() async {
     final uid = currentUid;
     if (uid == null) return null;
     final doc = await _firestore.collection('users').doc(uid).get();
-    return doc.data();
+    final data = Map<String, dynamic>.from(doc.data() ?? {});
+    final phone = (data['phoneNumber'] as String?) ??
+        (data['phone'] as String?) ??
+        _auth.currentUser?.phoneNumber ??
+        '';
+    data['phoneNumber'] = phone;
+    data['email'] = (data['email'] as String?) ?? _auth.currentUser?.email ?? '';
+    return data;
   }
 
   /// Requests the server to calculate outstanding dues and create a Razorpay order.

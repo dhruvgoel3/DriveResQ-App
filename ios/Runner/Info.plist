@@ -60,5 +60,14 @@
 	<string>DriveResQ needs camera access so you can take photos of the vehicle issue or documents.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>DriveResQ needs photo library access so you can attach photos to requests, chats, and documents.</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>upi</string>
+		<string>tez</string>
+		<string>phonepe</string>
+		<string>paytmmp</string>
+		<string>bhim</string>
+		<string>credpay</string>
+	</array>
 </dict>
 </plist>

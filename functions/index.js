@@ -466,7 +466,8 @@ async function processDueForJob(jobId, data, snapRef) {
 
   const mechanicId = data.mechanicId;
   const laborCharges = Number(data.laborCharges) || 0;
-  const cashCollected = data.cashCollected === true;
+  // Allow true or undefined (for legacy completed cash jobs where cash was settled directly)
+  const cashCollected = data.cashCollected !== false;
   const paymentMethod = data.paymentMethod || "";
   const invoiceNumber = data.invoiceNumber || "";
 
@@ -595,7 +596,8 @@ exports.onCompletedJobCreateDue = functions.firestore
 
 /**
  * Sync / Backfill Callable: syncPendingDues
- * Processes any completed jobs for the caller that have no platform dues ledger entry.
+ * Processes any completed jobs for the caller that have no platform dues ledger entry
+ * and reconciles the outstanding balance with the users collection.
  */
 exports.syncPendingDues = functions.https.onCall(async (data, context) => {
   if (!context.auth || !context.auth.uid) {
@@ -620,7 +622,27 @@ exports.syncPendingDues = functions.https.onCall(async (data, context) => {
     }
   }
 
-  return { success: true, count };
+  // Reconcile user profile balance with actual unpaid dues
+  const unpaidSnaps = await db
+    .collection("platformDues")
+    .where("mechanicId", "==", uid)
+    .where("status", "==", "unpaid")
+    .get();
+
+  let totalOutstanding = 0;
+  unpaidSnaps.forEach((d) => {
+    totalOutstanding += Number(d.data().amount || 0);
+  });
+  totalOutstanding = Math.round(totalOutstanding * 100) / 100;
+
+  await db.collection("users").doc(uid).update({
+    platformDueOutstanding: totalOutstanding,
+    accountStatus: totalOutstanding > 0 ? "suspended" : "active",
+    suspendedReason: totalOutstanding > 0 ? "unpaid_dues" : null,
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+
+  return { success: true, count, outstanding: totalOutstanding };
 });
 
 /**
@@ -661,17 +683,78 @@ exports.createDuesOrder = functions.https.onCall(async (data, context) => {
   }
 
   const uid = context.auth.uid;
-  const unpaidSnaps = await db
+  let unpaidSnaps = await db
     .collection("platformDues")
     .where("mechanicId", "==", uid)
     .where("status", "==", "unpaid")
     .get();
 
+  // If no unpaid dues exist in platformDues collection, check user profile & completed jobs!
   if (unpaidSnaps.empty) {
-    throw new functions.https.HttpsError(
-      "failed-precondition",
-      "No unpaid platform dues found for this mechanic."
-    );
+    const jobsSnap = await db
+      .collection("completedJobs")
+      .where("mechanicId", "==", uid)
+      .get();
+    for (const doc of jobsSnap.docs) {
+      const jobData = doc.data();
+      if (!jobData.platformDueStatus) {
+        await processDueForJob(doc.id, jobData, doc.ref);
+      }
+    }
+
+    // Re-check after sync
+    unpaidSnaps = await db
+      .collection("platformDues")
+      .where("mechanicId", "==", uid)
+      .where("status", "==", "unpaid")
+      .get();
+  }
+
+  // If still empty: check user profile platformDueOutstanding!
+  if (unpaidSnaps.empty) {
+    const userDoc = await db.collection("users").doc(uid).get();
+    const userData = userDoc.data() || {};
+    const outstanding = Number(userData.platformDueOutstanding) || 0;
+
+    if (outstanding >= 1) {
+      // Create a consolidated due record so the mechanic is NOT blocked from paying
+      const dueId = `due_${uid.slice(0, 6)}_${Date.now()}`;
+      const amountPaise = Math.round(outstanding * 100);
+      await db.collection("platformDues").doc(dueId).set({
+        id: dueId,
+        mechanicId: uid,
+        jobId: "consolidated_balance",
+        invoiceNumber: "ADJUSTMENT",
+        laborCharges: outstanding * 10,
+        commissionPercent: 10,
+        amount: outstanding,
+        amountPaise,
+        currency: "INR",
+        status: "unpaid",
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        note: "Consolidated outstanding dues balance",
+      });
+
+      unpaidSnaps = await db
+        .collection("platformDues")
+        .where("mechanicId", "==", uid)
+        .where("status", "==", "unpaid")
+        .get();
+    } else {
+      // No dues at all! If account was erroneously marked suspended, activate it!
+      if (userData.accountStatus === "suspended" || outstanding <= 0) {
+        await db.collection("users").doc(uid).update({
+          platformDueOutstanding: 0,
+          accountStatus: "active",
+          suspendedReason: null,
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+      }
+      throw new functions.https.HttpsError(
+        "failed-precondition",
+        "No unpaid platform dues found for this mechanic. Your account is clear."
+      );
+    }
   }
 
   let totalPaise = 0;
@@ -729,6 +812,7 @@ exports.createDuesOrder = functions.https.onCall(async (data, context) => {
 /**
  * 3. HTTPS Callable: verifyDuesPayment
  * Verifies Razorpay payment signature HMAC SHA256 and clears platform dues upon validity.
+ * Includes direct Razorpay API check fallback for maximum reliability.
  */
 exports.verifyDuesPayment = functions.https.onCall(async (data, context) => {
   if (!context.auth || !context.auth.uid) {
@@ -741,10 +825,10 @@ exports.verifyDuesPayment = functions.https.onCall(async (data, context) => {
   const uid = context.auth.uid;
   const { orderId, paymentId, signature } = data || {};
 
-  if (!orderId || !paymentId || !signature) {
+  if (!orderId || !paymentId) {
     throw new functions.https.HttpsError(
       "invalid-argument",
-      "Missing orderId, paymentId, or signature."
+      "Missing orderId or paymentId."
     );
   }
 
@@ -753,23 +837,51 @@ exports.verifyDuesPayment = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError("unavailable", rzp.error);
   }
 
-  // 1. Signature verification
-  const expectedSignature = crypto
-    .createHmac("sha256", rzp.key_secret)
-    .update(`${orderId}|${paymentId}`)
-    .digest("hex");
+  let verified = false;
 
-  if (expectedSignature !== signature) {
-    console.error(
-      `[verifyDuesPayment] Signature mismatch. Expected: ${expectedSignature}, Got: ${signature}`
-    );
+  // 1. Signature verification via HMAC SHA-256
+  if (signature) {
+    const expectedSignature = crypto
+      .createHmac("sha256", rzp.key_secret)
+      .update(`${orderId}|${paymentId}`)
+      .digest("hex");
+
+    if (expectedSignature === signature) {
+      verified = true;
+    } else {
+      console.warn(
+        `[verifyDuesPayment] HMAC mismatch. Expected: ${expectedSignature}, Got: ${signature}. Falling back to Razorpay API verification.`
+      );
+    }
+  }
+
+  // 2. Direct Razorpay API verification fallback
+  if (!verified) {
+    try {
+      const payment = await rzp.client.payments.fetch(paymentId);
+      console.log(
+        `[verifyDuesPayment] Razorpay API payment ${paymentId}: status=${payment.status}, order_id=${payment.order_id}`
+      );
+      if (
+        payment &&
+        payment.order_id === orderId &&
+        (payment.status === "captured" || payment.status === "authorized")
+      ) {
+        verified = true;
+      }
+    } catch (apiErr) {
+      console.error("[verifyDuesPayment] Razorpay payments.fetch failed:", apiErr.message);
+    }
+  }
+
+  if (!verified) {
     throw new functions.https.HttpsError(
       "permission-denied",
-      "Payment verification failed: invalid signature."
+      "Payment verification failed: could not confirm payment authenticity."
     );
   }
 
-  // 2. Clear dues and reactivate account
+  // 3. Clear dues and reactivate account
   try {
     const unpaidSnaps = await db
       .collection("platformDues")
@@ -785,7 +897,7 @@ exports.verifyDuesPayment = functions.https.onCall(async (data, context) => {
         paidAt: admin.firestore.FieldValue.serverTimestamp(),
         razorpayOrderId: orderId,
         razorpayPaymentId: paymentId,
-        razorpaySignature: signature,
+        razorpaySignature: signature || "api_verified",
       });
     });
 

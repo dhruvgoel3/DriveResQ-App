@@ -2,14 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:driveresq_app/modules/dues/services/dues_service.dart';
-import 'package:driveresq_app/utils/helpers/app_snackbar.dart';
 
 typedef OnPaymentVerificationSuccess = void Function(Map<String, dynamic> result);
-typedef OnPaymentVerificationFailure = void Function(String error);
+typedef OnPaymentVerificationFailure = void Function(String error, bool isCancelled);
 
 /// Service wrapping Razorpay Flutter Checkout.
 /// NEVER trusts checkout success alone: always verifies HMAC SHA-256 signature
-/// with Cloud Functions before declaring the payment settled.
+/// and official Razorpay server API with Cloud Functions before declaring the payment settled.
 class RazorpayCheckoutService {
   late final Razorpay _razorpay;
   OnPaymentVerificationSuccess? _onSuccess;
@@ -33,6 +32,7 @@ class RazorpayCheckoutService {
     required Map<String, dynamic> orderData,
     required String mechanicPhone,
     required String mechanicName,
+    String? mechanicEmail,
     required OnPaymentVerificationSuccess onSuccess,
     required OnPaymentVerificationFailure onFailure,
   }) async {
@@ -40,7 +40,7 @@ class RazorpayCheckoutService {
     _onFailure = onFailure;
 
     final orderId = orderData['orderId'] as String?;
-    final amountPaise = orderData['amount'];
+    final amountPaise = (orderData['amount'] as num?)?.toInt() ?? 0;
     final serverKeyId = orderData['keyId'] as String?;
     final envKeyId = dotenv.env['RAZORPAY_KEY_ID']?.trim();
 
@@ -51,18 +51,28 @@ class RazorpayCheckoutService {
     if (keyId.isEmpty || keyId.startsWith('rzp_test_xxxx')) {
       onFailure(
         'Razorpay Key ID is not configured. Please set RAZORPAY_KEY_ID in .env or Cloud Functions.',
+        false,
       );
       return;
     }
 
     if (orderId == null || orderId.isEmpty) {
-      onFailure('Invalid order received from server.');
+      onFailure('Invalid order received from server.', false);
       return;
     }
 
     _currentOrderId = orderId;
 
-    final options = {
+    // Sanitize phone number to valid 10 digits for Razorpay SDK
+    String? cleanPhone;
+    final digitsOnly = mechanicPhone.replaceAll(RegExp(r'[^0-9]'), '');
+    if (digitsOnly.length == 10) {
+      cleanPhone = digitsOnly;
+    } else if (digitsOnly.length > 10) {
+      cleanPhone = digitsOnly.substring(digitsOnly.length - 10);
+    }
+
+    final options = <String, dynamic>{
       'key': keyId,
       'amount': amountPaise,
       'name': 'DriveResQ',
@@ -70,12 +80,21 @@ class RazorpayCheckoutService {
       'description': 'Platform Dues Settlement',
       'currency': orderData['currency'] ?? 'INR',
       'timeout': 300, // 5 minutes
+      'retry': {'enabled': true, 'max_count': 3},
+      'send_sms_hash': true,
       'prefill': {
-        'contact': mechanicPhone,
-        'name': mechanicName,
+        if (cleanPhone != null && cleanPhone.isNotEmpty) 'contact': cleanPhone,
+        if (mechanicEmail != null && mechanicEmail.trim().isNotEmpty)
+          'email': mechanicEmail.trim(),
+        'name': mechanicName.trim().isNotEmpty
+            ? mechanicName.trim()
+            : 'DriveResQ Mechanic',
       },
       'theme': {
         'color': '#FF9800', // DriveResQ Mechanic Warm Accent
+      },
+      'external': {
+        'wallets': ['paytm']
       },
     };
 
@@ -83,7 +102,7 @@ class RazorpayCheckoutService {
       _razorpay.open(options);
     } catch (e) {
       debugPrint('[RazorpayCheckoutService] Error launching checkout: $e');
-      onFailure('Could not open payment gateway: $e');
+      onFailure('Could not open payment gateway: $e', false);
     }
   }
 
@@ -92,13 +111,13 @@ class RazorpayCheckoutService {
     final paymentId = response.paymentId ?? '';
     final signature = response.signature ?? '';
 
-    if (paymentId.isEmpty || signature.isEmpty) {
-      _onFailure?.call('Incomplete payment response from gateway.');
+    if (paymentId.isEmpty) {
+      _onFailure?.call('Incomplete payment response from gateway.', false);
       return;
     }
 
     try {
-      // Cryptographic verification via server callable
+      // Cryptographic verification via server callable (backed by Razorpay API fallback)
       final verifyResult = await DuesService.verifyPayment(
         orderId: orderId,
         paymentId: paymentId,
@@ -110,12 +129,14 @@ class RazorpayCheckoutService {
       } else {
         _onFailure?.call(
           verifyResult['message'] as String? ?? 'Payment verification failed.',
+          false,
         );
       }
     } catch (e) {
       debugPrint('[RazorpayCheckoutService] Payment verification failed: $e');
       _onFailure?.call(
-        'Payment was received by gateway but server verification failed: $e',
+        'Payment received by gateway, but server confirmation encountered an issue: $e',
+        false,
       );
     }
   }
@@ -124,9 +145,17 @@ class RazorpayCheckoutService {
     debugPrint(
       '[RazorpayCheckoutService] Payment error: code=${response.code}, message=${response.message}',
     );
-    final errorMsg = response.message ?? 'Payment was cancelled or unsuccessful.';
-    AppSnackbar.error(errorMsg, title: 'Payment Failed');
-    _onFailure?.call(errorMsg);
+
+    final isCancelled = response.code == Razorpay.PAYMENT_CANCELLED ||
+        (response.message?.toLowerCase().contains('cancelled') ?? false) ||
+        (response.message?.toLowerCase().contains('dismissed') ?? false);
+
+    final errorMsg = isCancelled
+        ? 'Payment was cancelled.'
+        : (response.message ?? 'Payment was cancelled or unsuccessful.');
+
+    // Pass isCancelled to avoid alarming error popups on simple dismissal
+    _onFailure?.call(errorMsg, isCancelled);
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {

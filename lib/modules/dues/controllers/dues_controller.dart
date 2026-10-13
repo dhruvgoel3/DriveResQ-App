@@ -66,6 +66,18 @@ class DuesController extends GetxController {
     );
   }
 
+  /// Proactively resync and reconcile platform dues
+  Future<void> refreshDues() async {
+    try {
+      isLoading.value = true;
+      await DuesService.syncPendingDues();
+    } catch (e) {
+      debugPrint('[DuesController] Error syncing dues: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   /// Triggers server-authoritative Razorpay Checkout flow to pay outstanding dues
   Future<void> payOutstanding() async {
     if (isPaying.value) return;
@@ -85,10 +97,11 @@ class DuesController extends GetxController {
     isPaying.value = true;
 
     try {
-      // 1. Fetch user profile for contact prefill
+      // 1. Fetch user profile for contact and email prefill
       final profile = await DuesService.getUserProfile();
       final phone = (profile?['phoneNumber'] as String?) ?? '';
       final name = (profile?['name'] as String?) ?? 'Mechanic';
+      final email = (profile?['email'] as String?) ?? '';
 
       // 2. Request Cloud Function to create Razorpay Order
       final orderData = await DuesService.createOrder();
@@ -98,23 +111,35 @@ class DuesController extends GetxController {
         orderData: orderData,
         mechanicPhone: phone,
         mechanicName: name,
-        onSuccess: (result) {
+        mechanicEmail: email,
+        onSuccess: (result) async {
           isPaying.value = false;
+          outstanding.value = 0.0;
+          accountStatus.value = 'active';
+          suspendedReason.value = null;
+
           AppSnackbar.success(
             'Payment verified! Your account is active.',
             title: 'Dues Cleared',
           );
 
+          // Resync dues in background to keep ledger updated
+          await DuesService.syncPendingDues();
+
           // If mechanic was on dedicated dues screen due to suspension, send to dashboard
           if (Get.currentRoute == Routes.MECHANIC_DUES) {
-            Future.delayed(const Duration(milliseconds: 600), () {
+            Future.delayed(const Duration(milliseconds: 700), () {
               Get.offAllNamed(Routes.MECHANIC);
             });
           }
         },
-        onFailure: (errorMessage) {
+        onFailure: (errorMessage, isCancelled) {
           isPaying.value = false;
-          AppSnackbar.error(errorMessage, title: 'Payment Incomplete');
+          if (isCancelled) {
+            AppSnackbar.info('Payment was cancelled.', title: 'Cancelled');
+          } else {
+            AppSnackbar.error(errorMessage, title: 'Payment Incomplete');
+          }
         },
       );
     } catch (e) {

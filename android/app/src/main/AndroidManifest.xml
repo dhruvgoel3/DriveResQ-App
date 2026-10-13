@@ -10,7 +10,7 @@
     <!-- 📞 OPTIONAL (not required for dialer, but OK to keep) -->
     <uses-permission android:name="android.permission.CALL_PHONE"/>
 
-    <!-- 🔍 REQUIRED FOR ANDROID 11+ (CALL / DIAL) -->
+    <!-- 🔍 REQUIRED FOR ANDROID 11+ (CALL / DIAL / UPI PAYMENTS) -->
     <queries>
         <intent>
             <action android:name="android.intent.action.DIAL"/>
@@ -27,6 +27,24 @@
             <action android:name="android.intent.action.VIEW"/>
             <data android:scheme="https"/>
         </intent>
+        <!-- 💳 RAZORPAY UPI INTENTS & APPS (Android 11+) -->
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="upi"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SEND"/>
+            <data android:mimeType="*/*"/>
+        </intent>
+        <package android:name="com.google.android.apps.nbu.paisa.user"/>
+        <package android:name="com.phonepe.app"/>
+        <package android:name="net.one97.paytm"/>
+        <package android:name="in.org.npci.upiapp"/>
+        <package android:name="in.amazon.mShop.android.shopping"/>
+        <package android:name="com.myairtelapp"/>
+        <package android:name="com.csam.icici.bank.imobile"/>
+        <package android:name="com.sbi.upi"/>
+
         <package android:name="com.whatsapp"/>
         <package android:name="com.whatsapp.w4b"/>
 
@@ -46,7 +64,6 @@
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:taskAffinity=""
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
