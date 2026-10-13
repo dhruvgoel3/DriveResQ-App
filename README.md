@@ -1,556 +1,366 @@
 <div align="center">
 
-# 🚗 DriveResQ — On-Demand Roadside Assistance & Mechanic Dispatch Platform
+# 🚗 DriveResQ — On-Demand Roadside Assistance & Emergency Dispatch Platform
 
 <p align="center">
-  <strong>Instant Roadside Rescue • Real-Time GPS Tracking • In-App Negotiation & Voice Chat • Multi-Role Verification</strong>
+  <strong>Instant Emergency Rescue • Real-Time GPS Navigation • Fair Transparent Pricing • 6-Digit OTP Handshake • Razorpay Settlement • Multi-Role Verification</strong>
 </p>
 
-[![Flutter Version](https://img.shields.io/badge/Flutter-3.10%2B-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
-[![Dart Version](https://img.shields.io/badge/Dart-3.0%2B-0175C2?logo=dart&logoColor=white)](https://dart.dev)
-[![Firebase](https://img.shields.io/badge/Backend-Firebase%20Suite-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com)
-[![Architecture](https://img.shields.io/badge/Architecture-GetX%20%7C%20MVC%20%2B%20Services-6C63FF)](https://pub.dev/packages/get)
-[![Platform](https://img.shields.io/badge/Platforms-Android%20%7C%20iOS%20%7C%20Web-4CAF50)](#platforms-supported)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Flutter Version](https://img.shields.io/badge/Flutter-3.10%2B-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
+[![Dart Version](https://img.shields.io/badge/Dart-3.0%2B-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
+[![Firebase](https://img.shields.io/badge/Backend-Firebase%20Suite-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com)
+[![Razorpay](https://img.shields.io/badge/Payments-Razorpay%20UPI%20%26%20Cards-0C2340?style=for-the-badge&logo=razorpay&logoColor=white)](https://razorpay.com)
+[![Architecture](https://img.shields.io/badge/Architecture-GetX%20%7C%20MVC%20%2B%20Services-6C63FF?style=for-the-badge)](https://pub.dev/packages/get)
+[![Platform](https://img.shields.io/badge/Platforms-Android%20%7C%20iOS%20%7C%20Web-4CAF50?style=for-the-badge)](#-platforms-supported)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
 <br/>
 
-<img src="assets/screenshots/hero_banner.jpg" alt="DriveResQ Hero Banner" width="100%" />
+<img src="assets/DriverDashPhotos/hero_banner.jpg" alt="DriveResQ Hero Banner" width="100%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12);" />
 
 </div>
 
 ---
 
-## 📖 Table of Contents
+## 📌 Executive Summary
 
-- [Overview](#-overview)
-- [Key Features](#-key-features)
-  - [Driver Experience](#1-driver-experience)
-  - [Mechanic Experience](#2-mechanic-experience)
-  - [Real-Time Communication & Quoting](#3-real-time-communication--in-app-quoting)
-  - [Admin Management Portal](#4-admin-management-portal)
-- [App UI & Screens Showcase](#-app-ui--screens-showcase)
-- [Technical Architecture](#-technical-architecture)
-- [Project Directory Structure](#-project-directory-structure)
-- [Database Schema & Collections](#-database-schema--collections)
-- [Getting Started & Installation](#-getting-started--installation)
-  - [Prerequisites](#prerequisites)
-  - [Step-by-Step Setup](#step-by-step-setup)
-- [Configuration & Environment Secrets](#-configuration--environment-secrets)
-  - [Firebase Configuration](#1-firebase-configuration)
-  - [Google Maps API Setup](#2-google-maps-api-setup)
-  - [Environment Variables (.env)](#3-environment-variables-env)
-- [Cloud Functions & Push Notifications](#-cloud-functions--push-notifications)
-- [Security & Access Rules](#-security--access-rules)
-- [Developer Mode & Testing](#-developer-mode--testing)
-- [Troubleshooting & FAQs](#-troubleshooting--faqs)
-- [Roadmap](#-roadmap)
-- [Contributing](#-contributing)
-- [License](#-license)
+**DriveResQ** is an end-to-end, enterprise-grade roadside emergency dispatch ecosystem built with Flutter, Firebase, Google Maps Platform, and Razorpay. It connects stranded motorists with certified local mechanics in real-time. 
+
+Unlike traditional, fragmented towing services, DriveResQ coordinates every stage of roadside distress: from **GPS reverse-geocoded dispatch**, **upfront price locking**, and **live turn-by-turn tracking**, to **cryptographic 6-digit OTP job verification**, **instant digital invoicing**, and **automated platform commission collection via Razorpay**.
 
 ---
 
-## 🌟 Overview
+## 🧭 Table of Contents
 
-**DriveResQ** is a full-stack, enterprise-ready roadside assistance ecosystem engineered with Flutter and Firebase. It eliminates the friction, vulnerability, and uncertainty motorists face during highway and city breakdowns by instantly connecting stranded drivers with vetted nearby automotive mechanics.
-
-### The Problem It Solves
-When motorists face a flat tire, dead battery, engine breakdown, or fuel outage, traditional roadside assistance often involves long hotline wait times, opaque pricing, and zero visibility into technician arrival times. Local mechanics also lack a unified digital platform to receive on-demand dispatch calls.
-
-### The DriveResQ Solution
-DriveResQ bridges this gap through a unified mobile and web architecture:
-- **Instant Geo-Dispatch**: Drivers broadcast rescue requests with pinpoint GPS coordinates, vehicle details, and photo evidence.
-- **Fair In-App Quoting**: Mechanics can review the problem, send official itemized estimates in real-time chat, and prevent surprise charges.
-- **Turn-by-Turn Live Tracking**: Live Google Maps integration displays mechanic transit routes, live coordinates, and estimated arrival times (ETA).
-- **Fraud-Proof Job Verification**: 6-digit security OTP verification ensures jobs are only marked complete when the driver physically inspects the service.
-- **Admin Verification Gate**: All mechanics undergo a thorough 6-step verification flow where government IDs and workshop licenses are reviewed and approved before going live.
-
----
-
-## ⚡ Key Features
-
-### 1. Driver Experience
-- **One-Tap Emergency Dispatch**: Automatically captures driver GPS coordinates, reverse-geocodes the exact street address, and allows manual landmark specifications.
-- **Multi-Vehicle Support**: Tailored service categories for **Bikes, Scooters, Sedans, SUVs, Vans, Trucks, Auto-Rickshaws, and Buses**.
-- **Issue Diagnostics & Photos**: Drivers describe the problem and attach camera photos of vehicle damage or flat tires for fast diagnosis.
-- **Nearby Mechanics Radar**: Interactive Google Map with custom markers showing available certified mechanics within radius, toggleable between Map and List views.
-- **Live Mechanic Tracking**: High-frequency map updates showing the mechanic approaching in real-time with route polylines and real-time distance calculations.
-- **Safety Tips & SOS Guidance**: Built-in safety instructions displayed while waiting for the technician to ensure roadside security.
-- **Digital Job Receipts & PDF Invoicing**: Downloadable, printable digital receipts itemizing labor, spare parts, and service fees with one-tap sharing.
-- **5-Star Rating & Reviews**: Comprehensive driver feedback mechanism factoring into public mechanic reputation scores.
-
-### 2. Mechanic Experience
-- **6-Step Professional Onboarding**:
-  1. *Personal Details*: Full legal name, contact, emergency phone.
-  2. *Professional Profile*: Workshop name, years of experience, offered services, vehicle specialties.
-  3. *Document Verification*: Aadhaar / National ID, mechanic trade certification, workshop ownership license.
-  4. *Bank & Payouts*: Account details and UPI handles for settlement.
-  5. *Availability & Operating Hours*: 24/7 emergency availability toggle.
-  6. *Legal Agreement*: Terms of service and roadside liability waivers.
-- **Active Dispatch Dashboard**: Real-time incoming rescue requests with distance, vehicle type, reported problem, and driver contact.
-- **Availability Toggle**: Instant Online / Offline switch controlling visibility in driver radars.
-- **Live Navigation**: Built-in map navigation directing technicians straight to the stranded vehicle.
-- **6-Digit Secure Completion**: Mechanics request a 6-digit code provided to the driver to finalize job execution and unlock payouts.
-- **Earnings & Service History**: Historic log of completed rescues, accumulated earnings, and driver feedback.
-
-### 3. Real-Time Communication & In-App Quoting
-- **Instant Chat Engine**: Zero-latency Firestore message streaming with unread badge counters.
-- **Voice Messages (Walkie-Talkie)**: Audio recording and playback with dynamic waveforms for hands-free driver-technician coordination.
-- **Official Price Quote Cards**: Mechanics submit formal structured quotes directly within the chat thread; drivers can Accept or Decline with a single tap.
-- **Photo Attachments**: High-resolution image uploads stored in Firebase Storage.
-- **Direct Phone Dialer**: Fallback one-touch phone dialer triggering the native dialer without exposing sensitive personal info.
-
-### 4. Admin Management Portal
-- **Web-Ready Dashboard**: Dedicated web interface (`/admin`) for platform moderators and dispatch managers.
-- **Applicant Queue**: Tabbed workflow reviewing **Pending**, **Approved**, and **Rejected** mechanic and driver submissions.
-- **Document Inspection Viewer**: Fullscreen document preview for verifying government IDs and certification validity.
-- **Audit Trails & Reasons**: Rejection notes sent directly to mechanics with re-submission capabilities.
-- **Platform Analytics**: Real-time counters for active jobs, onboarded drivers, verified mechanics, and daily completions.
+- [🚨 The Problem & The Solution](#-the-problem--the-solution)
+  - [The Motorist Crisis](#1-the-motorist-crisis-on-the-road)
+  - [The Local Mechanic's Dilemma](#2-the-local-mechanics-dilemma)
+  - [The Platform Solution](#3-the-driveresq-solution)
+- [📸 Triple-Dashboard Showcase](#-triple-dashboard-showcase)
+  - [1. Driver Mobile Experience](#1-driver-mobile-experience)
+  - [2. Mechanic Dispatch & Operations](#2-mechanic-dispatch--operations)
+  - [3. Central Command Admin Web Portal](#3-central-command-admin-web-portal)
+- [⚙️ Core Functional Architecture](#️-core-functional-architecture)
+- [💳 Monetization, Fair Pricing & Razorpay Integration](#-monetization-fair-pricing--razorpay-integration)
+- [🛡️ Trust & Security Protocol](#️-trust--security-protocol)
+- [📁 Repository & Directory Layout](#-repository--directory-layout)
+- [🚀 Quickstart & Setup Guide](#-quickstart--setup-guide)
+- [🗺️ Product Roadmap](#️-product-roadmap)
+- [👥 Contributing & License](#-contributing--license)
 
 ---
 
-## 📱 App UI & Screens Showcase
+## 🚨 The Problem & The Solution
 
-> *Drop your actual screenshots into the `assets/screenshots/` directory matching the paths below to display live UI previews.*
-
-### 🚗 Driver Journey
-
-| Splash & Role Selection | Driver Dashboard | Emergency Request |
-|:---:|:---:|:---:|
-| <img src="assets/screenshots/01_splash_onboarding.png" width="260" alt="Role Selection Screen" onerror="this.src='https://placehold.co/400x850/6C63FF/ffffff?text=Role+Selection+UI'" /> | <img src="assets/screenshots/02_driver_home.png" width="260" alt="Driver Dashboard" onerror="this.src='https://placehold.co/400x850/2196F3/ffffff?text=Driver+Dashboard'" /> | <img src="assets/screenshots/03_create_request.png" width="260" alt="Create Request" onerror="this.src='https://placehold.co/400x850/6C63FF/ffffff?text=Create+Request+UI'" /> |
-| **Driver & Mechanic Selection** | **Quick Actions & Active Status** | **Vehicle & Issue Details** |
-
-| Find Mechanics (Map / List) | Live GPS Tracking | Job Receipt & Rating |
-|:---:|:---:|:---:|
-| <img src="assets/screenshots/04_find_mechanics_map.png" width="260" alt="Find Mechanics Radar" onerror="this.src='https://placehold.co/400x850/4CAF50/ffffff?text=Find+Mechanics+Map'" /> | <img src="assets/screenshots/05_live_tracking.png" width="260" alt="Live GPS Tracking" onerror="this.src='https://placehold.co/400x850/2196F3/ffffff?text=Live+GPS+Tracking'" /> | <img src="assets/screenshots/09_job_completion_receipt.png" width="260" alt="Job Receipt & Rating" onerror="this.src='https://placehold.co/400x850/FF9800/ffffff?text=Invoice+%26+Rating'" /> |
-| **Mechanics Radar & Filters** | **En-Route Polyline Navigation** | **Itemized Bill & 5★ Review** |
-
----
-
-### 🔧 Mechanic Journey & Dispatch
-
-| Mechanic Onboarding (6 Steps) | Pending Verification | Mechanic Dashboard |
-|:---:|:---:|:---:|
-| <img src="assets/screenshots/07_mechanic_onboarding.png" width="260" alt="Mechanic Onboarding" onerror="this.src='https://placehold.co/400x850/FF9800/ffffff?text=Mechanic+Onboarding'" /> | <img src="assets/screenshots/07b_verification_pending.png" width="260" alt="Verification Pending" onerror="this.src='https://placehold.co/400x850/FFC107/333333?text=Verification+Review'" /> | <img src="assets/screenshots/06_mechanic_dashboard.png" width="260" alt="Mechanic Dashboard" onerror="this.src='https://placehold.co/400x850/F57C00/ffffff?text=Mechanic+Dashboard'" /> |
-| **Certificates & Verification** | **Admin Review Gate** | **Incoming Request Alerts** |
-
----
-
-### 💬 Real-Time Chat, Negotiation & 🛡️ Admin Portal
-
-| In-App Chat & Price Quotes | Voice Notes & Media | Admin Web Portal |
-|:---:|:---:|:---:|
-| <img src="assets/screenshots/08_in_app_chat.png" width="260" alt="Chat & Official Quote" onerror="this.src='https://placehold.co/400x850/6C63FF/ffffff?text=Chat+%26+Quotes'" /> | <img src="assets/screenshots/08b_voice_notes.png" width="260" alt="Voice Messages" onerror="this.src='https://placehold.co/400x850/00BCD4/ffffff?text=Voice+Notes+Player'" /> | <img src="assets/screenshots/10_admin_dashboard.png" width="340" alt="Admin Web Dashboard" onerror="this.src='https://placehold.co/800x450/2C2C2C/ffffff?text=Admin+Web+Portal'" /> |
-| **Transparent Quoting** | **Waveform Audio Player** | **Desktop Verification Console** |
-
----
-
-## 🏗️ Technical Architecture
-
-DriveResQ is engineered around clean separation of concerns using **GetX MVC + Services architecture**:
-
-```mermaid
-graph TD
-    subgraph ClientLayer ["📱 Client Application (Flutter)"]
-        UI["Views & Widgets<br/>(Material 3 / Responsive)"]
-        Controllers["GetX Controllers<br/>(Reactive State Management)"]
-        Bindings["Dependency Bindings<br/>(Lazy Put / Lazy Injection)"]
-        Services["Local Services<br/>(Location, Audio, Storage, FCM)"]
-        
-        UI <--> Controllers
-        Controllers --> Services
-        Bindings -.-> Controllers
-    end
-
-    subgraph FirebaseCloud ["☁️ Cloud & Backend Infrastructure"]
-        Auth["Firebase Auth<br/>(Phone OTP)"]
-        Firestore["Cloud Firestore<br/>(Offline Cache + Real-time)"]
-        Storage["Firebase Storage<br/>(Documents, Photos, Audio)"]
-        FCM["Firebase Cloud Messaging<br/>(APNs / Android High Priority)"]
-        Functions["Firebase Cloud Functions<br/>(Node.js Background Workers)"]
-    end
-
-    subgraph ExternalServices ["🌐 Third-Party APIs"]
-        GMaps["Google Maps Flutter SDK<br/>(Directions & Polylines)"]
-        Geocoding["Geolocator & Reverse Geocoding"]
-    end
-
-    Services <--> Auth
-    Services <--> Firestore
-    Services <--> Storage
-    Services <--> FCM
-    Services <--> GMaps
-    Services <--> Geocoding
-
-    Firestore -->|onCreate Notification| Functions
-    Functions -->|Dispatch Push Payload| FCM
+```
+┌────────────────────────────────────────┐         ┌────────────────────────────────────────┐
+│         THE OLD REALITY (PAIN)         │         │      THE DRIVERESQ WAY (SOLUTION)      │
+├────────────────────────────────────────┤         ├────────────────────────────────────────┤
+│ ❌ Stranded in unfamiliar highways     │  ────►  │ ✅ Instant GPS reverse-geocoded ping   │
+│ ❌ Opaque, predatory roadside pricing  │  ────►  │ ✅ Locked base fee + upfront per-km    │
+│ ❌ Unverified roadside mechanics       │  ────►  │ ✅ 6-step KYC & Admin verification     │
+│ ❌ Ghost technician arrivals           │  ────►  │ ✅ Live Google Maps polyline tracking   │
+│ ❌ Disputed cash payments & fraud      │  ────►  │ ✅ 6-digit OTP completion handshake    │
+│ ❌ No platform commission tracking     │  ────►  │ ✅ Razorpay automated dues settlement  │
+└────────────────────────────────────────┘         └────────────────────────────────────────┘
 ```
 
-### Technology Matrix
+### 1. The Motorist Crisis on the Road
+Every day, thousands of motorists experience sudden vehicular failure — flat tires, drained batteries, engine overheating, lockouts, or fuel exhaustion. In these moments:
+- **Zero Visibility:** Motorists call unverified numbers or search search engines blindly with no arrival estimates (ETAs).
+- **Predatory Extortion:** Mechanics on isolated highways frequently charge exorbitant rates once arriving on-site.
+- **Safety Hazards:** Stranded drivers, especially at night or on desolate expressways, face physical vulnerability without emergency coordination.
 
-| Layer | Technology | Purpose |
-|---|---|---|
-| **Language & Framework** | Dart 3.x, Flutter 3.10+ | Cross-platform client for iOS, Android, and Web |
-| **State & Navigation** | GetX (`^4.7.3`) | High-performance reactive state, reactive streams, routing |
-| **Backend & Database** | Firebase Cloud Firestore | NoSQL document database with persistent offline caching |
-| **Authentication** | Firebase Auth | Phone number authentication via SMS OTP |
-| **Push Notifications** | Firebase Cloud Messaging (FCM) + Local Notifications | High-priority background/foreground dispatch |
-| **Background Compute** | Cloud Functions (Node.js 18+) | Automated notification pipeline (`processNotification`) |
-| **Cloud Storage** | Firebase Storage | Storage for IDs, mechanic licenses, images, voice notes |
-| **Maps & Location** | Google Maps Flutter, Geolocator, Geocoding | Real-time coordinate tracking, custom markers, polylines |
-| **Media & Audio** | `record`, `audioplayers`, `image_picker` | Voice note audio encoding/decoding, photo capture |
-| **Documents & Export** | `pdf`, `printing`, `share_plus` | Digital receipts, PDF generation, native sharing |
-| **UI Aesthetics** | Google Fonts, Iconsax, Flashy Flushbar, Shimmer | High-fidelity dark/light styling and micro-interactions |
+### 2. The Local Mechanic's Dilemma
+Small automotive repair shops and independent mechanics struggle with modern dispatch mechanics:
+- **Inability to Compete:** Independent mechanics cannot afford expensive dispatch centers or proprietary tracking software.
+- **Wasted Trips & Fake Calls:** Technicians drive miles only to find the motorist was picked up by someone else or gave the wrong address.
+- **Payment Insecurity:** Mechanics have no standard way to itemize labor, parts, and travel fees, leading to uncomfortable disputes.
+
+### 3. The DriveResQ Solution
+DriveResQ addresses both sides of the market with a unified multi-tier platform:
+1. **Intelligent Dispatch Engine:** Motorists create pinpoint requests with photos, vehicle model, and landmark notes. Certified mechanics within a 20 km radar are notified in milliseconds via high-priority FCM channels.
+2. **Transparent Fair-Fare Architecture:** Travel fees are locked before the mechanic departs (`Base Fee + Per-Km Rate`), while parts and labor are itemized upon inspection.
+3. **Double-Blind 6-Digit OTP Handshake:** A job cannot be marked finished until the driver shares their uniquely generated 6-digit verification code with the mechanic.
+4. **Self-Balancing Platform Economy:** Drivers pay mechanics directly in cash or UPI. The platform automatically tallies commission on labor charges and enforces dues clearance via **Razorpay** to maintain account health.
 
 ---
 
-## 📁 Project Directory Structure
+## 📸 Triple-Dashboard Showcase
+
+DriveResQ provides three tailored interfaces built on a unified codebase: **Driver Dashboard**, **Mechanic Operations Console**, and **Web Central Command Admin**.
+
+---
+
+### 1. Driver Mobile Experience
+
+The driver app is crafted for ease-of-use under stress, featuring one-tap emergency triggers, transparent pricing breakdowns, live GPS tracking, and safety assistance.
+
+| 01. Home & Quick SOS | 02. Service Categories | 03. Create Help Request |
+|:---:|:---:|:---:|
+| <img src="assets/DriverDashPhotos/01_driver_home.png" width="240" alt="Driver Home" /> | <img src="assets/DriverDashPhotos/02_request_services.png" width="240" alt="Service Catalog" /> | <img src="assets/DriverDashPhotos/03_create_help_request.png" width="240" alt="Create Request Form" /> |
+| **Instant Rescue Trigger**<br/>GPS status, standby banner & 1-tap dispatch | **Broad Issue Matrix**<br/>Flat tire, dead battery, engine, towing, lockout | **Pinpoint Precision**<br/>Reverse geocoding, vehicle details & landmark notes |
+
+| 04. Mechanic Radar Search | 05. Dispatch In Progress | 06. Mechanic Offer Received |
+|:---:|:---:|:---:|
+| <img src="assets/DriverDashPhotos/04_find_mechanics.png" width="240" alt="Find Mechanics" /> | <img src="assets/DriverDashPhotos/05_dispatch_progress.png" width="240" alt="Dispatch In Progress" /> | <img src="assets/DriverDashPhotos/06_mechanic_accepted.png" width="240" alt="Mechanic Accepted" /> |
+| **Proximity Radar**<br/>Live distance filtering & service type filters | **Safety SOS Active**<br/>Emergency alert armed with shake detection | **Bid Confirmation**<br/>Mechanic profile preview, Accept/Decline action |
+
+| 07. Live Radar & En-Route Map | 08. Handshake OTP Generated | 09. Verification Code Revealed |
+|:---:|:---:|:---:|
+| <img src="assets/DriverDashPhotos/07_mechanic_enroute_map.png" width="240" alt="Live Tracking Map" /> | <img src="assets/DriverDashPhotos/08_otp_generated.png" width="240" alt="OTP Generated" /> | <img src="assets/DriverDashPhotos/09_otp_verification_view.png" width="240" alt="OTP Revealed" /> |
+| **Turn-by-Turn GPS**<br/>Live Google Maps tracking & ResQ AI Assistant | **Job Security Code**<br/>Protected 6-digit code issued to driver | **Locked Travel Breakdown**<br/>Transparent base fee + per-km calculation |
+
+| 10. Navigation & Safety Drawer | 11. Driver Profile & History |
+|:---:|:---:|
+| <img src="assets/DriverDashPhotos/10_driver_sidebar.png" width="240" alt="Driver Drawer" /> | <img src="assets/DriverDashPhotos/11_driver_profile.png" width="240" alt="Driver Profile" /> |
+| **Quick Access**<br/>Safety SOS, history, notifications & settings | **Driver Metrics**<br/>Total requests, completed rescues & verified status |
+
+---
+
+### 2. Mechanic Dispatch & Operations
+
+The mechanic app functions as an all-in-one mobile workshop tool: accepting nearby calls, routing to the customer, itemizing labor and replacement parts, collecting cash, and clearing platform commission.
+
+| 01. Incoming Emergency Radar | 02. Request Review & Acceptance | 03. Awaiting Driver Approval |
+|:---:|:---:|:---:|
+| <img src="assets/MechanicDashPhotos/01_all_requests_feed.png" width="240" alt="All Requests Feed" /> | <img src="assets/MechanicDashPhotos/02_request_details_modal.png" width="240" alt="Request Triage" /> | <img src="assets/MechanicDashPhotos/03_accepted_awaiting_approval.png" width="240" alt="Awaiting Driver" /> |
+| **Live Broadcast Queue**<br/>Requests within 20 km auto-streamed in real-time | **Transparent Fee Preview**<br/>Base travel fee, distance & customer description | **Mutual Handshake**<br/>Driver verifies mechanic profile before lock-in |
+
+| 04. Active Job Control Center | 05. Enter Verification OTP | 06. Job Summary & Labor Logging |
+|:---:|:---:|:---:|
+| <img src="assets/MechanicDashPhotos/04_active_job_dashboard.png" width="240" alt="Active Job Dashboard" /> | <img src="assets/MechanicDashPhotos/05_enter_otp_modal.png" width="240" alt="Enter 6-Digit OTP" /> | <img src="assets/MechanicDashPhotos/06_job_summary_services.png" width="240" alt="Services Logging" /> |
+| **Field Operations**<br/>Call driver, open in-app chat, or launch Maps | **Cryptographic Verification**<br/>Driver provides code only upon on-site arrival | **Itemized Work Ledger**<br/>Select services performed & add replaced parts |
+
+| 07. Cost Breakdown & Cash Receipt | 08. Customer Rating & Tags | 09. Job Completion & Invoicing |
+|:---:|:---:|:---:|
+| <img src="assets/MechanicDashPhotos/07_cost_breakdown_cash.png" width="240" alt="Cost Breakdown" /> | <img src="assets/MechanicDashPhotos/08_rate_customer.png" width="240" alt="Rate Driver" /> | <img src="assets/MechanicDashPhotos/09_job_completed_success.png" width="240" alt="Job Completed Celebration" /> |
+| **Transparent Billing**<br/>Travel cost + parts + labor charges audited | **Two-Way Feedback**<br/>Rate driver courtesy, cooperation, and punctuality | **Download & Share**<br/>Official PDF invoice generated with one-tap sharing |
+
+| 10. Service History & Analytics | 11. Profile & Cumulative Earnings | 12. KYC Trust Badges & Status |
+|:---:|:---:|:---:|
+| <img src="assets/MechanicDashPhotos/10_job_history.png" width="240" alt="Job History" /> | <img src="assets/MechanicDashPhotos/11_mechanic_profile.png" width="240" alt="Mechanic Profile" /> | <img src="assets/MechanicDashPhotos/12_trust_and_platform_dues.png" width="240" alt="Verification Badges" /> |
+| **Historical Ledger**<br/>All past rescues, cancellations, earnings, and kms | **Reputation Score**<br/>Live star ratings, gross payouts & verified badge | **KYC Status Check**<br/>Aadhaar, PAN, Trade License & Bank verification |
+
+| 13. Platform Dues Ledger | 14. Razorpay Secure Checkout | 15. Empty Standby Radar |
+|:---:|:---:|:---:|
+| <img src="assets/MechanicDashPhotos/13_razorpay_dues_ledger.png" width="240" alt="Platform Dues" /> | <img src="assets/MechanicDashPhotos/14_razorpay_processing.png" width="240" alt="Razorpay Processing" /> | <img src="assets/MechanicDashPhotos/15_empty_requests.png" width="240" alt="No Requests Standby" /> |
+| **Transparent Commission**<br/>Unpaid invoices calculated solely from labor cuts | **Instant UPI / Card Payment**<br/>In-app Razorpay SDK clears dues in seconds | **Radar Standby Mode**<br/>Auto-refreshes when new breakdowns occur |
+
+---
+
+### 3. Central Command Admin Web Portal
+
+A dedicated administrative workstation (`/admin`) optimized for web browsers and tablets to manage the driver and mechanic verification pipeline.
+
+<div align="center">
+  <img src="assets/adminPhotos/admin_dashboard.png" alt="DriveResQ Admin Web Dashboard" width="95%" style="border-radius: 12px; border: 1px solid #e0e0e0; box-shadow: 0 10px 30px rgba(0,0,0,0.08);" />
+</div>
+
+<br/>
+
+#### 🛡️ Admin Portal Capabilities:
+- **Comprehensive Verification Queue:** Tabbed workflows for reviewing submitted Aadhaar identity cards, PAN records, trade workshop licenses, and banking details.
+- **Real-Time Key Metrics:** High-level dashboard counters tracking **Total Mechanics**, **Total Drivers**, **Pending Applications**, and **Approved Today**.
+- **Audit Trails & Rejections:** Provide specific rejection reasons allowing mechanics to resubmit deficient documents without being permanently banned.
+- **Safety Enforcement:** Ability to immediately suspend bad actors or accounts failing compliance audits.
+
+---
+
+## ⚙️ Core Functional Architecture
+
+DriveResQ is engineered with **GetX MVC + Services Architecture**, decoupling UI rendering from state and reactive data streams.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Driver as 🚗 Stranded Driver
+    participant App as 📱 DriveResQ App
+    participant Cloud as ☁️ Firebase Firestore
+    participant Func as ⚡ Cloud Functions
+    actor Mech as 🔧 Mobile Mechanic
+    participant Razorpay as 💳 Razorpay Gateway
+
+    Driver->>App: Submits Emergency Request (Problem, Location, Vehicle)
+    App->>Cloud: Writes to /requests/{id} (status: open)
+    Cloud->>Func: Firestore Trigger (onCreate)
+    Func->>Mech: High-Priority FCM Push Notification (20km radius)
+    Mech->>App: Reviews & Taps "Accept Request"
+    App->>Cloud: Updates request (status: accepted, mechanicId)
+    Driver->>App: Reviews Mechanic & Approves Handshake
+    App->>Cloud: Generates 6-Digit OTP (status: in_progress)
+    Mech->>App: Navigates via Google Maps Polylines to Vehicle
+    Note over Driver,Mech: On-Site Arrival & Physical Inspection
+    Driver->>Mech: Shares 6-Digit OTP verbally
+    Mech->>App: Enters OTP to unlock Job Completion
+    Mech->>App: Itemizes Labor Charges + Replaced Parts
+    App->>Cloud: Marks job completed, writes /completedJobs
+    Driver->>Mech: Hands over Cash / Direct UPI Settlement
+    Func->>Cloud: Calculates 10% platform commission on labor
+    Cloud->>Mech: Flags /platformDues invoice
+    Mech->>Razorpay: Initiates Razorpay Checkout to clear commission
+    Razorpay->>Func: Server-Side HMAC Signature Verification
+    Func->>Cloud: Clears dues & unlocks Mechanic account
+```
+
+---
+
+## 💳 Monetization, Fair Pricing & Razorpay Integration
+
+DriveResQ introduces a transparent, dispute-free billing model designed to protect drivers from price gouging while rewarding technicians for urgent travel.
+
+### 1. The Transparent Fare Formula
+$$\text{Total Invoice} = \underbrace{\text{Base Travel Fee} + (\text{Distance (km)} \times \text{Rate/km})}_{\text{Locked Upfront Travel Fee}} + \text{Spare Parts} + \text{Labor Charges}$$
+
+- **Travel Fee is Locked:** Calculated from driver-to-mechanic GPS distance before departure. No arrival surprises.
+- **100% Retained by Mechanic:** Fuel compensation and spare parts reimbursement are never taxed by the platform.
+- **10% Fair Commission on Labor Only:** Platform commission applies **strictly** to labor charges collected in cash.
+
+### 2. Built-in Razorpay Escrow & Dues Flow
+When a mechanic collects cash on-site, a corresponding platform due invoice is generated:
+1. **Dues Ledger:** Unpaid platform fees are logged in `/platformDues/{dueId}`.
+2. **Account Pausing:** If dues exceed threshold, the mechanic's account is temporarily paused from taking new calls.
+3. **In-App Razorpay Checkout:** The mechanic taps **"Pay ₹50.00 with Razorpay"** to clear the invoice instantly using UPI, Debit/Credit Card, or NetBanking.
+4. **Server-Side Validation:** Cloud Function `verifyDuesPayment` validates the cryptographic HMAC-SHA256 signature and Razorpay Order ID before clearing the mechanic's account.
+
+---
+
+## 🛡️ Trust & Security Protocol
+
+- **Cryptographic 6-Digit Verification Code:** Drivers hold an encrypted 6-digit OTP visible only on their device. Technicians must physically obtain this code to unlock the invoice screen.
+- **6-Step KYC Verification Gate:** Mechanics must submit government-issued Aadhaar ID, workshop trade certification, and verified phone number before receiving active dispatches.
+- **Shake-to-SOS Emergency Protocol:** Built-in accelerometer listener lets drivers shake their device to trigger emergency safety alerts with live location sharing.
+- **Granular Security Rules:** Strict Firestore document rules ensure drivers can only mutate their own requests, mechanics cannot alter ratings, and only authenticated admins can inspect documents.
+
+---
+
+## 📁 Repository & Directory Layout
 
 ```text
 DriveResQ-App/
-├── .env.example                     # Environment secrets template
-├── android/                         # Android native configurations & manifests
-├── ios/                             # iOS Xcode workspace and plist configs
-├── web/                             # Web support assets for Admin Portal
+├── android/                         # Android native manifests, UPI intents & ProGuard
+├── ios/                             # iOS workspace & Info.plist UPI scheme configurations
+├── web/                             # Web support & Razorpay checkout integration
 ├── assets/
-│   ├── icon/                        # App launcher icons
-│   ├── logo.png                     # Official DriveResQ brand logo
-│   └── screenshots/                 # Application screenshots & hero banners
-│       ├── hero_banner.jpg
-│       └── ...
-├── functions/                       # Firebase Cloud Functions (Node.js)
-│   ├── package.json
-│   └── index.js                     # FCM automated notification dispatch trigger
-├── firestore.rules                  # Firestore document security rules
-├── storage.rules                    # Firebase Storage security rules
-├── pubspec.yaml                     # Project manifest and package dependencies
+│   ├── DriverDashPhotos/            # Driver flow screenshots & hero banners
+│   ├── MechanicDashPhotos/          # Mechanic workflow & Razorpay ledger screenshots
+│   ├── adminPhotos/                 # Admin web dashboard screenshots
+│   ├── icon/                        # High-res app launcher icons
+│   └── logo.png                     # Official DriveResQ emblem
+├── functions/                       # Firebase Serverless Cloud Functions (Node.js 22)
+│   ├── index.js                     # Push notification engine & Razorpay HMAC verifier
+│   └── package.json
+├── firestore.rules                  # Production Firestore document security rules
+├── storage.rules                    # Cloud Storage bucket upload access rules
+├── pubspec.yaml                     # Dependencies (GetX, Google Maps, Razorpay, etc.)
 └── lib/
-    ├── main.dart                    # Application bootstrap & background FCM handler
+    ├── main.dart                    # App initialization & FCM foreground/background setup
     ├── firebase_options.dart        # Platform-specific Firebase credentials
-    ├── admin/                       # Admin Web & Tablet Portal
-    │   ├── controllers/             # Admin dashboard, auth & verification controllers
-    │   ├── views/                   # Dashboard, document review, pending lists
-    │   └── widgets/                 # Sidebar navigation, stat cards, applicant modals
+    ├── admin/                       # Web & Tablet Admin Management Portal
+    │   ├── controllers/             # Verification & metric aggregation controllers
+    │   ├── views/                   # Dashboard, document inspections, applicant tables
+    │   └── widgets/                 # Stat cards, verification modals, sidebar
     ├── app/
-    │   └── routes/                  # Named routes (AppPages & AppRoutes)
+    │   └── routes/                  # GetX routing table (AppPages & AppRoutes)
     ├── data/
-    │   └── models/                  # UserModel, RequestModel, Chat models
+    │   └── models/                  # UserModel, RequestModel, DueModel, ChatModel
     ├── modules/
-    │   ├── auth/                    # Splash, Onboarding, Role Selection, Phone OTP
-    │   ├── driver/                  # Driver Dashboard, Find Mechanics, Emergency Dispatch
-    │   ├── mechanic/                # 6-Step Onboarding, Request Queue, Navigation
-    │   ├── chat/                    # Real-time messages, audio recorder, quote cards
-    │   ├── jobs/                    # 6-digit OTP completion, digital invoice, rating
-    │   ├── notifications/           # FCM service, local notification channels
-    │   ├── settings/                # Profile editing, theme toggles, app settings
-    │   └── tracking/                # Google Maps live tracking controller & views
-    ├── shared/                      # Global widgets, error handlers, rating dialogs
-    ├── theme/                       # AppColors, typography, themes (Light & Dark)
-    └── utils/                       # Helpers, dialogs, formatters, DevRole switcher
+    │   ├── auth/                    # Phone OTP authentication, role selection & splash
+    │   ├── driver/                  # Driver home, request creation, mechanics radar
+    │   ├── mechanic/                # Requests feed, operations console, 6-step onboarding
+    │   ├── dues/                    # Platform dues ledger, Razorpay checkout & sync
+    │   ├── chat/                    # Real-time chat, walkie-talkie audio & quote cards
+    │   ├── jobs/                    # 6-digit OTP verification, job summary, PDF billing
+    │   ├── notifications/           # Push notifications & high-priority audio channels
+    │   └── tracking/                # Google Maps real-time polyline tracking
+    ├── shared/                      # Reusable Material 3 widgets, buttons & dialogs
+    ├── theme/                       # Modern typography & vibrant palette
+    └── utils/                       # Helpers, DevRole switcher, formatters
 ```
 
 ---
 
-## 🗄️ Database Schema & Collections
+## 🚀 Quickstart & Setup Guide
 
-DriveResQ relies on a structured, relational-like Firestore database designed for high read speeds and real-time subscription streams:
-
-### 1. `users` Collection
-Stores driver, mechanic, and admin profiles.
-```json
-{
-  "uid": "USER_FIREBASE_UID",
-  "phone": "+919876543210",
-  "role": "driver | mechanic | admin",
-  "fullName": "Dhruv Goel",
-  "profilePhotoUrl": "https://storage.googleapis.com/...",
-  "isActive": true,
-  "fcmToken": "eX_ample_FCM_t0k3n...",
-  "driverOnboardingCompleted": true,
-  "onboardingCompleted": true,
-  "verificationStatus": "pending | approved | rejected",
-  "shopName": "Goel Auto Repairs",
-  "servicesOffered": ["Flat Tire", "Battery Jump", "Engine Diagnostic"],
-  "specializations": ["Hatchback", "SUV", "Electric Vehicles"],
-  "latitude": 28.6139,
-  "longitude": 77.2090,
-  "rating": 4.9,
-  "jobsCompleted": 42,
-  "isOnline": true,
-  "createdAt": "Timestamp",
-  "updatedAt": "Timestamp"
-}
-```
-
-### 2. `requests` Collection
-Captures roadside assistance dispatch lifecycle.
-```json
-{
-  "id": "REQUEST_DOC_ID",
-  "driverId": "DRIVER_UID",
-  "driverName": "Dhruv Goel",
-  "driverPhone": "+919876543210",
-  "driverLat": 28.6139,
-  "driverLng": 77.2090,
-  "locationName": "Connaught Place, New Delhi",
-  "landmark": "Near Block B Metro Exit",
-  "vehicleType": "Car",
-  "problem": "Flat Tire",
-  "description": "Right front tire punctured, need spare installed.",
-  "imageUrl": "https://storage.googleapis.com/...",
-  "status": "open | accepted | in_progress | verified | completed | closed",
-  "mechanicId": "MECHANIC_UID",
-  "mechanicPhone": "+919811223344",
-  "verificationCode": "482910",
-  "createdAt": "Timestamp"
-}
-```
-
-### 3. `completedJobs` Collection
-Records finalized rescues for accounting and PDF receipts.
-```json
-{
-  "jobId": "REQUEST_DOC_ID",
-  "driverId": "DRIVER_UID",
-  "mechanicId": "MECHANIC_UID",
-  "amount": 450.00,
-  "breakdown": {
-    "serviceCharge": 250.00,
-    "partsCost": 150.00,
-    "platformFee": 50.00
-  },
-  "rating": 5.0,
-  "review": "Fast response, reached in 8 minutes and fixed immediately!",
-  "completedAt": "Timestamp"
-}
-```
-
-### 4. `chats` Collection
-Contains conversation rooms keyed by `requestId`.
-- Subcollection `chats/{requestId}/messages/{messageId}`:
-  - `senderId`: String (UID)
-  - `receiverId`: String (UID)
-  - `text`: String
-  - `type`: `"text" | "image" | "audio" | "price_quote"`
-  - `audioUrl`: String (URL to `.m4a` file)
-  - `quoteAmount`: Double (e.g., `450.0`)
-  - `quoteStatus`: `"pending" | "accepted" | "declined"`
-  - `timestamp`: Timestamp
-
-### 5. `notifications` Collection
-Auto-processed by Cloud Functions to trigger push notifications.
-- `recipientId`: Target user UID
-- `title`: e.g., "Mechanic Dispatched"
-- `body`: e.g., "Rajesh Kumar accepted your request and is en route."
-- `processed`: Boolean (set to `true` by Cloud Function)
-- `data`: Payload map (route, requestId)
+### 📋 Prerequisites
+- **Flutter SDK:** `^3.10.1` or higher ([Install Guide](https://docs.flutter.dev/get-started/install))
+- **Dart SDK:** `^3.0.0`
+- **Node.js:** `18.x` or `22.x` (for Cloud Functions)
+- **Firebase CLI:** `npm install -g firebase-tools`
+- **Google Maps API Key:** With Maps SDK (Android/iOS) and Geocoding APIs enabled
+- **Razorpay Account:** Test Key ID & Key Secret
 
 ---
 
-## 🚀 Getting Started & Installation
+### 🛠️ Step-by-Step Installation
 
-### Prerequisites
-Make sure your development machine has:
-- **Flutter SDK**: `^3.10.1` or higher ([Install Guide](https://docs.flutter.dev/get-started/install))
-- **Dart SDK**: `^3.0.0`
-- **Node.js**: `18.x` or `20.x` (for Cloud Functions)
-- **Firebase CLI**: `npm install -g firebase-tools`
-- **Android Studio** (with Android SDK & Build Tools) or **Xcode** (for macOS/iOS)
-- **Google Maps API Key** with Android, iOS, and Geocoding APIs enabled
-
----
-
-### Step-by-Step Setup
-
-#### 1. Clone the Repository
+#### 1. Clone the Codebase
 ```bash
 git clone https://github.com/dhruvgoel3/DriveResQ-App.git
 cd DriveResQ-App
 ```
 
-#### 2. Install Flutter Dependencies
+#### 2. Install Flutter Packages
 ```bash
 flutter pub get
 ```
 
-#### 3. Setup Secrets & Environment Variables
-Copy `.env.example` to `.env`:
-```bash
-cp .env.example .env
-```
-Fill in the credentials as outlined in the [Configuration](#-configuration--environment-secrets) section below.
-
-#### 4. Configure Android Maps Key
-Open or create `android/app/local.properties` and append:
+#### 3. Configure Google Maps
+Add your Google Maps API Key to `android/app/local.properties`:
 ```properties
-MAPS_API_KEY=your_actual_google_maps_api_key_here
+MAPS_API_KEY=your_google_maps_api_key_here
+```
+For iOS, add the key inside `ios/Runner/AppDelegate.swift`.
+
+#### 4. Configure Razorpay & Firebase Cloud Functions
+Inside `functions/.env`:
+```env
+RAZORPAY_KEY_ID=rzp_test_YourKeyHere
+RAZORPAY_KEY_SECRET=YourSecretHere
+```
+Deploy the functions to Firebase:
+```bash
+cd functions
+npm install
+firebase deploy --only functions
+cd ..
 ```
 
-#### 5. Verify & Run
+#### 5. Launch the Application
 ```bash
-# Verify Flutter setup
-flutter doctor
-
-# Run on connected device or emulator
+# Run on connected device or simulator
 flutter run
 ```
 
----
-
-## 🔐 Configuration & Environment Secrets
-
-For security reasons, API keys, Firebase service files, and credentials are **not** committed to version control.
-
-### 1. Firebase Configuration
-1. Create a project at [Firebase Console](https://console.firebase.google.com/) named `driveresq-app`.
-2. Enable **Authentication** (select **Phone Auth**).
-3. Enable **Cloud Firestore** and **Firebase Storage**.
-4. Download platform config files:
-   - **Android**: Place `google-services.json` into `android/app/`
-   - **iOS**: Place `GoogleService-Info.plist` into `ios/Runner/`
-5. Enable **Firebase Cloud Messaging (FCM)** in Project Settings → Cloud Messaging.
-
-### 2. Google Maps API Setup
-1. Go to [Google Cloud Console](https://console.cloud.google.com/).
-2. Enable the following APIs:
-   - **Maps SDK for Android**
-   - **Maps SDK for iOS**
-   - **Geocoding API**
-   - **Directions API**
-3. Generate an API Key and restrict it as needed.
-4. Add to `android/app/local.properties`:
-   ```properties
-   MAPS_API_KEY=AIzaSy...
-   ```
-5. For iOS, ensure the key is initialized in `ios/Runner/AppDelegate.swift`:
-   ```swift
-   GMSServices.provideAPIKey("YOUR_IOS_MAPS_KEY")
-   ```
-
-### 3. Environment Variables (`.env`)
-Populate your root `.env` file:
-```env
-FIREBASE_WEB_API_KEY=AIzaSy...
-FIREBASE_ANDROID_API_KEY=AIzaSy...
-FIREBASE_IOS_API_KEY=AIzaSy...
-FIREBASE_WINDOWS_API_KEY=AIzaSy...
-```
+> **Tip for Pair-Testing:** DriveResQ includes a built-in Developer Role Switcher in `lib/utils/role_change/dev_config.dart`. When `devMode = true`, you can toggle between Driver and Mechanic modes on a single device without re-logging.
 
 ---
 
-## ⚡ Cloud Functions & Push Notifications
+## 🗺️ Product Roadmap
 
-DriveResQ includes an automated serverless push notification worker in `functions/index.js`.
-
-### Deploying the Cloud Function
-```bash
-# 1. Login to Firebase CLI
-firebase login
-
-# 2. Select your project
-firebase use --add
-
-# 3. Install function dependencies
-cd functions
-npm install
-cd ..
-
-# 4. Deploy functions to Firebase
-firebase deploy --only functions
-```
-
-### High-Priority Notification Channel
-Android notification channel `driveresq_high_priority` is configured for heads-up banners, max volume rings, and custom vibration patterns so emergency dispatch notifications are never missed.
+- [x] **Real-time Geo-Dispatch & Navigation** (Live Google Maps Polylines)
+- [x] **Double-Blind 6-Digit OTP Handshake**
+- [x] **Full-Featured Admin Verification Web Portal**
+- [x] **Razorpay Automated Platform Dues Settlement**
+- [ ] **AI-Powered Audio Damage Diagnostics** (Predict mechanical failure from sound waveforms)
+- [ ] **Multi-Lingual Voice Navigation** (Regional Indian languages support for mechanics)
+- [ ] **Highway Patrol & National SOS Integration** (Direct dispatch to 112 emergency services)
 
 ---
 
-## 🔒 Security & Access Rules
+## 👥 Contributing & License
 
-Security rules prevent unauthorized reads/writes and enforce identity verification:
+Contributions are welcome! Please follow these steps:
+1. **Fork** the repository.
+2. Create a feature branch (`git checkout -b feat/SmartBatteryDiagnostic`).
+3. Commit your changes (`git commit -m 'feat: Add battery voltage checker'`).
+4. Push to branch (`git push origin feat/SmartBatteryDiagnostic`).
+5. Open a **Pull Request**.
 
-1. **Firestore Rules**:
-   - Apply the rules from [`FIREBASE_RULES.md`](./FIREBASE_RULES.md) or [`firestore.rules`](./firestore.rules) via Firebase Console.
-   - Ensures drivers can only edit their own help requests.
-   - Restricts chat creation to participants of that active rescue.
-   - Prevents unverified mechanics from accepting jobs.
-2. **Storage Rules**:
-   - Located in [`storage.rules`](./storage.rules).
-   - Only authenticated mechanics can upload identity verification certificates.
-
----
-
-## 🛠️ Developer Mode & Testing
-
-DriveResQ contains a built-in role switcher for rapid local pair-testing:
-
-```dart
-// lib/utils/role_change/dev_config.dart
-class DevConfig {
-  // ⚠️ Set to false before releasing production builds
-  static const bool devMode = true;
-}
-```
-
-When `devMode` is `true`:
-- A role icon appears in the Driver and Mechanic app bars.
-- Tapping allows you to instantly switch the active session between **Driver** and **Mechanic** on the same device without re-authenticating.
-
----
-
-## ❓ Troubleshooting & FAQs
-
-<details>
-<summary><strong>Q: Google Maps shows a blank grid on Android.</strong></summary>
-
-- Verify `MAPS_API_KEY` is present in `android/app/local.properties`.
-- Ensure **Maps SDK for Android** is enabled in Google Cloud Console.
-- Confirm SHA-1 fingerprint of your debug keystore is added to Google Cloud Console credentials.
-</details>
-
-<details>
-<summary><strong>Q: Firestore throws "Permission Denied" in Chat or Job Completion.</strong></summary>
-
-- Deploy the comprehensive rules in [`FIREBASE_RULES.md`](./FIREBASE_RULES.md).
-- Ensure your mechanic user has `verificationStatus: 'approved'`.
-</details>
-
-<details>
-<summary><strong>Q: Push notifications are not received when app is killed.</strong></summary>
-
-- Confirm Cloud Functions are deployed (`firebase functions:list`).
-- Verify device has registered an `fcmToken` in its `users` Firestore document.
-- On Android, ensure Battery Optimization is not aggressively sleeping the app.
-</details>
-
----
-
-## 🗺️ Roadmap
-
-- [ ] **Payment Gateway Integration**: Direct UPI / Stripe / Razorpay in-app digital escrow payments.
-- [ ] **SOS Emergency Mode**: Automated SMS broadcast with GPS coordinates to emergency family contacts and highway patrol.
-- [ ] **AI Damage Assessment**: Camera-based AI scan to predict vehicle diagnostic codes and spare part costs.
-- [ ] **Fleet & Corporate Accounts**: B2B dashboard for logistics companies and rental vehicle fleets.
-
----
-
-## 🤝 Contributing
-
-Contributions are warmly welcomed! Please follow these steps:
-
-1. Fork the Project.
-2. Create your Feature Branch (`git checkout -b feature/AmazingRescueFeature`).
-3. Commit your Changes (`git commit -m 'feat: Add instant battery jump diagnostic'`).
-4. Push to the Branch (`git push origin feature/AmazingRescueFeature`).
-5. Open a Pull Request.
-
----
-
-## 📄 License
-
-Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more information.
+Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 
 ---
 
 <div align="center">
-  <sub>Built with ❤️ by Dhruv Goel & the DriveResQ Team</sub>
+  <sub>Built with ❤️ by Dhruv Goel & the DriveResQ Engineering Team</sub>
 </div>
