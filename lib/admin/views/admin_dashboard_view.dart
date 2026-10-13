@@ -125,16 +125,22 @@ class AdminDashboardView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Row(
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 10,
                     children: [
                       ElevatedButton.icon(
                         onPressed: () => Get.offAllNamed('/admin/pending'),
                         icon: const Icon(Iconsax.user_tick, size: 18),
-                        label: Text(
-                          'Mechanic Applications',
-                          style: GoogleFonts.poppins(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
+                        label: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Mechanic Applications',
+                            maxLines: 1,
+                            style: GoogleFonts.poppins(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
@@ -142,23 +148,26 @@ class AdminDashboardView extends StatelessWidget {
                           foregroundColor: Colors.white,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 14,
+                            horizontal: 16,
+                            vertical: 12,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
                       ElevatedButton.icon(
                         onPressed: () => Get.offAllNamed('/admin/drivers-pending'),
                         icon: const Icon(Iconsax.driver, size: 18),
-                        label: Text(
-                          'Driver Applications',
-                          style: GoogleFonts.poppins(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
+                        label: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Driver Applications',
+                            maxLines: 1,
+                            style: GoogleFonts.poppins(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
@@ -166,31 +175,34 @@ class AdminDashboardView extends StatelessWidget {
                           foregroundColor: Colors.white,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 14,
+                            horizontal: 16,
+                            vertical: 12,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
                       OutlinedButton.icon(
                         onPressed: () => c.fetchStats(),
                         icon: const Icon(Iconsax.refresh, size: 18),
-                        label: Text(
-                          'Refresh Stats',
-                          style: GoogleFonts.poppins(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
+                        label: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Refresh Stats',
+                            maxLines: 1,
+                            style: GoogleFonts.poppins(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.grey.shade700,
                           side: BorderSide(color: Colors.grey.shade300),
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 14,
+                            horizontal: 16,
+                            vertical: 12,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),

@@ -564,9 +564,13 @@ class ActiveRequestDetailsPage extends StatelessWidget {
               child: OutlinedButton.icon(
                 onPressed: () => _showCancelDialog(controller),
                 icon: Icon(Iconsax.close_square, size: 20.w),
-                label: Text(
-                  "Cancel Offer",
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                label: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    "Cancel Offer",
+                    maxLines: 1,
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                  ),
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.red,
@@ -574,7 +578,7 @@ class ActiveRequestDetailsPage extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14.r),
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 8.w),
                 ),
               ),
             ),

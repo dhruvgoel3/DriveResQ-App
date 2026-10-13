@@ -296,11 +296,15 @@ class JobReceiptView extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16.r),
                       ),
                     ),
-                    child: Text(
-                      "Review Mechanic",
-                      style: GoogleFonts.poppins(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        "Review Mechanic",
+                        maxLines: 1,
+                        style: GoogleFonts.poppins(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),

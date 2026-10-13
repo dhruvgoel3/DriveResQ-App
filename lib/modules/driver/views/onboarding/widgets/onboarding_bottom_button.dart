@@ -51,12 +51,16 @@ class OnboardingBottomButton extends StatelessWidget {
                       strokeWidth: 2,
                     ),
                   )
-                : Text(
-                    controller.currentStep.value == 1
-                        ? 'Complete Setup'
-                        : 'Continue',
-                    style: AppTextStyles.button.copyWith(
-                      color: AppColors.surface,
+                : FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      controller.currentStep.value == 1
+                          ? 'Complete Setup'
+                          : 'Continue',
+                      maxLines: 1,
+                      style: AppTextStyles.button.copyWith(
+                        color: AppColors.surface,
+                      ),
                     ),
                   ),
           ),

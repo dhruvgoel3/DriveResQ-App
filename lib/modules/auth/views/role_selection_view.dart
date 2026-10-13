@@ -115,11 +115,15 @@ class RoleSelectionView extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(16.r),
                               ),
                             ),
-                            child: Text(
-                              "Continue",
-                              style: GoogleFonts.poppins(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                "Continue",
+                                maxLines: 1,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),

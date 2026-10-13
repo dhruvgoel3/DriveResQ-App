@@ -504,13 +504,18 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
                           style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.grey.shade700,
                             side: BorderSide(color: Colors.grey.shade300),
+                            padding: EdgeInsets.symmetric(horizontal: 8.w),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14.r),
                             ),
                           ),
-                          child: Text(
-                            "Cancel",
-                            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              "Cancel",
+                              maxLines: 1,
+                              style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                            ),
                           ),
                         ),
                       ),
@@ -531,13 +536,18 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
                             backgroundColor: const Color(0xFF6C63FF),
                             foregroundColor: Colors.white,
                             elevation: 0,
+                            padding: EdgeInsets.symmetric(horizontal: 8.w),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14.r),
                             ),
                           ),
-                          child: Text(
-                            "Accept & Lock",
-                            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              "Accept & Lock",
+                              maxLines: 1,
+                              style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                            ),
                           ),
                         ),
                       ),
@@ -613,13 +623,18 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.grey.shade700,
                         side: BorderSide(color: Colors.grey.shade300),
+                        padding: EdgeInsets.symmetric(horizontal: 8.w),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14.r),
                         ),
                       ),
-                      child: Text(
-                        "Keep Job",
-                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          "Keep Job",
+                          maxLines: 1,
+                          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ),
                   ),
@@ -637,13 +652,18 @@ class _CurrentRequestViewState extends State<CurrentRequestView> {
                         backgroundColor: Colors.red,
                         foregroundColor: Colors.white,
                         elevation: 0,
+                        padding: EdgeInsets.symmetric(horizontal: 8.w),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14.r),
                         ),
                       ),
-                      child: Text(
-                        "Yes, Cancel",
-                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          "Yes, Cancel",
+                          maxLines: 1,
+                          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ),
                   ),

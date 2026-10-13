@@ -618,18 +618,22 @@ class _ShakeSettingsCard extends StatelessWidget {
             child: OutlinedButton.icon(
               onPressed: () => controller.triggerManualSos(),
               icon: const Icon(Iconsax.radar_2, size: 16),
-              label: Text(
-                'Test 5-Second Countdown & Cancel Flow',
-                style: GoogleFonts.inter(
-                  fontSize: 12.5.sp,
-                  fontWeight: FontWeight.w600,
+              label: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  'Test 5-Second Countdown & Cancel Flow',
+                  maxLines: 1,
+                  style: GoogleFonts.inter(
+                    fontSize: 12.5.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.primary,
                 side: BorderSide(color: AppColors.primary.withValues(alpha: 0.5)),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
-                padding: EdgeInsets.symmetric(vertical: 10.h),
+                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
               ),
             ),
           ),

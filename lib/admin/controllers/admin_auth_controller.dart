@@ -24,6 +24,8 @@ class AdminAuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    emailController.text = 'admindhruv@driverdash.com';
+    passwordController.text = 'admin@123';
     _checkFirstSetup();
     _checkExistingSession();
   }

@@ -1,0 +1,15 @@
+android
+ios
+macos
+windows
+linux
+.dart_tool
+.git
+functions
+build/app
+build/ios
+build/macos
+build/flutter_assets
+*.apk
+*.aab
+node_modules

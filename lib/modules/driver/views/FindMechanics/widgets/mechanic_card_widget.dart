@@ -311,11 +311,14 @@ class MechanicCardWidget extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: () => _callMechanic(mechanic['phone'] ?? ''),
                   icon: const Icon(Iconsax.call, size: 18),
-                  label: const Text("Call"),
+                  label: const FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text("Call", maxLines: 1),
+                  ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: _accent,
                     side: const BorderSide(color: _accent),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -335,13 +338,16 @@ class MechanicCardWidget extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _accent,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                     elevation: 0,
                   ),
-                  child: const Text("View Profile"),
+                  child: const FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text("View Profile", maxLines: 1),
+                  ),
                 ),
               ),
             ],

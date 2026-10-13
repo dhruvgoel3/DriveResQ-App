@@ -318,15 +318,21 @@ class DuesPayView extends StatelessWidget {
                 children: [
                   Icon(Iconsax.card_tick, size: 20.w),
                   SizedBox(width: 8.w),
-                  Text(
-                    hasDues
-                        ? 'Pay ₹${outstanding.toStringAsFixed(2)} with Razorpay'
-                        : 'No Dues Pending',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.2,
-                      color: Colors.white,
+                  Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        hasDues
+                            ? 'Pay ₹${outstanding.toStringAsFixed(2)} with Razorpay'
+                            : 'No Dues Pending',
+                        maxLines: 1,
+                        style: GoogleFonts.poppins(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.2,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ],

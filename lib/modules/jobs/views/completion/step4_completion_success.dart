@@ -180,11 +180,15 @@ class CompletionSuccessView extends StatelessWidget {
             child: OutlinedButton.icon(
               onPressed: () => _shareInvoice(c),
               icon: Icon(Iconsax.share, size: 20.w),
-              label: Text(
-                'Share Invoice',
-                style: AppTextStyles.body1.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.success,
+              label: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  'Share Invoice',
+                  maxLines: 1,
+                  style: AppTextStyles.body1.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.success,
+                  ),
                 ),
               ),
               style: OutlinedButton.styleFrom(
@@ -214,11 +218,15 @@ class CompletionSuccessView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14.r),
                 ),
               ),
-              child: Text(
-                'Go to Dashboard',
-                style: AppTextStyles.body1.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.surface,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  'Go to Dashboard',
+                  maxLines: 1,
+                  style: AppTextStyles.body1.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.surface,
+                  ),
                 ),
               ),
             ),

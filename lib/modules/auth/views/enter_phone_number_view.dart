@@ -308,11 +308,15 @@ class _PhoneNumberViewState extends State<PhoneNumberView> {
                                       ),
                                     ],
                                   )
-                                : Text(
-                                    "Send OTP",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
+                                : FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      "Send OTP",
+                                      maxLines: 1,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
                                   ),
                           ),

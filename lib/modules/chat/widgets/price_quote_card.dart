@@ -242,17 +242,21 @@ class PriceQuoteCard extends StatelessWidget {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.r),
                               ),
-                              padding: EdgeInsets.symmetric(vertical: 10.h),
+                              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 4.w),
                             ),
-                            child: Text(
-                              'Reject',
-                              style: AppTextStyles.caption.copyWith(
-                                fontWeight: FontWeight.w600,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                'Reject',
+                                maxLines: 1,
+                                style: AppTextStyles.caption.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                        SizedBox(width: 8.w),
+                        SizedBox(width: 6.w),
                         Expanded(
                           child: OutlinedButton(
                             onPressed: () => _showNegotiateDialog(cost),
@@ -262,17 +266,21 @@ class PriceQuoteCard extends StatelessWidget {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.r),
                               ),
-                              padding: EdgeInsets.symmetric(vertical: 10.h),
+                              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 4.w),
                             ),
-                            child: Text(
-                              'Negotiate',
-                              style: AppTextStyles.caption.copyWith(
-                                fontWeight: FontWeight.w600,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                'Negotiate',
+                                maxLines: 1,
+                                style: AppTextStyles.caption.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                        SizedBox(width: 8.w),
+                        SizedBox(width: 6.w),
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () => controller.respondToQuote(
@@ -286,12 +294,16 @@ class PriceQuoteCard extends StatelessWidget {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.r),
                               ),
-                              padding: EdgeInsets.symmetric(vertical: 10.h),
+                              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 4.w),
                             ),
-                            child: Text(
-                              'Accept',
-                              style: AppTextStyles.caption.copyWith(
-                                fontWeight: FontWeight.w600,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                'Accept',
+                                maxLines: 1,
+                                style: AppTextStyles.caption.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),

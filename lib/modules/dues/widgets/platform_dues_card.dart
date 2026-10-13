@@ -131,18 +131,22 @@ class PlatformDuesCard extends StatelessWidget {
                       foregroundColor: Colors.white,
                       elevation: 0,
                       padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
+                        horizontal: 12.w,
                         vertical: 10.h,
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                     ),
-                    child: Text(
-                      isSuspended ? 'Pay Dues' : 'View Ledger',
-                      style: GoogleFonts.poppins(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w600,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        isSuspended ? 'Pay Dues' : 'View Ledger',
+                        maxLines: 1,
+                        style: GoogleFonts.poppins(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),

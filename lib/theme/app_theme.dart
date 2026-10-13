@@ -53,10 +53,11 @@ class AppTheme {
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          minimumSize: const Size(64, 44),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumAll),
           textStyle: GoogleFonts.poppins(
-            fontSize: 16,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -66,10 +67,11 @@ class AppTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.primary,
           side: const BorderSide(color: AppColors.primary),
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          minimumSize: const Size(64, 44),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumAll),
           textStyle: GoogleFonts.poppins(
-            fontSize: 16,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -78,6 +80,8 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.primary,
+          minimumSize: const Size(48, 40),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           textStyle: GoogleFonts.poppins(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -237,10 +241,25 @@ class AppTheme {
           backgroundColor: AppColors.darkPrimary,
           foregroundColor: AppColors.darkBackground,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          minimumSize: const Size(64, 44),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumAll),
           textStyle: GoogleFonts.poppins(
-            fontSize: 16,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.darkPrimary,
+          side: const BorderSide(color: AppColors.darkPrimary),
+          minimumSize: const Size(64, 44),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumAll),
+          textStyle: GoogleFonts.poppins(
+            fontSize: 15,
             fontWeight: FontWeight.w600,
           ),
         ),

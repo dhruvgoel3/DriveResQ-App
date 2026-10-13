@@ -177,14 +177,18 @@ class RatingView extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.textSecondary,
                     side: const BorderSide(color: AppColors.border),
-                    padding: EdgeInsets.symmetric(vertical: 16.h),
+                    padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 8.w),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14.r),
                     ),
                   ),
-                  child: Text(
-                    'Back',
-                    style: AppTextStyles.body2.copyWith(fontWeight: FontWeight.w600),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      'Back',
+                      maxLines: 1,
+                      style: AppTextStyles.body2.copyWith(fontWeight: FontWeight.w600),
+                    ),
                   ),
                 ),
               ),
@@ -200,7 +204,7 @@ class RatingView extends StatelessWidget {
                       backgroundColor: AppColors.success,
                       foregroundColor: AppColors.surface,
                       disabledBackgroundColor: AppColors.border,
-                      padding: EdgeInsets.symmetric(vertical: 16.h),
+                      padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 10.w),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14.r),
@@ -215,11 +219,15 @@ class RatingView extends StatelessWidget {
                               strokeWidth: 2,
                             ),
                           )
-                        : Text(
-                            'Submit & Complete',
-                            style: AppTextStyles.body2.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.surface,
+                        : FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              'Submit & Complete',
+                              maxLines: 1,
+                              style: AppTextStyles.body2.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.surface,
+                              ),
                             ),
                           ),
                   ),

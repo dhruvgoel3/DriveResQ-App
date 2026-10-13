@@ -173,14 +173,17 @@ class LiveTrackingView extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: controller.callMechanic,
                     icon: const Icon(Iconsax.call),
-                    label: const Text("Call"),
+                    label: const FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text("Call", maxLines: 1),
+                    ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.primary,
                       side: const BorderSide(color: AppColors.primary),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14.r),
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 14.h),
+                      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
                     ),
                   ),
                 ),
@@ -189,14 +192,17 @@ class LiveTrackingView extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: controller.openNavigation,
                   icon: const Icon(Iconsax.location),
-                  label: const Text("Navigate"),
+                  label: const FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text("Navigate", maxLines: 1),
+                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: AppColors.surface,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14.r),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 14.h),
+                    padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
                   ),
                 ),
               ),

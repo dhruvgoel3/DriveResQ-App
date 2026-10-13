@@ -359,11 +359,15 @@ class _OTPVerificationViewState extends State<OTPVerificationView>
                                       ),
                                     ],
                                   )
-                                : Text(
-                                    "Verify & Continue",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
+                                : FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      "Verify & Continue",
+                                      maxLines: 1,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
                                   ),
                           ),

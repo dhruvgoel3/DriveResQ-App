@@ -110,64 +110,79 @@ class ReviewDecisionTab extends StatelessWidget {
           const SizedBox(height: 32),
 
           // Action Buttons
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Wrap(
+            spacing: 16,
+            runSpacing: 12,
+            alignment: WrapAlignment.center,
             children: [
               // Approve
-              SizedBox(
-                width: 220,
-                height: 54,
-                child: ElevatedButton.icon(
-                  onPressed: () => DecisionDialogs.showApproveDialog(
-                    context,
-                    controller,
-                    uid,
-                    name,
-                  ),
-                  icon: const Icon(Iconsax.tick_circle, size: 22),
-                  label: Text(
-                    'Approve Application',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
+              ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 180, maxWidth: 240),
+                child: SizedBox(
+                  height: 52,
+                  child: ElevatedButton.icon(
+                    onPressed: () => DecisionDialogs.showApproveDialog(
+                      context,
+                      controller,
+                      uid,
+                      name,
                     ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4CAF50),
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                    icon: const Icon(Iconsax.tick_circle, size: 20),
+                    label: const FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        'Approve Application',
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF4CAF50),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 20),
               // Reject
-              SizedBox(
-                width: 220,
-                height: 54,
-                child: ElevatedButton.icon(
-                  onPressed: () => DecisionDialogs.showRejectDialog(
-                    context,
-                    controller,
-                    uid,
-                    name,
-                  ),
-                  icon: const Icon(Iconsax.close_square, size: 22),
-                  label: Text(
-                    'Reject Application',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
+              ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 180, maxWidth: 240),
+                child: SizedBox(
+                  height: 52,
+                  child: ElevatedButton.icon(
+                    onPressed: () => DecisionDialogs.showRejectDialog(
+                      context,
+                      controller,
+                      uid,
+                      name,
                     ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFF44336),
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                    icon: const Icon(Iconsax.close_square, size: 20),
+                    label: const FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        'Reject Application',
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFF44336),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
                     ),
                   ),
                 ),

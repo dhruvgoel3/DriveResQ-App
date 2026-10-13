@@ -541,10 +541,14 @@ class _VerificationCodeState extends State<_VerificationCode> {
                     _isRevealed ? Iconsax.eye_slash : Iconsax.eye,
                     size: 16.w,
                   ),
-                  label: Text(
-                    _isRevealed ? "Hide" : "View Code",
-                    style: AppTextStyles.button.copyWith(
-                      color: AppColors.primary,
+                  label: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      _isRevealed ? "Hide" : "View Code",
+                      maxLines: 1,
+                      style: AppTextStyles.button.copyWith(
+                        color: AppColors.primary,
+                      ),
                     ),
                   ),
                   style: OutlinedButton.styleFrom(
@@ -553,7 +557,7 @@ class _VerificationCodeState extends State<_VerificationCode> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.r),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                    padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 6.w),
                   ),
                 ),
               ),
@@ -563,10 +567,14 @@ class _VerificationCodeState extends State<_VerificationCode> {
                   onPressed: () =>
                       widget.controller.shareVerificationCode(widget.code),
                   icon: Icon(Iconsax.share, size: 16.w),
-                  label: Text(
-                    "Share",
-                    style: AppTextStyles.button.copyWith(
-                      color: AppColors.primary,
+                  label: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      "Share",
+                      maxLines: 1,
+                      style: AppTextStyles.button.copyWith(
+                        color: AppColors.primary,
+                      ),
                     ),
                   ),
                   style: OutlinedButton.styleFrom(
@@ -575,7 +583,7 @@ class _VerificationCodeState extends State<_VerificationCode> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.r),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                    padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 6.w),
                   ),
                 ),
               ),

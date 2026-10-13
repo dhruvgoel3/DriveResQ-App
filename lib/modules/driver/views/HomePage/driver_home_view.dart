@@ -539,7 +539,7 @@ class DriverHomeView extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16.r),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      padding: EdgeInsets.symmetric(horizontal: 14.w),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -552,13 +552,19 @@ class DriverHomeView extends StatelessWidget {
                           ),
                           child: Icon(Iconsax.add, color: Colors.white, size: 14.w),
                         ),
-                        SizedBox(width: 10.w),
-                        Text(
-                          "Request Roadside Rescue",
-                          style: GoogleFonts.poppins(
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFF1E1B4B),
+                        SizedBox(width: 8.w),
+                        Flexible(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              "Request Roadside Rescue",
+                              maxLines: 1,
+                              style: GoogleFonts.poppins(
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF1E1B4B),
+                              ),
+                            ),
                           ),
                         ),
                         SizedBox(width: 6.w),
